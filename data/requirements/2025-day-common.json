@@ -1,0 +1,442 @@
+{
+  "schemaVersion": 1,
+  "entryYear": 2025,
+  "course": "day",
+  "source": "学修要覧2025（情報理工学域）別表2, 付録C C.1, C.2",
+  "note": "総合文化科目・実践教育科目の要件。昼間コース全プログラム共通（データサイエンス科目の必要単位のみプログラムで異なる）",
+  "groups": [
+    {
+      "id": "general",
+      "name": "総合文化科目",
+      "label": "総合文化",
+      "required": 27,
+      "children": [
+        {
+          "id": "hss",
+          "name": "人文・社会科学科目",
+          "label": "人文・社会",
+          "required": 8,
+          "subjects": [
+            "HSS301",
+            "HSS401",
+            "HSS302",
+            "HSS402",
+            "HSS303",
+            "HSS403",
+            "HSS304",
+            "HSS404",
+            "HSS305",
+            "HSS405",
+            "HSS306",
+            "HSS406",
+            "HSS307",
+            "HSS407",
+            "HSS308",
+            "HSS408",
+            "HSS309",
+            "HSS409",
+            "HSS310",
+            "HSS410",
+            "HSS311",
+            "HSS411",
+            "HSS312",
+            "HSS412",
+            "HSS313",
+            "HSS413",
+            "HSS314",
+            "HSS414",
+            "HSS315",
+            "HSS415",
+            "HSS316",
+            "HSS317",
+            "HSS318",
+            "HSS319",
+            "HSS320",
+            "FGN101",
+            "FGN201",
+            "FGN301",
+            "FGN401",
+            "FGN302"
+          ],
+          "kind": "elective",
+          "overflowToCommon": false,
+          "note": "日本文化科目（留学生）はここに含む。超過分は共通単位にならない"
+        },
+        {
+          "id": "lang-basic-1",
+          "name": "言語文化基礎科目Ⅰ",
+          "label": "英語（1年）",
+          "required": 4,
+          "subjects": [
+            "ENG101",
+            "ENG102",
+            "ENG201",
+            "ENG202"
+          ],
+          "kind": "required"
+        },
+        {
+          "id": "lang-appl-1",
+          "name": "言語文化応用科目Ⅰ",
+          "label": "英語（2年）",
+          "required": 2,
+          "subjects": [
+            "ENG301",
+            "ENG401"
+          ],
+          "kind": "required"
+        },
+        {
+          "id": "lang-basic-2",
+          "name": "言語文化基礎科目Ⅱ",
+          "label": "第二外国語",
+          "required": 2,
+          "subjects": [
+            "GER101",
+            "GER201",
+            "FRE101",
+            "FRE201",
+            "RUS101",
+            "RUS201",
+            "CHI101",
+            "CHI201",
+            "KOR101",
+            "KOR201"
+          ],
+          "kind": "elective",
+          "rule": {
+            "type": "oneLanguagePair",
+            "note": "第一・第二は通年でセット。1言語2単位"
+          }
+        },
+        {
+          "id": "lang-seminar",
+          "name": "言語文化演習科目",
+          "label": "語学演習",
+          "required": 2,
+          "subjects": [
+            "ENG302",
+            "GER301",
+            "GER401",
+            "FRE301",
+            "FRE401",
+            "RUS301",
+            "RUS401",
+            "CHI301",
+            "CHI401",
+            "KOR301",
+            "KOR401",
+            "JPN401"
+          ],
+          "kind": "elective",
+          "alsoAccepts": [
+            "INT001",
+            "INT002"
+          ],
+          "note": "INT001/002は1・2年次に修得した場合ここに算入"
+        },
+        {
+          "id": "health",
+          "name": "健康・スポーツ科学科目",
+          "label": "健康・スポーツ",
+          "required": 3,
+          "subjects": [],
+          "children": [
+            {
+              "id": "health-req",
+              "name": "必修",
+              "label": "健康論・実習",
+              "required": 2,
+              "subjects": [
+                "HSP101",
+                "HSP201"
+              ],
+              "kind": "required"
+            },
+            {
+              "id": "health-sel",
+              "name": "生涯スポーツ演習",
+              "label": "生涯スポーツ",
+              "required": 1,
+              "subjects": [
+                "HSP301",
+                "HSP401",
+                "HSP302",
+                "HSP402"
+              ],
+              "kind": "elective"
+            }
+          ]
+        },
+        {
+          "id": "sci-liberal",
+          "name": "理工系教養科目",
+          "label": "理工系教養",
+          "required": 2,
+          "subjects": [
+            "GEO201",
+            "PHY301",
+            "BIO201",
+            "CHM301",
+            "CHM201",
+            "MTH301",
+            "MTH302"
+          ],
+          "kind": "elective"
+        },
+        {
+          "id": "advanced",
+          "name": "上級科目",
+          "label": "上級科目",
+          "required": 4,
+          "subjects": [],
+          "kind": "elective",
+          "children": [
+            {
+              "id": "adv-A",
+              "name": "A類 文化と社会",
+              "label": "上級A",
+              "required": 0,
+              "subjects": [
+                "HSS501",
+                "HSS601",
+                "HSS502",
+                "HSS503",
+                "HSS602",
+                "HSS603",
+                "HSS504",
+                "HSS505",
+                "HSS604",
+                "HSS506",
+                "HSS605",
+                "HSS606",
+                "HSS507",
+                "HSS607",
+                "HSS608",
+                "HSS508",
+                "HSS609",
+                "HSS509",
+                "HSS610"
+              ]
+            },
+            {
+              "id": "adv-B",
+              "name": "B類 言語によるコミュニケーション",
+              "label": "上級B",
+              "required": 0,
+              "subjects": [
+                "ENG501",
+                "ENG601",
+                "ENG502",
+                "ENG602",
+                "ENG603",
+                "ENG503",
+                "ENG504",
+                "ENG604",
+                "GER501",
+                "FRE501",
+                "RUS501",
+                "CHI501",
+                "KOR501",
+                "GER601",
+                "FRE601",
+                "RUS601",
+                "CHI601",
+                "KOR601"
+              ]
+            },
+            {
+              "id": "adv-C",
+              "name": "C類 異文化の理解",
+              "label": "上級C",
+              "required": 0,
+              "subjects": [
+                "HSS510",
+                "HSS611",
+                "HSS511",
+                "HSS612",
+                "HSS512",
+                "HSS613",
+                "JPN501",
+                "JPN601"
+              ]
+            },
+            {
+              "id": "adv-D",
+              "name": "D類 現代の科学",
+              "label": "上級D",
+              "required": 0,
+              "subjects": [
+                "GSC601",
+                "GSC501",
+                "GSC602",
+                "MTH601",
+                "GSC603",
+                "GSC502",
+                "GSE501",
+                "GSE601"
+              ]
+            },
+            {
+              "id": "adv-E",
+              "name": "E類 健康とスポーツの科学",
+              "label": "上級E",
+              "required": 0,
+              "subjects": [
+                "HSP501",
+                "HSP502",
+                "HSP601",
+                "HSP503",
+                "HSP602",
+                "HSP603",
+                "HSP504",
+                "HSP604"
+              ]
+            },
+            {
+              "id": "adv-intl",
+              "name": "国際科目（上級科目扱い）",
+              "label": "上級（国際）",
+              "required": 0,
+              "subjects": [
+                "INT501",
+                "INT502",
+                "INT601",
+                "INT602",
+                "INT603",
+                "INT503",
+                "INT604",
+                "INT504",
+                "INT505",
+                "INT001",
+                "INT002",
+                "INT003"
+              ],
+              "note": "INT001/002は3・4年次修得分のみ。INT003は3・4年次のみ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "practical",
+      "name": "実践教育科目",
+      "label": "実践教育",
+      "required": 17,
+      "children": [
+        {
+          "id": "intro",
+          "name": "初年次導入科目",
+          "label": "初年次導入",
+          "required": 6,
+          "subjects": [
+            "PHY101",
+            "PHY201",
+            "CHM101",
+            "CHM202",
+            "COM101"
+          ],
+          "kind": "required"
+        },
+        {
+          "id": "datasci",
+          "name": "データサイエンス科目",
+          "label": "データサイエンス",
+          "required": 3,
+          "subjects": [],
+          "children": [
+            {
+              "id": "datasci-req",
+              "name": "必修",
+              "label": "総合コミュニケーション科学",
+              "required": 2,
+              "subjects": [
+                "UEC301"
+              ],
+              "kind": "required"
+            },
+            {
+              "id": "datasci-ex",
+              "name": "データサイエンス演習",
+              "label": "DS演習",
+              "required": 1,
+              "subjects": [
+                "UEC501"
+              ],
+              "kind": "required",
+              "note": "Ⅰ類は必修。Ⅱ類計測制御/ロボ・Ⅲ類は選択（required=0, 超過は共通単位）"
+            }
+          ]
+        },
+        {
+          "id": "career",
+          "name": "倫理・キャリア教育科目",
+          "label": "キャリア単位",
+          "required": 4,
+          "subjects": [
+            "CAR101",
+            "CAR201",
+            "CAR501",
+            "CAR401",
+            "CAR402",
+            "CAR502",
+            "CAR601",
+            "CAR503",
+            "CAR504",
+            "CAR602",
+            "CAR603",
+            "CAR604"
+          ],
+          "kind": "elective"
+        },
+        {
+          "id": "tech-eng",
+          "name": "技術英語科目",
+          "label": "技術英語",
+          "required": 4,
+          "subjects": [
+            "TEN501",
+            "TEN601"
+          ],
+          "kind": "required"
+        }
+      ]
+    }
+  ],
+  "commonCreditSources": {
+    "note": "卒業所要単位を超えた分に加え、以下はそのまま共通単位になる",
+    "alwaysCommon": [
+      "GER102",
+      "GER202",
+      "FRE102",
+      "FRE202",
+      "RUS102",
+      "RUS202",
+      "CHI102",
+      "CHI202",
+      "KOR102",
+      "KOR202",
+      "INT004",
+      "INT005"
+    ],
+    "external": [
+      {
+        "code": "EXT-ENG",
+        "name": "学外英語能力試験",
+        "credits": 2,
+        "note": "TOEFL iBT 62 / TOEIC 600 / 英検2級 / IELTS 5"
+      }
+    ]
+  },
+  "otherSubjects": {
+    "japanese": [
+      "JPN101",
+      "JPN201",
+      "JPN301"
+    ],
+    "special": [
+      "UEC001",
+      "UEC002"
+    ]
+  }
+}

@@ -1,0 +1,354 @@
+{
+  "schemaVersion": 1,
+  "entryYear": 2025,
+  "course": "day",
+  "cluster": "I",
+  "program": "media",
+  "programName": "メディア情報学プログラム",
+  "programSuffix": "a",
+  "source": "学修要覧2025（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.1①",
+  "extends": "2025-day-common.json",
+  "totalCredits": 128,
+  "commonCredits": 8,
+  "subtotals": {
+    "general": 27,
+    "practical": 17,
+    "specialized": 76,
+    "common": 8
+  },
+  "groups": [
+    {
+      "id": "specialized",
+      "name": "専門科目",
+      "label": "専門",
+      "required": 76,
+      "children": [
+        {
+          "id": "math-basic",
+          "name": "理数基礎科目",
+          "label": "理数基礎",
+          "required": 18,
+          "subjects": [],
+          "children": [
+            {
+              "id": "math-basic-req",
+              "name": "必修",
+              "label": "理数基礎（必修）",
+              "required": 18,
+              "subjects": [
+                "MTH101",
+                "MTH201",
+                "MTH102",
+                "MTH202",
+                "MTH203",
+                "MTH103",
+                "MTH204",
+                "PHY102",
+                "CHM102",
+                "COM201"
+              ],
+              "kind": "required"
+            },
+            {
+              "id": "math-basic-sel",
+              "name": "選択",
+              "label": "理数基礎（選択）",
+              "required": 0,
+              "subjects": [
+                "PHY103",
+                "PHY202",
+                "PHY203",
+                "CHM203"
+              ],
+              "kind": "elective",
+              "countAs": "common",
+              "note": "修得した単位は共通単位とする"
+            }
+          ]
+        },
+        {
+          "id": "cluster-basic",
+          "name": "類共通基礎科目",
+          "label": "類共通基礎",
+          "required": 23,
+          "subjects": [],
+          "children": [
+            {
+              "id": "cluster-basic-req",
+              "name": "必修",
+              "label": "類共通基礎（必修）",
+              "required": 15,
+              "subjects": [
+                "MTH205",
+                "MTH303",
+                "COM301",
+                "COM302",
+                "COM303",
+                "COM202",
+                "COM304",
+                "COM401",
+                "COM402"
+              ],
+              "kind": "required"
+            },
+            {
+              "id": "cluster-basic-sel",
+              "name": "選択",
+              "label": "類共通基礎（選択）",
+              "required": 8,
+              "subjects": [
+                "ELE301",
+                "MTH304",
+                "MTH401",
+                "MSS401",
+                "MTH402",
+                "COM403",
+                "COM404"
+              ],
+              "kind": "elective"
+            }
+          ]
+        },
+        {
+          "id": "major",
+          "name": "類専門科目",
+          "label": "類専門",
+          "required": 35,
+          "subjects": [],
+          "children": [
+            {
+              "id": "major-req",
+              "name": "必修",
+              "label": "類専門（必修）",
+              "required": 13,
+              "subjects": [
+                "COM405",
+                "COM501",
+                "COM601",
+                "LAB701",
+                "LAB801",
+                "LAB702",
+                "LAB802"
+              ],
+              "kind": "required"
+            },
+            {
+              "id": "major-sel",
+              "name": "選択",
+              "label": "類専門（選択）",
+              "required": 22,
+              "subjects": [
+                "MSS402",
+                "COM502",
+                "MTH501",
+                "ELE501",
+                "MSS501",
+                "ELE502",
+                "INS501",
+                "COM503",
+                "INS502",
+                "COM602",
+                "COM603",
+                "COM604",
+                "INS601",
+                "INS602",
+                "INS503",
+                "INS603",
+                "ELE601",
+                "COM001",
+                "FGN101",
+                "FGN201",
+                "FGN102",
+                "FGN202",
+                "FGN301",
+                "FGN401"
+              ],
+              "kind": "elective",
+              "alsoAccepts": "sameClusterOtherPrograms",
+              "note": "Ⅰ類の他プログラムの科目も選択として算入可（実験科目を除く）"
+            },
+            {
+              "id": "major-free",
+              "name": "自由科目",
+              "label": "自由科目",
+              "required": 0,
+              "subjects": [
+                "COM504",
+                "COM002",
+                "COM003",
+                "INSa01",
+                "INSa02",
+                "COMa01",
+                "INSa03",
+                "INSa04",
+                "INSa05",
+                "INSa06",
+                "COMa02",
+                "COMa03",
+                "COMb01",
+                "INSb01",
+                "ELEb01",
+                "MTHb01",
+                "MTHb02",
+                "MTHb03",
+                "LAB501"
+              ],
+              "kind": "free",
+              "countsTowardGraduation": false,
+              "note": "卒業要件に含まれない（大学院連携科目など）"
+            },
+            {
+              "id": "major-intl",
+              "name": "国際科目",
+              "label": "国際科目",
+              "required": 0,
+              "subjects": [
+                "INT001",
+                "INT002",
+                "INT003"
+              ],
+              "kind": "international",
+              "note": "単位の扱いは年度ごとの科目一覧表による"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "id": "y2-end",
+      "name": "2年次終了時審査",
+      "when": "2年次終了時",
+      "source": "2.4.1, 別表3, 別表3の2",
+      "anyOf": [
+        {
+          "allOf": [
+            {
+              "type": "groupMin",
+              "groupId": "lang-basic-1",
+              "min": 4
+            },
+            {
+              "type": "groupMin",
+              "groupId": "lang-basic-2",
+              "min": 2
+            },
+            {
+              "type": "allPassed",
+              "groupId": "health-req"
+            },
+            {
+              "type": "allPassed",
+              "groupId": "intro"
+            },
+            {
+              "type": "subjects",
+              "codes": [
+                "UEC301"
+              ]
+            },
+            {
+              "type": "allPassed",
+              "groupId": "math-basic-req"
+            },
+            {
+              "type": "subjects",
+              "codes": [
+                "MTH205",
+                "COM202"
+              ],
+              "note": "類共通基礎の1年次必修2科目3単位"
+            }
+          ]
+        },
+        {
+          "type": "totalCredits",
+          "min": 60,
+          "note": "特例。教職科目を除く。卒研着手までには上の科目を全て修得する必要あり"
+        }
+      ],
+      "onFail": {
+        "blockedSubjects": [
+          "COM501",
+          "COM601"
+        ],
+        "note": "不合格時はプログラミング言語実験・メディア情報学実験を履修できない"
+      }
+    },
+    {
+      "id": "thesis-start",
+      "name": "卒業研究着手審査",
+      "when": "3年次終了時",
+      "source": "2.4.3, 別表4",
+      "allOf": [
+        {
+          "type": "review",
+          "id": "y2-end"
+        },
+        {
+          "type": "groupMin",
+          "groupId": "lang-basic-1",
+          "min": 4
+        },
+        {
+          "type": "groupMin",
+          "groupId": "lang-basic-2",
+          "min": 2
+        },
+        {
+          "type": "allPassed",
+          "groupId": "health-req"
+        },
+        {
+          "type": "allPassed",
+          "groupId": "intro"
+        },
+        {
+          "type": "subjects",
+          "codes": [
+            "UEC301"
+          ]
+        },
+        {
+          "type": "allPassed",
+          "groupId": "math-basic-req"
+        },
+        {
+          "type": "allPassed",
+          "groupId": "cluster-basic-req"
+        },
+        {
+          "type": "subjects",
+          "codes": [
+            "COM501",
+            "COM601"
+          ]
+        },
+        {
+          "type": "totalCredits",
+          "min": 101
+        }
+      ]
+    },
+    {
+      "id": "graduation",
+      "name": "卒業審査",
+      "when": "4年次終了時",
+      "source": "2.4.4, 別表2",
+      "allOf": [
+        {
+          "type": "allGroups"
+        },
+        {
+          "type": "commonCredits",
+          "min": 8
+        },
+        {
+          "type": "totalCredits",
+          "min": 128
+        }
+      ]
+    }
+  ]
+}
