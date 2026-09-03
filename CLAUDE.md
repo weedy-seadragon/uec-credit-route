@@ -51,3 +51,29 @@
 - フェーズが終わるごとに `git commit`。コミットメッセージは日本語で「何をしたか」を1行
 - 仕様と違うことをする必要が出たら、勝手に変えずに理由を説明して開発者に確認する
 - 外部サイト（`kyoumu.office.uec.ac.jp`）へアクセスするスクリプトは、1秒以上の間隔を空け、User-Agent に連絡先を入れる
+
+## 進捗ログ（申し送り）
+
+### これまでにやったこと
+
+- **GitHub連携**：`git init` 済み。リモートは `https://github.com/weedy-seadragon/uec-credit-route.git`（`main`ブランチ、push済み）
+- **フェーズ0**（既存）：`docs/SPEC.md`、`data/requirements/2025-day-common.json`、`data/requirements/2025-day-I-media.json`、`data/subjects/youran-2025.json`、`scripts/gen_data.py`、`scripts/validate_data.py`
+- **Vite + React + TypeScript 初期化**：`npm create vite --template react-ts` の雛形からデモコンテンツを除去。`npm run build` / `npm run lint`（oxlint）/ `npx vitest run` すべて通過確認済み
+- **フェーズ1**：`src/domain/requirements.ts` を実装（充足判定ロジック）。必修/選択/自由/国際の判定、選択科目の超過分を共通単位に繰り入れる処理、「上級科目」のように親グループ自体が判定境界を持つケースでの二重計上防止、履修中科目の見込み計算（`projected`）に対応。`src/domain/requirements.test.ts` に単体テスト15件（仮想データ＋実データ統合テスト）、全て通過
+- **フェーズ2-1**：`react-router-dom` 導入、`HashRouter` で SPEC §6 の9ページぶんのルートを配線（中身は `PagePlaceholder` を使った準備中の空箱）。`src/storage/localStorage.ts` に薄いlocalStorageラッパー（具体的な保存データの形はまだ未定）。Playwrightで9ルートの表示とconsoleエラー無しを確認済み（Playwrightはこの検証のためだけに一時インストールしたもので、プロジェクトの依存には加えていない）
+
+### 参考PDF（開発者が用意したもの。リポジトリには含めない）
+
+- `C:\Users\maita\Downloads\uec-credit-route\tanni_extract_final.pdf`（プロジェクト内、`.gitignore`の`*.pdf`で除外済み）：学修要覧2025の本編。第2章（科目区分・単位算出基準・審査所要単位）、別表2〜5、付録C（**全15プログラム＋夜間主課程のカリキュラム表**）を含む、事実上のフル版
+- `C:\Users\maita\Downloads\youran2025-gakuiki.pdf`（プロジェクト外、`Downloads`直下）：おそらく同じ学修要覧の原本。中身は未確認
+
+### 次回以降にやること（未決定・要相談）
+
+開発者から「PDFを参照して、類・プログラムごとの必修/選択必修/選択/自由の違いを判別できるようにしてほしい」という要望が出たところで中断。判定ロジック自体（`RequirementGroup.kind`をプログラムごとのJSONファイルに持たせる設計）は既にプログラムごとの違いに対応済みなので、あとは**他プログラム分のデータをPDFから起こす作業**（フェーズ3、`scripts/gen_data.py`と同じパターン）になる。
+
+次回セッション開始時に、まず開発者に以下を確認すること：
+
+1. フェーズ2（UI）を先に完成させるか、ここでフェーズ3（データ拡張）に切り替えるか
+2. データ拡張するなら、どのプログラムから着手するか（SPEC §11 の想定順は「Ⅰ類他4プログラム → Ⅱ・Ⅲ類 → 夜間主」）
+
+フェーズ2の残り（未着手）：2-2 `src/domain/recommend.ts`、2-3 プロフィール設定画面、2-4 メイン画面（チェックリスト・区分別進捗）、2-5 JSON入出力、2-6 GitHub Pages公開設定
