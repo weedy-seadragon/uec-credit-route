@@ -1,0 +1,9 @@
+/* グローバルスタイルの最小構成。本格的なデザインはフェーズ2以降で追加する */
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+}
