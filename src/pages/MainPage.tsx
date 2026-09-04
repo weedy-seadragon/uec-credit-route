@@ -141,14 +141,17 @@ function groupByCategory<T>(
 }
 
 /**
- * 留学生のみ履修できる科目をまとめて畳んでおく<li>（1件も無ければ何も出さない）。
- * 「類専門（選択）」などの区分と同じ<details>の形にして、普段は開かなくても他の科目一覧の邪魔にならないようにする。
+ * 「他プログラム専門科目」「留学生のみ履修可」など、通常の科目とは別枠にまとめたい科目群を
+ * 畳んでおく<li>（1件も無ければ何も出さない）。「類専門（選択）」などの区分と同じ<details>の
+ * 形にして、普段は開かなくても他の科目一覧の邪魔にならないようにする。
  */
-function InternationalGroupItem<T>({
+function CollapsedSubjectGroup<T>({
+  title,
   items,
   codeOf,
   renderRow,
 }: {
+  title: string
   items: readonly T[]
   codeOf: (item: T) => string
   renderRow: (item: T) => ReactNode
@@ -157,7 +160,9 @@ function InternationalGroupItem<T>({
   return (
     <li>
       <details>
-        <summary>留学生のみ履修可（{items.length}）</summary>
+        <summary>
+          {title}（{items.length}）
+        </summary>
         <ul>
           {items.map((item) => (
             <li key={codeOf(item)}>{renderRow(item)}</li>
@@ -352,23 +357,33 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (!yearTerm) return null
     return <span style={{ marginLeft: '0.4em' }}>{yearTerm}</span>
   }
-  // 他プログラムの専門科目なら、科目名の横に添える注記（該当しなければ何も出さない）。色は他の文字と揃える
-  function otherProgramTag(code: string) {
-    if (!isOtherProgramSubject(code, requirementSet?.programSuffix)) return null
-    return <span style={{ marginLeft: '0.4em' }}>［他プログラム専門科目］</span>
+  // 他プログラムの専門科目かどうか
+  function isOtherProgram(code: string): boolean {
+    return isOtherProgramSubject(code, requirementSet?.programSuffix)
   }
   // 外国人留学生しか履修できない科目かどうか
   function isInternational(code: string): boolean {
     return subjectsByCode.get(code)?.forInternational ?? false
   }
-  // 一覧の項目を、留学生のみ履修できる科目とそれ以外に分ける（留学生のみの分は折りたたみにまとめて出す）
-  function splitInternational<T>(items: readonly T[], codeOf: (item: T) => string): { regular: T[]; international: T[] } {
+  /**
+   * 一覧の項目を、①通常の科目・②他プログラムの専門科目・③留学生のみ履修できる科目、の3つに分ける。
+   * ②③は「留学生のみ履修可」と同じ形の折りたたみにまとめて出す（普通の科目一覧を長くしすぎないため）。
+   * 両方に該当する科目は、より限定的な③（留学生のみ）の方にまとめる。
+   */
+  function splitSpecialSubjects<T>(
+    items: readonly T[],
+    codeOf: (item: T) => string,
+  ): { regular: T[]; otherProgram: T[]; international: T[] } {
     const regular: T[] = []
+    const otherProgram: T[] = []
     const international: T[] = []
     for (const item of items) {
-      ;(isInternational(codeOf(item)) ? international : regular).push(item)
+      const code = codeOf(item)
+      if (isInternational(code)) international.push(item)
+      else if (isOtherProgram(code)) otherProgram.push(item)
+      else regular.push(item)
     }
-    return { regular, international }
+    return { regular, otherProgram, international }
   }
 
   return (
@@ -419,27 +434,22 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <section>
         <h2>取得単位（{passedSubjects.length}）</h2>
         {passedByCategory.map(({ label, items }) => {
-          const { regular, international } = splitInternational(items, ([code]) => code)
+          const { regular, otherProgram, international } = splitSpecialSubjects(items, ([code]) => code)
+          const row = (code: string) => (
+            <>
+              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+              <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+            </>
+          )
           return (
             <div key={label}>
               <h3>{label}</h3>
               <ul>
                 {regular.map(([code]) => (
-                  <li key={code}>
-                    {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}
-                    <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
-                  </li>
+                  <li key={code}>{row(code)}</li>
                 ))}
-                <InternationalGroupItem
-                  items={international}
-                  codeOf={([code]) => code}
-                  renderRow={([code]) => (
-                    <>
-                      {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}
-                      <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
-                    </>
-                  )}
-                />
+                <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={([code]) => code} renderRow={([code]) => row(code)} />
+                <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={([code]) => code} renderRow={([code]) => row(code)} />
               </ul>
             </div>
           )
@@ -455,25 +465,20 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <h2>不可の単位（{failedSubjects.length}）</h2>
         <ul>
           {(() => {
-            const { regular, international } = splitInternational(failedSubjects, ([code]) => code)
+            const { regular, otherProgram, international } = splitSpecialSubjects(failedSubjects, ([code]) => code)
+            const row = (code: string) => (
+              <>
+                {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+                <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+              </>
+            )
             return (
               <>
                 {regular.map(([code]) => (
-                  <li key={code}>
-                    {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}
-                    <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
-                  </li>
+                  <li key={code}>{row(code)}</li>
                 ))}
-                <InternationalGroupItem
-                  items={international}
-                  codeOf={([code]) => code}
-                  renderRow={([code]) => (
-                    <>
-                      {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}
-                      <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
-                    </>
-                  )}
-                />
+                <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={([code]) => code} renderRow={([code]) => row(code)} />
+                <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={([code]) => code} renderRow={([code]) => row(code)} />
               </>
             )
           })()}
@@ -484,29 +489,25 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <section>
         <h2>残りの必修（あと {requiredShortfall(boundaryGroups)} 単位）</h2>
         {remainingRequiredByCategory.map(({ label, items }) => {
-          // ()内は単位数だけにする。年次・学期・他プログラム専門科目は他の一覧と同じ形の注記で統一する。
-          // 再履修かどうかはこの後のプルダウンの選択値で分かる。留学生のみの科目は下の折りたたみにまとめる
-          const { regular, international } = splitInternational(items, (r) => r.code)
+          // ()内は単位数だけにする。年次・学期は他の一覧と同じ形の注記で統一する。
+          // 再履修かどうかはこの後のプルダウンの選択値で分かる。他プログラム専門科目・留学生のみの
+          // 科目は下の折りたたみにまとめる
+          const { regular, otherProgram, international } = splitSpecialSubjects(items, (r) => r.code)
+          const row = (code: string) => (
+            <>
+              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+              <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+            </>
+          )
           return (
             <div key={label}>
               <h3>{label}</h3>
               <ul>
                 {regular.map((r) => (
-                  <li key={r.code}>
-                    {nameOf(r.code)}（{creditsLabel(r.code)}）{yearTermTag(r.code)}{otherProgramTag(r.code)}
-                    <SubjectStatusSelect code={r.code} value={draft.get(r.code)} onChange={handleDraftChange} />
-                  </li>
+                  <li key={r.code}>{row(r.code)}</li>
                 ))}
-                <InternationalGroupItem
-                  items={international}
-                  codeOf={(r) => r.code}
-                  renderRow={(r) => (
-                    <>
-                      {nameOf(r.code)}（{creditsLabel(r.code)}）{yearTermTag(r.code)}{otherProgramTag(r.code)}
-                      <SubjectStatusSelect code={r.code} value={draft.get(r.code)} onChange={handleDraftChange} />
-                    </>
-                  )}
-                />
+                <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={(r) => r.code} renderRow={(r) => row(r.code)} />
+                <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(r) => r.code} renderRow={(r) => row(r.code)} />
               </ul>
             </div>
           )
@@ -517,7 +518,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <section>
         <h2>選択科目</h2>
         <p style={{ fontSize: '0.9em', color: '#555' }}>
-          ※ 他プログラムの専門科目（［他プログラム専門科目］の表示があるもの）を履修した場合も、専門科目の単位として扱われます（学修要覧より）
+          ※ 他プログラムの専門科目（各区分の中の「他プログラム専門科目」にまとめているもの）を履修した場合も、専門科目の単位として扱われます（学修要覧より）
         </p>
         {/* ここに出すのは「選択」「選択必修」の区分だけ（必修は上の「残りの必修」で扱う。自由・国際は対象外）。
             必要単位が0のグループ（そのプログラムでは使わない区分）も出す意味が無いので除く。
@@ -534,7 +535,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               nameOf={nameOf}
               creditsLabel={creditsLabel}
               yearTermTag={yearTermTag}
-              otherProgramTag={otherProgramTag}
+              isOtherProgram={isOtherProgram}
               isInternational={isInternational}
             />
           ))}
@@ -556,7 +557,7 @@ function GroupProgress({
   nameOf,
   creditsLabel,
   yearTermTag,
-  otherProgramTag,
+  isOtherProgram,
   isInternational,
 }: {
   group: BoundaryGroup
@@ -566,19 +567,21 @@ function GroupProgress({
   nameOf: (code: string) => string
   creditsLabel: (code: string) => string
   yearTermTag: (code: string) => ReactNode
-  otherProgramTag: (code: string) => ReactNode
+  isOtherProgram: (code: string) => boolean
   isInternational: (code: string) => boolean
 }) {
   // 一覧に出す／消すのは committed（確定済み）で判断する。draft はプルダウンの表示値にだけ使う。
   // こうしないと、「更新」を押す前にプルダウンを触っただけで行が消えてしまい、
   // 「残りの必修」など他のセクションと表示の整合性が取れなくなる。
   const remaining = group.subjects.filter((code) => committed.get(code) !== 'passed')
-  // 留学生のみ履修できる科目は、下の折りたたみにまとめる（他の一覧と同じ扱い）
-  const regular = remaining.filter((code) => !isInternational(code))
+  // 他プログラム専門科目・留学生のみ履修できる科目は、下の折りたたみにまとめる（他の一覧と同じ扱い）。
+  // 両方に該当する科目は留学生のみの方に入れる
   const international = remaining.filter((code) => isInternational(code))
+  const otherProgram = remaining.filter((code) => !isInternational(code) && isOtherProgram(code))
+  const regular = remaining.filter((code) => !isInternational(code) && !isOtherProgram(code))
   const row = (code: string) => (
     <>
-      {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}
+      {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
       <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
     </>
   )
@@ -592,7 +595,8 @@ function GroupProgress({
         {regular.map((code) => (
           <li key={code}>{row(code)}</li>
         ))}
-        <InternationalGroupItem items={international} codeOf={(code) => code} renderRow={row} />
+        <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={(code) => code} renderRow={row} />
+        <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} />
         {remaining.length === 0 && <li>（すべて修得済みです）</li>}
       </ul>
     </details>
