@@ -228,10 +228,10 @@ export function recommend(input: RecommendInput): RecommendedSubject[] {
             ? 'prerequisites-met'
             : 'none'
 
-    // 標準履修年次より遅れて履修する場合だけ、注記文字列を作る
+    // 標準履修年次より遅れて履修する場合だけ、注記文字列を作る（例:「2年前期科目」。学期が無ければ「2年次科目」）
     const laterThanStandardYearNote =
       subject.standardYear != null && subject.standardYear < currentGrade
-        ? `${subject.standardYear}年次科目`
+        ? `${subject.standardYear}年${subject.termType === '前学期' ? '前期' : subject.termType === '後学期' ? '後期' : '次'}科目`
         : undefined
 
     candidates.push({ code: subject.code, score, reason, laterThanStandardYearNote, clash })

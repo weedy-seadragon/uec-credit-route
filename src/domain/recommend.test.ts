@@ -196,11 +196,27 @@ describe('標準履修年次より遅れている科目の注記とソート順'
     { code: 'OLD2', credits: 2, standardYear: 2 },
   ]
 
-  it('3年生から見て1年次科目には「1年次科目」の注記が付く', () => {
+  it('3年生から見て1年次科目には「1年次科目」の注記が付く（termType省略時）', () => {
     // OLD1のstandardYearは1なので、3年生（currentGrade=3）から見ると「1年次科目」の注記が付くはず
     const { requirementSet: rs, evaluation, subjects: subj } = setup(requirementSet, subjects)
     const result = recommend({ requirementSet: rs, evaluation, records: records(), subjects: subj, currentGrade: 3, termFilter: 'all' })
     expect(result.find((r) => r.code === 'OLD1')!.laterThanStandardYearNote).toBe('1年次科目')
+  })
+
+  it('termTypeがある科目は「1年前期科目」「1年後期科目」のように学期まで注記に含める', () => {
+    // 学年だけでなく学期も分かっていれば「1年前期科目」のように具体的に示す（SPEC・型定義のコメント通り）
+    const termSubjects: SubjectInfo[] = [
+      { code: 'SPRING1', credits: 2, standardYear: 1, termType: '前学期' },
+      { code: 'FALL1', credits: 2, standardYear: 1, termType: '後学期' },
+    ]
+    const termRequirementSet: RequirementSet = {
+      totalCredits: 4, commonCredits: 0,
+      groups: [{ id: 'req', name: '必修サンプル', required: 4, kind: 'required', subjects: ['SPRING1', 'FALL1'] }],
+    }
+    const { requirementSet: rs, evaluation, subjects: subj } = setup(termRequirementSet, termSubjects)
+    const result = recommend({ requirementSet: rs, evaluation, records: records(), subjects: subj, currentGrade: 3, termFilter: 'all' })
+    expect(result.find((r) => r.code === 'SPRING1')!.laterThanStandardYearNote).toBe('1年前期科目')
+    expect(result.find((r) => r.code === 'FALL1')!.laterThanStandardYearNote).toBe('1年後期科目')
   })
 
   it('同点なら標準履修年次が古い（小さい）ものが先に来る', () => {
