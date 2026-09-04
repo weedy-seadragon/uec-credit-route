@@ -1,0 +1,48 @@
+# main ブランチに push されるたびに、ビルドして GitHub Pages に自動デプロイする。
+#
+# 事前に1回だけ、GitHubのリポジトリ設定が必要（このファイルだけでは有効にならない）：
+#   Settings → Pages → Build and deployment → Source を「GitHub Actions」にする
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Actionsのページから手動実行もできるようにしておく
+  workflow_dispatch:
+
+# GitHub Pagesへのデプロイに必要な権限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時に複数のデプロイが走らないようにする（新しいpushが来たら古い方は取り消す）
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
