@@ -107,6 +107,109 @@ describe('選択グループ（kind: elective）と共通単位への繰り入�
   })
 })
 
+describe('選択必修グループ（kind: elective-required）と選択科目への繰り入れ', () => {
+  // 「類共通基礎科目」の下に「選択必修（required 4）」と「選択（required 8）」がある、
+  // というⅡ類情報通信工学プログラム相当の構造を模したテストケース。
+  // 学修要覧2.5.1「専門科目において選択必修科目を卒業所要単位数を超えて修得した場合は，
+  // 選択科目の単位に加算する」を検証する。
+  function buildParent(overrides: { electiveRequiredOverflowToCommon?: boolean; electiveOverflowToCommon?: boolean } = {}) {
+    const parent: RequirementGroup = {
+      id: 'cluster-basic', name: '類共通基礎科目', required: 12, subjects: [],
+      children: [
+        {
+          id: 'cluster-basic-selreq', name: '選択必修', required: 4, kind: 'elective-required',
+          subjects: ['SR1', 'SR2', 'SR3'], overflowTarget: 'cluster-basic-sel',
+          overflowToCommon: overrides.electiveRequiredOverflowToCommon,
+        },
+        {
+          id: 'cluster-basic-sel', name: '選択', required: 8, kind: 'elective',
+          subjects: ['S1', 'S2'], overflowToCommon: overrides.electiveOverflowToCommon,
+        },
+      ],
+    }
+    const credits = new Map([
+      ['SR1', 2], ['SR2', 2], ['SR3', 2],
+      ['S1', 6], ['S2', 6],
+    ])
+    return { parent, credits }
+  }
+
+  it('選択必修をちょうど required 分だけ修得した場合は繰り入れが起きない', () => {
+    const { parent, credits } = buildParent()
+    const requirementSet = singleGroupRequirementSet(parent, 10)
+    const result = evaluateRequirements(requirementSet, records({ SR1: 'passed', SR2: 'passed' }), credits)
+    const [selReq, sel] = result.groups[0].children
+    expect(selReq.contribution).toBe(4)
+    expect(sel.contribution).toBe(0)
+    expect(result.commonCredits.contribution).toBe(0)
+  })
+
+  it('選択必修の超過分は、選択科目の不足を埋めるほうに優先的に加算される', () => {
+    const { parent, credits } = buildParent()
+    const requirementSet = singleGroupRequirementSet(parent, 10)
+    // 選択必修を6単位（required4を2単位超過）、選択を6単位（required8に2単位不足）修得
+    const result = evaluateRequirements(
+      requirementSet,
+      records({ SR1: 'passed', SR2: 'passed', SR3: 'passed', S1: 'passed' }),
+      credits,
+    )
+    const [selReq, sel] = result.groups[0].children
+    expect(selReq.contribution).toBe(4) // 選択必修自体はrequiredで頭打ち
+    expect(selReq.overflowToCommon).toBe(0) // 選択必修から共通単位へは直接回らない
+    expect(sel.contribution).toBe(8) // 選択の元々の6単位 + 繰り入れ2単位 = 8（requiredちょうど）
+    expect(sel.satisfied).toBe(true)
+    expect(result.commonCredits.contribution).toBe(0) // 選択の不足を埋めただけなので共通単位は発生しない
+  })
+
+  it('選択科目の不足を埋めてもなお余る場合は、選択科目自身のルールで共通単位に回る', () => {
+    const { parent, credits } = buildParent()
+    const requirementSet = singleGroupRequirementSet(parent, 10)
+    // 選択必修を6単位（2単位超過）、選択も12単位（requiredの8を4単位超過）修得
+    const result = evaluateRequirements(
+      requirementSet,
+      records({ SR1: 'passed', SR2: 'passed', SR3: 'passed', S1: 'passed', S2: 'passed' }),
+      credits,
+    )
+    const [, sel] = result.groups[0].children
+    expect(sel.contribution).toBe(8) // requiredで頭打ち
+    // 選択自身の超過4単位（12-8）＋選択必修からの繰り入れ2単位 = 6単位がまとめて共通単位候補になる
+    expect(sel.overflowToCommon).toBe(6)
+    expect(result.commonCredits.contribution).toBe(6)
+  })
+
+  it('繰り入れ先の選択科目が overflowToCommon: false なら、余っても共通単位には回らない', () => {
+    const { parent, credits } = buildParent({ electiveOverflowToCommon: false })
+    const requirementSet = singleGroupRequirementSet(parent, 10)
+    const result = evaluateRequirements(
+      requirementSet,
+      records({ SR1: 'passed', SR2: 'passed', SR3: 'passed', S1: 'passed', S2: 'passed' }),
+      credits,
+    )
+    const [, sel] = result.groups[0].children
+    expect(sel.contribution).toBe(8)
+    expect(sel.overflowToCommon).toBe(0)
+    expect(result.commonCredits.contribution).toBe(0)
+  })
+
+  it('履修中（見込み）でも同じルールで選択科目に繰り入れられる', () => {
+    const { parent, credits } = buildParent()
+    const requirementSet = singleGroupRequirementSet(parent, 10)
+    const result = evaluateRequirements(
+      requirementSet,
+      records({ SR1: 'passed', SR2: 'passed', SR3: 'taking', S1: 'passed' }),
+      credits,
+    )
+    const [selReq, sel] = result.groups[0].children
+    // 確定分（SR3はtakingなので含まない）は選択必修4単位ちょうどで、選択は6単位のまま不足
+    expect(selReq.satisfied).toBe(true)
+    expect(sel.satisfied).toBe(false)
+    expect(sel.shortfall).toBe(2)
+    // 見込み（SR3も合格した場合）では、選択必修の超過2単位が選択に繰り入れられて満たされる
+    expect(sel.projected.satisfied).toBe(true)
+    expect(sel.projected.shortfall).toBe(0)
+  })
+})
+
 describe('自由科目（countsTowardGraduation: false）', () => {
   const group: RequirementGroup = {
     id: 'free',

@@ -24,15 +24,18 @@ export type SubjectStatus = 'passed' | 'taking' | 'failed'
 
 /**
  * 卒業要件のグループ1つぶんの種別。
- * - required     : 必修。リストされた科目を全部修得して初めて満たされる
- * - elective     : 選択。required単位以上を、リストの中から自由に選んで修得する
- * - free         : 自由科目。修得しても卒業要件には数えない（大学院連携科目など）
- * - international: 国際科目。単位の扱いは年度ごとの科目一覧表による（現時点では free と同様に卒業要件へは算入しない）
+ * - required        : 必修。リストされた科目を全部修得して初めて満たされる
+ * - elective        : 選択。required単位以上を、リストの中から自由に選んで修得する
+ * - elective-required: 選択必修。必修に準じる区分で、required単位以上の修得が必要。
+ *                      超過分は共通単位ではなく、同じ親の中の別グループ（多くは選択科目）に
+ *                      加算される（学修要覧2.5.1・付録C）。加算先は `overflowTarget` で指定する
+ * - free            : 自由科目。修得しても卒業要件には数えない（大学院連携科目など）
+ * - international    : 国際科目。単位の扱いは年度ごとの科目一覧表による（現時点では free と同様に卒業要件へは算入しない）
  *
  * `'a' | 'b' | 'c'` のように文字列リテラルを `|`（ユニオン型）でつなぐと、
- * 「この4つの文字列のどれか」という型になる。C++のenum classに近い使い方。
+ * 「このいずれかの文字列」という型になる。C++のenum classに近い使い方。
  */
-export type GroupKind = 'required' | 'elective' | 'free' | 'international'
+export type GroupKind = 'required' | 'elective' | 'elective-required' | 'free' | 'international'
 
 /**
  * 卒業要件の1グループ分の定義（入力側の型）。
@@ -73,6 +76,12 @@ export interface RequirementGroup {
    * （自由科目＝大学院連携科目など）。省略時は true（算入する）。
    */
   countsTowardGraduation?: boolean
+  /**
+   * kind: 'elective-required' のグループでだけ使う。required を超えた分の単位を、
+   * 同じ親グループの中にある別のグループ（このIDを持つもの）の充足に加算する。
+   * 例:「類共通基礎科目」の下にある「選択必修」の超過分を、きょうだいの「選択」に加算する。
+   */
+  overflowTarget?: string
 }
 
 /**
@@ -139,6 +148,10 @@ export interface GroupResult extends CreditSummary {
   earnedPassed: number
   /** 履修中（見込み）単位の合計（このグループとその配下すべて） */
   earnedTaking: number
+  /** required を超えて修得した単位数（確定分）。行き先（共通単位／きょうだいグループ）を問わない生の超過分 */
+  overflow: number
+  /** 履修中を含めた場合の見込み超過単位数 */
+  projectedOverflow: number
   /** 共通単位に繰り入れられる超過単位数（確定分） */
   overflowToCommon: number
   /** 履修中を含めた場合に共通単位へ繰り入れられる見込み単位数 */
@@ -208,40 +221,50 @@ function summarize(required: number, contribution: number, projectedContribution
 
 /**
  * 判定境界となったグループ1つについて、「修得単位（earned）」から
- * 「算入単位（contribution）」と「共通単位への繰入額（overflowToCommon）」を求める。
+ * 「算入単位（contribution）」と「required を超えた生の超過分（overflow）」を求める。
+ * この超過分をどこに繰り入れるか（共通単位か、きょうだいグループか）は呼び出し側
+ * （evaluateGroup）が kind を見て決める。
  *
  * kind ごとのルールは docs/SPEC.md §5 F-3・§7.2 の特殊ルールに対応する：
  * - 自由科目（countsTowardGraduation: false）は卒業要件にも共通単位にも数えない
- * - countAs: 'common' は required と比較せず、修得分をそのまま共通単位にする
+ * - countAs: 'common' は required と比較せず、修得分をそのまま超過分として扱う
  * - required（必修）はグループ内の全科目の単位合計が required と一致する設計なので、
  *   理屈の上で超過は起こらない（validate_data.py が保証している）
- * - elective（選択）は required まではこのグループの単位として数え、超過分だけ
- *   overflowToCommon が false でない限り共通単位の候補にする
- * - free・international は required まで自分の枠には数えるが、超過分は共通単位には回さない
+ * - elective（選択）・elective-required（選択必修）は required まではこのグループの
+ *   単位として数え、超えた分を overflow として返す
+ * - free・international は required まで自分の枠には数えるが、超過分は集計しない
  *   （free はそもそも卒業要件外、international は扱いが未確定のため）
  */
-function applyKindRule(
-  kind: GroupKind,
-  earned: number,
-  group: RequirementGroup,
-): { contribution: number; overflowToCommon: number } {
+function applyKindRule(kind: GroupKind, earned: number, group: RequirementGroup): { contribution: number; overflow: number } {
   if (group.countsTowardGraduation === false) {
-    return { contribution: 0, overflowToCommon: 0 }
+    return { contribution: 0, overflow: 0 }
   }
 
   if (group.countAs === 'common') {
-    const overflowToCommon = group.overflowToCommon === false ? 0 : earned
-    return { contribution: 0, overflowToCommon }
+    return { contribution: 0, overflow: earned }
   }
 
   if (kind === 'required') {
-    return { contribution: Math.min(earned, group.required), overflowToCommon: 0 }
+    return { contribution: Math.min(earned, group.required), overflow: 0 }
   }
 
   const contribution = Math.min(earned, group.required)
-  const overflow = Math.max(0, earned - group.required)
-  const overflowToCommon = kind === 'elective' && group.overflowToCommon !== false ? overflow : 0
-  return { contribution, overflowToCommon }
+  const overflow = kind === 'free' || kind === 'international' ? 0 : Math.max(0, earned - group.required)
+  return { contribution, overflow }
+}
+
+/**
+ * あるグループの超過分（overflow）が、共通単位に直接繰り入れられる種類かどうか。
+ * - elective（選択）は overflowToCommon が false でない限り繰り入れる（従来どおり）
+ * - elective-required（選択必修）は直接は繰り入れない。必ず `overflowTarget` で指定した
+ *   きょうだいグループにまず加算し、そちらでも余ったらそちらの規則で共通単位に回る
+ * - countAs: 'common' のグループは常に繰り入れる（overflowToCommon を明示的に false に
+ *   していない限り）
+ */
+function overflowGoesToCommon(kind: GroupKind, group: RequirementGroup): boolean {
+  if (group.overflowToCommon === false) return false
+  if (group.countAs === 'common') return true
+  return kind === 'elective'
 }
 
 /**
@@ -282,24 +305,34 @@ function evaluateGroup(
 
   let kind: GroupKind | undefined
   let contribution: number
+  let overflow: number
   let overflowToCommon: number
   let projectedContribution: number
+  let projectedOverflow: number
   let projectedOverflowToCommon: number
+  let finalChildren = children
 
   if (isBoundary) {
     kind = group.kind ?? 'elective'
     const confirmed = applyKindRule(kind, earnedPassed, group)
     const projected = applyKindRule(kind, earnedPassed + earnedTaking, group)
     contribution = confirmed.contribution
-    overflowToCommon = confirmed.overflowToCommon
+    overflow = confirmed.overflow
+    overflowToCommon = overflowGoesToCommon(kind, group) ? confirmed.overflow : 0
     projectedContribution = projected.contribution
-    projectedOverflowToCommon = projected.overflowToCommon
+    projectedOverflow = projected.overflow
+    projectedOverflowToCommon = overflowGoesToCommon(kind, group) ? projected.overflow : 0
   } else {
     kind = undefined
-    contribution = children.reduce((sum, child) => sum + child.contribution, 0)
-    overflowToCommon = children.reduce((sum, child) => sum + child.overflowToCommon, 0)
-    projectedContribution = children.reduce((sum, child) => sum + child.projected.contribution, 0)
-    projectedOverflowToCommon = children.reduce((sum, child) => sum + child.projectedOverflowToCommon, 0)
+    // 選択必修→選択のような「同じ親の中でのグループ間の繰り入れ」（overflowTarget）を、
+    // 子を合計する前に適用する。対象を指定していない子は何も変わらない。
+    finalChildren = applyOverflowTargets(group.children ?? [], children)
+    contribution = finalChildren.reduce((sum, child) => sum + child.contribution, 0)
+    overflow = finalChildren.reduce((sum, child) => sum + child.overflow, 0)
+    overflowToCommon = finalChildren.reduce((sum, child) => sum + child.overflowToCommon, 0)
+    projectedContribution = finalChildren.reduce((sum, child) => sum + child.projected.contribution, 0)
+    projectedOverflow = finalChildren.reduce((sum, child) => sum + child.projectedOverflow, 0)
+    projectedOverflowToCommon = finalChildren.reduce((sum, child) => sum + child.projectedOverflowToCommon, 0)
   }
 
   const summary = summarize(group.required, contribution, projectedContribution)
@@ -312,10 +345,73 @@ function evaluateGroup(
     kind,
     earnedPassed,
     earnedTaking,
+    overflow,
+    projectedOverflow,
     overflowToCommon,
     projectedOverflowToCommon,
-    children,
+    children: finalChildren,
   }
+}
+
+/**
+ * `overflowTarget` を指定している子グループの超過分を、同じ親の中の対象グループへ加算する。
+ *
+ * 例:「類共通基礎科目」の子に「選択必修（required 4, overflowTarget: 'cluster-basic-sel'）」と
+ * 「選択（required 8）」があり、選択必修を6単位修得した場合：
+ * 1. 選択必修の超過2単位を「選択」の算入単位に加算する（選択の required を超えない範囲で）
+ * 2. 選択がそれでも埋まりきらなければ、そのまま選択の不足として残る
+ * 3. 選択の required を超えてなお余れば、選択自身の共通単位への繰入ルールに従う
+ *
+ * 対象グループ（overflowTarget の相手）自体の overflow・overflowToCommon が
+ * 加算後の値に更新されるので、呼び出し側は返り値の配列をそのまま使えばよい。
+ */
+function applyOverflowTargets(reqChildren: readonly RequirementGroup[], results: readonly GroupResult[]): GroupResult[] {
+  const hasTarget = reqChildren.some((c) => c.overflowTarget)
+  if (!hasTarget) return [...results]
+
+  const byId = new Map(reqChildren.map((c, i) => [c.id, i]))
+  const updated = [...results]
+
+  for (let i = 0; i < reqChildren.length; i++) {
+    const targetId = reqChildren[i].overflowTarget
+    if (!targetId) continue
+    const targetIndex = byId.get(targetId)
+    if (targetIndex === undefined) continue // 未知のIDなら何もしない（データ側の不備）
+
+    const source = updated[i]
+    const target = updated[targetIndex]
+    const targetGroup = reqChildren[targetIndex]
+
+    const confirmedTransfer = Math.min(source.overflow, Math.max(0, target.required - target.contribution))
+    const confirmedLeftover = source.overflow - confirmedTransfer
+    const projectedTransfer = Math.min(source.projectedOverflow, Math.max(0, target.required - target.projected.contribution))
+    const projectedLeftover = source.projectedOverflow - projectedTransfer
+
+    const newTargetContribution = target.contribution + confirmedTransfer
+    const newTargetProjectedContribution = target.projected.contribution + projectedTransfer
+    const targetOverflowAllowed = overflowGoesToCommon(target.kind ?? 'elective', targetGroup)
+
+    updated[targetIndex] = {
+      ...target,
+      contribution: newTargetContribution,
+      overflow: target.overflow + confirmedLeftover,
+      overflowToCommon: target.overflowToCommon + (targetOverflowAllowed ? confirmedLeftover : 0),
+      shortfall: Math.max(0, target.required - newTargetContribution),
+      satisfied: newTargetContribution >= target.required,
+      projected: {
+        contribution: newTargetProjectedContribution,
+        shortfall: Math.max(0, target.required - newTargetProjectedContribution),
+        satisfied: newTargetProjectedContribution >= target.required,
+      },
+      projectedOverflow: target.projectedOverflow + projectedLeftover,
+      projectedOverflowToCommon: target.projectedOverflowToCommon + (targetOverflowAllowed ? projectedLeftover : 0),
+    }
+    // 移した分だけ、超過元グループ自身の overflow（共通単位候補としての額）はゼロにする
+    // （加算済みなので、これ以上どこにも回さない）
+    updated[i] = { ...source, overflow: 0, projectedOverflow: 0 }
+  }
+
+  return updated
 }
 
 // ---------------------------------------------------------------------------
