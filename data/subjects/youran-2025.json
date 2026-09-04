@@ -12710,6 +12710,1416 @@
       "groups": [
         "major-intl"
       ]
+    },
+    {
+      "code": "MTH301j",
+      "name": "確率統計",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "PHY204j",
+      "name": "力学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "ELE301j",
+      "name": "基礎電気回路",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "PHY301j",
+      "name": "基礎電磁気学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "PHY302j",
+      "name": "力学演習",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "GSE301j",
+      "name": "基礎演習A",
+      "credits": 1,
+      "field": "GSE",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH302j",
+      "name": "複素関数論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "COM301j",
+      "name": "数値解析およびプログラミング演習",
+      "credits": 3,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "MTH303j",
+      "name": "応用数学A",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "MTH401j",
+      "name": "応用数学B",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "MTH304j",
+      "name": "離散数学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "PHY303j",
+      "name": "波動と光",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "COM401j",
+      "name": "アルゴリズムとデータ構造およびプログラミング演習",
+      "credits": 3,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-free"
+      ]
+    },
+    {
+      "code": "MTH402j",
+      "name": "基礎演習B",
+      "credits": 1,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-free"
+      ]
+    },
+    {
+      "code": "MCE401j",
+      "name": "機械力学および演習",
+      "credits": 3,
+      "field": "MCE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MCE402j",
+      "name": "材料力学および演習",
+      "credits": 3,
+      "field": "MCE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MCE403j",
+      "name": "メカノデザイン",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MCE501j",
+      "name": "ロボットの機構と力学",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MCE502j",
+      "name": "人間機械システム",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MCE503j",
+      "name": "メカトロニクス基礎実験A",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MCE601j",
+      "name": "メカトロニクス基礎実験B",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MCE504j",
+      "name": "マシンデザインA",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MCE602j",
+      "name": "マシンデザインB",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MCE603j",
+      "name": "知能ロボット工学",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB701j",
+      "name": "輪講A",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB801j",
+      "name": "輪講B",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB702j",
+      "name": "卒業研究A",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB802j",
+      "name": "卒業研究B",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM402j",
+      "name": "計算機アーキテクチャー",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "COM403j",
+      "name": "計算機工学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "COM404j",
+      "name": "プログラミング演習",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "MCE505j",
+      "name": "基礎制御工学および演習",
+      "credits": 3,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "MCE506j",
+      "name": "加工学および演習",
+      "credits": 3,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "MCE507j",
+      "name": "熱力学および演習",
+      "credits": 3,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "MCE604j",
+      "name": "流体力学および演習",
+      "credits": 3,
+      "field": "MCE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "ELE601j",
+      "name": "電子回路学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "MCE605j",
+      "name": "材料工学",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "MCE606j",
+      "name": "メカトロニクス",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "MTH403j",
+      "name": "数理統計",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM405j",
+      "name": "論理回路学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "GSE401j",
+      "name": "機械計測工学",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MCE508j",
+      "name": "設計基礎工学",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MCE509j",
+      "name": "機構要素設計",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "GSE501j",
+      "name": "電気電子計測",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MCE607j",
+      "name": "現代制御工学",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "GSE601j",
+      "name": "デジタル信号処理",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MCE608j",
+      "name": "生産システム工学",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MCE609j",
+      "name": "生体システム工学",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MCE701j",
+      "name": "自動車工学",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MCE702j",
+      "name": "航空宇宙工学",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN101j",
+      "name": "基礎数学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN201j",
+      "name": "基礎数学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN102j",
+      "name": "基礎物理学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN202j",
+      "name": "基礎物理学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN301j",
+      "name": "情報処理演習第一",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN401j",
+      "name": "情報処理演習第二",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "GEO201j",
+      "name": "地学",
+      "credits": 2,
+      "field": "GEO",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "GEO501j",
+      "name": "地学実験",
+      "credits": 2,
+      "field": "GEO",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "BIO201j",
+      "name": "生物学概論",
+      "credits": 2,
+      "field": "BIO",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "BIO501j",
+      "name": "生物学実験",
+      "credits": 2,
+      "field": "BIO",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTH501j",
+      "name": "幾何学概論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "GSEa01j",
+      "name": "機械知能システム学専攻基礎",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEa01j",
+      "name": "熱工学基礎",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEa02j",
+      "name": "流体工学基礎",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEa03j",
+      "name": "バイオメカニクス基礎",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEa04j",
+      "name": "材料強度学基礎",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEa05j",
+      "name": "生産加工学基礎",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "GSEa02j",
+      "name": "計測工学基礎",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEa06j",
+      "name": "ロボット工学基礎",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEa07j",
+      "name": "制御系設計学基礎",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "GSEa03j",
+      "name": "知覚システム特論",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "GSEa04j",
+      "name": "感覚運動システム特論",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb01j",
+      "name": "メカトロニクス特論",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb02j",
+      "name": "ロボット応用工学特論",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb03j",
+      "name": "ロボット機構制御特論",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb04j",
+      "name": "運動計測学特論",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb05j",
+      "name": "バーチャルリアリティ特論",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMb01j",
+      "name": "コンピュータビジョン特論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb06j",
+      "name": "ロボット情報工学特論",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb07j",
+      "name": "設計システム工学特論",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb08j",
+      "name": "知的生産システム特論",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMb02j",
+      "name": "機械情報学特論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "PHYb01j",
+      "name": "力学系現象特論",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb09j",
+      "name": "計算力学特論",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "PHYb02j",
+      "name": "ナノトライボロジー特論",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "GSEb01j",
+      "name": "センサ信号処理学特論",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb10j",
+      "name": "生体計測工学特論",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb11j",
+      "name": "ロバスト制御工学特論",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb12j",
+      "name": "組込み制御システム学特論",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb13j",
+      "name": "Advanced Robotics and Mechatronics Engineering",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ELEa01j",
+      "name": "VLSI Low Power Circuit Design",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "LAB501j",
+      "name": "GLTPラボワーク",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INT001j",
+      "name": "Topics in Mechanical and Intelligent Systems Engineering Ⅰ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT002j",
+      "name": "Topics in Mechanical and Intelligent Systems Engineering Ⅱ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
     }
   ]
 }
