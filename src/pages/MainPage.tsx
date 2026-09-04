@@ -317,26 +317,34 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (!s || s.standardYear === null) return ''
     return `${s.standardYear}年次${s.termType ?? ''}`
   }
-  // 年次・学期を、科目名の横に薄く添える注記にする（無ければ何も出さない）。
-  // 一覧によって出たり出なかったりすると分かりにくいので、全部の一覧で同じ形で出す
+  // 年次・学期を、科目名の横に添える注記にする（無ければ何も出さない）。色は他の文字と揃える
+  // （一覧によって出たり出なかったりすると分かりにくいので、全部の一覧で同じ形で出す）
   function yearTermTag(code: string) {
     const yearTerm = yearTermOf(code)
     if (!yearTerm) return null
-    return <span style={{ color: '#666', fontSize: '0.85em', marginLeft: '0.4em' }}>{yearTerm}</span>
+    return <span style={{ marginLeft: '0.4em' }}>{yearTerm}</span>
   }
-  // 他プログラムの専門科目なら、科目名の横に添える注記（該当しなければ何も出さない）
+  // 他プログラムの専門科目なら、科目名の横に添える注記（該当しなければ何も出さない）。色は他の文字と揃える
   function otherProgramTag(code: string) {
     if (!isOtherProgramSubject(code, requirementSet?.programSuffix)) return null
-    return <span style={{ color: '#666', fontSize: '0.85em', marginLeft: '0.4em' }}>［他プログラム専門科目］</span>
+    return <span style={{ marginLeft: '0.4em' }}>［他プログラム専門科目］</span>
   }
-  // 外国人留学生しか履修できない科目なら、科目名の横に添える注記（該当しなければ何も出さない）
+  // 外国人留学生しか履修できない科目なら、科目名の横に印だけ出す（該当しなければ何も出さない）。
+  // 「留学生のみ」の文言は普段は畳んでおき、クリックしたときだけ<details>で開いて見せる
   function internationalTag(code: string) {
     if (!subjectsByCode.get(code)?.forInternational) return null
-    return <span style={{ color: '#666', fontSize: '0.85em', marginLeft: '0.4em' }}>［留学生のみ］</span>
+    return (
+      <details style={{ display: 'inline-block', marginLeft: '0.4em' }}>
+        <summary style={{ display: 'inline', cursor: 'pointer' }}>※</summary>
+        留学生のみ履修可
+      </details>
+    )
   }
 
   return (
-    <main>
+    // 下側に余白を持たせる：最後の区分（類専門など）の<summary>がページ最下端にくっついて
+    // クリックしづらくならないようにするため
+    <main style={{ paddingBottom: '6rem' }}>
       <h1>
         {profile.entryYear}入学 / {profile.cluster}類 / {profile.program} / {profile.grade}年{' '}
         <Link to="/setup">[変更]</Link>
@@ -357,8 +365,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </select>{' '}
         <button type="button" onClick={handleUpdate}>
           更新
+        </button>{' '}
+        <button type="button" onClick={handleReset}>
+          リセット（全ての科目を未履修へ変更）
         </button>
-        {/* 「更新」と、その後のダウンロード等のボタン群を分けて見せるための余白。
+        {/* 「更新」「リセット」と、その後のダウンロード等のボタン群を分けて見せるための余白。
             ボタン1個ぶんくらいの幅をあけたいだけなので、CSSクラスは作らずインラインで済ませる */}
         <span style={{ display: 'inline-block', width: '4em' }} />
         <button type="button" onClick={handleDownload}>
@@ -368,12 +379,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <label>で挟んでボタンっぽく振る舞わせている（htmlForで結びつけると、
             ラベルをクリック＝隠れたinputをクリックしたことになる） */}
         <label>
-          読み込み
+          単位取得状況をファイルから読み込む
           <input type="file" accept="application/json" onChange={handleFileImport} style={{ display: 'none' }} />
-        </label>{' '}
-        <button type="button" onClick={handleReset}>
-          リセット（全て未履修へ）
-        </button>
+        </label>
         {dataMessage && <p role="status">{dataMessage}</p>}
       </div>
 
