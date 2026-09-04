@@ -33,6 +33,8 @@ function records(entries: Record<string, SubjectStatus>): ReadonlyMap<string, Su
   return new Map(Object.entries(entries))
 }
 
+// 必修グループは「required と科目リストの単位合計が一致する」設計なので、
+// 全科目を修得したときだけ満たされ、一部でも欠けると不足単位がそのまま出ることを確認する
 describe('必修グループ（kind: required）', () => {
   const group: RequirementGroup = {
     id: 'req',
@@ -47,6 +49,7 @@ describe('必修グループ（kind: required）', () => {
   ])
 
   it('全科目を修得していれば満たされる', () => {
+    // A1(2単位)+A2(3単位)=5単位=required なので、ちょうど満たされるはず
     const result = evaluateRequirements(singleGroupRequirementSet(group), records({ A1: 'passed', A2: 'passed' }), credits)
     expect(result.groups[0].contribution).toBe(5)
     expect(result.groups[0].shortfall).toBe(0)
@@ -54,6 +57,7 @@ describe('必修グループ（kind: required）', () => {
   })
 
   it('一部だけ修得している場合は不足単位が正しく出る', () => {
+    // A1(2単位)だけ修得 → 5-2=3単位が不足として出るはず
     const result = evaluateRequirements(singleGroupRequirementSet(group), records({ A1: 'passed' }), credits)
     expect(result.groups[0].contribution).toBe(2)
     expect(result.groups[0].shortfall).toBe(3)
@@ -61,6 +65,8 @@ describe('必修グループ（kind: required）', () => {
   })
 })
 
+// 選択グループは required 以上ならどの科目を組み合わせて修得してもよく、
+// 超過分（overflowToCommon）は共通単位の候補になる、という基本ルールを確認する
 describe('選択グループ（kind: elective）と共通単位への繰り入れ', () => {
   const group: RequirementGroup = {
     id: 'career',
@@ -76,6 +82,7 @@ describe('選択グループ（kind: elective）と共通単位への繰り入�
   ])
 
   it('required ちょうどなら過不足なく満たされる', () => {
+    // C1+C2 = 4単位 = required。超過は無いので繰り入れも起きないはず
     const result = evaluateRequirements(singleGroupRequirementSet(group), records({ C1: 'passed', C2: 'passed' }), credits)
     expect(result.groups[0].contribution).toBe(4)
     expect(result.groups[0].overflowToCommon).toBe(0)
@@ -210,6 +217,7 @@ describe('選択必修グループ（kind: elective-required）と選択科目�
   })
 })
 
+// 自由科目（大学院連携科目など）は、修得記録には残るが卒業要件の集計には一切乗らない
 describe('自由科目（countsTowardGraduation: false）', () => {
   const group: RequirementGroup = {
     id: 'free',
@@ -231,6 +239,7 @@ describe('自由科目（countsTowardGraduation: false）', () => {
   })
 })
 
+// countAs: 'common' は required との比較を経由せず、修得分をそのまま共通単位に回す特別枠
 describe('countAs: "common" のグループ（理数基礎科目の選択科目相当）', () => {
   const group: RequirementGroup = {
     id: 'math-basic-sel',
@@ -246,6 +255,7 @@ describe('countAs: "common" のグループ（理数基礎科目の選択科目�
   ])
 
   it('required と比較せず、修得した分がそのまま共通単位になる', () => {
+    // M1+M2=2単位。requiredは0なので「超過」という発想を経由せず、全額が共通単位になるはず
     const requirementSet = singleGroupRequirementSet({ ...group, required: 0 }, 10)
     const result = evaluateRequirements(requirementSet, records({ M1: 'passed', M2: 'passed' }), credits)
     expect(result.groups[0].contribution).toBe(0) // このグループ自体の算入は0（requiredが0なので）
@@ -345,6 +355,8 @@ describe('積み上げ専用の親グループ（kindを持たず、子の結果
   })
 })
 
+// 「見込み」（projected）は履修中の科目も合格したと仮定した場合の値。確定分（satisfied）とは
+// 別に計算され、確定分では不足でも見込みでは満たされる、というケースを確認する
 describe('履修中（taking）科目の見込み計算', () => {
   const group: RequirementGroup = {
     id: 'req',
@@ -359,6 +371,7 @@ describe('履修中（taking）科目の見込み計算', () => {
   ])
 
   it('確定分だけでは不足でも、履修中を含めた見込みでは満たされる', () => {
+    // A2は taking（履修中）なので確定分には入らないが、見込み分には入る
     const result = evaluateRequirements(singleGroupRequirementSet(group), records({ A1: 'passed', A2: 'taking' }), credits)
     expect(result.groups[0].satisfied).toBe(false)
     expect(result.groups[0].shortfall).toBe(2)
@@ -367,6 +380,8 @@ describe('履修中（taking）科目の見込み計算', () => {
   })
 })
 
+// alwaysCommonSubjects は、どのグループにも属さず required との比較も経由しない、
+// 「修得すればそのまま共通単位になる」科目番号の一覧（学修要覧2.5.1）
 describe('alwaysCommonSubjects（言語文化応用科目Ⅱなど、超過計算を経ずに共通単位になる科目）', () => {
   it('修得していれば required との比較なしにそのまま共通単位に加算される', () => {
     const requirementSet: RequirementSet = {
@@ -409,6 +424,8 @@ function findGroupById(groups: readonly GroupResult[], id: string): GroupResult 
   return undefined
 }
 
+// common.json（総合文化・実践教育）とI-media.json（専門科目）を実際に合体させて、
+// evaluateRequirements がエラー無く通ること・数値が妥当なことを確認する
 describe('実データ（Ⅰ類メディア情報学プログラム）での評価', () => {
   const common = loadJson('data/requirements/2025-day-common.json') as {
     groups: RequirementGroup[]
@@ -433,6 +450,7 @@ describe('実データ（Ⅰ類メディア情報学プログラム）での評�
   }
 
   it('何も履修していない状態では、合計単位数が totalCredits の required と一致し未充足になる', () => {
+    // 空のrecordsで評価しても、実データがそのままエラー無く通ることの確認も兼ねる
     const result = evaluateRequirements(requirementSet, records({}), subjectCredits)
     expect(result.totalCredits.required).toBe(media.totalCredits)
     expect(result.totalCredits.contribution).toBe(0)
@@ -440,6 +458,7 @@ describe('実データ（Ⅰ類メディア情報学プログラム）での評�
   })
 
   it('初年次導入科目をすべて修得すると、そのグループだけ満たされる', () => {
+    // 実データからintroグループの科目一覧を取り、それを全部「passed」にして評価する
     const introDefinition = findRequirementGroupById(common.groups, 'intro')
     expect(introDefinition).toBeDefined()
 
@@ -454,6 +473,7 @@ describe('実データ（Ⅰ類メディア情報学プログラム）での評�
   })
 
   it('類専門科目の必修（major-req）を1科目だけ修得した場合、不足単位が正しく減る', () => {
+    // 必修リストの最初の1科目だけを合格にし、その単位数ぶんだけ不足が減っていることを確認する
     const majorReqDefinition = findRequirementGroupById(media.groups, 'major-req')
     expect(majorReqDefinition).toBeDefined()
     const firstCode = majorReqDefinition!.subjects![0]

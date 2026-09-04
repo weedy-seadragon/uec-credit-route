@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { mergeRecords, parseOwnFormat } from './importers'
 import type { SubjectStatus } from './requirements'
 
+// 正しい形式は読み込めること、壊れた形式（バージョン不一致・必須項目欠落・型違い）は
+// きちんとエラーを投げること（＝呼び出し側が例外メッセージを出せること）を確認する
 describe('parseOwnFormat', () => {
   it('正しい形式のJSONを読み込める', () => {
     const json = {
@@ -18,6 +20,7 @@ describe('parseOwnFormat', () => {
   })
 
   it('planned が無くても空配列として読み込める', () => {
+    // 古いバージョンのファイルなどでplannedキーが無くても、落ちずに空配列になるはず
     const json = { schemaVersion: 1, exportedAt: '2026-09-04', records: [] }
     const result = parseOwnFormat(json)
     expect(result.planned).toEqual([])
@@ -34,12 +37,15 @@ describe('parseOwnFormat', () => {
   })
 
   it('オブジェクトでないデータはエラーになる', () => {
+    // null・文字列・数値など、そもそも{...}の形をしていない値をすべて拒否できるか
     expect(() => parseOwnFormat(null)).toThrow()
     expect(() => parseOwnFormat('not json')).toThrow()
     expect(() => parseOwnFormat(42)).toThrow()
   })
 })
 
+// 既存の記録とファイルから読み込んだ記録を合体させるルール
+// （上書きはしない・同じ科目はファイル側で更新・新規は追加）を確認する
 describe('mergeRecords', () => {
   it('新しい科目は追加され、既存の科目はファイル側の状態で更新される', () => {
     const existing = new Map<string, SubjectStatus>([
@@ -60,6 +66,7 @@ describe('mergeRecords', () => {
   })
 
   it('既存のMapを書き換えない（新しいMapを返す）', () => {
+    // mergeRecords に渡した existing 自身は変化せず、別の新しいMapが返ることを確認する
     const existing = new Map<string, SubjectStatus>([['A1', 'passed']])
     const { merged } = mergeRecords(existing, [{ code: 'A2', status: 'passed' }])
     expect(existing.has('A2')).toBe(false)

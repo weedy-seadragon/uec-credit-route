@@ -5,10 +5,12 @@ import type { RequirementSet, SubjectStatus } from './requirements'
 import { recommend } from './recommend'
 import type { RecommendInput, SubjectInfo } from './recommend'
 
+/** records を `new Map(...)` で書くのは冗長なので、オブジェクトリテラルから組み立てる */
 function records(entries: Record<string, SubjectStatus> = {}): ReadonlyMap<string, SubjectStatus> {
   return new Map(Object.entries(entries))
 }
 
+/** SubjectInfo の配列を、code をキーにした Map に変換する */
 function subjectsMap(list: SubjectInfo[]): ReadonlyMap<string, SubjectInfo> {
   return new Map(list.map((s) => [s.code, s]))
 }
@@ -25,6 +27,7 @@ function setup(requirementSet: RequirementSet, subjects: SubjectInfo[], userReco
   return { requirementSet, evaluation, subjects: subjectsByCode }
 }
 
+// w1（必修未修得）は候補の中でも一番大きい重みなので、他の要因より必ず上に来ることを確認する
 describe('必修未修得の科目は選択科目より優先される', () => {
   const requirementSet: RequirementSet = {
     totalCredits: 6,
@@ -41,6 +44,7 @@ describe('必修未修得の科目は選択科目より優先される', () => {
   ]
 
   it('必修未修得（R1）が選択科目より上位に来る', () => {
+    // 何も履修していない状態で推奨すると、必修のR1が選択のS1より高スコア・先頭に来るはず
     const { requirementSet: rs, evaluation, subjects: subj } = setup(requirementSet, subjects)
     const input: RecommendInput = { requirementSet: rs, evaluation, records: records(), subjects: subj, currentGrade: 2, termFilter: 'all' }
     const result = recommend(input)
@@ -52,6 +56,7 @@ describe('必修未修得の科目は選択科目より優先される', () => {
   })
 })
 
+// §8ステップ1「修得済みは候補から外す。不合格は再履修候補として残す」を確認する
 describe('修得済み・不合格の扱い', () => {
   const requirementSet: RequirementSet = {
     totalCredits: 2, commonCredits: 0,
@@ -72,6 +77,7 @@ describe('修得済み・不合格の扱い', () => {
   })
 })
 
+// isOfferedIn（学期・学年による絞り込み）が候補の一覧に正しく反映されることを確認する
 describe('学期フィルタでの絞り込み', () => {
   const requirementSet: RequirementSet = {
     totalCredits: 6, commonCredits: 0,
@@ -93,12 +99,14 @@ describe('学期フィルタでの絞り込み', () => {
   })
 
   it('全学年フィルタでは絞り込まれない', () => {
+    // termFilterが'all'のときは、学期や学年に関係なく3科目とも候補に出るはず
     const { requirementSet: rs, evaluation, subjects: subj } = setup(requirementSet, subjects)
     const result = recommend({ requirementSet: rs, evaluation, records: records(), subjects: subj, currentGrade: 1, termFilter: 'all' })
     expect(result.map((r) => r.code).sort()).toEqual(['AUTUMN1', 'SPRING1', 'YEAR2_1'])
   })
 
   it('termType が無い科目（通年など）はどの学期フィルタでも候補に出る', () => {
+    // 後学期フィルタでも、termTypeを指定していないYR1は除外されないはず
     const yearRoundSet: RequirementSet = {
       totalCredits: 2, commonCredits: 0,
       groups: [{ id: 'sel', name: '通年科目サンプル', required: 2, kind: 'elective', subjects: ['YR1'] }],
@@ -110,6 +118,8 @@ describe('学期フィルタでの絞り込み', () => {
   })
 })
 
+// w3（不足比率が高いほど加点）とw7（区分が既に満たされていると大きく減点）の
+// 両方が効いて、優先すべき科目が上位・不要な科目が下位に来ることを確認する
 describe('区分の不足比率（w3）と充足済み区分の減点（w7）', () => {
   const requirementSet: RequirementSet = {
     totalCredits: 10, commonCredits: 0,
@@ -136,6 +146,8 @@ describe('区分の不足比率（w3）と充足済み区分の減点（w7）', 
   })
 })
 
+// prerequisites・slots はシラバスデータが無ければ省略できる設計（recommend.ts冒頭コメント参照）。
+// ここではあえてデータを与えて、w5（先修科目クリア）・w6（時限重複）が正しく働くことを確認する
 describe('先修科目・曜日時限（シラバスデータがある場合）', () => {
   const requirementSet: RequirementSet = {
     totalCredits: 4, commonCredits: 0,
@@ -143,6 +155,7 @@ describe('先修科目・曜日時限（シラバスデータがある場合）'
   }
 
   it('先修科目を修得済みだとスコアが少し上がる', () => {
+    // BASIC1を修得済みにする前後で、ADV1のスコアを比較する
     const subjects: SubjectInfo[] = [{ code: 'ADV1', credits: 2, prerequisites: ['BASIC1'] }]
     const { requirementSet: rs, evaluation, subjects: subj } = setup(requirementSet, [...subjects, { code: 'BASIC1', credits: 2 }])
 
@@ -155,6 +168,7 @@ describe('先修科目・曜日時限（シラバスデータがある場合）'
   })
 
   it('履修中・履修予定の科目と曜日時限が重なると減点され clash が true になる', () => {
+    // busySlotsを渡す・渡さないの2パターンで、CLASH1の判定とスコアを比較する
     const subjects: SubjectInfo[] = [{ code: 'CLASH1', credits: 2, slots: [{ day: '月', period: 1 }] }]
     const { requirementSet: rs, evaluation, subjects: subj } = setup(requirementSet, subjects)
 
@@ -171,6 +185,7 @@ describe('先修科目・曜日時限（シラバスデータがある場合）'
   })
 })
 
+// w4（標準年次より遅れているほど加点）と、スコア同点時のソート順（年次が古い順）を確認する
 describe('標準履修年次より遅れている科目の注記とソート順', () => {
   const requirementSet: RequirementSet = {
     totalCredits: 4, commonCredits: 0,
@@ -182,12 +197,15 @@ describe('標準履修年次より遅れている科目の注記とソート順'
   ]
 
   it('3年生から見て1年次科目には「1年次科目」の注記が付く', () => {
+    // OLD1のstandardYearは1なので、3年生（currentGrade=3）から見ると「1年次科目」の注記が付くはず
     const { requirementSet: rs, evaluation, subjects: subj } = setup(requirementSet, subjects)
     const result = recommend({ requirementSet: rs, evaluation, records: records(), subjects: subj, currentGrade: 3, termFilter: 'all' })
     expect(result.find((r) => r.code === 'OLD1')!.laterThanStandardYearNote).toBe('1年次科目')
   })
 
   it('同点なら標準履修年次が古い（小さい）ものが先に来る', () => {
+    // OLD1(1年次)・OLD2(2年次)はどちらも必修未修得でスコアが同じになるはずなので、
+    // 標準年次が古いOLD1が先に来るはず
     const { requirementSet: rs, evaluation, subjects: subj } = setup(requirementSet, subjects)
     const result = recommend({ requirementSet: rs, evaluation, records: records(), subjects: subj, currentGrade: 3, termFilter: 'all' })
     expect(result[0].code).toBe('OLD1')
