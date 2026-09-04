@@ -71,8 +71,17 @@
 - `C:\Users\maita\Downloads\uec-credit-route\tanni_extract_final.pdf`（プロジェクト内、`.gitignore`の`*.pdf`で除外済み）：学修要覧2025の本編。第2章（科目区分・単位算出基準・審査所要単位）、別表2〜5、付録C（**全15プログラム＋夜間主課程のカリキュラム表**）を含む、事実上のフル版。Ⅱ・Ⅲ類・夜間主のデータ化にはこれを使う
 - `C:\Users\maita\Downloads\youran2025-gakuiki.pdf`（プロジェクト外、`Downloads`直下）：おそらく同じ学修要覧の原本。中身は未確認
 
+- **フェーズ2完了（2-2〜2-6）**：
+  - 2-2 `src/domain/recommend.ts`：SPEC §8の推奨スコア(w1〜w7)。先修科目・曜日時限はまだシラバスデータが無いので「無ければ条件なし」として扱う設計。単体テスト11件
+  - 2-3 `src/pages/SetupPage.tsx` + `src/storage/profile.ts`：プロフィール設定画面。1年生（非推薦）はプログラムを「未定」に固定
+  - 2-4 `src/pages/MainPage.tsx` + `src/storage/records.ts` + `src/components/SubjectStatusSelect.tsx`：メイン画面（合計単位・取得単位・不可の単位・残りの必修・区分別の進捗）。**簡略化**：要覧スケッチの「履修予定チェック」の代わりに、全一覧共通の状態プルダウン（未履修/履修中/修得/不合格）に統一。編集は「更新」ボタンを押すまで確定されない（draft/committed分離）。審査（2年次終了時審査等）の合否表示は未実装
+  - 2-5 `src/domain/importers.ts` + `src/pages/DataPage.tsx`：本サイト形式JSON（§7.4）のダウンロード・読み込み（マージ）・全消去。友人アプリ取り込み（§7.5、F-2c）は未対応（Should優先度のため）
+  - 2-6 `vite.config.ts`（base設定）+ `.github/workflows/deploy.yml`：GitHub Pages自動デプロイ。**GitHubリポジトリ設定でSettings→Pages→SourceをGitHub Actionsにする作業がまだ残っている**（このファイルだけでは有効にならない）
+  - 各ページはPlaywrightで実際にdev serverを起動してブラウザ操作を確認済み（consoleエラーなし）。`src/data/requirementSets.ts` がdata/以下のJSONをアプリから読み込む層（`resolveJsonModule`をtsconfig.app.jsonに追加）
+
 ### 次回以降にやること
 
 1. **`scripts/gen_data.py` の動作確認**：Pythonが使える環境で実行し、`data/`の内容と一致するか確認（上記参照）
-2. フェーズ2の残り（未着手）：2-2 `src/domain/recommend.ts`、2-3 プロフィール設定画面、2-4 メイン画面（チェックリスト・区分別進捗）、2-5 JSON入出力、2-6 GitHub Pages公開設定
-3. フェーズ3の続き：Ⅱ類5プログラム・Ⅲ類5プログラム・夜間主課程のデータ化（`tanni_extract_final.pdf` に全部揃っている）
+2. **GitHub Pages設定の有効化**：Settings → Pages → Source を「GitHub Actions」にする（ブラウザでの手作業）
+3. フェーズ3の続き：Ⅱ類5プログラム・Ⅲ類5プログラム・夜間主課程のデータ化（`tanni_extract_final.pdf` に全部揃っている）。新しいプログラムを追加したら `src/data/requirementSets.ts` にもimportを足す必要がある
+4. 今回スコープ外にした主な項目：F-2c（友人アプリ取り込み）・F-2d（成績表貼り付け）、審査（2年次終了時審査等）の合否表示、同時限警告（シラバスデータ未収集のため）、F-5（科目一覧・詳細）、F-6（プログラム比較）、F-9のOGP/SEO/sitemap（SPEC上もフェーズ4の予定）
