@@ -140,6 +140,34 @@ function groupByCategory<T>(
   return result
 }
 
+/**
+ * 留学生のみ履修できる科目をまとめて畳んでおく<li>（1件も無ければ何も出さない）。
+ * 「類専門（選択）」などの区分と同じ<details>の形にして、普段は開かなくても他の科目一覧の邪魔にならないようにする。
+ */
+function InternationalGroupItem<T>({
+  items,
+  codeOf,
+  renderRow,
+}: {
+  items: readonly T[]
+  codeOf: (item: T) => string
+  renderRow: (item: T) => ReactNode
+}) {
+  if (items.length === 0) return null
+  return (
+    <li>
+      <details>
+        <summary>留学生のみ履修可（{items.length}）</summary>
+        <ul>
+          {items.map((item) => (
+            <li key={codeOf(item)}>{renderRow(item)}</li>
+          ))}
+        </ul>
+      </details>
+    </li>
+  )
+}
+
 export default function MainPage() {
   // プロフィールはページを開いたときの1回だけ読めばよい（他のページで変更されたら再訪問時に読み直される）
   const [profile] = useState(() => loadProfile())
@@ -329,16 +357,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (!isOtherProgramSubject(code, requirementSet?.programSuffix)) return null
     return <span style={{ marginLeft: '0.4em' }}>［他プログラム専門科目］</span>
   }
-  // 外国人留学生しか履修できない科目なら、科目名の横に印だけ出す（該当しなければ何も出さない）。
-  // 「留学生のみ」の文言は普段は畳んでおき、クリックしたときだけ<details>で開いて見せる
-  function internationalTag(code: string) {
-    if (!subjectsByCode.get(code)?.forInternational) return null
-    return (
-      <details style={{ display: 'inline-block', marginLeft: '0.4em' }}>
-        <summary style={{ display: 'inline', cursor: 'pointer' }}>※</summary>
-        留学生のみ履修可
-      </details>
-    )
+  // 外国人留学生しか履修できない科目かどうか
+  function isInternational(code: string): boolean {
+    return subjectsByCode.get(code)?.forInternational ?? false
+  }
+  // 一覧の項目を、留学生のみ履修できる科目とそれ以外に分ける（留学生のみの分は折りたたみにまとめて出す）
+  function splitInternational<T>(items: readonly T[], codeOf: (item: T) => string): { regular: T[]; international: T[] } {
+    const regular: T[] = []
+    const international: T[] = []
+    for (const item of items) {
+      ;(isInternational(codeOf(item)) ? international : regular).push(item)
+    }
+    return { regular, international }
   }
 
   return (
@@ -377,8 +407,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </button>{' '}
         {/* ファイル選択ボタンは<input type="file">が標準の見た目しか持てないので、
             <label>で挟んでボタンっぽく振る舞わせている（htmlForで結びつけると、
-            ラベルをクリック＝隠れたinputをクリックしたことになる） */}
-        <label>
+            ラベルをクリック＝隠れたinputをクリックしたことになる）。
+            見た目を<button>と揃えるため、index.cssの.button-likeクラスを当てる */}
+        <label className="button-like">
           単位取得状況をファイルから読み込む
           <input type="file" accept="application/json" onChange={handleFileImport} style={{ display: 'none' }} />
         </label>
@@ -387,52 +418,99 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       <section>
         <h2>取得単位（{passedSubjects.length}）</h2>
-        {passedByCategory.map(({ label, items }) => (
-          <div key={label}>
-            <h3>{label}</h3>
-            <ul>
-              {items.map(([code]) => (
-                <li key={code}>
-                  {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}{internationalTag(code)}
-                  <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-        {passedSubjects.length === 0 && <p>（まだありません）</p>}
+        {passedByCategory.map(({ label, items }) => {
+          const { regular, international } = splitInternational(items, ([code]) => code)
+          return (
+            <div key={label}>
+              <h3>{label}</h3>
+              <ul>
+                {regular.map(([code]) => (
+                  <li key={code}>
+                    {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}
+                    <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+                  </li>
+                ))}
+                <InternationalGroupItem
+                  items={international}
+                  codeOf={([code]) => code}
+                  renderRow={([code]) => (
+                    <>
+                      {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}
+                      <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+                    </>
+                  )}
+                />
+              </ul>
+            </div>
+          )
+        })}
+        {passedSubjects.length === 0 && (
+          <ul>
+            <li>（まだありません）</li>
+          </ul>
+        )}
       </section>
 
       <section>
         <h2>不可の単位（{failedSubjects.length}）</h2>
         <ul>
-          {failedSubjects.map(([code]) => (
-            <li key={code}>
-              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}{internationalTag(code)}
-              <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
-            </li>
-          ))}
+          {(() => {
+            const { regular, international } = splitInternational(failedSubjects, ([code]) => code)
+            return (
+              <>
+                {regular.map(([code]) => (
+                  <li key={code}>
+                    {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}
+                    <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+                  </li>
+                ))}
+                <InternationalGroupItem
+                  items={international}
+                  codeOf={([code]) => code}
+                  renderRow={([code]) => (
+                    <>
+                      {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}
+                      <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+                    </>
+                  )}
+                />
+              </>
+            )
+          })()}
           {failedSubjects.length === 0 && <li>（ありません）</li>}
         </ul>
       </section>
 
       <section>
         <h2>残りの必修（あと {requiredShortfall(boundaryGroups)} 単位）</h2>
-        {remainingRequiredByCategory.map(({ label, items }) => (
-          <div key={label}>
-            <h3>{label}</h3>
-            <ul>
-              {items.map((r) => (
-                <li key={r.code}>
-                  {/* ()内は単位数だけにする。年次・学期・他プログラム専門科目・留学生限定は
-                      他の一覧と同じ形の注記で統一する。再履修かどうかはこの後のプルダウンの選択値で分かる */}
-                  {nameOf(r.code)}（{creditsLabel(r.code)}）{yearTermTag(r.code)}{otherProgramTag(r.code)}{internationalTag(r.code)}
-                  <SubjectStatusSelect code={r.code} value={draft.get(r.code)} onChange={handleDraftChange} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        {remainingRequiredByCategory.map(({ label, items }) => {
+          // ()内は単位数だけにする。年次・学期・他プログラム専門科目は他の一覧と同じ形の注記で統一する。
+          // 再履修かどうかはこの後のプルダウンの選択値で分かる。留学生のみの科目は下の折りたたみにまとめる
+          const { regular, international } = splitInternational(items, (r) => r.code)
+          return (
+            <div key={label}>
+              <h3>{label}</h3>
+              <ul>
+                {regular.map((r) => (
+                  <li key={r.code}>
+                    {nameOf(r.code)}（{creditsLabel(r.code)}）{yearTermTag(r.code)}{otherProgramTag(r.code)}
+                    <SubjectStatusSelect code={r.code} value={draft.get(r.code)} onChange={handleDraftChange} />
+                  </li>
+                ))}
+                <InternationalGroupItem
+                  items={international}
+                  codeOf={(r) => r.code}
+                  renderRow={(r) => (
+                    <>
+                      {nameOf(r.code)}（{creditsLabel(r.code)}）{yearTermTag(r.code)}{otherProgramTag(r.code)}
+                      <SubjectStatusSelect code={r.code} value={draft.get(r.code)} onChange={handleDraftChange} />
+                    </>
+                  )}
+                />
+              </ul>
+            </div>
+          )
+        })}
         {remainingRequired.length === 0 && <p>（この表示範囲では残っていません）</p>}
       </section>
 
@@ -457,7 +535,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               creditsLabel={creditsLabel}
               yearTermTag={yearTermTag}
               otherProgramTag={otherProgramTag}
-              internationalTag={internationalTag}
+              isInternational={isInternational}
             />
           ))}
       </section>
@@ -479,7 +557,7 @@ function GroupProgress({
   creditsLabel,
   yearTermTag,
   otherProgramTag,
-  internationalTag,
+  isInternational,
 }: {
   group: BoundaryGroup
   committed: ReadonlyMap<string, SubjectStatus>
@@ -489,12 +567,21 @@ function GroupProgress({
   creditsLabel: (code: string) => string
   yearTermTag: (code: string) => ReactNode
   otherProgramTag: (code: string) => ReactNode
-  internationalTag: (code: string) => ReactNode
+  isInternational: (code: string) => boolean
 }) {
   // 一覧に出す／消すのは committed（確定済み）で判断する。draft はプルダウンの表示値にだけ使う。
   // こうしないと、「更新」を押す前にプルダウンを触っただけで行が消えてしまい、
   // 「残りの必修」など他のセクションと表示の整合性が取れなくなる。
   const remaining = group.subjects.filter((code) => committed.get(code) !== 'passed')
+  // 留学生のみ履修できる科目は、下の折りたたみにまとめる（他の一覧と同じ扱い）
+  const regular = remaining.filter((code) => !isInternational(code))
+  const international = remaining.filter((code) => isInternational(code))
+  const row = (code: string) => (
+    <>
+      {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}
+      <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
+    </>
+  )
   return (
     <details>
       <summary>
@@ -502,12 +589,10 @@ function GroupProgress({
         {group.satisfied ? ' ✔' : ''}
       </summary>
       <ul>
-        {remaining.map((code) => (
-          <li key={code}>
-            {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}{internationalTag(code)}
-            <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
-          </li>
+        {regular.map((code) => (
+          <li key={code}>{row(code)}</li>
         ))}
+        <InternationalGroupItem items={international} codeOf={(code) => code} renderRow={row} />
         {remaining.length === 0 && <li>（すべて修得済みです）</li>}
       </ul>
     </details>
