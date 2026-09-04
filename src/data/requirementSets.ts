@@ -24,6 +24,7 @@ import electroinfo from '../../data/requirements/2025-day-II-electroinfo.json'
 import control from '../../data/requirements/2025-day-II-control.json'
 import robotics from '../../data/requirements/2025-day-II-robotics.json'
 import mecha from '../../data/requirements/2025-day-III-mecha.json'
+import electro from '../../data/requirements/2025-day-III-electro.json'
 import subjectsMaster from '../../data/subjects/youran-2025.json'
 
 /** プロフィール設定画面（F-1）の選択肢1つぶん */
@@ -72,7 +73,7 @@ function applyCommonOverrides(groups: readonly RequirementGroup[], overrides: Re
 // JSONを`import`すると型は自動推論されるが、要件セットの木構造（children等）まではTypeScriptには
 // 分からないので、ここで RequirementGroup[] であることを明示しておく（as で型を指定し直している）。
 const commonDoc = common as { groups: RequirementGroup[]; commonCreditSources?: { alwaysCommon?: string[] } }
-const programDocs: ProgramDoc[] = [media, management, mathinfo, cs, designds, security, netinfo, electroinfo, control, robotics, mecha] as ProgramDoc[]
+const programDocs: ProgramDoc[] = [media, management, mathinfo, cs, designds, security, netinfo, electroinfo, control, robotics, mecha, electro] as ProgramDoc[]
 
 /** プロフィール設定画面のプルダウンに出す、今データが揃っている選択肢の一覧 */
 export const programOptions: ProgramOption[] = programDocs.map((p) => ({
