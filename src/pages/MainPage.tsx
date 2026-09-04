@@ -562,7 +562,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             </div>
           )
         })}
-        {remainingRequired.length === 0 && <p>（この表示範囲では残っていません）</p>}
+        {remainingRequired.length === 0 && (
+          <ul>
+            <li>（この表示範囲では残っていません）</li>
+          </ul>
+        )}
       </section>
 
       <section>
