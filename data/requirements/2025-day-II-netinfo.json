@@ -3,25 +3,25 @@
   "entryYear": 2025,
   "course": "day",
   "cluster": "II",
-  "program": "security",
-  "programName": "セキュリティ情報学プログラム",
-  "programSuffix": "f",
-  "source": "学修要覧2025（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.2①",
+  "program": "netinfo",
+  "programName": "情報通信工学プログラム",
+  "programSuffix": "g",
+  "source": "学修要覧2025（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.2②",
   "extends": "2025-day-common.json",
   "totalCredits": 133,
-  "commonCredits": 8,
+  "commonCredits": 1,
   "subtotals": {
     "general": 27,
     "practical": 17,
-    "specialized": 81,
-    "common": 8
+    "specialized": 88,
+    "common": 1
   },
   "groups": [
     {
       "id": "specialized",
       "name": "専門科目",
       "label": "専門",
-      "required": 81,
+      "required": 88,
       "children": [
         {
           "id": "math-basic",
@@ -54,27 +54,27 @@
         {
           "id": "cluster-basic",
           "name": "類共通基礎科目",
-          "required": 19,
+          "required": 24,
           "children": [
             {
               "id": "cluster-basic-req",
               "name": "必修",
               "label": "類共通基礎（必修）",
-              "required": 17,
+              "required": 20,
               "kind": "required",
               "subjects": [
-                "MTH301f", "PHY204f", "MTH302f", "ELE301f", "PHY301f",
-                "GSE301f", "COM301f", "COM401f"
+                "MTH301g", "PHY204g", "MTH302g", "MTH401g", "ELE301g",
+                "PHY301g", "GSE301g", "GSE401g", "COM301g", "COM401g"
               ],
-              "note": "基礎演習Aの履修方法は注2参照（応用数学A・基礎電気回路・基礎電磁気学を同じクラスで履修）"
+              "note": "基礎演習A履修時は応用数学A・基礎電気回路・基礎電磁気学、基礎演習B履修時は応用数学B・回路システム学第一も同じクラスで履修（注2）"
             },
             {
-              "id": "cluster-basic-sel",
-              "name": "選択",
-              "label": "類共通基礎（選択）",
-              "required": 2,
-              "kind": "elective",
-              "subjects": ["MTH303f", "MTH304f", "PHY302f", "MTH401f"]
+              "id": "cluster-basic-elecreq",
+              "name": "選択必修",
+              "label": "類共通基礎（選択必修）",
+              "required": 4,
+              "kind": "elective-required",
+              "subjects": ["MTH303g", "MTH304g", "PHY302g"]
             },
             {
               "id": "cluster-basic-free",
@@ -83,37 +83,49 @@
               "required": 0,
               "kind": "free",
               "countsTowardGraduation": false,
-              "note": "力学演習は類共通基礎科目の中でも自由科目区分（卒業要件に含まれない）",
-              "subjects": ["PHY303f"]
+              "subjects": ["PHY303g"]
             }
           ]
         },
         {
           "id": "major",
           "name": "類専門科目",
-          "required": 42,
+          "required": 44,
           "children": [
             {
               "id": "major-req",
               "name": "必修",
               "label": "類専門（必修）",
-              "required": 12,
+              "required": 22,
               "kind": "required",
-              "subjects": ["COM501f", "COM601f", "LAB701f", "LAB801f", "LAB702f", "LAB802f"]
+              "subjects": [
+                "PHY401g", "PHY501g", "ELE401g", "ELE501g", "ELE502g", "ELE601g",
+                "ELE602g", "LAB701g", "LAB801g", "LAB702g", "LAB802g"
+              ]
+            },
+            {
+              "id": "major-elecreq",
+              "name": "選択必修",
+              "label": "類専門（選択必修）",
+              "required": 12,
+              "kind": "elective-required",
+              "note": "計算機アーキテクチャーは計算機工学と重複履修不可（注3）",
+              "subjects": [
+                "MTH402g", "ELE402g", "ELE403g", "ELE404g", "COM402g",
+                "ELE503g", "ELE504g", "COM501g", "ELE603g", "PHY502g"
+              ]
             },
             {
               "id": "major-sel",
               "name": "選択",
               "label": "類専門（選択）",
-              "required": 30,
+              "required": 10,
               "kind": "elective",
-              "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み。COM402f「計算機アーキテクチャー」は「計算機工学」と重複履修不可（注3）",
+              "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み",
               "subjects": [
-                "MTH402f", "COM402f", "ELE501f", "MTH501f", "COM502f", "COM503f",
-                "COM504f", "COM505f", "COM602f", "COM603f", "COM604f", "COM605f",
-                "COM606f", "COM607f", "COM506f", "ELE601f",
-                "FGN101f", "FGN201f", "FGN102f", "FGN202f", "FGN301f", "FGN401f",
-                "MTH502f", "COM507f"
+                "ELE608g", "GSE601g", "MTH701g", "ELE701g", "ELE702g", "ELE505g", "ELE801g", "ELE001g",
+                "FGN101g", "FGN201g", "FGN102g", "FGN202g", "FGN301g", "FGN401g",
+                "MTH501g", "COM507g"
               ]
             },
             {
@@ -125,9 +137,8 @@
               "countsTowardGraduation": false,
               "note": "大学院連携科目（大学院情報理工学研究科の授業科目）。卒業要件に含まれない",
               "subjects": [
-                "INSa01f", "INSa02f", "COMa01f", "COMa02f", "COMa03f", "COMb01f",
-                "INSb01f", "ELEb01f", "MTHb01f", "COMb02f", "MTHb02f", "MTHb03f",
-                "ELEa01f", "LAB501f"
+                "INSa01g", "ELEa01g", "ELEa02g", "ELEa03g", "ELEa04g", "ELEa05g",
+                "ELEb01g", "GSEb01g", "ELEa06g", "LAB501g"
               ]
             },
             {
@@ -137,7 +148,7 @@
               "required": 0,
               "kind": "international",
               "note": "単位の扱いは年度ごとの科目一覧表による",
-              "subjects": ["INT001f", "INT002f", "INT003f"]
+              "subjects": ["INT001g", "INT002g", "INT003g", "INT004g"]
             }
           ]
         }
