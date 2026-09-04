@@ -78,10 +78,18 @@
   - 2-5 `src/domain/importers.ts` + `src/pages/DataPage.tsx`：本サイト形式JSON（§7.4）のダウンロード・読み込み（マージ）・全消去。友人アプリ取り込み（§7.5、F-2c）は未対応（Should優先度のため）
   - 2-6 `vite.config.ts`（base設定）+ `.github/workflows/deploy.yml`：GitHub Pages自動デプロイ。**GitHubリポジトリ設定でSettings→Pages→SourceをGitHub Actionsにする作業がまだ残っている**（このファイルだけでは有効にならない）
   - 各ページはPlaywrightで実際にdev serverを起動してブラウザ操作を確認済み（consoleエラーなし）。`src/data/requirementSets.ts` がdata/以下のJSONをアプリから読み込む層（`resolveJsonModule`をtsconfig.app.jsonに追加）
+- **GitHub Pages設定を有効化・デプロイ成功を確認済み**：`https://weedy-seadragon.github.io/uec-credit-route/` で稼働中
+- **メイン画面のUI改善（フェーズ3着手前の調整）**：トップページに説明文を追加、必修ラベルを「(必修・未修得)」→「(必修)」に簡略化、取得単位・残りの必修を区分ごとに見出し分け、「区分別の進捗」→「選択科目」に改称、ファイルのダウンロード・読み込みをメイン画面のツールバー（表示・更新の隣）に移動、リセットボタン（全記録を未履修に戻す）を追加、履修状態プルダウンから「履修中」を削除（未履修/修得/不合格の3択に）
+- **他プログラムの専門科目の明示**：`RequirementSet`/`ProgramDoc` に `programSuffix`（自分のプログラムの科目番号末尾記号）を追加。科目コード末尾がこれと違う科目（付録C注1で選択として履修できる他プログラムの専門科目）には「［他プログラム専門科目］」と表示し、選択科目セクションにその単位が専門科目として扱われる旨の注釈を追加
+- **科目一覧に標準年次・学期を表示**：`data/subjects/youran-2025.json` に既にあった `standardYear`/`termType` をMainPageの各一覧（取得単位・不可の単位・残りの必修・選択科目）に表示するようにした（データの追加取得は不要だった）
 
 ### 次回以降にやること
 
 1. **`scripts/gen_data.py` の動作確認**：Pythonが使える環境で実行し、`data/`の内容と一致するか確認（上記参照）
-2. **GitHub Pages設定の有効化**：Settings → Pages → Source を「GitHub Actions」にする（ブラウザでの手作業）
-3. フェーズ3の続き：Ⅱ類5プログラム・Ⅲ類5プログラム・夜間主課程のデータ化（`tanni_extract_final.pdf` に全部揃っている）。新しいプログラムを追加したら `src/data/requirementSets.ts` にもimportを足す必要がある
+2. フェーズ3の続き：Ⅱ類5プログラム・Ⅲ類5プログラム・夜間主課程のデータ化（`tanni_extract_final.pdf` に全部揃っている）。新しいプログラムを追加したら `src/data/requirementSets.ts` にもimportを足す必要がある
+3. **シラバスから曜日時限を取得する（`scripts/fetch_syllabus.py`、後回し中）**：開発者の指示で保留。調査済みの内容は以下の通り
+   - シラバスWeb公開システムの2025年度・情報理工学域は `https://kyoumu.office.uec.ac.jp/syllabus/2025/GakkiIchiran_31_0.html`（夜間主は `..._32_0.html`）。1ページに全科目の表（No./学期/開講/曜日・時限/時間割コード（8桁）/科目名/担当教員）が載っている。曜日時限はこの一覧表の時点で分かる（例:「月1」「月1, 月2」）
+   - ただしこの一覧表には**科目コード（`COM405a`のような形式）が無い**。科目名と8桁の時間割コードだけなので、我々のデータ（`data/subjects/youran-2025.json`）と確実に突き合わせるには、行ごとのリンク先の**個別シラバスページ**（`https://kyoumu.office.uec.ac.jp/syllabus/2025/31/31_{時間割コード}.html`）を開いて、そこに書かれている科目コードで照合する必要がある（個別ページには科目コード・曜日時限どちらも載っている）
+   - 一覧表の行数は情報理工学域全体で1157件（今データ化済みの557科目より多く、他学年・重複セクション・未データ化の類の科目なども含む）。CLAUDE.md本文のルール通り1秒以上間隔を空けると、全部の個別ページを回るのに20〜30分程度かかる見込み
+   - 提案していた進め方：Ⅰ類昼間5プログラム分（557科目）にまず絞って取得。`scripts/fetch_syllabus.py`（Python版、正式）を書きつつ、この環境にはPythonが無いのでNode版で実際にバックグラウンド取得・データ反映まで行う（`gen_data.py`のときと同じやり方）。開発者の了承待ち
 4. 今回スコープ外にした主な項目：F-2c（友人アプリ取り込み）・F-2d（成績表貼り付け）、審査（2年次終了時審査等）の合否表示、同時限警告（シラバスデータ未収集のため）、F-5（科目一覧・詳細）、F-6（プログラム比較）、F-9のOGP/SEO/sitemap（SPEC上もフェーズ4の予定）
