@@ -54,6 +54,20 @@ interface BoundaryGroup {
   subjects: string[]
 }
 
+/**
+ * 判定境界グループの「持ち科目」を集める。
+ *
+ * 「上級科目」のように、判定境界（kindを持つ）自身は subjects が空で、実際の科目は
+ * 判定境界でない子（A類・B類…）の中にある、というケースがある。その場合も
+ * ちゃんと科目を拾えるように、子を再帰的にたどって集める。ただし、子自身が
+ * 別の判定境界（kindを持つ）なら、そちらは別エントリとして数えるのでここには含めない。
+ */
+function flattenLeafSubjects(rg: RequirementGroup): string[] {
+  const own = rg.subjects ?? []
+  const fromChildren = (rg.children ?? []).filter((c) => c.kind === undefined).flatMap(flattenLeafSubjects)
+  return [...own, ...fromChildren]
+}
+
 function collectBoundaryGroups(reqGroups: readonly RequirementGroup[], evalGroups: readonly GroupResult[]): BoundaryGroup[] {
   const out: BoundaryGroup[] = []
   // requirements.ts が組み立てた木を、要件定義（reqGroups）と判定結果（evalGroups）を
@@ -66,7 +80,7 @@ function collectBoundaryGroups(reqGroups: readonly RequirementGroup[], evalGroup
         out.push({
           id: rg.id, name: rg.name, label: rg.label, kind: eg.kind,
           required: eg.required, contribution: eg.contribution, shortfall: eg.shortfall, satisfied: eg.satisfied,
-          subjects: rg.subjects ?? [],
+          subjects: flattenLeafSubjects(rg),
         })
       }
       if (rg.children) walk(rg.children, eg.children) // 判定境界でなくても、子はさらにたどる
@@ -74,6 +88,41 @@ function collectBoundaryGroups(reqGroups: readonly RequirementGroup[], evalGroup
   }
   walk(reqGroups, evalGroups)
   return out
+}
+
+/** 科目コード → その科目が属する判定境界グループ、の対応表を作る（表示のグルーピング用） */
+function buildCategoryLookup(groups: readonly BoundaryGroup[]): Map<string, BoundaryGroup> {
+  const lookup = new Map<string, BoundaryGroup>()
+  for (const group of groups) {
+    for (const code of group.subjects) {
+      if (!lookup.has(code)) lookup.set(code, group) // 複数の区分に載っていたら、先に見つかった方を優先する
+    }
+  }
+  return lookup
+}
+
+/** items を、対応表（codeToGroup）で引ける区分ごとに振り分ける。区分が見つからないものは「その他」に入る */
+function groupByCategory<T>(
+  items: readonly T[],
+  codeOf: (item: T) => string,
+  codeToGroup: ReadonlyMap<string, BoundaryGroup>,
+): { label: string; items: T[] }[] {
+  const byGroupId = new Map<string, { label: string; items: T[] }>()
+  const others: T[] = []
+  // 1件ずつ、対応表から区分を引いて、区分IDごとのバケツに積んでいく
+  for (const item of items) {
+    const group = codeToGroup.get(codeOf(item))
+    if (!group) {
+      others.push(item) // 区分が見つからない（通常は起きないはずの）ものは「その他」に逃がす
+      continue
+    }
+    const bucket = byGroupId.get(group.id)
+    if (bucket) bucket.items.push(item)
+    else byGroupId.set(group.id, { label: group.label ?? group.name, items: [item] })
+  }
+  const result = [...byGroupId.values()]
+  if (others.length > 0) result.push({ label: 'その他', items: others })
+  return result
 }
 
 export default function MainPage() {
@@ -147,6 +196,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const evaluation = evaluateRequirements(requirementSet, committed, subjectCredits)
   const boundaryGroups = collectBoundaryGroups(requirementSet.groups, evaluation.groups)
   const requiredCodes = new Set(boundaryGroups.filter((g) => g.kind === 'required').flatMap((g) => g.subjects))
+  // 「取得単位」「残りの必修」を区分ごとに見出しを分けて表示するための対応表
+  const categoryLookup = buildCategoryLookup(boundaryGroups)
 
   // 表示フィルタ（学期）に応じて、履修できる科目だけをスコア順に並べたものを取得する
   const termFilter = TERM_OPTIONS.find((t) => t.key === termKey)?.filter ?? 'all'
@@ -160,6 +211,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 取得単位・不可の単位のセクションは、committed（確定済み）を状態別に振り分けるだけでよい
   const passedSubjects = [...committed.entries()].filter(([, status]) => status === 'passed')
   const failedSubjects = [...committed.entries()].filter(([, status]) => status === 'failed')
+  // 「取得単位」「残りの必修」は区分ごとの見出しを付けて表示する（例:「理数基礎（必修）」「類専門（必修）」）
+  const passedByCategory = groupByCategory(passedSubjects, ([code]) => code, categoryLookup)
+  const remainingRequiredByCategory = groupByCategory(remainingRequired, (r) => r.code, categoryLookup)
 
   // プルダウンで状態を変えたとき：draftだけを更新する（committedはまだ変えない）
   function handleDraftChange(code: string, status: SubjectStatus | undefined) {
@@ -212,15 +266,20 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       <section>
         <h2>取得単位（{passedSubjects.length}）</h2>
-        <ul>
-          {passedSubjects.map(([code]) => (
-            <li key={code}>
-              {nameOf(code)}（{creditsOf(code) ?? '?'}単位）
-              <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
-            </li>
-          ))}
-          {passedSubjects.length === 0 && <li>（まだありません）</li>}
-        </ul>
+        {passedByCategory.map(({ label, items }) => (
+          <div key={label}>
+            <h3>{label}</h3>
+            <ul>
+              {items.map(([code]) => (
+                <li key={code}>
+                  {nameOf(code)}（{creditsOf(code) ?? '?'}単位）
+                  <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        {passedSubjects.length === 0 && <p>（まだありません）</p>}
       </section>
 
       <section>
@@ -238,20 +297,25 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       <section>
         <h2>残りの必修（あと {requiredShortfall(boundaryGroups)} 単位）</h2>
-        <ul>
-          {remainingRequired.map((r) => (
-            <li key={r.code}>
-              {nameOf(r.code)}（{committed.get(r.code) === 'failed' ? '必修・再履修' : '必修・未修得'}）
-              {r.laterThanStandardYearNote && <span> {r.laterThanStandardYearNote}</span>}
-              <SubjectStatusSelect code={r.code} value={draft.get(r.code)} onChange={handleDraftChange} />
-            </li>
-          ))}
-          {remainingRequired.length === 0 && <li>（この表示範囲では残っていません）</li>}
-        </ul>
+        {remainingRequiredByCategory.map(({ label, items }) => (
+          <div key={label}>
+            <h3>{label}</h3>
+            <ul>
+              {items.map((r) => (
+                <li key={r.code}>
+                  {nameOf(r.code)}（{committed.get(r.code) === 'failed' ? '必修・再履修' : '必修'}）
+                  {r.laterThanStandardYearNote && <span> {r.laterThanStandardYearNote}</span>}
+                  <SubjectStatusSelect code={r.code} value={draft.get(r.code)} onChange={handleDraftChange} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        {remainingRequired.length === 0 && <p>（この表示範囲では残っていません）</p>}
       </section>
 
       <section>
-        <h2>区分別の進捗</h2>
+        <h2>選択科目</h2>
         {boundaryGroups.map((g) => (
           <GroupProgress key={g.id} group={g} committed={committed} draft={draft} onChange={handleDraftChange} nameOf={nameOf} />
         ))}
