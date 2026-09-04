@@ -6,4 +6,19 @@
 
 body {
   margin: 0;
+  /* スマホの画面端に文字がくっつかないよう、左右に少し余白を持たせる */
+  padding: 0.5rem 1rem;
+}
+
+/* ナビゲーションのリンクは指でタップしやすいよう、上下左右に少し余白を持たせる
+   （リンクの周りの空白部分もタップできるように display: inline-block にする） */
+nav a {
+  display: inline-block;
+  padding: 0.3em 0.15em;
+}
+
+/* ボタン・プルダウンは、スマホでも指で押しやすい高さを最低限確保する */
+button,
+select {
+  min-height: 2rem;
 }
