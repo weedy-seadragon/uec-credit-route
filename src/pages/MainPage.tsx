@@ -382,6 +382,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function termTypeOf(code: string): string | null {
     return subjectsByCode.get(code)?.termType ?? null
   }
+  // 科目の標準履修年次。選択科目一覧を学年学期順に並べ替えるために使う（無ければnull）
+  function standardYearOf(code: string): number | null {
+    return subjectsByCode.get(code)?.standardYear ?? null
+  }
   // 学期別に折りたたんだ後の行では、学期は見出し（前学期/後学期）側で分かるので、
   // 「2年次」のように年次だけを添える（yearTermTagの学期を省いた版）
   function yearOnlyTag(code: string) {
@@ -582,6 +586,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               creditsLabel={creditsLabel}
               yearTermTag={yearTermTag}
               termTypeOf={termTypeOf}
+              standardYearOf={standardYearOf}
               yearOnlyTag={yearOnlyTag}
               isOtherProgram={isOtherProgram}
               isInternational={isInternational}
@@ -601,6 +606,24 @@ function requiredShortfall(groups: readonly BoundaryGroup[]): number {
 // （人文・社会科学科目、上級科目。どちらもdata/requirements/2025-day-common.jsonでのid）
 const GROUPS_SPLIT_BY_TERM = new Set(['hss', 'advanced'])
 
+// 第二外国語（第一・第二がセットの言語ペア）と生涯スポーツは、元の並び順（言語ごと・科目のまとまり）
+// を崩したくないので、学年学期順への並べ替えの対象から外す
+const GROUPS_KEEP_ORIGINAL_ORDER = new Set(['lang-basic-2', 'health-sel'])
+
+/** 科目コードの並びを「1年前期→1年後期→2年前期→…」の学年学期順にする。年次が無い科目は最後に回す */
+function sortByYearTerm(codes: readonly string[], standardYearOf: (code: string) => number | null, termTypeOf: (code: string) => string | null): string[] {
+  const termRank = (t: string | null) => (t === '前学期' ? 0 : t === '後学期' ? 1 : 2)
+  return [...codes].sort((a, b) => {
+    const yearA = standardYearOf(a)
+    const yearB = standardYearOf(b)
+    if (yearA === null && yearB === null) return 0
+    if (yearA === null) return 1 // 年次不明は最後に回す
+    if (yearB === null) return -1
+    if (yearA !== yearB) return yearA - yearB
+    return termRank(termTypeOf(a)) - termRank(termTypeOf(b))
+  })
+}
+
 function GroupProgress({
   group,
   committed,
@@ -610,6 +633,7 @@ function GroupProgress({
   creditsLabel,
   yearTermTag,
   termTypeOf,
+  standardYearOf,
   yearOnlyTag,
   isOtherProgram,
   isInternational,
@@ -622,6 +646,7 @@ function GroupProgress({
   creditsLabel: (code: string) => string
   yearTermTag: (code: string) => ReactNode
   termTypeOf: (code: string) => string | null
+  standardYearOf: (code: string) => number | null
   yearOnlyTag: (code: string) => ReactNode
   isOtherProgram: (code: string) => boolean
   isInternational: (code: string) => boolean
@@ -633,7 +658,14 @@ function GroupProgress({
   // 「幾何学概論」のように、実質同じ科目が他プログラムの科目コードとして重複して選択肢に
   // 入ってしまうことがあるので、科目名が同じものは1つにまとめる（自分のプログラムの科目が
   // あればそちらを優先し、他プログラム専門科目としては出さない）
-  const remaining = dedupeByName(remainingAll, nameOf, isOtherProgram)
+  const dedupedRemaining = dedupeByName(remainingAll, nameOf, isOtherProgram)
+  // 第二外国語・生涯スポーツは、第一・第二のペアや科目のまとまりを崩したくないので元の並び順のまま。
+  // それ以外は「1年前期→1年後期→2年前期→…」の学年学期順に並べ替える
+  // （このあとの重複除去・他プログラム専門科目/留学生のみ/前学期後学期への振り分けは全部フィルタで
+  // 元の順番を保つので、ここで並べ替えておけば下流にもそのまま反映される）
+  const remaining = GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
+    ? dedupedRemaining
+    : sortByYearTerm(dedupedRemaining, standardYearOf, termTypeOf)
   // 他プログラム専門科目・留学生のみ履修できる科目は、下の折りたたみにまとめる（他の一覧と同じ扱い）。
   // 両方に該当する科目は留学生のみの方に入れる
   const international = remaining.filter((code) => isInternational(code))
