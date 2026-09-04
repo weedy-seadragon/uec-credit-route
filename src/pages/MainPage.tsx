@@ -175,7 +175,8 @@ function CollapsedSubjectGroup<T>({
 }) {
   if (items.length === 0) return null
   return (
-    <li>
+    // 折りたたみ自体の▼と中の科目の・が並ぶと紛らわしいので、この<li>自体には・を付けない
+    <li style={{ listStyleType: 'none' }}>
       <details>
         <summary>
           {title}（{items.length}）
@@ -376,6 +377,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (!yearTerm) return null
     return <span style={{ marginLeft: '0.4em' }}>{yearTerm}</span>
   }
+  // 科目の開講学期（前学期/後学期）。人文・社会科学科目や上級科目のように科目数が多い区分を
+  // 前学期・後学期で折りたたむために使う（無ければnull）
+  function termTypeOf(code: string): string | null {
+    return subjectsByCode.get(code)?.termType ?? null
+  }
+  // 学期別に折りたたんだ後の行では、学期は見出し（前学期/後学期）側で分かるので、
+  // 「2年次」のように年次だけを添える（yearTermTagの学期を省いた版）
+  function yearOnlyTag(code: string) {
+    const s = subjectsByCode.get(code)
+    if (!s || s.standardYear === null) return null
+    return <span style={{ marginLeft: '0.4em' }}>{s.standardYear}年次</span>
+  }
   // 他プログラムの専門科目かどうか
   function isOtherProgram(code: string): boolean {
     return isOtherProgramSubject(code, requirementSet?.programSuffix)
@@ -461,7 +474,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           const { regular, otherProgram, international } = splitSpecialSubjects(items, ([code]) => code)
           const row = (code: string) => (
             <>
-              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{' '}
+              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+      {/* 半角スペース2個ぶん。HTMLは連続する半角スペースを1個にまとめてしまうので、
+          折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
+      {'\u00A0\u00A0'}
               <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
             </>
           )
@@ -492,7 +508,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             const { regular, otherProgram, international } = splitSpecialSubjects(failedSubjects, ([code]) => code)
             const row = (code: string) => (
               <>
-                {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{' '}
+                {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+      {/* 半角スペース2個ぶん。HTMLは連続する半角スペースを1個にまとめてしまうので、
+          折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
+      {'\u00A0\u00A0'}
                 <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
               </>
             )
@@ -519,7 +538,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           const { regular, otherProgram, international } = splitSpecialSubjects(items, (r) => r.code)
           const row = (code: string) => (
             <>
-              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{' '}
+              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+      {/* 半角スペース2個ぶん。HTMLは連続する半角スペースを1個にまとめてしまうので、
+          折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
+      {'\u00A0\u00A0'}
               <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
             </>
           )
@@ -559,6 +581,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               nameOf={nameOf}
               creditsLabel={creditsLabel}
               yearTermTag={yearTermTag}
+              termTypeOf={termTypeOf}
+              yearOnlyTag={yearOnlyTag}
               isOtherProgram={isOtherProgram}
               isInternational={isInternational}
             />
@@ -573,6 +597,10 @@ function requiredShortfall(groups: readonly BoundaryGroup[]): number {
   return groups.filter((g) => g.kind === 'required').reduce((sum, g) => sum + g.shortfall, 0)
 }
 
+// 科目数が多く一覧が長くなりすぎる区分は、前学期・後学期でさらに折りたたむ
+// （人文・社会科学科目、上級科目。どちらもdata/requirements/2025-day-common.jsonでのid）
+const GROUPS_SPLIT_BY_TERM = new Set(['hss', 'advanced'])
+
 function GroupProgress({
   group,
   committed,
@@ -581,6 +609,8 @@ function GroupProgress({
   nameOf,
   creditsLabel,
   yearTermTag,
+  termTypeOf,
+  yearOnlyTag,
   isOtherProgram,
   isInternational,
 }: {
@@ -591,6 +621,8 @@ function GroupProgress({
   nameOf: (code: string) => string
   creditsLabel: (code: string) => string
   yearTermTag: (code: string) => ReactNode
+  termTypeOf: (code: string) => string | null
+  yearOnlyTag: (code: string) => ReactNode
   isOtherProgram: (code: string) => boolean
   isInternational: (code: string) => boolean
 }) {
@@ -609,10 +641,28 @@ function GroupProgress({
   const regular = remaining.filter((code) => !isInternational(code) && !isOtherProgram(code))
   const row = (code: string) => (
     <>
-      {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{' '}
+      {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+      {/* 半角スペース2個ぶん。HTMLは連続する半角スペースを1個にまとめてしまうので、
+          折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
+      {'\u00A0\u00A0'}
       <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
     </>
   )
+  // 前学期・後学期で折りたたんだ行では、学期は見出し側で分かるので年次だけ添える（yearOnlyTag）
+  const rowShort = (code: string) => (
+    <>
+      {nameOf(code)}（{creditsLabel(code)}）{yearOnlyTag(code)}
+      <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
+    </>
+  )
+  // 人文・社会科学科目・上級科目は科目数が多いので、通常の科目一覧の代わりに前学期・後学期の
+  // 折りたたみに分ける（開講学期が前学期・後学期のどちらでもない科目は、通常通りそのまま出す）
+  const splitByTerm = GROUPS_SPLIT_BY_TERM.has(group.id)
+  const springRegular = splitByTerm ? regular.filter((code) => termTypeOf(code) === '前学期') : []
+  const fallRegular = splitByTerm ? regular.filter((code) => termTypeOf(code) === '後学期') : []
+  const otherRegular = splitByTerm
+    ? regular.filter((code) => termTypeOf(code) !== '前学期' && termTypeOf(code) !== '後学期')
+    : regular
   return (
     <details>
       <summary>
@@ -620,9 +670,15 @@ function GroupProgress({
         {group.satisfied ? ' ✔' : ''}
       </summary>
       <ul>
-        {regular.map((code) => (
+        {otherRegular.map((code) => (
           <li key={code}>{row(code)}</li>
         ))}
+        {splitByTerm && (
+          <>
+            <CollapsedSubjectGroup title="前学期" items={springRegular} codeOf={(code) => code} renderRow={rowShort} />
+            <CollapsedSubjectGroup title="後学期" items={fallRegular} codeOf={(code) => code} renderRow={rowShort} />
+          </>
+        )}
         <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={(code) => code} renderRow={row} />
         <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} />
         {remaining.length === 0 && <li>（すべて修得済みです）</li>}
