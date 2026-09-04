@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "entryYear": 2025,
+  "course": "day",
+  "cluster": "II",
+  "program": "security",
+  "programName": "セキュリティ情報学プログラム",
+  "programSuffix": "f",
+  "source": "学修要覧2025（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.2①",
+  "extends": "2025-day-common.json",
+  "totalCredits": 133,
+  "commonCredits": 8,
+  "subtotals": {
+    "general": 27,
+    "practical": 17,
+    "specialized": 81,
+    "common": 8
+  },
+  "groups": [
+    {
+      "id": "specialized",
+      "name": "専門科目",
+      "label": "専門",
+      "required": 81,
+      "children": [
+        {
+          "id": "math-basic",
+          "name": "理数基礎科目",
+          "required": 20,
+          "children": [
+            {
+              "id": "math-basic-req",
+              "name": "必修",
+              "label": "理数基礎（必修）",
+              "required": 20,
+              "kind": "required",
+              "subjects": [
+                "MTH101z", "MTH201z", "MTH102z", "MTH202z", "MTH203z",
+                "MTH103z", "MTH204z", "PHY102z", "PHY202z", "CHM102z", "COM201z"
+              ]
+            },
+            {
+              "id": "math-basic-sel",
+              "name": "選択",
+              "label": "理数基礎（選択）",
+              "required": 0,
+              "kind": "elective",
+              "countAs": "common",
+              "note": "修得した単位は共通単位とする",
+              "subjects": ["PHY103z", "PHY203z", "CHM203z"]
+            }
+          ]
+        },
+        {
+          "id": "cluster-basic",
+          "name": "類共通基礎科目",
+          "required": 19,
+          "children": [
+            {
+              "id": "cluster-basic-req",
+              "name": "必修",
+              "label": "類共通基礎（必修）",
+              "required": 17,
+              "kind": "required",
+              "subjects": [
+                "MTH301f", "PHY204f", "MTH302f", "ELE301f", "PHY301f",
+                "GSE301f", "COM301f", "COM401f"
+              ],
+              "note": "基礎演習Aの履修方法は注2参照（応用数学A・基礎電気回路・基礎電磁気学を同じクラスで履修）"
+            },
+            {
+              "id": "cluster-basic-sel",
+              "name": "選択",
+              "label": "類共通基礎（選択）",
+              "required": 2,
+              "kind": "elective",
+              "subjects": ["MTH303f", "MTH304f", "PHY302f", "MTH401f", "PHY303f"]
+            }
+          ]
+        },
+        {
+          "id": "major",
+          "name": "類専門科目",
+          "required": 42,
+          "children": [
+            {
+              "id": "major-req",
+              "name": "必修",
+              "label": "類専門（必修）",
+              "required": 12,
+              "kind": "required",
+              "subjects": ["COM501f", "COM601f", "LAB701f", "LAB801f", "LAB702f", "LAB802f"]
+            },
+            {
+              "id": "major-sel",
+              "name": "選択",
+              "label": "類専門（選択）",
+              "required": 30,
+              "kind": "elective",
+              "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み。COM402f「計算機アーキテクチャー」は「計算機工学」と重複履修不可（注3）",
+              "subjects": [
+                "MTH402f", "COM402f", "ELE501f", "MTH501f", "COM502f", "COM503f",
+                "COM504f", "COM505f", "COM602f", "COM603f", "COM604f", "COM605f",
+                "COM606f", "COM607f", "COM506f", "ELE601f",
+                "FGN101f", "FGN201f", "FGN102f", "FGN202f", "FGN301f", "FGN401f",
+                "MTH502f", "COM507f"
+              ]
+            },
+            {
+              "id": "major-free",
+              "name": "自由科目",
+              "label": "自由科目",
+              "required": 0,
+              "kind": "free",
+              "countsTowardGraduation": false,
+              "note": "大学院連携科目（大学院情報理工学研究科の授業科目）。卒業要件に含まれない",
+              "subjects": [
+                "INSa01f", "INSa02f", "COMa01f", "COMa02f", "COMa03f", "COMb01f",
+                "INSb01f", "ELEb01f", "MTHb01f", "COMb02f", "MTHb02f", "MTHb03f",
+                "ELEa01f", "LAB501f"
+              ]
+            },
+            {
+              "id": "major-intl",
+              "name": "国際科目",
+              "label": "国際科目",
+              "required": 0,
+              "kind": "international",
+              "note": "単位の扱いは年度ごとの科目一覧表による",
+              "subjects": ["INT001f", "INT002f", "INT003f"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
