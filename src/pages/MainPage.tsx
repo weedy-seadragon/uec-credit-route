@@ -11,7 +11,7 @@
 // - 先修科目・曜日時限のデータがまだ無いので、同時限警告は出ない（recommend.ts参照）
 // - 審査（2年次終了時審査など）の合否表示はまだ実装していない
 import { useMemo, useState } from 'react'
-import type { ChangeEvent } from 'react'
+import type { ChangeEvent, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import type { GroupKind, RequirementGroup, SubjectStatus } from '../domain/requirements'
 import { evaluateRequirements } from '../domain/requirements'
@@ -43,6 +43,18 @@ const TERM_OPTIONS: { key: string; label: string; filter: TermFilter }[] = [
     })),
   ),
 ]
+
+/**
+ * 科目コードが「自分のプログラムではなく、他プログラムの専門科目」かどうかを判定する。
+ * 学修要覧 付録C 注1「他プログラムの専門科目も選択として履修できる」に対応する表示のために使う。
+ * 末尾が英字a〜（プログラムごとの記号）で、かつ自分のプログラムの記号と違う場合だけ該当とする。
+ * 末尾が"z"（共通科目扱い）や、programSuffixが無い（末尾記号を持たないプログラム）場合は該当しない。
+ */
+function isOtherProgramSubject(code: string, ownSuffix: string | undefined): boolean {
+  if (!ownSuffix) return false
+  const lastChar = code.slice(-1)
+  return /^[a-y]$/.test(lastChar) && lastChar !== ownSuffix
+}
 
 /** 判定境界になっているグループ（＝required/contribution/shortfallを持つグループ）だけを木から集める */
 interface BoundaryGroup {
@@ -295,6 +307,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function creditsOf(code: string): number | undefined {
     return subjectsByCode.get(code)?.credits
   }
+  // 他プログラムの専門科目なら、科目名の横に添える注記（該当しなければ何も出さない）
+  function otherProgramTag(code: string) {
+    if (!isOtherProgramSubject(code, requirementSet?.programSuffix)) return null
+    return <span style={{ color: '#666', fontSize: '0.85em', marginLeft: '0.4em' }}>［他プログラム専門科目］</span>
+  }
 
   return (
     <main>
@@ -346,7 +363,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <ul>
               {items.map(([code]) => (
                 <li key={code}>
-                  {nameOf(code)}（{creditsOf(code) ?? '?'}単位）
+                  {nameOf(code)}（{creditsOf(code) ?? '?'}単位）{otherProgramTag(code)}
                   <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
                 </li>
               ))}
@@ -361,7 +378,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <ul>
           {failedSubjects.map(([code]) => (
             <li key={code}>
-              {nameOf(code)}
+              {nameOf(code)}{otherProgramTag(code)}
               <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
             </li>
           ))}
@@ -377,7 +394,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <ul>
               {items.map((r) => (
                 <li key={r.code}>
-                  {nameOf(r.code)}（{committed.get(r.code) === 'failed' ? '必修・再履修' : '必修'}）
+                  {nameOf(r.code)}（{committed.get(r.code) === 'failed' ? '必修・再履修' : '必修'}）{otherProgramTag(r.code)}
                   {r.laterThanStandardYearNote && <span> {r.laterThanStandardYearNote}</span>}
                   <SubjectStatusSelect code={r.code} value={draft.get(r.code)} onChange={handleDraftChange} />
                 </li>
@@ -390,8 +407,19 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       <section>
         <h2>選択科目</h2>
+        <p style={{ fontSize: '0.9em', color: '#555' }}>
+          ※ 他プログラムの専門科目（［他プログラム専門科目］の表示があるもの）を履修した場合も、専門科目の単位として扱われます（学修要覧より）
+        </p>
         {boundaryGroups.map((g) => (
-          <GroupProgress key={g.id} group={g} committed={committed} draft={draft} onChange={handleDraftChange} nameOf={nameOf} />
+          <GroupProgress
+            key={g.id}
+            group={g}
+            committed={committed}
+            draft={draft}
+            onChange={handleDraftChange}
+            nameOf={nameOf}
+            otherProgramTag={otherProgramTag}
+          />
         ))}
       </section>
     </main>
@@ -409,12 +437,14 @@ function GroupProgress({
   draft,
   onChange,
   nameOf,
+  otherProgramTag,
 }: {
   group: BoundaryGroup
   committed: ReadonlyMap<string, SubjectStatus>
   draft: ReadonlyMap<string, SubjectStatus>
   onChange: (code: string, status: SubjectStatus | undefined) => void
   nameOf: (code: string) => string
+  otherProgramTag: (code: string) => ReactNode
 }) {
   // 一覧に出す／消すのは committed（確定済み）で判断する。draft はプルダウンの表示値にだけ使う。
   // こうしないと、「更新」を押す前にプルダウンを触っただけで行が消えてしまい、
@@ -429,7 +459,7 @@ function GroupProgress({
       <ul>
         {remaining.map((code) => (
           <li key={code}>
-            {nameOf(code)}
+            {nameOf(code)}{otherProgramTag(code)}
             <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
           </li>
         ))}

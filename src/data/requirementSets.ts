@@ -36,6 +36,8 @@ interface ProgramDoc {
   cluster: 'I' | 'II' | 'III'
   program: string
   programName: string
+  /** 科目番号末尾記号（例: "a"）。他プログラムの専門科目の判定に使う（domain/requirements.tsのRequirementSet参照） */
+  programSuffix: string
   totalCredits: number
   commonCredits: number
   groups: RequirementGroup[]
@@ -74,6 +76,7 @@ export function getRequirementSet(entryYear: number, course: string, cluster: st
     commonCredits: doc.commonCredits,
     groups: [...commonDoc.groups, ...doc.groups],
     alwaysCommonSubjects: commonDoc.commonCreditSources?.alwaysCommon ?? [],
+    programSuffix: doc.programSuffix,
   }
 }
 
