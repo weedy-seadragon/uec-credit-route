@@ -110,12 +110,15 @@ function buildMembership(
 ): Map<string, GroupMembership[]> {
   const membership = new Map<string, GroupMembership[]>()
 
+  // 1つの科目コードに対して、所属グループの情報を配列へ追記していく
   function add(code: string, info: GroupMembership) {
     const list = membership.get(code)
     if (list) list.push(info)
     else membership.set(code, [info])
   }
 
+  // requirements.ts の evaluateGroup と同じ形で木をたどり、判定境界になっているグループ
+  // （evalGroup.kind が付いているもの）だけ、そこに載っている科目をmembershipに登録する
   function walk(reqGroups: readonly RequirementGroup[], evalGroups: readonly GroupResult[]) {
     for (let i = 0; i < reqGroups.length; i++) {
       const reqGroup = reqGroups[i]
@@ -129,7 +132,7 @@ function buildMembership(
         }
         for (const code of reqGroup.subjects ?? []) add(code, info)
       }
-      if (reqGroup.children) walk(reqGroup.children, evalGroup.children)
+      if (reqGroup.children) walk(reqGroup.children, evalGroup.children) // 判定境界でなくても、子はさらにたどる
     }
   }
 
@@ -139,11 +142,13 @@ function buildMembership(
 
 /** 科目が指定した学期フィルタで「開講され、履修できる」かどうか */
 function isOfferedIn(subject: SubjectInfo, termFilter: TermFilter, currentGrade: number): boolean {
-  if (termFilter === 'all') return true
+  if (termFilter === 'all') return true // 「全学年」表示のときは絞り込まない
 
   // termType が無い科目（通年・不定期開講など）は、どの学期フィルタでも履修候補に出す
   if (subject.termType != null && subject.termType !== termFilter.half) return false
 
+  // 履修できる学年（allowedYears。無ければ標準履修年次のみ）のどれかが、
+  // フィルタで選ばれた学年以下（＝もう到達している）でなければ候補にしない
   const allowedYears = subject.allowedYears ?? (subject.standardYear != null ? [subject.standardYear] : undefined)
   if (allowedYears && !allowedYears.some((y) => y <= termFilter.year)) return false
   if (subject.standardYear != null && subject.standardYear > termFilter.year) return false
@@ -152,13 +157,15 @@ function isOfferedIn(subject: SubjectInfo, termFilter: TermFilter, currentGrade:
   return true
 }
 
+/** 履修中・履修予定の科目（busySlots）と、この科目の曜日時限が1つでも重なっていれば true */
 function hasSlotClash(subject: SubjectInfo, busySlots: readonly TimeSlot[]): boolean {
-  if (!subject.slots || subject.slots.length === 0) return false
+  if (!subject.slots || subject.slots.length === 0) return false // 時限データが無ければ判定しようがない
   return subject.slots.some((slot) => busySlots.some((busy) => busy.day === slot.day && busy.period === slot.period))
 }
 
+/** 先修科目（prerequisites）が指定されていれば、そのすべてを修得済み（passed）かどうかを返す */
 function prerequisitesMet(subject: SubjectInfo, records: ReadonlyMap<string, SubjectStatus>): boolean {
-  if (!subject.prerequisites || subject.prerequisites.length === 0) return true
+  if (!subject.prerequisites || subject.prerequisites.length === 0) return true // 先修条件が無ければ常にOK
   return subject.prerequisites.every((code) => records.get(code) === 'passed')
 }
 
@@ -181,13 +188,16 @@ export function recommend(input: RecommendInput): RecommendedSubject[] {
 
   const candidates: RecommendedSubject[] = []
 
+  // 科目マスタの全科目を1つずつ見て、候補として残すかどうか・スコアはいくつかを決める
   for (const subject of subjects.values()) {
-    if (records.get(subject.code) === 'passed') continue
-    if (!isOfferedIn(subject, termFilter, currentGrade)) continue
+    if (records.get(subject.code) === 'passed') continue // 修得済みはもう推奨する必要が無い
+    if (!isOfferedIn(subject, termFilter, currentGrade)) continue // 表示中の学期に取れない科目は除外
 
+    // この科目が属している判定境界グループ（複数のことがある）の情報を集める
     const memberships = membership.get(subject.code) ?? []
     const isRequiredNotPassed = memberships.some((m) => m.kind === 'required')
     const shortfallGroups = memberships.filter((m) => m.kind === 'elective' && m.shortfall > 0)
+    // 複数の不足区分に属していたら、一番不足率が高いものを採用する（w3用）
     const maxShortfallRatio = shortfallGroups.reduce(
       (max, m) => Math.max(max, m.required > 0 ? m.shortfall / m.required : 0),
       0,
@@ -197,6 +207,7 @@ export function recommend(input: RecommendInput): RecommendedSubject[] {
     const clash = hasSlotClash(subject, busySlots)
     const isGroupAlreadyFull = memberships.length > 0 && memberships.every((m) => m.satisfied)
 
+    // docs/SPEC.md §8 の重み付け加算・減算をそのまま計算する
     const score =
       (isRequiredNotPassed ? W1_REQUIRED_NOT_PASSED : 0) +
       (shortfallGroups.length > 0 ? W2_SHORTFALL_GROUP : 0) +
@@ -206,6 +217,7 @@ export function recommend(input: RecommendInput): RecommendedSubject[] {
       (clash ? W6_SLOT_CLASH : 0) -
       (isGroupAlreadyFull ? W7_GROUP_ALREADY_FULL : 0)
 
+    // スコアに貢献した理由のうち、優先順位が一番高いものを1つだけ選ぶ
     const reason: RecommendReason = isRequiredNotPassed
       ? 'required-not-passed'
       : shortfallGroups.length > 0
@@ -216,6 +228,7 @@ export function recommend(input: RecommendInput): RecommendedSubject[] {
             ? 'prerequisites-met'
             : 'none'
 
+    // 標準履修年次より遅れて履修する場合だけ、注記文字列を作る
     const laterThanStandardYearNote =
       subject.standardYear != null && subject.standardYear < currentGrade
         ? `${subject.standardYear}年次科目`
@@ -224,6 +237,7 @@ export function recommend(input: RecommendInput): RecommendedSubject[] {
     candidates.push({ code: subject.code, score, reason, laterThanStandardYearNote, clash })
   }
 
+  // スコアの高い順。同点なら標準履修年次が古い（＝小さい）ものを先にする
   candidates.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score
     const yearA = subjects.get(a.code)?.standardYear ?? Number.POSITIVE_INFINITY

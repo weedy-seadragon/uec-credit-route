@@ -61,10 +61,14 @@ export const programOptions: ProgramOption[] = programDocs.map((p) => ({
  * ここで合体させる（`extends` の解決）。データが無ければ undefined を返す。
  */
 export function getRequirementSet(entryYear: number, course: string, cluster: string, program: string): RequirementSet | undefined {
+  // 4つの条件すべてに一致するプログラムファイルを探す
   const doc = programDocs.find(
     (p) => p.entryYear === entryYear && p.course === course && p.cluster === cluster && p.program === program,
   )
-  if (!doc) return undefined
+  if (!doc) return undefined // まだデータが無い組み合わせ
+
+  // 共通ファイルのgroups（総合文化・実践教育）とプログラム別ファイルのgroups（専門科目）を
+  // 1つの配列にまとめて、evaluateRequirements() にそのまま渡せる形にする
   return {
     totalCredits: doc.totalCredits,
     commonCredits: doc.commonCredits,

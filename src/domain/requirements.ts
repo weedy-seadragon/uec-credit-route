@@ -188,8 +188,9 @@ function sumSubjectsByStatus(
   subjectCredits: ReadonlyMap<string, number>,
 ): number {
   let total = 0
+  // codes に並んでいる科目番号を1つずつ見て、状態が一致するものだけ単位数を足し込む
   for (const code of codes) {
-    if (records.get(code) !== status) continue
+    if (records.get(code) !== status) continue // 状態が違う（例: 探しているのはpassedなのにtaking）ので数えない
     const credits = subjectCredits.get(code)
     if (credits === undefined) {
       // data/ の整合性は scripts/validate_data.py で保証している前提なので、
@@ -236,18 +237,23 @@ function summarize(required: number, contribution: number, projectedContribution
  *   （free はそもそも卒業要件外、international は扱いが未確定のため）
  */
 function applyKindRule(kind: GroupKind, earned: number, group: RequirementGroup): { contribution: number; overflow: number } {
+  // 自由科目：修得しても卒業要件にも共通単位にもカウントしない
   if (group.countsTowardGraduation === false) {
     return { contribution: 0, overflow: 0 }
   }
 
+  // 理数基礎科目の選択科目など：required と比較せず、修得分をそのまま超過分（＝共通単位候補）にする
   if (group.countAs === 'common') {
     return { contribution: 0, overflow: earned }
   }
 
+  // 必修：全科目の単位合計が required と一致する設計なので超過は起こらない
   if (kind === 'required') {
     return { contribution: Math.min(earned, group.required), overflow: 0 }
   }
 
+  // 選択・選択必修・自由・国際の残り：required までを算入し、超えた分を overflow として返す
+  // （ただし free・international は overflow を集計しない＝どこにも繰り入れない）
   const contribution = Math.min(earned, group.required)
   const overflow = kind === 'free' || kind === 'international' ? 0 : Math.max(0, earned - group.required)
   return { contribution, overflow }
@@ -262,9 +268,9 @@ function applyKindRule(kind: GroupKind, earned: number, group: RequirementGroup)
  *   していない限り）
  */
 function overflowGoesToCommon(kind: GroupKind, group: RequirementGroup): boolean {
-  if (group.overflowToCommon === false) return false
-  if (group.countAs === 'common') return true
-  return kind === 'elective'
+  if (group.overflowToCommon === false) return false // 明示的に禁止されている（人文・社会科学科目など）
+  if (group.countAs === 'common') return true // 理数基礎の選択科目など、常に共通単位扱い
+  return kind === 'elective' // 選択科目だけが直接共通単位に回る。選択必修はここではfalseになる
 }
 
 /**
@@ -290,13 +296,16 @@ function evaluateGroup(
   subjectCredits: ReadonlyMap<string, number>,
   insideBoundary: boolean,
 ): GroupResult {
+  // このグループ自身が判定境界かどうかを先に決める（考え方は上のコメント参照）
   const isLeaf = !group.children || group.children.length === 0
   const isBoundary = group.kind !== undefined || (isLeaf && !insideBoundary)
 
+  // 子グループがあれば先に再帰的に評価しておく（無ければ空配列のまま）
   const children = (group.children ?? []).map((child) =>
     evaluateGroup(child, records, subjectCredits, insideBoundary || isBoundary),
   )
 
+  // 修得済み（passed）・履修中（taking）の単位を、自分の科目リスト＋子グループぶんすべて合算する
   const ownSubjects = group.subjects ?? []
   const ownPassed = sumSubjectsByStatus(ownSubjects, 'passed', records, subjectCredits)
   const ownTaking = sumSubjectsByStatus(ownSubjects, 'taking', records, subjectCredits)
@@ -313,6 +322,8 @@ function evaluateGroup(
   let finalChildren = children
 
   if (isBoundary) {
+    // 判定境界：kind ごとのルール（applyKindRule）を、確定分（passed）と見込み分（passed+taking）の
+    // 両方に対して適用する。見込み分は「履修中の科目も全部合格したら」という仮定の値になる。
     kind = group.kind ?? 'elective'
     const confirmed = applyKindRule(kind, earnedPassed, group)
     const projected = applyKindRule(kind, earnedPassed + earnedTaking, group)
@@ -323,6 +334,7 @@ function evaluateGroup(
     projectedOverflow = projected.overflow
     projectedOverflowToCommon = overflowGoesToCommon(kind, group) ? projected.overflow : 0
   } else {
+    // 積み上げ役：自分では判定せず、子グループの結果をそのまま合計するだけ
     kind = undefined
     // 選択必修→選択のような「同じ親の中でのグループ間の繰り入れ」（overflowTarget）を、
     // 子を合計する前に適用する。対象を指定していない子は何も変わらない。
@@ -335,8 +347,10 @@ function evaluateGroup(
     projectedOverflowToCommon = finalChildren.reduce((sum, child) => sum + child.projectedOverflowToCommon, 0)
   }
 
+  // required・shortfall・satisfied（確定分・見込み分）をまとめて計算する
   const summary = summarize(group.required, contribution, projectedContribution)
 
+  // このグループ自身の情報（summary）と、配下の集計値をあわせて1つの結果にする
   return {
     ...summary,
     id: group.id,
@@ -366,15 +380,19 @@ function evaluateGroup(
  * 加算後の値に更新されるので、呼び出し側は返り値の配列をそのまま使えばよい。
  */
 function applyOverflowTargets(reqChildren: readonly RequirementGroup[], results: readonly GroupResult[]): GroupResult[] {
+  // overflowTarget を指定している子が1つも無ければ、何もせず（コピーだけして）そのまま返す
   const hasTarget = reqChildren.some((c) => c.overflowTarget)
   if (!hasTarget) return [...results]
 
+  // グループID → 配列の添字、の対応表。overflowTarget（IDで指定される）から
+  // 実際の配列要素を引けるようにする
   const byId = new Map(reqChildren.map((c, i) => [c.id, i]))
   const updated = [...results]
 
+  // 子を1つずつ見て、overflowTarget が指定されていれば繰り入れ処理をする
   for (let i = 0; i < reqChildren.length; i++) {
     const targetId = reqChildren[i].overflowTarget
-    if (!targetId) continue
+    if (!targetId) continue // このグループは繰り入れ元ではない
     const targetIndex = byId.get(targetId)
     if (targetIndex === undefined) continue // 未知のIDなら何もしない（データ側の不備）
 
@@ -382,6 +400,8 @@ function applyOverflowTargets(reqChildren: readonly RequirementGroup[], results:
     const target = updated[targetIndex]
     const targetGroup = reqChildren[targetIndex]
 
+    // 繰り入れ先（target）の「まだ埋まっていない分」までしか移せない。
+    // それでも余る分（leftover）は、targetの共通単位への繰入額に直接足す
     const confirmedTransfer = Math.min(source.overflow, Math.max(0, target.required - target.contribution))
     const confirmedLeftover = source.overflow - confirmedTransfer
     const projectedTransfer = Math.min(source.projectedOverflow, Math.max(0, target.required - target.projected.contribution))
@@ -389,8 +409,10 @@ function applyOverflowTargets(reqChildren: readonly RequirementGroup[], results:
 
     const newTargetContribution = target.contribution + confirmedTransfer
     const newTargetProjectedContribution = target.projected.contribution + projectedTransfer
+    // target自身が共通単位への繰り入れを許可しているか（overflowToCommon: false でないか）
     const targetOverflowAllowed = overflowGoesToCommon(target.kind ?? 'elective', targetGroup)
 
+    // target（繰り入れ先）の集計値を、移した分を反映した新しい値に置き換える
     updated[targetIndex] = {
       ...target,
       contribution: newTargetContribution,
@@ -432,6 +454,7 @@ export function evaluateRequirements(
   records: ReadonlyMap<string, SubjectStatus>,
   subjectCredits: ReadonlyMap<string, number>,
 ): EvaluationResult {
+  // トップレベルのグループを1つずつ（再帰的に）判定する
   const groups = requirementSet.groups.map((group) => evaluateGroup(group, records, subjectCredits, false))
 
   // 各グループの overflowToCommon は、判定境界の時点ですでに配下全体の超過分を
@@ -441,16 +464,19 @@ export function evaluateRequirements(
   const alwaysCommonPassed = sumSubjectsByStatus(alwaysCommonSubjects, 'passed', records, subjectCredits)
   const alwaysCommonTaking = sumSubjectsByStatus(alwaysCommonSubjects, 'taking', records, subjectCredits)
 
+  // 共通単位の修得見込み = 各グループからの繰入額の合計 + 常に共通単位になる科目の単位数
   const commonEarned = groups.reduce((sum, g) => sum + g.overflowToCommon, 0) + alwaysCommonPassed
   const commonEarnedProjected =
     groups.reduce((sum, g) => sum + g.projectedOverflowToCommon, 0) + alwaysCommonPassed + alwaysCommonTaking
 
+  // 共通単位も required（commonCredits）で頭打ちにしてから CreditSummary にする
   const commonCredits = summarize(
     requirementSet.commonCredits,
     Math.min(commonEarned, requirementSet.commonCredits),
     Math.min(commonEarnedProjected, requirementSet.commonCredits),
   )
 
+  // 合計単位 = 各グループの算入単位の和 + 共通単位（§7.2「充足計算の順序」4.）
   const groupsContribution = groups.reduce((sum, g) => sum + g.contribution, 0)
   const groupsContributionProjected = groups.reduce((sum, g) => sum + g.projected.contribution, 0)
 

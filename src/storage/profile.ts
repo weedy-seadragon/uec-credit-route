@@ -18,10 +18,12 @@ export interface Profile {
 
 const STORAGE_KEY = 'profile'
 
+/** 保存済みのプロフィールを読み込む。一度も保存していなければ undefined */
 export function loadProfile(): Profile | undefined {
   return loadFromStorage<Profile>(STORAGE_KEY)
 }
 
+/** プロフィールをまるごと上書き保存する */
 export function saveProfile(profile: Profile): void {
   saveToStorage(STORAGE_KEY, profile)
 }

@@ -50,16 +50,20 @@ const SUPPORTED_SCHEMA_VERSION = 1
  * 形式が正しくない場合は Error を投げる（呼び出し側でメッセージを表示する）。
  */
 export function parseOwnFormat(json: unknown): ImportResult {
+  // そもそもオブジェクト（{...}の形）でなければ、この時点で読み込みをあきらめる
   if (typeof json !== 'object' || json === null) {
     throw new Error('JSONの形式が正しくありません')
   }
   const data = json as Partial<ExportedData>
+  // バージョンが対応外なら、中身を信用せずに止める（将来ここに変換処理を足す）
   if (data.schemaVersion !== SUPPORTED_SCHEMA_VERSION) {
     throw new Error(`対応していないファイル形式です（schemaVersion: ${String(data.schemaVersion)}）`)
   }
+  // records は必須項目。無ければ壊れたファイルとみなす
   if (!Array.isArray(data.records)) {
     throw new Error('records が見つかりません')
   }
+  // ここまで来れば形は正しいので、そのまま呼び出し側が使いやすい形にして返す
   return {
     profile: data.profile,
     records: data.records,
@@ -79,16 +83,17 @@ export function mergeRecords(
   existing: ReadonlyMap<string, SubjectStatus>,
   incoming: readonly ExportedRecord[],
 ): { merged: Map<string, SubjectStatus>; added: number; updated: number } {
-  const merged = new Map(existing)
+  const merged = new Map(existing) // 既存のMapを直接書き換えず、コピーの上に足していく
   let added = 0
   let updated = 0
+  // ファイルに書かれている記録を1件ずつ、既存の記録に上書き・追加していく
   for (const record of incoming) {
     if (merged.has(record.code)) {
-      updated++
+      updated++ // 既にある科目 → 件数としては「更新」
     } else {
-      added++
+      added++ // 無い科目 → 「追加」
     }
-    merged.set(record.code, record.status)
+    merged.set(record.code, record.status) // どちらの場合もファイル側の状態で（上書き）セットする
   }
   return { merged, added, updated }
 }

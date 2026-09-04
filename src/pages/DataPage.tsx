@@ -19,6 +19,8 @@ export default function DataPage() {
     const records = loadRecords()
     const subjectsByCode = getSubjectsByCode()
 
+    // 本サイト形式（docs/SPEC.md §7.4）の形にまとめる。nameは無くても読み込みには困らないが、
+    // ファイルを人が開いたときに分かりやすいように付けておく
     const data: ExportedData = {
       schemaVersion: 1,
       exportedAt: new Date().toISOString(),
@@ -38,6 +40,8 @@ export default function DataPage() {
     // 4. 使い終わったURLは解放する（メモリリーク防止）
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
+    // ファイル名は「uec-credits_2025_I_media_20260904.json」のようになる。
+    // profileが無い項目は空文字になり、filter(Boolean)で除かれる
     const fileNameParts = [
       'uec-credits',
       String(profile?.entryYear ?? 'unknown'),
@@ -60,22 +64,25 @@ export default function DataPage() {
     if (!file) return
 
     try {
+      // ファイルの中身を文字列として読み、JSONとして解釈し、形式が正しいか検証する
       const text = await file.text()
       const json: unknown = JSON.parse(text)
       const imported = parseOwnFormat(json)
 
+      // 既存の記録に、読み込んだ内容をマージ（追加・更新）してから保存する
       const existing = loadRecords()
       const { merged, added, updated } = mergeRecords(existing, imported.records)
       saveRecords(merged)
 
       setMessage(`${added}件追加、${updated}件更新しました。`)
     } catch (err) {
+      // JSON.parse の失敗、parseOwnFormat が投げたエラーのどちらもここでまとめて拾う
       setMessage(`読み込みに失敗しました: ${err instanceof Error ? err.message : String(err)}`)
     }
   }
 
   function handleReset() {
-    if (!window.confirm('取得・不可の記録をすべて消去します。よろしいですか？（プロフィールは残ります）')) return
+    if (!window.confirm('取得・不可の記録をすべて消去します。よろしいですか？（プロフィールは残ります）')) return // キャンセルなら何もしない
     removeFromStorage('records')
     setMessage('取得・不可の記録を消去しました。')
   }

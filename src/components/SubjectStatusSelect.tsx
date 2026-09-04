@@ -15,6 +15,7 @@ export default function SubjectStatusSelect({ code, value, onChange }: SubjectSt
       aria-label={`${code}の履修状態`}
       value={value ?? 'none'}
       onChange={(e) => {
+        // <select>の値は文字列しか扱えないので、'none'（未履修）だけ特別扱いしてundefinedに変換する
         const v = e.target.value
         onChange(code, v === 'none' ? undefined : (v as SubjectStatus))
       }}

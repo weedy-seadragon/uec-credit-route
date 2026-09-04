@@ -37,6 +37,7 @@ export default function SetupPage() {
     return [...set]
   }, [entryYear, course])
 
+  // さらに「類」まで絞り込んだ、選べるプログラムの一覧
   const availablePrograms = useMemo(
     () => programOptions.filter((p) => p.entryYear === entryYear && p.course === course && p.cluster === cluster),
     [entryYear, course, cluster],
@@ -48,9 +49,11 @@ export default function SetupPage() {
   const programLocked = grade === 1 && !recommended
   const effectiveProgram = programLocked ? null : program
 
+  // フォーム送信時：ページの再読み込みを止め（preventDefault）、今の入力内容を保存して
+  // メイン画面に移動する
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    if (!cluster) return
+    if (!cluster) return // 類は必須（docs/SPEC.md F-1）
     const profile: Profile = { entryYear, course, cluster, program: effectiveProgram, grade, recommended }
     saveProfile(profile)
     navigate('/main')
@@ -85,6 +88,7 @@ export default function SetupPage() {
           </select>
         </div>
 
+        {/* 夜間主コースはデータが無いので、類・プログラムの入力欄ごと出さない */}
         {course === 'evening' ? (
           <p>夜間主コースのデータはまだ準備中です（フェーズ3で対応予定）。</p>
         ) : (

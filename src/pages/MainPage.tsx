@@ -56,6 +56,8 @@ interface BoundaryGroup {
 
 function collectBoundaryGroups(reqGroups: readonly RequirementGroup[], evalGroups: readonly GroupResult[]): BoundaryGroup[] {
   const out: BoundaryGroup[] = []
+  // requirements.ts が組み立てた木を、要件定義（reqGroups）と判定結果（evalGroups）を
+  // 同じ位置（同じ添字）で見比べながらたどる。判定境界（kindが付いている）ノードだけ拾う
   function walk(rgs: readonly RequirementGroup[], egs: readonly GroupResult[]) {
     for (let i = 0; i < rgs.length; i++) {
       const rg = rgs[i]
@@ -67,7 +69,7 @@ function collectBoundaryGroups(reqGroups: readonly RequirementGroup[], evalGroup
           subjects: rg.subjects ?? [],
         })
       }
-      if (rg.children) walk(rg.children, eg.children)
+      if (rg.children) walk(rg.children, eg.children) // 判定境界でなくても、子はさらにたどる
     }
   }
   walk(reqGroups, evalGroups)
@@ -78,6 +80,7 @@ export default function MainPage() {
   // プロフィールはページを開いたときの1回だけ読めばよい（他のページで変更されたら再訪問時に読み直される）
   const [profile] = useState(() => loadProfile())
 
+  // プロフィールが無い（または類が未設定）と要件セットを引けないので、案内だけ出して終わる
   if (!profile || !profile.cluster) {
     return (
       <main>
@@ -88,6 +91,7 @@ export default function MainPage() {
       </main>
     )
   }
+  // プログラム未定のときは、専門科目を含む判定ができない（docs/SPEC.md F-1）
   if (!profile.program) {
     return (
       <main>
@@ -110,6 +114,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   )
   const subjectsByCode = useMemo(() => getSubjectsByCode(), [])
   const subjectCredits = useMemo(() => getSubjectCredits(), [])
+  // recommend.ts が要求する SubjectInfo 型（必要な項目だけ）に、科目マスタの情報を詰め替える
   const recommendSubjects = useMemo<ReadonlyMap<string, SubjectInfo>>(() => {
     const map = new Map<string, SubjectInfo>()
     for (const s of subjectsByCode.values()) {
@@ -125,6 +130,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const [draft, setDraft] = useState<ReadonlyMap<string, SubjectStatus>>(committed)
   const [termKey, setTermKey] = useState('all')
 
+  // Ⅱ・Ⅲ類・夜間主などまだデータが無い組み合わせの場合はここで終わる
   if (!requirementSet) {
     return (
       <main>
@@ -137,34 +143,41 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     )
   }
 
+  // 充足状況の本体計算はrequirements.tsに丸ごと任せる。ここから先はその結果を並べるだけ
   const evaluation = evaluateRequirements(requirementSet, committed, subjectCredits)
   const boundaryGroups = collectBoundaryGroups(requirementSet.groups, evaluation.groups)
   const requiredCodes = new Set(boundaryGroups.filter((g) => g.kind === 'required').flatMap((g) => g.subjects))
 
+  // 表示フィルタ（学期）に応じて、履修できる科目だけをスコア順に並べたものを取得する
   const termFilter = TERM_OPTIONS.find((t) => t.key === termKey)?.filter ?? 'all'
   const recommended = recommend({
     requirementSet, evaluation, records: committed, subjects: recommendSubjects,
     currentGrade: profile.grade, termFilter,
   })
+  // 「残りの必修」に出すのは、必修グループに属していて、まだ修得していないものだけ
   const remainingRequired = recommended.filter((r) => requiredCodes.has(r.code) && committed.get(r.code) !== 'passed')
 
+  // 取得単位・不可の単位のセクションは、committed（確定済み）を状態別に振り分けるだけでよい
   const passedSubjects = [...committed.entries()].filter(([, status]) => status === 'passed')
   const failedSubjects = [...committed.entries()].filter(([, status]) => status === 'failed')
 
+  // プルダウンで状態を変えたとき：draftだけを更新する（committedはまだ変えない）
   function handleDraftChange(code: string, status: SubjectStatus | undefined) {
     setDraft((prev) => {
       const next = new Map(prev)
-      if (status === undefined) next.delete(code)
+      if (status === undefined) next.delete(code) // 「未履修」に戻す＝記録を消す
       else next.set(code, status)
       return next
     })
   }
 
+  // 「更新」ボタンを押したとき：draftの内容をcommittedへ反映し、localStorageにも保存する
   function handleUpdate() {
     setCommitted(draft)
     saveRecords(draft)
   }
 
+  // 科目コードから表示用の名前・単位数を引く小さなヘルパー（見つからなければコードをそのまま出す）
   function nameOf(code: string): string {
     return subjectsByCode.get(code)?.name ?? code
   }
@@ -247,6 +260,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   )
 }
 
+/** 見出しの「あと○単位」用に、必修グループぶんの不足単位数だけを合計する */
 function requiredShortfall(groups: readonly BoundaryGroup[]): number {
   return groups.filter((g) => g.kind === 'required').reduce((sum, g) => sum + g.shortfall, 0)
 }
