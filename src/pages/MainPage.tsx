@@ -307,6 +307,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function creditsOf(code: string): number | undefined {
     return subjectsByCode.get(code)?.credits
   }
+  // 「◯年次前学期」のような表示文字列を作る（標準年次・学期が無い科目は空文字を返す）
+  function yearTermOf(code: string): string {
+    const s = subjectsByCode.get(code)
+    if (!s || s.standardYear === null) return ''
+    return `${s.standardYear}年次${s.termType ?? ''}`
+  }
+  // 「2単位・1年次前学期」のような、科目名の横に添える単位数＋年次のラベルを作る
+  function creditsLabel(code: string): string {
+    const credits = creditsOf(code) ?? '?'
+    const yearTerm = yearTermOf(code)
+    return yearTerm ? `${credits}単位・${yearTerm}` : `${credits}単位`
+  }
   // 他プログラムの専門科目なら、科目名の横に添える注記（該当しなければ何も出さない）
   function otherProgramTag(code: string) {
     if (!isOtherProgramSubject(code, requirementSet?.programSuffix)) return null
@@ -363,7 +375,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <ul>
               {items.map(([code]) => (
                 <li key={code}>
-                  {nameOf(code)}（{creditsOf(code) ?? '?'}単位）{otherProgramTag(code)}
+                  {nameOf(code)}（{creditsLabel(code)}）{otherProgramTag(code)}
                   <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
                 </li>
               ))}
@@ -378,7 +390,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <ul>
           {failedSubjects.map(([code]) => (
             <li key={code}>
-              {nameOf(code)}{otherProgramTag(code)}
+              {nameOf(code)}（{creditsLabel(code)}）{otherProgramTag(code)}
               <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
             </li>
           ))}
@@ -394,7 +406,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <ul>
               {items.map((r) => (
                 <li key={r.code}>
-                  {nameOf(r.code)}（{committed.get(r.code) === 'failed' ? '必修・再履修' : '必修'}）{otherProgramTag(r.code)}
+                  {nameOf(r.code)}（{creditsLabel(r.code)}・{committed.get(r.code) === 'failed' ? '必修・再履修' : '必修'}）{otherProgramTag(r.code)}
                   {r.laterThanStandardYearNote && <span> {r.laterThanStandardYearNote}</span>}
                   <SubjectStatusSelect code={r.code} value={draft.get(r.code)} onChange={handleDraftChange} />
                 </li>
@@ -418,6 +430,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             draft={draft}
             onChange={handleDraftChange}
             nameOf={nameOf}
+            creditsLabel={creditsLabel}
             otherProgramTag={otherProgramTag}
           />
         ))}
@@ -437,6 +450,7 @@ function GroupProgress({
   draft,
   onChange,
   nameOf,
+  creditsLabel,
   otherProgramTag,
 }: {
   group: BoundaryGroup
@@ -444,6 +458,7 @@ function GroupProgress({
   draft: ReadonlyMap<string, SubjectStatus>
   onChange: (code: string, status: SubjectStatus | undefined) => void
   nameOf: (code: string) => string
+  creditsLabel: (code: string) => string
   otherProgramTag: (code: string) => ReactNode
 }) {
   // 一覧に出す／消すのは committed（確定済み）で判断する。draft はプルダウンの表示値にだけ使う。
@@ -459,7 +474,7 @@ function GroupProgress({
       <ul>
         {remaining.map((code) => (
           <li key={code}>
-            {nameOf(code)}{otherProgramTag(code)}
+            {nameOf(code)}（{creditsLabel(code)}）{otherProgramTag(code)}
             <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
           </li>
         ))}
