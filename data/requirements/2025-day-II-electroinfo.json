@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "entryYear": 2025,
+  "course": "day",
+  "cluster": "II",
+  "program": "electroinfo",
+  "programName": "電子情報学プログラム",
+  "programSuffix": "h",
+  "source": "学修要覧2025（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.2③",
+  "extends": "2025-day-common.json",
+  "totalCredits": 133,
+  "commonCredits": 1,
+  "subtotals": {
+    "general": 27,
+    "practical": 17,
+    "specialized": 88,
+    "common": 1
+  },
+  "groups": [
+    {
+      "id": "specialized",
+      "name": "専門科目",
+      "label": "専門",
+      "required": 88,
+      "children": [
+        {
+          "id": "math-basic",
+          "name": "理数基礎科目",
+          "required": 20,
+          "children": [
+            {
+              "id": "math-basic-req",
+              "name": "必修",
+              "label": "理数基礎（必修）",
+              "required": 20,
+              "kind": "required",
+              "subjects": [
+                "MTH101z", "MTH201z", "MTH102z", "MTH202z", "MTH203z",
+                "MTH103z", "MTH204z", "PHY102z", "PHY202z", "CHM102z", "COM201z"
+              ]
+            },
+            {
+              "id": "math-basic-sel",
+              "name": "選択",
+              "label": "理数基礎（選択）",
+              "required": 0,
+              "kind": "elective",
+              "countAs": "common",
+              "note": "修得した単位は共通単位とする",
+              "subjects": ["PHY103z", "PHY203z", "CHM203z"]
+            }
+          ]
+        },
+        {
+          "id": "cluster-basic",
+          "name": "類共通基礎科目",
+          "required": 24,
+          "children": [
+            {
+              "id": "cluster-basic-req",
+              "name": "必修",
+              "label": "類共通基礎（必修）",
+              "required": 20,
+              "kind": "required",
+              "subjects": [
+                "MTH301h", "PHY204h", "MTH302h", "MTH401h", "ELE301h",
+                "PHY301h", "GSE301h", "GSE401h", "COM301h", "COM401h"
+              ],
+              "note": "基礎演習A履修時は応用数学A・基礎電気回路・基礎電磁気学、基礎演習B履修時は応用数学B・回路システム学第一も同じクラスで履修（注2）"
+            },
+            {
+              "id": "cluster-basic-elecreq",
+              "name": "選択必修",
+              "label": "類共通基礎（選択必修）",
+              "required": 4,
+              "kind": "elective-required",
+              "subjects": ["MTH303h", "MTH304h", "PHY302h"]
+            },
+            {
+              "id": "cluster-basic-free",
+              "name": "自由",
+              "label": "類共通基礎（自由科目）",
+              "required": 0,
+              "kind": "free",
+              "countsTowardGraduation": false,
+              "subjects": ["PHY303h"]
+            }
+          ]
+        },
+        {
+          "id": "major",
+          "name": "類専門科目",
+          "required": 44,
+          "children": [
+            {
+              "id": "major-req",
+              "name": "必修",
+              "label": "類専門（必修）",
+              "required": 22,
+              "kind": "required",
+              "subjects": [
+                "ELE401h", "ELE402h", "ELE501h", "ELE601h", "ELE502h", "ELE602h",
+                "ELE603h", "LAB701h", "LAB801h", "LAB702h", "LAB802h"
+              ]
+            },
+            {
+              "id": "major-elecreq",
+              "name": "選択必修",
+              "label": "類専門（選択必修）",
+              "required": 12,
+              "kind": "elective-required",
+              "note": "計算機アーキテクチャーは計算機工学と重複履修不可（注3）",
+              "subjects": [
+                "MTH402h", "ELE403h", "ELE404h", "COM402h", "PHY401h",
+                "PHY501h", "ELE503h", "ELE504h", "PHY502h", "COM501h"
+              ]
+            },
+            {
+              "id": "major-sel",
+              "name": "選択",
+              "label": "類専門（選択）",
+              "required": 10,
+              "kind": "elective",
+              "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み",
+              "subjects": [
+                "ELE604h", "ELE605h", "ELE606h", "ELE607h", "GSE601h",
+                "ELE701h", "ELE702h", "ELE703h", "ELE505h", "ELE801h", "ELE001h",
+                "FGN101h", "FGN201h", "FGN102h", "FGN202h", "FGN301h", "FGN401h",
+                "MTH501h", "COM507h"
+              ]
+            },
+            {
+              "id": "major-free",
+              "name": "自由科目",
+              "label": "自由科目",
+              "required": 0,
+              "kind": "free",
+              "countsTowardGraduation": false,
+              "note": "大学院連携科目（大学院情報理工学研究科の授業科目）。卒業要件に含まれない",
+              "subjects": [
+                "INSa01h", "ELEa01h", "ELEa02h", "ELEa03h",
+                "ELEb01h", "GSEb01h", "GSEb02h", "ELEa04h", "LAB501h"
+              ]
+            },
+            {
+              "id": "major-intl",
+              "name": "国際科目",
+              "label": "国際科目",
+              "required": 0,
+              "kind": "international",
+              "note": "単位の扱いは年度ごとの科目一覧表による",
+              "subjects": ["INT001h", "INT002h", "INT003h", "INT004h"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

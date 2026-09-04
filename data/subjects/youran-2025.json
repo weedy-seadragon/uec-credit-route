@@ -10295,6 +10295,1011 @@
       "groups": [
         "major-intl"
       ]
+    },
+    {
+      "code": "MTH301h",
+      "name": "確率統計",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "PHY204h",
+      "name": "力学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH302h",
+      "name": "応用数学A",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH401h",
+      "name": "応用数学B",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "ELE301h",
+      "name": "基礎電気回路",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "PHY301h",
+      "name": "基礎電磁気学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "GSE301h",
+      "name": "基礎演習A",
+      "credits": 1,
+      "field": "GSE",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "GSE401h",
+      "name": "基礎演習B",
+      "credits": 1,
+      "field": "GSE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM301h",
+      "name": "数値解析およびプログラミング演習",
+      "credits": 3,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM401h",
+      "name": "アルゴリズムとデータ構造およびプログラミング演習",
+      "credits": 3,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH303h",
+      "name": "離散数学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "MTH304h",
+      "name": "複素関数論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "PHY302h",
+      "name": "波動と光",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "PHY303h",
+      "name": "力学演習",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-free"
+      ]
+    },
+    {
+      "code": "ELE401h",
+      "name": "論理回路学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "ELE402h",
+      "name": "回路システム学第一",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "ELE501h",
+      "name": "回路システム学第二",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "ELE601h",
+      "name": "電子回路学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "ELE502h",
+      "name": "電子情報学実験A",
+      "credits": 3,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "ELE602h",
+      "name": "電子情報学実験B1",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "ELE603h",
+      "name": "電子情報学実験B2",
+      "credits": 1,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB701h",
+      "name": "輪講A",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB801h",
+      "name": "輪講B",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB702h",
+      "name": "卒業研究A",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB802h",
+      "name": "卒業研究B",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MTH402h",
+      "name": "数理統計",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "ELE403h",
+      "name": "情報通信と符号化",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "ELE404h",
+      "name": "基礎電子工学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "COM402h",
+      "name": "計算機アーキテクチャー",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "PHY401h",
+      "name": "電磁気学第一",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "PHY501h",
+      "name": "電磁気学第二",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "ELE503h",
+      "name": "情報理論",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "ELE504h",
+      "name": "信号処理論",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "PHY502h",
+      "name": "量子と情報",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "COM501h",
+      "name": "コンピュータネットワーク",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ]
+    },
+    {
+      "code": "ELE604h",
+      "name": "伝送回路論",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE605h",
+      "name": "電磁波工学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE606h",
+      "name": "電子機器システム学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE607h",
+      "name": "線形システム理論",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "GSE601h",
+      "name": "計測工学",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE701h",
+      "name": "集積回路学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE702h",
+      "name": "音響工学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE703h",
+      "name": "画像処理工学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE505h",
+      "name": "宇宙通信工学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE801h",
+      "name": "通信法規",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE001h",
+      "name": "電子工学工房",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN101h",
+      "name": "基礎数学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN201h",
+      "name": "基礎数学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN102h",
+      "name": "基礎物理学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN202h",
+      "name": "基礎物理学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN301h",
+      "name": "情報処理演習第一",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN401h",
+      "name": "情報処理演習第二",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH501h",
+      "name": "幾何学概論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM507h",
+      "name": "マルチメディア処理",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INSa01h",
+      "name": "情報・ネットワーク工学専攻基礎",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ELEa01h",
+      "name": "情報通信ネットワーク",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ELEa02h",
+      "name": "データ圧縮基礎",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ELEa03h",
+      "name": "ディジタル信号処理基礎",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ELEb01h",
+      "name": "回路システム基礎",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "GSEb01h",
+      "name": "センシング工学特論",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "GSEb02h",
+      "name": "電磁波環境観測技術特論",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ELEa04h",
+      "name": "VLSI Low Power Circuit Design",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "LAB501h",
+      "name": "GLTPラボワーク",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INT001h",
+      "name": "Advanced Communication Engineering and Informatics Ⅰ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT002h",
+      "name": "Advanced Communication Engineering and Informatics Ⅱ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT003h",
+      "name": "Advanced Communication Engineering and Informatics Ⅲ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT004h",
+      "name": "Advanced Communication Engineering and Informatics Ⅳ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
     }
   ]
 }
