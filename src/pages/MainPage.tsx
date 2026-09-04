@@ -11,12 +11,15 @@
 // - 先修科目・曜日時限のデータがまだ無いので、同時限警告は出ない（recommend.ts参照）
 // - 審査（2年次終了時審査など）の合否表示はまだ実装していない
 import { useMemo, useState } from 'react'
+import type { ChangeEvent } from 'react'
 import { Link } from 'react-router-dom'
 import type { GroupKind, RequirementGroup, SubjectStatus } from '../domain/requirements'
 import { evaluateRequirements } from '../domain/requirements'
 import type { GroupResult } from '../domain/requirements'
 import type { SubjectInfo, TermFilter } from '../domain/recommend'
 import { recommend } from '../domain/recommend'
+import type { ExportedData } from '../domain/importers'
+import { mergeRecords, parseOwnFormat } from '../domain/importers'
 import { getRequirementSet, getSubjectCredits, getSubjectsByCode } from '../data/requirementSets'
 import type { Profile } from '../storage/profile'
 import { loadProfile } from '../storage/profile'
@@ -178,6 +181,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const [committed, setCommitted] = useState<ReadonlyMap<string, SubjectStatus>>(() => loadRecords())
   const [draft, setDraft] = useState<ReadonlyMap<string, SubjectStatus>>(committed)
   const [termKey, setTermKey] = useState('all')
+  // ダウンロード・読み込みの結果を一言表示するためのメッセージ（F-8）
+  const [dataMessage, setDataMessage] = useState<string | null>(null)
 
   // Ⅱ・Ⅲ類・夜間主などまだデータが無い組み合わせの場合はここで終わる
   if (!requirementSet) {
@@ -231,6 +236,48 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     saveRecords(draft)
   }
 
+  // 「ダウンロード」ボタンを押したとき：今の記録を本サイト形式JSON（§7.4）としてファイルに書き出す
+  function handleDownload() {
+    const data: ExportedData = {
+      schemaVersion: 1,
+      exportedAt: new Date().toISOString(),
+      profile,
+      records: [...committed.entries()].map(([code, status]) => ({ code, name: nameOf(code), status })),
+      planned: [],
+    }
+
+    // ブラウザにファイルをダウンロードさせる標準的な方法：
+    // Blob（データのかたまり）を作り、それを指す一時URLを見えない<a>タグに設定してクリックする
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const fileName = `uec-credits_${profile.entryYear}_${profile.cluster}_${profile.program}_${new Date().toISOString().slice(0, 10).replaceAll('-', '')}.json`
+    const a = document.createElement('a')
+    a.href = url
+    a.download = fileName
+    a.click()
+    URL.revokeObjectURL(url)
+    setDataMessage('ダウンロードしました。')
+  }
+
+  // 「読み込み」でファイルを選んだとき：内容を検証し、今の記録にマージしてすぐ画面へ反映する
+  async function handleFileImport(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = '' // 同じファイルを続けて選んでもchangeイベントが発火するようにリセットする
+    if (!file) return
+
+    try {
+      const json: unknown = JSON.parse(await file.text())
+      const imported = parseOwnFormat(json)
+      const { merged, added, updated } = mergeRecords(committed, imported.records)
+      setCommitted(merged)
+      setDraft(merged) // 編集中の内容も、読み込んだ内容に合わせておく
+      saveRecords(merged)
+      setDataMessage(`${added}件追加、${updated}件更新しました。`)
+    } catch (err) {
+      setDataMessage(`読み込みに失敗しました: ${err instanceof Error ? err.message : String(err)}`)
+    }
+  }
+
   // 科目コードから表示用の名前・単位数を引く小さなヘルパー（見つからなければコードをそのまま出す）
   function nameOf(code: string): string {
     return subjectsByCode.get(code)?.name ?? code
@@ -261,7 +308,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </select>{' '}
         <button type="button" onClick={handleUpdate}>
           更新
-        </button>
+        </button>{' '}
+        <button type="button" onClick={handleDownload}>
+          ダウンロード
+        </button>{' '}
+        {/* ファイル選択ボタンは<input type="file">が標準の見た目しか持てないので、
+            <label>で挟んでボタンっぽく振る舞わせている（htmlForで結びつけると、
+            ラベルをクリック＝隠れたinputをクリックしたことになる） */}
+        <label>
+          読み込み
+          <input type="file" accept="application/json" onChange={handleFileImport} style={{ display: 'none' }} />
+        </label>
+        {dataMessage && <p role="status">{dataMessage}</p>}
       </div>
 
       <section>
