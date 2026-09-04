@@ -92,12 +92,15 @@
   - 全プログラムで、必修グループの単位合計が別表2・別表4の必修単位と一致することをNode検証スクリプトで確認済み。Playwrightで各プログラムの選択・表示・consoleエラー無しも確認
 - **`scripts/gen_data.py` / `scripts/validate_data.py` の更新（Ⅱ類・Ⅲ類・夜間主対応）**：`validate_data.py`は`PROGRAM_FILES`に16ファイル全部を追加し、`reviews`キー（Ⅰ類5プログラムにしか無い）を`.get()`で任意扱いに変更。`gen_data.py`は`add2()`という新しいヘルパーを追加し（既存の`add()`は科目番号の数字から標準学期を自動推定するが、Ⅱ類以降はPDFの週時間数表を実際に読んだ値を明示的に持たせたかったため）、Ⅱ類5・Ⅲ類5・夜間主1の科目マスタ行と要件groups木を追記した。**この環境にはPythonが無く実行して確認できていない**が、生成元のdata/*.jsonをNode.jsで機械的にPythonリテラルへ変換する方式で書いたため、手打ちのtypoリスクは低い。変換の正しさ自体は「生成したPythonリテラルをJSへ逆変換して元のJSONとbyte-for-byte一致するか」「validate_data.pyと同じチェックロジックをNode.jsに移植して16ファイル全部に通す」の2通りで検証済み（どちらもOK）。**次にPythonが使える環境で `python scripts/gen_data.py && python scripts/validate_data.py` を実行し、`git diff`が出ないことを確認してほしい**
 
+- **シラバスから曜日時限を取得（完了、Ⅰ類昼間中心）**：`https://kyoumu.office.uec.ac.jp/syllabus/2025/GakkiIchiran_31_0.html`（情報理工学域2025年度、全1157行）を取得し、`data/subjects/youran-2025.json`の科目名と一致する行（464件）だけに絞り込んで、各行の個別シラバスページ（`.../31/31_{時間割コード}.html`）を1.2秒間隔で取得。科目番号欄（1つの講義が複数プログラムで共有される場合は空白区切りで複数コードが並ぶ。例:`"ELE301a ELE301b ELE301c ELE301d ELE301e"`）を読み取り、一致した科目コード614件分に`offerings`（`docs/SPEC.md` §7.1のスキーマ：`timetableCode`/`faculty`/`term`/`slots`/`instructors`/`syllabusUrl`/`updatedAt`）を追記した。`prerequisites`（先修科目）は今回は未取得（個別ページに項目はあるが今回はスコープ外）
+  - 実行はこの環境にPythonが無いためNode.jsで実施し、`data/subjects/youran-2025.json`に直接書き出した。**`scripts/fetch_syllabus.py`（正式なPython版）は同じロジックになるよう新規作成したが、この環境ではPythonが無く実行して確認できていない**
+  - **注意：`scripts/gen_data.py`は`offerings`を一切知らない**（PDFの手転記データからしか科目マスタを組み立てないため）。次に`python scripts/gen_data.py`を実行すると`data/subjects/youran-2025.json`が上書きされ、今回取得した`offerings`が消える。`gen_data.py`のあとに`fetch_syllabus.py`を実行する、という順序で運用すること（このルールをスクリプト側で強制してはいないので注意）
+  - 464件の候補は「科目名が`data/subjects/youran-2025.json`に存在する行」で絞り込んだもので、全1157件は回っていない（他学域・他年度相当・まだデータ化していない科目名などは対象外）。取りこぼしがある可能性がある
+  - `src/domain/recommend.ts`の`SubjectInfo.slots`/`prerequisites`は「科目1つにつき1つの時限」を想定した設計だが、今回取得した`offerings`は科目によって複数セクション（クラス）で曜日時限が違うことがある（例:語学科目で同じ科目コードに6セクション）。**`offerings`をどう`slots`に落とし込むか（先頭のセクションを使う／全セクションを比較して警告するなど）は未決定・未実装**。今回はデータ取得（`data/`への格納）までで、`recommend.ts`側への配線はまだ行っていない
+
 ### 次回以降にやること
 
-1. **`scripts/gen_data.py`／`scripts/validate_data.py` の実行確認**：上記の通り、Pythonが使える環境でまだ試せていない
-2. **シラバスから曜日時限を取得する（`scripts/fetch_syllabus.py`、後回し中）**：開発者の指示で保留。調査済みの内容は以下の通り
-   - シラバスWeb公開システムの2025年度・情報理工学域は `https://kyoumu.office.uec.ac.jp/syllabus/2025/GakkiIchiran_31_0.html`（夜間主は `..._32_0.html`）。1ページに全科目の表（No./学期/開講/曜日・時限/時間割コード（8桁）/科目名/担当教員）が載っている。曜日時限はこの一覧表の時点で分かる（例:「月1」「月1, 月2」）
-   - ただしこの一覧表には**科目コード（`COM405a`のような形式）が無い**。科目名と8桁の時間割コードだけなので、我々のデータ（`data/subjects/youran-2025.json`）と確実に突き合わせるには、行ごとのリンク先の**個別シラバスページ**（`https://kyoumu.office.uec.ac.jp/syllabus/2025/31/31_{時間割コード}.html`）を開いて、そこに書かれている科目コードで照合する必要がある（個別ページには科目コード・曜日時限どちらも載っている）
-   - 一覧表の行数は情報理工学域全体で1157件（今は全16課程・約1300科目をデータ化済み）。CLAUDE.md本文のルール通り1秒以上間隔を空けると、全部の個別ページを回るのに20〜30分以上かかる見込み
-   - 提案していた進め方：まずⅠ類昼間5プログラム分に絞って取得。`scripts/fetch_syllabus.py`（Python版、正式）を書きつつ、この環境にはPythonが無いのでNode版で実際にバックグラウンド取得・データ反映まで行う（`gen_data.py`のときと同じやり方）。開発者の了承待ち
-3. 今回スコープ外にした主な項目：F-2c（友人アプリ取り込み）・F-2d（成績表貼り付け）、審査（2年次終了時審査等）の合否表示（Ⅰ類5プログラムのみ`reviews`データあり、Ⅱ・Ⅲ類・夜間主は未対応）、同時限警告（シラバスデータ未収集のため）、F-5（科目一覧・詳細）、F-6（プログラム比較）、F-9のOGP/SEO/sitemap（SPEC上もフェーズ4の予定）、夜間主の国際科目（付録C C.4、3・4年次のみ・上級科目扱い）の組み込み
+1. **`scripts/gen_data.py`／`scripts/validate_data.py`／`scripts/fetch_syllabus.py` の実行確認**：上記の通り、Pythonが使える環境でまだ試せていない。**実行する場合は`gen_data.py`→`fetch_syllabus.py`の順で**（逆だとofferingsが消える）
+2. **`offerings`を`recommend.ts`に配線する設計判断**：複数セクション（クラス）を持つ科目の`slots`をどう扱うか（上記参照）。同時限警告（F-4関連）を実装するならここが前提になる
+3. **シラバス取得の対象拡大**：今回はⅠ類昼間5プログラム中心（科目名一致による絞り込みなので他プログラムの科目も一部含まれている）。Ⅱ・Ⅲ類・夜間主の科目や、`prerequisites`（先修科目）の取得はまだ
+4. 今回スコープ外にした主な項目：F-2c（友人アプリ取り込み）・F-2d（成績表貼り付け）、審査（2年次終了時審査等）の合否表示（Ⅰ類5プログラムのみ`reviews`データあり、Ⅱ・Ⅲ類・夜間主は未対応）、同時限警告（上記の設計判断待ち）、F-5（科目一覧・詳細）、F-6（プログラム比較）、F-9のOGP/SEO/sitemap（SPEC上もフェーズ4の予定）、夜間主の国際科目（付録C C.4、3・4年次のみ・上級科目扱い）の組み込み
