@@ -660,9 +660,12 @@ function GroupProgress({
   const splitByTerm = GROUPS_SPLIT_BY_TERM.has(group.id)
   const springRegular = splitByTerm ? regular.filter((code) => termTypeOf(code) === '前学期') : []
   const fallRegular = splitByTerm ? regular.filter((code) => termTypeOf(code) === '後学期') : []
-  const otherRegular = splitByTerm
-    ? regular.filter((code) => termTypeOf(code) !== '前学期' && termTypeOf(code) !== '後学期')
-    : regular
+  // 前学期・後学期のどちらでもない科目（国際科目など）。上級科目だけ、前学期・後学期と同じ
+  // 階層の「その他」折りたたみにまとめる。それ以外（人文・社会科学科目）では、今のところ
+  // 該当科目は無いはずだが、念のため通常の一覧にそのまま出して取りこぼさないようにする
+  const noTermItems = splitByTerm ? regular.filter((code) => termTypeOf(code) !== '前学期' && termTypeOf(code) !== '後学期') : []
+  const noTermCollapsed = group.id === 'advanced' ? noTermItems : []
+  const topLevelRegular = !splitByTerm ? regular : group.id === 'advanced' ? [] : noTermItems
   return (
     <details>
       <summary>
@@ -670,13 +673,14 @@ function GroupProgress({
         {group.satisfied ? ' ✔' : ''}
       </summary>
       <ul>
-        {otherRegular.map((code) => (
+        {topLevelRegular.map((code) => (
           <li key={code}>{row(code)}</li>
         ))}
         {splitByTerm && (
           <>
             <CollapsedSubjectGroup title="前学期" items={springRegular} codeOf={(code) => code} renderRow={rowShort} />
             <CollapsedSubjectGroup title="後学期" items={fallRegular} codeOf={(code) => code} renderRow={rowShort} />
+            <CollapsedSubjectGroup title="その他" items={noTermCollapsed} codeOf={(code) => code} renderRow={row} />
           </>
         )}
         <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={(code) => code} renderRow={row} />
