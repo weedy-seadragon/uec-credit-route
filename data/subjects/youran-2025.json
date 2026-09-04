@@ -19640,6 +19640,1251 @@
       "groups": [
         "major-intl"
       ]
+    },
+    {
+      "code": "HSS201s",
+      "name": "哲学",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS202s",
+      "name": "倫理学",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS203s",
+      "name": "心理学",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS101s",
+      "name": "歴史学",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS204s",
+      "name": "科学史",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS205s",
+      "name": "文学",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS102s",
+      "name": "音楽",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS103s",
+      "name": "社会学",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS104s",
+      "name": "法学",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS105s",
+      "name": "地理学",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS106s",
+      "name": "社会思想史",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS501s",
+      "name": "科学という文化",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "advanced"
+      ]
+    },
+    {
+      "code": "HSS502s",
+      "name": "科学技術と倫理",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "advanced"
+      ]
+    },
+    {
+      "code": "HSS503s",
+      "name": "国際文化論",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "advanced"
+      ]
+    },
+    {
+      "code": "HSS701s",
+      "name": "国際技術協力論",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "advanced"
+      ]
+    },
+    {
+      "code": "MTH401s",
+      "name": "応用幾何学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "advanced"
+      ]
+    },
+    {
+      "code": "MTH402s",
+      "name": "応用代数学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "advanced"
+      ]
+    },
+    {
+      "code": "ENG101s",
+      "name": "Academic Written English I",
+      "credits": 1,
+      "field": "ENG",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "language"
+      ]
+    },
+    {
+      "code": "ENG201s",
+      "name": "Academic Written English II",
+      "credits": 1,
+      "field": "ENG",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "language"
+      ]
+    },
+    {
+      "code": "ENG102s",
+      "name": "Academic Spoken English I",
+      "credits": 1,
+      "field": "ENG",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "language"
+      ]
+    },
+    {
+      "code": "ENG202s",
+      "name": "Academic Spoken English II",
+      "credits": 1,
+      "field": "ENG",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "language"
+      ]
+    },
+    {
+      "code": "ENG301s",
+      "name": "Academic English for the 2nd Year I",
+      "credits": 1,
+      "field": "ENG",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "language"
+      ]
+    },
+    {
+      "code": "ENG401s",
+      "name": "Academic English for the 2nd Year II",
+      "credits": 1,
+      "field": "ENG",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "language"
+      ]
+    },
+    {
+      "code": "ENG501s",
+      "name": "Academic Presentation in English",
+      "credits": 1,
+      "field": "ENG",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "language"
+      ]
+    },
+    {
+      "code": "ENG601s",
+      "name": "Academic Writing in English",
+      "credits": 1,
+      "field": "ENG",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "language"
+      ]
+    },
+    {
+      "code": "HSP101s",
+      "name": "健康実践論",
+      "credits": 2,
+      "field": "HSP",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "health"
+      ]
+    },
+    {
+      "code": "GSC301s",
+      "name": "環境科学",
+      "credits": 2,
+      "field": "GSC",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "sci-liberal"
+      ]
+    },
+    {
+      "code": "MTH101s",
+      "name": "アカデミックリテラシー",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "intro"
+      ]
+    },
+    {
+      "code": "COM101s",
+      "name": "コンピュータリテラシー",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "intro"
+      ]
+    },
+    {
+      "code": "PHY201s",
+      "name": "基礎物理学実験",
+      "credits": 1,
+      "field": "PHY",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "intro"
+      ]
+    },
+    {
+      "code": "CHM201s",
+      "name": "基礎化学実験",
+      "credits": 1,
+      "field": "CHM",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "intro"
+      ]
+    },
+    {
+      "code": "UEC301s",
+      "name": "総合コミュニケーション科学",
+      "credits": 2,
+      "field": "UEC",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "datasci-req"
+      ]
+    },
+    {
+      "code": "UEC501s",
+      "name": "データサイエンス演習",
+      "credits": 1,
+      "field": "UEC",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "datasci-ex"
+      ]
+    },
+    {
+      "code": "CAR501s",
+      "name": "技術課程演習第一",
+      "credits": 2,
+      "field": "CAR",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "sangaku"
+      ]
+    },
+    {
+      "code": "CAR601s",
+      "name": "技術課程演習第二",
+      "credits": 2,
+      "field": "CAR",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "sangaku"
+      ]
+    },
+    {
+      "code": "CAR701s",
+      "name": "知的財産権",
+      "credits": 2,
+      "field": "CAR",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "gijutsu"
+      ]
+    },
+    {
+      "code": "CAR801s",
+      "name": "技術者倫理",
+      "credits": 2,
+      "field": "CAR",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "gijutsu"
+      ]
+    },
+    {
+      "code": "MTH102t",
+      "name": "基礎微分積分学第一",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "math-basic-req"
+      ]
+    },
+    {
+      "code": "MTH201t",
+      "name": "基礎微分積分学第二",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "math-basic-req"
+      ]
+    },
+    {
+      "code": "MTH103t",
+      "name": "ベクトルと行列第一",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "math-basic-req"
+      ]
+    },
+    {
+      "code": "MTH202t",
+      "name": "ベクトルと行列第二",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "math-basic-req"
+      ]
+    },
+    {
+      "code": "PHY101t",
+      "name": "基礎物理学第一",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "math-basic-req"
+      ]
+    },
+    {
+      "code": "PHY202t",
+      "name": "基礎物理学第二",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "math-basic-req"
+      ]
+    },
+    {
+      "code": "COM201t",
+      "name": "基礎プログラミングおよび演習",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "math-basic-req"
+      ]
+    },
+    {
+      "code": "CHM101t",
+      "name": "化学結合と構造",
+      "credits": 2,
+      "field": "CHM",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "math-basic-elec"
+      ]
+    },
+    {
+      "code": "MTH301t",
+      "name": "基礎解析学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "math-basic-elec"
+      ]
+    },
+    {
+      "code": "PHY301t",
+      "name": "基礎物理学第三",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "math-basic-elec"
+      ]
+    },
+    {
+      "code": "MTH203t",
+      "name": "離散数学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-req"
+      ]
+    },
+    {
+      "code": "MTH302t",
+      "name": "応用数学第一",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-req"
+      ]
+    },
+    {
+      "code": "MTH403t",
+      "name": "応用数学第二",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-req"
+      ]
+    },
+    {
+      "code": "MTH404t",
+      "name": "確率統計",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-req"
+      ]
+    },
+    {
+      "code": "COM301t",
+      "name": "プログラミング通論および演習",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-req"
+      ]
+    },
+    {
+      "code": "COM302t",
+      "name": "論理回路学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-req"
+      ]
+    },
+    {
+      "code": "PHY302t",
+      "name": "電磁気学および演習",
+      "credits": 3,
+      "field": "PHY",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-req"
+      ]
+    },
+    {
+      "code": "ELE401t",
+      "name": "電気回路学および演習",
+      "credits": 3,
+      "field": "ELE",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-req"
+      ]
+    },
+    {
+      "code": "ELE402t",
+      "name": "基礎電子工学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-req"
+      ]
+    },
+    {
+      "code": "ELE501t",
+      "name": "アナログ回路実験",
+      "credits": 1,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-req"
+      ]
+    },
+    {
+      "code": "COM501t",
+      "name": "プログラミング実験",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-req"
+      ]
+    },
+    {
+      "code": "COM502t",
+      "name": "情報通信と符号化",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-elec"
+      ]
+    },
+    {
+      "code": "COM401t",
+      "name": "アルゴリズム・データ構造および演習",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-elec"
+      ]
+    },
+    {
+      "code": "MCE501t",
+      "name": "制御工学",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-elec"
+      ]
+    },
+    {
+      "code": "MCE502t",
+      "name": "設計工学",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-elec"
+      ]
+    },
+    {
+      "code": "ELE502t",
+      "name": "電子回路学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-elec"
+      ]
+    },
+    {
+      "code": "ELE503t",
+      "name": "回路システム学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "prof-basic-elec"
+      ]
+    },
+    {
+      "code": "COM601t",
+      "name": "計算機工学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM602t",
+      "name": "信号処理論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "PHY601t",
+      "name": "電磁波工学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "ELE601t",
+      "name": "組み込みシステム",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM603t",
+      "name": "情報学実験",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MCE601t",
+      "name": "知能機械工学実験",
+      "credits": 1,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB701t",
+      "name": "輪講A",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB801t",
+      "name": "輪講B",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "INS701t",
+      "name": "情報メディアシステム",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS801t",
+      "name": "知能システム",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM701t",
+      "name": "通信・ネットワーク",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM801t",
+      "name": "暗号情報セキュリティ",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE701t",
+      "name": "計測工学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MCE701t",
+      "name": "メカトロニクス",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MCE801t",
+      "name": "ロボティックス",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MCE802t",
+      "name": "ヒューマンインタフェース",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "GSE701t",
+      "name": "先端トピックス",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "LAB702t",
+      "name": "卒業研究A",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "LAB802t",
+      "name": "卒業研究B",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
     }
   ]
 }

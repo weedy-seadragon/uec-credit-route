@@ -28,6 +28,7 @@ import electro from '../../data/requirements/2025-day-III-electro.json'
 import optical from '../../data/requirements/2025-day-III-optical.json'
 import physics from '../../data/requirements/2025-day-III-physics.json'
 import chembio from '../../data/requirements/2025-day-III-chembio.json'
+import evening from '../../data/requirements/2025-evening.json'
 import subjectsMaster from '../../data/subjects/youran-2025.json'
 
 /** プロフィール設定画面（F-1）の選択肢1つぶん */
@@ -39,11 +40,16 @@ export interface ProgramOption {
   programName: string
 }
 
-/** data/requirements/2025-day-I-*.json のようなプログラム別ファイルの形 */
+/**
+ * data/requirements/2025-day-I-*.json や 2025-evening.json のようなプログラム別ファイルの形。
+ * 夜間主コース（course: 'evening'）は類の区分が無いので cluster: null、
+ * かつ common ファイルをextendsせず groups がそれ自体で完結している（day-common.jsonとは
+ * 科目区分・科目コード体系が違うため）。getRequirementSet() 側でこの違いを吸収する。
+ */
 interface ProgramDoc {
   entryYear: number
   course: 'day' | 'evening'
-  cluster: 'I' | 'II' | 'III'
+  cluster: 'I' | 'II' | 'III' | null
   program: string
   programName: string
   /** 科目番号末尾記号（例: "a"）。他プログラムの専門科目の判定に使う（domain/requirements.tsのRequirementSet参照） */
@@ -55,7 +61,7 @@ interface ProgramDoc {
    * 共通ファイル（2025-day-common.json）側のグループを、このプログラムだけ一部上書きしたいときに使う。
    * キーは上書きしたいグループのid（例: "datasci-ex"）、値はそのグループにマージするフィールド。
    * 例: Ⅱ類計測・制御システム/先端ロボティクス・Ⅲ類は「データサイエンス演習」が必修ではなく
-   * 選択（required: 0）になる（学修要覧2025 §2.5.1・別表2の注記）。
+   * 選択（required: 0）になる（学修要覧2025 §2.5.1・別表2の注記）。夜間主（course: 'evening'）には適用されない。
    */
   commonOverrides?: Record<string, Partial<RequirementGroup>>
 }
@@ -76,7 +82,7 @@ function applyCommonOverrides(groups: readonly RequirementGroup[], overrides: Re
 // JSONを`import`すると型は自動推論されるが、要件セットの木構造（children等）まではTypeScriptには
 // 分からないので、ここで RequirementGroup[] であることを明示しておく（as で型を指定し直している）。
 const commonDoc = common as { groups: RequirementGroup[]; commonCreditSources?: { alwaysCommon?: string[] } }
-const programDocs: ProgramDoc[] = [media, management, mathinfo, cs, designds, security, netinfo, electroinfo, control, robotics, mecha, electro, optical, physics, chembio] as ProgramDoc[]
+const programDocs: ProgramDoc[] = [media, management, mathinfo, cs, designds, security, netinfo, electroinfo, control, robotics, mecha, electro, optical, physics, chembio, evening] as ProgramDoc[]
 
 /** プロフィール設定画面のプルダウンに出す、今データが揃っている選択肢の一覧 */
 export const programOptions: ProgramOption[] = programDocs.map((p) => ({
@@ -92,21 +98,27 @@ export const programOptions: ProgramOption[] = programDocs.map((p) => ({
  * 共通ファイル（総合文化・実践教育科目）とプログラム別ファイル（専門科目）を
  * ここで合体させる（`extends` の解決）。データが無ければ undefined を返す。
  */
-export function getRequirementSet(entryYear: number, course: string, cluster: string, program: string): RequirementSet | undefined {
+export function getRequirementSet(entryYear: number, course: string, cluster: string | null, program: string): RequirementSet | undefined {
   // 4つの条件すべてに一致するプログラムファイルを探す
   const doc = programDocs.find(
     (p) => p.entryYear === entryYear && p.course === course && p.cluster === cluster && p.program === program,
   )
   if (!doc) return undefined // まだデータが無い組み合わせ
 
-  // 共通ファイルのgroups（総合文化・実践教育。プログラム固有のcommonOverridesがあれば適用）と
-  // プログラム別ファイルのgroups（専門科目）を1つの配列にまとめて、evaluateRequirements() に
-  // そのまま渡せる形にする
+  // 夜間主（course: 'evening'）は2025-day-common.jsonをextendsしない自己完結ファイルなので、
+  // doc.groups だけをそのまま使う。昼間コースは共通ファイルのgroups（総合文化・実践教育。
+  // プログラム固有のcommonOverridesがあれば適用）とプログラム別ファイルのgroups（専門科目）を
+  // 1つの配列にまとめて、evaluateRequirements() にそのまま渡せる形にする
+  const groups =
+    doc.course === 'evening'
+      ? [...doc.groups]
+      : [...applyCommonOverrides(commonDoc.groups, doc.commonOverrides), ...doc.groups]
+
   return {
     totalCredits: doc.totalCredits,
     commonCredits: doc.commonCredits,
-    groups: [...applyCommonOverrides(commonDoc.groups, doc.commonOverrides), ...doc.groups],
-    alwaysCommonSubjects: commonDoc.commonCreditSources?.alwaysCommon ?? [],
+    groups,
+    alwaysCommonSubjects: doc.course === 'evening' ? [] : (commonDoc.commonCreditSources?.alwaysCommon ?? []),
     programSuffix: doc.programSuffix,
   }
 }

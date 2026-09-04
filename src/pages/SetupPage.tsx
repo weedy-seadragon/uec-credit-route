@@ -26,6 +26,8 @@ export default function SetupPage() {
   const [program, setProgram] = useState<string | null>(saved?.program ?? null)
   const [grade, setGrade] = useState(saved?.grade ?? 1)
   const [recommended, setRecommended] = useState(saved?.recommended ?? false)
+  // 夜間主コース用の学年（昼間コースの grade とは別に持つ。プログラム配属の概念が無いので推薦入学欄も出さない）
+  const [eveningGrade, setEveningGrade] = useState(saved?.course === 'evening' ? (saved?.grade ?? 1) : 1)
 
   // 今持っているデータの中から、選んだ年度・コースに対応する「類」の一覧を作る（重複は除く）。
   // useMemo は「依存配列が変わったときだけ再計算する」ためのフック。単なる関数呼び出しでも動くが、
@@ -53,7 +55,14 @@ export default function SetupPage() {
   // メイン画面に移動する
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    if (!cluster) return // 類は必須（docs/SPEC.md F-1）
+    // 夜間主コースは類・プログラムの区分が無い単一課程（docs/SPEC.md §3）なので、
+    // cluster: null・program: 'evening' 固定で保存する
+    if (course === 'evening') {
+      saveProfile({ entryYear, course, cluster: null, program: 'evening', grade: eveningGrade, recommended: false })
+      navigate('/main')
+      return
+    }
+    if (!cluster) return // 昼間コースは類が必須（docs/SPEC.md F-1）
     const profile: Profile = { entryYear, course, cluster, program: effectiveProgram, grade, recommended }
     saveProfile(profile)
     navigate('/main')
@@ -88,9 +97,22 @@ export default function SetupPage() {
           </select>
         </div>
 
-        {/* 夜間主コースはデータが無いので、類・プログラムの入力欄ごと出さない */}
+        {/* 夜間主コースは類・プログラムの区分が無い単一課程なので、学年だけ聞く */}
         {course === 'evening' ? (
-          <p>夜間主コースのデータはまだ準備中です（フェーズ3で対応予定）。</p>
+          <div>
+            <label htmlFor="eveningGrade">現在の学年</label>
+            <select
+              id="eveningGrade"
+              value={eveningGrade}
+              onChange={(e) => setEveningGrade(Number(e.target.value))}
+            >
+              {[1, 2, 3, 4].map((g) => (
+                <option key={g} value={g}>
+                  {g}年生
+                </option>
+              ))}
+            </select>
+          </div>
         ) : (
           <>
             <div>
@@ -147,7 +169,7 @@ export default function SetupPage() {
           </>
         )}
 
-        <button type="submit" disabled={!cluster}>
+        <button type="submit" disabled={course === 'day' && !cluster}>
           この内容で始める
         </button>
       </form>

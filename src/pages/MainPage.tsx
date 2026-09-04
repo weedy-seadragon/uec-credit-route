@@ -26,9 +26,8 @@ import { loadProfile } from '../storage/profile'
 import { loadRecords, saveRecords } from '../storage/records'
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
 
-/** プロフィールのうち、要件セットを引くのに必要な項目が揃っている状態 */
-interface LoadedProfile extends Omit<Profile, 'cluster' | 'program'> {
-  cluster: 'I' | 'II' | 'III'
+/** プロフィールのうち、要件セットを引くのに必要な項目が揃っている状態（夜間主はcluster: null） */
+interface LoadedProfile extends Omit<Profile, 'program'> {
   program: string
 }
 
@@ -213,8 +212,9 @@ export default function MainPage() {
   // プロフィールはページを開いたときの1回だけ読めばよい（他のページで変更されたら再訪問時に読み直される）
   const [profile] = useState(() => loadProfile())
 
-  // プロフィールが無い（または類が未設定）と要件セットを引けないので、案内だけ出して終わる
-  if (!profile || !profile.cluster) {
+  // プロフィールが無いと要件セットを引けないので、案内だけ出して終わる。
+  // 昼間コースは類が必須（docs/SPEC.md F-1）だが、夜間主コースは類の区分が無いのでcluster: nullのままでよい
+  if (!profile || (profile.course === 'day' && !profile.cluster)) {
     return (
       <main>
         <h1>メイン画面</h1>
@@ -273,8 +273,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <main>
         <h1>メイン画面</h1>
         <p>
-          このプロフィール（{profile.entryYear}年度 / {profile.course} / {profile.cluster}類 / {profile.program}）の
-          要件データはまだありません。
+          このプロフィール（{profile.entryYear}年度 / {profile.course}
+          {profile.cluster ? ` / ${profile.cluster}類` : ''} / {profile.program}）の要件データはまだありません。
         </p>
       </main>
     )
@@ -349,7 +349,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     // Blob（データのかたまり）を作り、それを指す一時URLを見えない<a>タグに設定してクリックする
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
-    const fileName = `uec-credits_${profile.entryYear}_${profile.cluster}_${profile.program}_${new Date().toISOString().slice(0, 10).replaceAll('-', '')}.json`
+    const fileName = `uec-credits_${profile.entryYear}_${profile.cluster ?? 'evening'}_${profile.program}_${new Date().toISOString().slice(0, 10).replaceAll('-', '')}.json`
     const a = document.createElement('a')
     a.href = url
     a.download = fileName
@@ -461,8 +461,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     // クリックしづらくならないようにするため
     <main style={{ paddingBottom: '6rem' }}>
       <h1>
-        {profile.entryYear}入学 / {profile.cluster}類 / {profile.program} / {profile.grade}年{' '}
-        <Link to="/setup">[変更]</Link>
+        {profile.entryYear}入学 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
+        {profile.program} / {profile.grade}年 <Link to="/setup">[変更]</Link>
       </h1>
       <p>
         合計 {evaluation.totalCredits.contribution} / {evaluation.totalCredits.required}

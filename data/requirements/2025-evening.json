@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "entryYear": 2025,
+  "course": "evening",
+  "cluster": null,
+  "program": "evening",
+  "programName": "先端工学基礎課程（夜間主コース）",
+  "programSuffix": "t",
+  "source": "学修要覧2025（情報理工学域）別表2, 付録C C.5, C.6",
+  "note": "夜間主コースは類・プログラムの区分がなく単一課程（docs/SPEC.md §3）。総合文化・実践教育・専門科目とも昼間コースとは別の科目区分・科目コード体系（総合文化/実践教育は's'サフィックス、専門は't'サフィックス）のため、day-common.jsonをextendsせずこのファイル単独で完結させている。国際科目（付録C C.4、夜間主は3・4年次のみ履修可・上級科目扱い）の組み込みは今回未対応（要フォローアップ）",
+  "totalCredits": 124,
+  "commonCredits": 6,
+  "subtotals": {
+    "general": 24,
+    "practical": 14,
+    "specialized": 80,
+    "common": 6
+  },
+  "groups": [
+    {
+      "id": "general",
+      "name": "総合文化科目",
+      "label": "総合文化",
+      "required": 24,
+      "children": [
+        {
+          "id": "hss",
+          "name": "人文・社会科学科目",
+          "label": "人文・社会",
+          "required": 8,
+          "kind": "elective-required",
+          "note": "8単位を修得すること",
+          "subjects": [
+            "HSS201s", "HSS202s", "HSS203s", "HSS101s", "HSS204s", "HSS205s",
+            "HSS102s", "HSS103s", "HSS104s", "HSS105s", "HSS106s"
+          ]
+        },
+        {
+          "id": "advanced",
+          "name": "上級科目",
+          "label": "上級科目",
+          "required": 4,
+          "kind": "elective-required",
+          "note": "4単位を修得すること",
+          "subjects": ["HSS501s", "HSS502s", "HSS503s", "HSS701s", "MTH401s", "MTH402s"]
+        },
+        {
+          "id": "language",
+          "name": "言語文化科目",
+          "label": "言語文化",
+          "required": 8,
+          "kind": "required",
+          "note": "8単位必修",
+          "subjects": ["ENG101s", "ENG201s", "ENG102s", "ENG202s", "ENG301s", "ENG401s", "ENG501s", "ENG601s"]
+        },
+        {
+          "id": "health",
+          "name": "健康科学科目",
+          "label": "健康科学",
+          "required": 2,
+          "kind": "required",
+          "note": "2単位必修",
+          "subjects": ["HSP101s"]
+        },
+        {
+          "id": "sci-liberal",
+          "name": "理工系教養科目",
+          "label": "理工系教養",
+          "required": 2,
+          "kind": "elective-required",
+          "note": "2単位を修得すること",
+          "subjects": ["GSC301s"]
+        }
+      ]
+    },
+    {
+      "id": "practical",
+      "name": "実践教育科目",
+      "label": "実践教育",
+      "required": 14,
+      "children": [
+        {
+          "id": "intro",
+          "name": "初年次導入科目",
+          "label": "初年次導入",
+          "required": 6,
+          "kind": "required",
+          "note": "6単位必修",
+          "subjects": ["MTH101s", "COM101s", "PHY201s", "CHM201s"]
+        },
+        {
+          "id": "datasci",
+          "name": "データサイエンス科目",
+          "label": "データサイエンス",
+          "required": 2,
+          "subjects": [],
+          "children": [
+            {
+              "id": "datasci-req",
+              "name": "必修",
+              "label": "総合コミュニケーション科学",
+              "required": 2,
+              "kind": "required",
+              "subjects": ["UEC301s"]
+            },
+            {
+              "id": "datasci-ex",
+              "name": "データサイエンス演習",
+              "label": "DS演習",
+              "required": 0,
+              "kind": "elective",
+              "note": "総合コミュニケーション科学のみで2単位を満たすため選択（超過分は共通単位）",
+              "subjects": ["UEC501s"]
+            }
+          ]
+        },
+        {
+          "id": "sangaku",
+          "name": "産学連携教育科目",
+          "label": "産学連携",
+          "required": 4,
+          "kind": "required",
+          "note": "4単位必修",
+          "subjects": ["CAR501s", "CAR601s"]
+        },
+        {
+          "id": "gijutsu",
+          "name": "技術者教養科目",
+          "label": "技術者教養",
+          "required": 2,
+          "kind": "elective-required",
+          "note": "2単位を修得すること",
+          "subjects": ["CAR701s", "CAR801s"]
+        }
+      ]
+    },
+    {
+      "id": "specialized",
+      "name": "専門科目",
+      "label": "専門",
+      "required": 80,
+      "children": [
+        {
+          "id": "math-basic",
+          "name": "理数基礎科目",
+          "required": 18,
+          "children": [
+            {
+              "id": "math-basic-req",
+              "name": "必修",
+              "label": "理数基礎（必修）",
+              "required": 14,
+              "kind": "required",
+              "note": "14単位必修",
+              "subjects": ["MTH102t", "MTH201t", "MTH103t", "MTH202t", "PHY101t", "PHY202t", "COM201t"]
+            },
+            {
+              "id": "math-basic-elec",
+              "name": "選択",
+              "label": "理数基礎（選択）",
+              "required": 4,
+              "kind": "elective-required",
+              "note": "4単位を修得すること",
+              "subjects": ["CHM101t", "MTH301t", "PHY301t"]
+            }
+          ]
+        },
+        {
+          "id": "prof-basic",
+          "name": "専門基礎科目",
+          "required": 32,
+          "children": [
+            {
+              "id": "prof-basic-req",
+              "name": "必修",
+              "label": "専門基礎（必修）",
+              "required": 22,
+              "kind": "required",
+              "note": "22単位必修",
+              "subjects": [
+                "MTH203t", "MTH302t", "MTH403t", "MTH404t", "COM301t", "COM302t",
+                "PHY302t", "ELE401t", "ELE402t", "ELE501t", "COM501t"
+              ]
+            },
+            {
+              "id": "prof-basic-elec",
+              "name": "選択",
+              "label": "専門基礎（選択）",
+              "required": 10,
+              "kind": "elective-required",
+              "note": "10単位を修得すること",
+              "subjects": ["COM502t", "COM401t", "MCE501t", "MCE502t", "ELE502t", "ELE503t"]
+            }
+          ]
+        },
+        {
+          "id": "major",
+          "name": "専門科目（類専門相当）",
+          "required": 30,
+          "children": [
+            {
+              "id": "major-req",
+              "name": "必修",
+              "label": "専門（必修）",
+              "required": 12,
+              "kind": "required",
+              "note": "12単位必修",
+              "subjects": ["COM601t", "COM602t", "PHY601t", "ELE601t", "COM603t", "MCE601t", "LAB701t", "LAB801t"]
+            },
+            {
+              "id": "major-sel",
+              "name": "選択",
+              "label": "専門（選択）",
+              "required": 18,
+              "kind": "elective",
+              "note": "18単位を修得すること。卒業研究A・Bも学修要覧上は選択科目として記載されている（◎ではなく○）",
+              "subjects": [
+                "INS701t", "INS801t", "COM701t", "COM801t", "ELE701t",
+                "MCE701t", "MCE801t", "MCE802t", "GSE701t", "LAB702t", "LAB802t"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
