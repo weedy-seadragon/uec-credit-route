@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "entryYear": 2025,
+  "course": "day",
+  "cluster": "III",
+  "program": "chembio",
+  "programName": "化学生命工学プログラム",
+  "programSuffix": "r",
+  "source": "学修要覧2025（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.3⑤",
+  "extends": "2025-day-common.json",
+  "totalCredits": 133,
+  "commonCredits": 5,
+  "subtotals": {
+    "general": 27,
+    "practical": 16,
+    "specialized": 85,
+    "common": 5
+  },
+  "commonOverrides": {
+    "datasci-ex": {
+      "required": 0,
+      "kind": "elective",
+      "note": "計測・制御システム/先端ロボティクス・Ⅲ類は選択科目（required=0）。超過分は共通単位に繰り入れ（day-common.jsonの元の注記参照）"
+    }
+  },
+  "groups": [
+    {
+      "id": "specialized",
+      "name": "専門科目",
+      "label": "専門",
+      "required": 85,
+      "children": [
+        {
+          "id": "math-basic",
+          "name": "理数基礎科目",
+          "required": 20,
+          "children": [
+            {
+              "id": "math-basic-req",
+              "name": "必修",
+              "label": "理数基礎（必修）",
+              "required": 20,
+              "kind": "required",
+              "subjects": [
+                "MTH101z", "MTH201z", "MTH102z", "MTH202z", "MTH203z",
+                "MTH103z", "MTH204z", "PHY102z", "PHY202z", "CHM102z", "COM201z"
+              ]
+            },
+            {
+              "id": "math-basic-sel",
+              "name": "選択",
+              "label": "理数基礎（選択）",
+              "required": 0,
+              "kind": "elective",
+              "countAs": "common",
+              "note": "修得した単位は共通単位とする",
+              "subjects": ["PHY103z", "PHY203z", "CHM203z"]
+            }
+          ]
+        },
+        {
+          "id": "cluster-basic",
+          "name": "類共通基礎科目",
+          "required": 23,
+          "children": [
+            {
+              "id": "cluster-basic-req",
+              "name": "必修",
+              "label": "類共通基礎（必修）",
+              "required": 15,
+              "kind": "required",
+              "subjects": ["PHY204r", "PHY205r", "MTH301r", "PHY301r", "PHY302r", "ELE301r", "BIO401r"]
+            },
+            {
+              "id": "cluster-basic-elecreq",
+              "name": "選択必修",
+              "label": "類共通基礎（選択必修）",
+              "required": 6,
+              "kind": "elective-required",
+              "subjects": ["MTH302r", "MTH303r", "GSE301r", "COM301r", "PHY401r", "ELE401r", "COM401r"]
+            },
+            {
+              "id": "cluster-basic-sel",
+              "name": "選択",
+              "label": "類共通基礎（選択）",
+              "required": 2,
+              "kind": "elective",
+              "note": "修得した単位は共通単位とする",
+              "subjects": ["COM402r"]
+            }
+          ]
+        },
+        {
+          "id": "major",
+          "name": "類専門科目",
+          "required": 42,
+          "children": [
+            {
+              "id": "major-req",
+              "name": "必修",
+              "label": "類専門（必修）",
+              "required": 32,
+              "kind": "required",
+              "subjects": [
+                "CHM401r", "CHM402r", "ELE402r", "BCH501r", "BCH601r", "BCH502r", "BCH602r",
+                "CHM501r", "CHM502r", "BIO501r", "BIO502r", "BIO601r",
+                "LAB701r", "LAB801r", "LAB702r", "LAB802r"
+              ]
+            },
+            {
+              "id": "major-elecreq",
+              "name": "選択必修",
+              "label": "類専門（選択必修）",
+              "required": 8,
+              "kind": "elective-required",
+              "subjects": ["PHY402r", "CHM503r", "BIO503r", "CHM601r", "CHM602r", "CHM603r", "BIO602r"]
+            },
+            {
+              "id": "major-sel",
+              "name": "選択",
+              "label": "類専門（選択）",
+              "required": 2,
+              "kind": "elective",
+              "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み（Ⅲ類5プログラムがそろい次第）",
+              "subjects": [
+                "ELE601r", "BIO603r", "CHM701r",
+                "FGN101r", "FGN201r", "FGN102r", "FGN202r", "FGN301r", "FGN401r"
+              ]
+            },
+            {
+              "id": "major-free",
+              "name": "自由科目",
+              "label": "自由科目",
+              "required": 0,
+              "kind": "free",
+              "countsTowardGraduation": false,
+              "note": "地学・生物学関連科目、UECパスポートプログラム、大学院連携科目など。卒業要件に含まれない",
+              "subjects": [
+                "GEO201r", "GEO501r", "BIO504r",
+                "UEC302r", "UEC501r", "UEC701r", "COM501r",
+                "PHYa01r", "CHMa01r", "BCHa01r", "BIOa01r", "BIOa02r",
+                "GSEb01r", "BIOb01r", "PHYb01r", "CHMb01r", "BCHa02r", "BCHa03r",
+                "CHMb02r", "CHMb03r", "BIOb02r", "LAB501r"
+              ]
+            },
+            {
+              "id": "major-intl",
+              "name": "国際科目",
+              "label": "国際科目",
+              "required": 0,
+              "kind": "international",
+              "note": "単位の扱いは年度ごとの科目一覧表による",
+              "subjects": ["INT401r", "INT001r", "INT002r", "INT003r"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
