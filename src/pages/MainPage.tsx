@@ -66,6 +66,10 @@ interface BoundaryGroup {
   contribution: number
   /** required を超えて修得した単位数（確定分）。区分の「上限なしの実際の取得単位」を表示するのに使う */
   overflow: number
+  /** overflowのうち、実際に共通単位へ繰り入れられる分（overflowToCommon: falseの区分は0になる） */
+  overflowToCommon: number
+  /** trueなら、required と比較せず修得分をそのまま共通単位にする区分（理数基礎科目の選択科目など） */
+  countAsCommon: boolean
   shortfall: number
   satisfied: boolean
   subjects: string[]
@@ -114,6 +118,7 @@ function collectBoundaryGroups(reqGroups: readonly RequirementGroup[], evalGroup
         out.push({
           id: rg.id, name: rg.name, label: rg.label, kind: eg.kind,
           required: eg.required, contribution: eg.contribution, overflow: eg.overflow,
+          overflowToCommon: eg.overflowToCommon, countAsCommon: rg.countAs === 'common',
           shortfall: eg.shortfall, satisfied: eg.satisfied,
           subjects: flattenLeafSubjects(rg),
         })
@@ -281,6 +286,20 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const requiredCodes = new Set(boundaryGroups.filter((g) => g.kind === 'required').flatMap((g) => g.subjects))
   // 「取得単位」「残りの必修」を区分ごとに見出しを分けて表示するための対応表
   const categoryLookup = buildCategoryLookup(boundaryGroups)
+
+  // 「共通単位」セクション用の内訳：
+  // ①あぶれ分＝他の区分の必要単位を超えて共通単位に繰り入れられた分（countAsCommonの区分は除く）
+  // ②取得した単位＝そもそも共通単位としてしか数えない科目（countAsCommonの区分の修得済み科目＋alwaysCommonSubjects）
+  const overflowToCommonGroups = boundaryGroups.filter((g) => !g.countAsCommon && g.overflowToCommon > 0)
+  const commonOnlyGroups = boundaryGroups.filter((g) => g.countAsCommon)
+  const commonOnlySubjects = commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) === 'passed'))
+  const alwaysCommonPassed = (requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) === 'passed')
+  const directCommonSubjects = [...commonOnlySubjects, ...alwaysCommonPassed]
+  // 見出しの「n/N単位」は、必要単位で頭打ちにせず実際に発生している共通単位候補の合計を出す
+  // （取得単位のカテゴリ見出しと同じ考え方。上限は下の一覧の外の「合計」側で別途わかる）
+  const commonOverflowTotal = overflowToCommonGroups.reduce((sum, g) => sum + g.overflowToCommon, 0)
+  const commonDirectTotal = directCommonSubjects.reduce((sum, code) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
+  const commonEarnedTotal = commonOverflowTotal + commonDirectTotal
 
   // 表示フィルタ（学期）に応じて、履修できる科目だけをスコア順に並べたものを取得する
   const termFilter = TERM_OPTIONS.find((t) => t.key === termKey)?.filter ?? 'all'
@@ -486,6 +505,41 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         />
         {dataMessage && <p role="status">{dataMessage}</p>}
       </div>
+
+      <section>
+        <h2>
+          共通単位（{commonEarnedTotal}/{requirementSet.commonCredits}単位）
+        </h2>
+        <ul>
+          <li>
+            {/* あぶれ分は、他の折りたたみと違って最初から中身が見えるようにしておく（<details open>） */}
+            <details open>
+              <summary>あぶれ分（{commonOverflowTotal}単位）</summary>
+              <ul>
+                {overflowToCommonGroups.map((g) => (
+                  <li key={g.id}>
+                    {g.label ?? g.name}から{g.overflowToCommon}単位
+                  </li>
+                ))}
+                {overflowToCommonGroups.length === 0 && <li>（まだありません）</li>}
+              </ul>
+            </details>
+          </li>
+          <li>
+            <details>
+              <summary>取得した単位（{commonDirectTotal}単位）</summary>
+              <ul>
+                {directCommonSubjects.map((code) => (
+                  <li key={code}>
+                    {nameOf(code)}（{creditsLabel(code)}）
+                  </li>
+                ))}
+                {directCommonSubjects.length === 0 && <li>（まだありません）</li>}
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </section>
 
       <section>
         <h2>取得単位（{passedCredits}単位）</h2>
