@@ -406,7 +406,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <ul>
               {items.map((r) => (
                 <li key={r.code}>
-                  {nameOf(r.code)}（{creditsLabel(r.code)}・{committed.get(r.code) === 'failed' ? '必修・再履修' : '必修'}）{otherProgramTag(r.code)}
+                  {/* 「必修」は見出し（残りの必修）で分かるので省く。不合格だった場合の「再履修」だけ残す */}
+                  {nameOf(r.code)}（{creditsLabel(r.code)}
+                  {committed.get(r.code) === 'failed' ? '・再履修' : ''}）{otherProgramTag(r.code)}
                   {r.laterThanStandardYearNote && <span> {r.laterThanStandardYearNote}</span>}
                   <SubjectStatusSelect code={r.code} value={draft.get(r.code)} onChange={handleDraftChange} />
                 </li>
