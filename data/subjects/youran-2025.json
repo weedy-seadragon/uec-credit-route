@@ -321,7 +321,7 @@
     },
     {
       "code": "CHM101z",
-      "name": "基礎科学実験Ｂ１",
+      "name": "基礎科学実験B1",
       "credits": 1,
       "field": "CHM",
       "standardSemester": 1,
@@ -366,7 +366,7 @@
     },
     {
       "code": "CHM202z",
-      "name": "基礎科学実験Ｂ２",
+      "name": "基礎科学実験B2",
       "credits": 1,
       "field": "CHM",
       "standardSemester": 2,
@@ -1551,7 +1551,7 @@
     },
     {
       "code": "COM502e",
-      "name": "デザイン思考・データサイエンス実践演習１",
+      "name": "デザイン思考・データサイエンス実践演習1",
       "credits": 1,
       "field": "COM",
       "standardSemester": 5,
@@ -2121,7 +2121,7 @@
     },
     {
       "code": "COM701e",
-      "name": "デザイン思考・データサイエンス実践演習２",
+      "name": "デザイン思考・データサイエンス実践演習2",
       "credits": 1,
       "field": "COM",
       "standardSemester": 7,
@@ -8105,7 +8105,7 @@
     },
     {
       "code": "PHY101z",
-      "name": "基礎科学実験Ａ１",
+      "name": "基礎科学実験A1",
       "credits": 1,
       "field": "PHY",
       "standardSemester": 1,
@@ -8150,7 +8150,7 @@
     },
     {
       "code": "PHY201z",
-      "name": "基礎科学実験Ａ２",
+      "name": "基礎科学実験A2",
       "credits": 1,
       "field": "PHY",
       "standardSemester": 2,

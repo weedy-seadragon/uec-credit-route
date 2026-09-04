@@ -307,22 +307,32 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function creditsOf(code: string): number | undefined {
     return subjectsByCode.get(code)?.credits
   }
+  // ()内に入れる単位数の表示（単位数だけにする。年次・学期は別枠のyearTermTagで出す）
+  function creditsLabel(code: string): string {
+    return `${creditsOf(code) ?? '?'}単位`
+  }
   // 「◯年次前学期」のような表示文字列を作る（標準年次・学期が無い科目は空文字を返す）
   function yearTermOf(code: string): string {
     const s = subjectsByCode.get(code)
     if (!s || s.standardYear === null) return ''
     return `${s.standardYear}年次${s.termType ?? ''}`
   }
-  // 「2単位・1年次前学期」のような、科目名の横に添える単位数＋年次のラベルを作る
-  function creditsLabel(code: string): string {
-    const credits = creditsOf(code) ?? '?'
+  // 年次・学期を、科目名の横に薄く添える注記にする（無ければ何も出さない）。
+  // 一覧によって出たり出なかったりすると分かりにくいので、全部の一覧で同じ形で出す
+  function yearTermTag(code: string) {
     const yearTerm = yearTermOf(code)
-    return yearTerm ? `${credits}単位・${yearTerm}` : `${credits}単位`
+    if (!yearTerm) return null
+    return <span style={{ color: '#666', fontSize: '0.85em', marginLeft: '0.4em' }}>{yearTerm}</span>
   }
   // 他プログラムの専門科目なら、科目名の横に添える注記（該当しなければ何も出さない）
   function otherProgramTag(code: string) {
     if (!isOtherProgramSubject(code, requirementSet?.programSuffix)) return null
     return <span style={{ color: '#666', fontSize: '0.85em', marginLeft: '0.4em' }}>［他プログラム専門科目］</span>
+  }
+  // 外国人留学生しか履修できない科目なら、科目名の横に添える注記（該当しなければ何も出さない）
+  function internationalTag(code: string) {
+    if (!subjectsByCode.get(code)?.forInternational) return null
+    return <span style={{ color: '#666', fontSize: '0.85em', marginLeft: '0.4em' }}>［留学生のみ］</span>
   }
 
   return (
@@ -375,7 +385,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <ul>
               {items.map(([code]) => (
                 <li key={code}>
-                  {nameOf(code)}（{creditsLabel(code)}）{otherProgramTag(code)}
+                  {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}{internationalTag(code)}
                   <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
                 </li>
               ))}
@@ -390,7 +400,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <ul>
           {failedSubjects.map(([code]) => (
             <li key={code}>
-              {nameOf(code)}（{creditsLabel(code)}）{otherProgramTag(code)}
+              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}{internationalTag(code)}
               <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
             </li>
           ))}
@@ -406,10 +416,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <ul>
               {items.map((r) => (
                 <li key={r.code}>
-                  {/* ()内は単位数だけにする。年次・学期はlaterThanStandardYearNote（右側）、
-                      再履修かどうかはこの後のプルダウンの選択値で分かるので、ここでは繰り返さない */}
-                  {nameOf(r.code)}（{creditsOf(r.code) ?? '?'}単位）{otherProgramTag(r.code)}
-                  {r.laterThanStandardYearNote && <span> {r.laterThanStandardYearNote}</span>}
+                  {/* ()内は単位数だけにする。年次・学期・他プログラム専門科目・留学生限定は
+                      他の一覧と同じ形の注記で統一する。再履修かどうかはこの後のプルダウンの選択値で分かる */}
+                  {nameOf(r.code)}（{creditsLabel(r.code)}）{yearTermTag(r.code)}{otherProgramTag(r.code)}{internationalTag(r.code)}
                   <SubjectStatusSelect code={r.code} value={draft.get(r.code)} onChange={handleDraftChange} />
                 </li>
               ))}
@@ -424,18 +433,25 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <p style={{ fontSize: '0.9em', color: '#555' }}>
           ※ 他プログラムの専門科目（［他プログラム専門科目］の表示があるもの）を履修した場合も、専門科目の単位として扱われます（学修要覧より）
         </p>
-        {boundaryGroups.map((g) => (
-          <GroupProgress
-            key={g.id}
-            group={g}
-            committed={committed}
-            draft={draft}
-            onChange={handleDraftChange}
-            nameOf={nameOf}
-            creditsLabel={creditsLabel}
-            otherProgramTag={otherProgramTag}
-          />
-        ))}
+        {/* ここに出すのは「選択」「選択必修」の区分だけ（必修は上の「残りの必修」で扱う。自由・国際は対象外）。
+            必要単位が0のグループ（そのプログラムでは使わない区分）も出す意味が無いので除く。
+            この条件だけで絞るので、プログラムによって実際に何が出るかは自然に変わる */}
+        {boundaryGroups
+          .filter((g) => (g.kind === 'elective' || g.kind === 'elective-required') && g.required > 0)
+          .map((g) => (
+            <GroupProgress
+              key={g.id}
+              group={g}
+              committed={committed}
+              draft={draft}
+              onChange={handleDraftChange}
+              nameOf={nameOf}
+              creditsLabel={creditsLabel}
+              yearTermTag={yearTermTag}
+              otherProgramTag={otherProgramTag}
+              internationalTag={internationalTag}
+            />
+          ))}
       </section>
     </main>
   )
@@ -453,7 +469,9 @@ function GroupProgress({
   onChange,
   nameOf,
   creditsLabel,
+  yearTermTag,
   otherProgramTag,
+  internationalTag,
 }: {
   group: BoundaryGroup
   committed: ReadonlyMap<string, SubjectStatus>
@@ -461,7 +479,9 @@ function GroupProgress({
   onChange: (code: string, status: SubjectStatus | undefined) => void
   nameOf: (code: string) => string
   creditsLabel: (code: string) => string
+  yearTermTag: (code: string) => ReactNode
   otherProgramTag: (code: string) => ReactNode
+  internationalTag: (code: string) => ReactNode
 }) {
   // 一覧に出す／消すのは committed（確定済み）で判断する。draft はプルダウンの表示値にだけ使う。
   // こうしないと、「更新」を押す前にプルダウンを触っただけで行が消えてしまい、
@@ -476,7 +496,7 @@ function GroupProgress({
       <ul>
         {remaining.map((code) => (
           <li key={code}>
-            {nameOf(code)}（{creditsLabel(code)}）{otherProgramTag(code)}
+            {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{otherProgramTag(code)}{internationalTag(code)}
             <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
           </li>
         ))}
