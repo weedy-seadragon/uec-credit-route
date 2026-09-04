@@ -21,6 +21,7 @@ import designds from '../../data/requirements/2025-day-I-designds.json'
 import security from '../../data/requirements/2025-day-II-security.json'
 import netinfo from '../../data/requirements/2025-day-II-netinfo.json'
 import electroinfo from '../../data/requirements/2025-day-II-electroinfo.json'
+import control from '../../data/requirements/2025-day-II-control.json'
 import subjectsMaster from '../../data/subjects/youran-2025.json'
 
 /** プロフィール設定画面（F-1）の選択肢1つぶん */
@@ -44,12 +45,32 @@ interface ProgramDoc {
   totalCredits: number
   commonCredits: number
   groups: RequirementGroup[]
+  /**
+   * 共通ファイル（2025-day-common.json）側のグループを、このプログラムだけ一部上書きしたいときに使う。
+   * キーは上書きしたいグループのid（例: "datasci-ex"）、値はそのグループにマージするフィールド。
+   * 例: Ⅱ類計測・制御システム/先端ロボティクス・Ⅲ類は「データサイエンス演習」が必修ではなく
+   * 選択（required: 0）になる（学修要覧2025 §2.5.1・別表2の注記）。
+   */
+  commonOverrides?: Record<string, Partial<RequirementGroup>>
+}
+
+/**
+ * 共通ファイルのグループ木を再帰的に複製しながら、overrides に指定されたidのグループだけ
+ * フィールドをマージする。overridesが空ならそのまま（参照コピーで十分）返す。
+ */
+function applyCommonOverrides(groups: readonly RequirementGroup[], overrides: Record<string, Partial<RequirementGroup>> | undefined): RequirementGroup[] {
+  if (!overrides || Object.keys(overrides).length === 0) return [...groups]
+  return groups.map((g) => {
+    const override = overrides[g.id]
+    const children = g.children ? applyCommonOverrides(g.children, overrides) : undefined
+    return { ...g, ...(children ? { children } : {}), ...override }
+  })
 }
 
 // JSONを`import`すると型は自動推論されるが、要件セットの木構造（children等）まではTypeScriptには
 // 分からないので、ここで RequirementGroup[] であることを明示しておく（as で型を指定し直している）。
 const commonDoc = common as { groups: RequirementGroup[]; commonCreditSources?: { alwaysCommon?: string[] } }
-const programDocs: ProgramDoc[] = [media, management, mathinfo, cs, designds, security, netinfo, electroinfo] as ProgramDoc[]
+const programDocs: ProgramDoc[] = [media, management, mathinfo, cs, designds, security, netinfo, electroinfo, control] as ProgramDoc[]
 
 /** プロフィール設定画面のプルダウンに出す、今データが揃っている選択肢の一覧 */
 export const programOptions: ProgramOption[] = programDocs.map((p) => ({
@@ -72,12 +93,13 @@ export function getRequirementSet(entryYear: number, course: string, cluster: st
   )
   if (!doc) return undefined // まだデータが無い組み合わせ
 
-  // 共通ファイルのgroups（総合文化・実践教育）とプログラム別ファイルのgroups（専門科目）を
-  // 1つの配列にまとめて、evaluateRequirements() にそのまま渡せる形にする
+  // 共通ファイルのgroups（総合文化・実践教育。プログラム固有のcommonOverridesがあれば適用）と
+  // プログラム別ファイルのgroups（専門科目）を1つの配列にまとめて、evaluateRequirements() に
+  // そのまま渡せる形にする
   return {
     totalCredits: doc.totalCredits,
     commonCredits: doc.commonCredits,
-    groups: [...commonDoc.groups, ...doc.groups],
+    groups: [...applyCommonOverrides(commonDoc.groups, doc.commonOverrides), ...doc.groups],
     alwaysCommonSubjects: commonDoc.commonCreditSources?.alwaysCommon ?? [],
     programSuffix: doc.programSuffix,
   }
