@@ -42,8 +42,17 @@
               "required": 20,
               "kind": "required",
               "subjects": [
-                "MTH101z", "MTH201z", "MTH102z", "MTH202z", "MTH203z",
-                "MTH103z", "MTH204z", "PHY102z", "PHY202z", "CHM102z", "COM201z"
+                "MTH101z",
+                "MTH201z",
+                "MTH102z",
+                "MTH202z",
+                "MTH203z",
+                "MTH103z",
+                "MTH204z",
+                "PHY102z",
+                "PHY202z",
+                "CHM102z",
+                "COM201z"
               ]
             },
             {
@@ -54,7 +63,11 @@
               "kind": "elective",
               "countAs": "common",
               "note": "修得した単位は共通単位とする",
-              "subjects": ["PHY103z", "PHY203z", "CHM203z"]
+              "subjects": [
+                "PHY103z",
+                "PHY203z",
+                "CHM203z"
+              ]
             }
           ]
         },
@@ -69,7 +82,16 @@
               "label": "類共通基礎（必修）",
               "required": 18,
               "kind": "required",
-              "subjects": ["PHY204n", "PHY205n", "MTH301n", "PHY301n", "PHY302n", "PHY401n", "ELE301n", "ELE401n"]
+              "subjects": [
+                "PHY204n",
+                "PHY205n",
+                "MTH301n",
+                "PHY301n",
+                "PHY302n",
+                "PHY401n",
+                "ELE301n",
+                "ELE401n"
+              ]
             },
             {
               "id": "cluster-basic-elecreq",
@@ -78,7 +100,15 @@
               "required": 2,
               "kind": "elective-required",
               "note": "修得した単位は共通単位とする。夜間主コース学生が「分子生物学」の単位を修得した場合は専門基礎科目の選択科目とする",
-              "subjects": ["MTH302n", "MTH303n", "GSE301n", "COM301n", "COM401n", "COM402n", "BIO401n"]
+              "subjects": [
+                "MTH302n",
+                "MTH303n",
+                "GSE301n",
+                "COM301n",
+                "COM401n",
+                "COM402n",
+                "BIO401n"
+              ]
             }
           ]
         },
@@ -94,9 +124,22 @@
               "required": 34,
               "kind": "required",
               "subjects": [
-                "ELE402n", "PHY402n", "PHO501n", "PHO601n", "PHY501n", "PHY502n", "ELE501n",
-                "PHY601n", "PHO602n", "PHO603n", "ELE601n", "PHO604n",
-                "LAB701n", "LAB801n", "LAB702n", "LAB802n"
+                "ELE402n",
+                "PHY402n",
+                "PHO501n",
+                "PHO601n",
+                "PHY501n",
+                "PHY502n",
+                "ELE501n",
+                "PHY601n",
+                "PHO602n",
+                "PHO603n",
+                "ELE601n",
+                "PHO604n",
+                "LAB701n",
+                "LAB801n",
+                "LAB702n",
+                "LAB802n"
               ]
             },
             {
@@ -105,11 +148,84 @@
               "label": "類専門（選択）",
               "required": 12,
               "kind": "elective",
-              "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み（Ⅲ類5プログラムがそろい次第）",
+              "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み",
               "subjects": [
-                "CHM401n", "CHM402n", "BIO501n", "PHY602n", "PHY603n", "PHY604n",
-                "ELE602n", "PHY605n", "ELE603n", "CHM601n",
-                "FGN101n", "FGN201n", "FGN102n", "FGN202n", "FGN301n", "FGN401n"
+                "CHM401n",
+                "CHM402n",
+                "BIO501n",
+                "PHY602n",
+                "PHY603n",
+                "PHY604n",
+                "ELE602n",
+                "PHY605n",
+                "ELE603n",
+                "CHM601n",
+                "FGN101n",
+                "FGN201n",
+                "FGN102n",
+                "FGN202n",
+                "FGN301n",
+                "FGN401n",
+                "MCE605k",
+                "MCE606k",
+                "MCE508k",
+                "MCE509k",
+                "GSE501k",
+                "MCE607k",
+                "MCE608k",
+                "GSE601k",
+                "MCE609k",
+                "MCE701k",
+                "MCE702k",
+                "FGN101k",
+                "FGN201k",
+                "FGN102k",
+                "FGN202k",
+                "FGN301k",
+                "FGN401k",
+                "CHM401m",
+                "CHM402m",
+                "PHY502m",
+                "PHY503m",
+                "PHY603m",
+                "PHY604m",
+                "PHY605m",
+                "PHY606m",
+                "PHO601m",
+                "PHY504m",
+                "ELE603m",
+                "ELE604m",
+                "ELE605m",
+                "ELE701m",
+                "CHM701m",
+                "FGN101m",
+                "FGN201m",
+                "FGN102m",
+                "FGN202m",
+                "FGN301m",
+                "FGN401m",
+                "CHM401p",
+                "CHM402p",
+                "PHY507p",
+                "PHY607p",
+                "ELE601p",
+                "PHY608p",
+                "PHY609p",
+                "FGN101p",
+                "FGN201p",
+                "FGN102p",
+                "FGN202p",
+                "FGN301p",
+                "FGN401p",
+                "ELE601r",
+                "BIO603r",
+                "CHM701r",
+                "FGN101r",
+                "FGN201r",
+                "FGN102r",
+                "FGN202r",
+                "FGN301r",
+                "FGN401r"
               ]
             },
             {
@@ -121,10 +237,23 @@
               "countsTowardGraduation": false,
               "note": "地学・生物学関連科目、UECパスポートプログラム、大学院連携科目など。卒業要件に含まれない",
               "subjects": [
-                "GEO201n", "GEO501n", "BIO502n",
-                "UEC302n", "UEC501n", "UEC701n", "COM501n",
-                "PHOa01n", "PHOa02n", "PHYa01n", "PHYa02n",
-                "ELEa01n", "ELEa02n", "CHMa01n", "PHYb01n", "PHYb02n", "LAB501n"
+                "GEO201n",
+                "GEO501n",
+                "BIO502n",
+                "UEC302n",
+                "UEC501n",
+                "UEC701n",
+                "COM501n",
+                "PHOa01n",
+                "PHOa02n",
+                "PHYa01n",
+                "PHYa02n",
+                "ELEa01n",
+                "ELEa02n",
+                "CHMa01n",
+                "PHYb01n",
+                "PHYb02n",
+                "LAB501n"
               ]
             },
             {
@@ -134,7 +263,12 @@
               "required": 0,
               "kind": "international",
               "note": "単位の扱いは年度ごとの科目一覧表による",
-              "subjects": ["INT401n", "INT001n", "INT002n", "INT003n"]
+              "subjects": [
+                "INT401n",
+                "INT001n",
+                "INT002n",
+                "INT003n"
+              ]
             }
           ]
         }
