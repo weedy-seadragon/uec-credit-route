@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "entryYear": 2025,
+  "course": "day",
+  "cluster": "I",
+  "program": "designds",
+  "programName": "デザイン思考・データサイエンスプログラム",
+  "programSuffix": "e",
+  "source": "学修要覧2025（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.1⑤",
+  "extends": "2025-day-common.json",
+  "totalCredits": 128,
+  "commonCredits": 7,
+  "subtotals": {
+    "general": 27,
+    "practical": 17,
+    "specialized": 77,
+    "common": 7
+  },
+  "groups": [
+    {
+      "id": "specialized",
+      "name": "専門科目",
+      "label": "専門",
+      "required": 77,
+      "children": [
+        {
+          "id": "math-basic",
+          "name": "理数基礎科目",
+          "label": "理数基礎",
+          "required": 18,
+          "subjects": [],
+          "children": [
+            {
+              "id": "math-basic-req",
+              "name": "必修",
+              "label": "理数基礎（必修）",
+              "required": 18,
+              "subjects": [
+                "MTH101z",
+                "MTH201z",
+                "MTH102z",
+                "MTH202z",
+                "MTH203z",
+                "MTH103z",
+                "MTH204z",
+                "PHY102z",
+                "CHM102z",
+                "COM201z"
+              ],
+              "kind": "required"
+            },
+            {
+              "id": "math-basic-sel",
+              "name": "選択",
+              "label": "理数基礎（選択）",
+              "required": 0,
+              "subjects": [
+                "PHY103z",
+                "PHY202z",
+                "PHY203z",
+                "CHM203z"
+              ],
+              "kind": "elective",
+              "countAs": "common",
+              "note": "修得した単位は共通単位とする"
+            }
+          ]
+        },
+        {
+          "id": "cluster-basic",
+          "name": "類共通基礎科目",
+          "label": "類共通基礎",
+          "required": 23,
+          "subjects": [],
+          "children": [
+            {
+              "id": "cluster-basic-req",
+              "name": "必修",
+              "label": "類共通基礎（必修）",
+              "required": 17,
+              "subjects": [
+                "MTH205e",
+                "MTH303e",
+                "COM301e",
+                "COM302e",
+                "COM303e",
+                "COM202e",
+                "COM304e",
+                "COM401e",
+                "COM402e",
+                "MTH401e"
+              ],
+              "kind": "required"
+            },
+            {
+              "id": "cluster-basic-sel",
+              "name": "選択",
+              "label": "類共通基礎（選択）",
+              "required": 6,
+              "subjects": [
+                "ELE301e",
+                "MTH304e",
+                "MSS401e",
+                "MTH402e",
+                "COM403e",
+                "COM404e"
+              ],
+              "kind": "elective"
+            }
+          ]
+        },
+        {
+          "id": "major",
+          "name": "類専門科目",
+          "label": "類専門",
+          "required": 36,
+          "subjects": [],
+          "children": [
+            {
+              "id": "major-req",
+              "name": "必修",
+              "label": "類専門（必修）",
+              "required": 15,
+              "subjects": [
+                "COM405e",
+                "COM501e",
+                "COM502e",
+                "COM701e",
+                "COM601e",
+                "LAB701e",
+                "LAB801e",
+                "LAB702e",
+                "LAB802e"
+              ],
+              "kind": "required"
+            },
+            {
+              "id": "major-sel",
+              "name": "選択",
+              "label": "類専門（選択）",
+              "required": 21,
+              "subjects": [
+                "INS501e",
+                "INS601e",
+                "MSS402e",
+                "COM503e",
+                "MTH501e",
+                "ELE501e",
+                "MSS501e",
+                "INS502e",
+                "INS503e",
+                "INS504e",
+                "MSS502e",
+                "MSS601e",
+                "MSS602e",
+                "INS602e",
+                "COM602e",
+                "COM603e",
+                "INS603e",
+                "INS505e",
+                "COM001e",
+                "FGN101e",
+                "FGN201e",
+                "FGN102e",
+                "FGN202e",
+                "FGN301e",
+                "FGN401e",
+                "MSS402a",
+                "COM502a",
+                "MTH501a",
+                "ELE501a",
+                "MSS501a",
+                "ELE502a",
+                "INS501a",
+                "COM503a",
+                "INS502a",
+                "COM602a",
+                "COM603a",
+                "COM604a",
+                "INS601a",
+                "INS602a",
+                "INS503a",
+                "INS603a",
+                "ELE601a",
+                "COM001a",
+                "FGN101a",
+                "FGN201a",
+                "FGN102a",
+                "FGN202a",
+                "FGN301a",
+                "FGN401a",
+                "MSS402b",
+                "MSS403b",
+                "MSS404b",
+                "MSS602b",
+                "COM502b",
+                "MTH501b",
+                "ELE501b",
+                "MSS501b",
+                "INS501b",
+                "INS502b",
+                "MSS502b",
+                "MSS603b",
+                "COM601b",
+                "INS601b",
+                "MSS604b",
+                "MSS605b",
+                "COM001b",
+                "FGN101b",
+                "FGN201b",
+                "FGN102b",
+                "FGN202b",
+                "FGN301b",
+                "FGN401b",
+                "COM405c",
+                "MTH501c",
+                "MTH502c",
+                "COM503c",
+                "COM504c",
+                "COM505c",
+                "COM506c",
+                "COM507c",
+                "MTH503c",
+                "MTH504c",
+                "MTH505c",
+                "INS501c",
+                "INS502c",
+                "COM603c",
+                "MTH602c",
+                "COM604c",
+                "MTH603c",
+                "MTH604c",
+                "COM605c",
+                "COM606c",
+                "MTH605c",
+                "COM001c",
+                "FGN101c",
+                "FGN201c",
+                "FGN102c",
+                "FGN202c",
+                "FGN301c",
+                "FGN401c",
+                "COM405d",
+                "MTH501d",
+                "MTH502d",
+                "COM503d",
+                "COM504d",
+                "COM505d",
+                "COM506d",
+                "COM507d",
+                "MTH503d",
+                "MTH504d",
+                "MTH505d",
+                "INS501d",
+                "INS502d",
+                "COM603d",
+                "MTH602d",
+                "COM604d",
+                "MTH603d",
+                "MTH604d",
+                "COM605d",
+                "COM606d",
+                "MTH605d",
+                "COM001d",
+                "FGN101d",
+                "FGN201d",
+                "FGN102d",
+                "FGN202d",
+                "FGN301d",
+                "FGN401d"
+              ],
+              "kind": "elective",
+              "alsoAccepts": "sameClusterOtherPrograms",
+              "note": "Ⅰ類の他プログラムの科目も選択として算入可（実験科目を除く。付録C 注1）。このJSONの subjects には他プログラム分もあらかじめ展開済み"
+            },
+            {
+              "id": "major-free",
+              "name": "自由科目",
+              "label": "自由科目",
+              "required": 0,
+              "subjects": [
+                "COM504e",
+                "COM002e",
+                "COM003e",
+                "INSa01e",
+                "INSa02e",
+                "COMa01e",
+                "INSa03e",
+                "INSa04e",
+                "INSa05e",
+                "INSa06e",
+                "COMa02e",
+                "COMa03e",
+                "COMb01e",
+                "INSb01e",
+                "ELEb01e",
+                "MTHb01e",
+                "MTHb02e",
+                "MTHb03e",
+                "LAB501e"
+              ],
+              "kind": "free",
+              "countsTowardGraduation": false,
+              "note": "卒業要件に含まれない（大学院連携科目など）"
+            },
+            {
+              "id": "major-intl",
+              "name": "国際科目",
+              "label": "国際科目",
+              "required": 0,
+              "subjects": [
+                "INT001e",
+                "INT002e",
+                "INT003e"
+              ],
+              "kind": "international",
+              "note": "単位の扱いは年度ごとの科目一覧表による"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "id": "y2-end",
+      "name": "2年次終了時審査",
+      "when": "2年次終了時",
+      "source": "2.4.1, 別表3, 別表3の2",
+      "anyOf": [
+        {
+          "allOf": [
+            {
+              "type": "groupMin",
+              "groupId": "lang-basic-1",
+              "min": 4
+            },
+            {
+              "type": "groupMin",
+              "groupId": "lang-basic-2",
+              "min": 2
+            },
+            {
+              "type": "allPassed",
+              "groupId": "health-req"
+            },
+            {
+              "type": "allPassed",
+              "groupId": "intro"
+            },
+            {
+              "type": "subjects",
+              "codes": [
+                "UEC301z"
+              ]
+            },
+            {
+              "type": "allPassed",
+              "groupId": "math-basic-req"
+            },
+            {
+              "type": "subjects",
+              "codes": [
+                "MTH205e",
+                "COM202e"
+              ],
+              "note": "類共通基礎の1年次必修2科目3単位"
+            }
+          ]
+        },
+        {
+          "type": "totalCredits",
+          "min": 60,
+          "note": "特例。教職科目を除く。卒研着手までには上の科目を全て修得する必要あり"
+        }
+      ],
+      "onFail": {
+        "blockedSubjects": [
+          "COM501e",
+          "COM601e"
+        ],
+        "note": "不合格時はCOM501e・COM601eを履修できない"
+      }
+    },
+    {
+      "id": "thesis-start",
+      "name": "卒業研究着手審査",
+      "when": "3年次終了時",
+      "source": "2.4.3, 別表4",
+      "allOf": [
+        {
+          "type": "review",
+          "id": "y2-end"
+        },
+        {
+          "type": "groupMin",
+          "groupId": "lang-basic-1",
+          "min": 4
+        },
+        {
+          "type": "groupMin",
+          "groupId": "lang-basic-2",
+          "min": 2
+        },
+        {
+          "type": "allPassed",
+          "groupId": "health-req"
+        },
+        {
+          "type": "allPassed",
+          "groupId": "intro"
+        },
+        {
+          "type": "subjects",
+          "codes": [
+            "UEC301z"
+          ]
+        },
+        {
+          "type": "allPassed",
+          "groupId": "math-basic-req"
+        },
+        {
+          "type": "allPassed",
+          "groupId": "cluster-basic-req"
+        },
+        {
+          "type": "subjects",
+          "codes": [
+            "COM501e",
+            "COM601e"
+          ]
+        },
+        {
+          "type": "totalCredits",
+          "min": 101
+        }
+      ]
+    },
+    {
+      "id": "graduation",
+      "name": "卒業審査",
+      "when": "4年次終了時",
+      "source": "2.4.4, 別表2",
+      "allOf": [
+        {
+          "type": "allGroups"
+        },
+        {
+          "type": "commonCredits",
+          "min": 7
+        },
+        {
+          "type": "totalCredits",
+          "min": 128
+        }
+      ]
+    }
+  ]
+}
