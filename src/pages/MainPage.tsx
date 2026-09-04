@@ -240,7 +240,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <section>
         <h2>区分別の進捗</h2>
         {boundaryGroups.map((g) => (
-          <GroupProgress key={g.id} group={g} draft={draft} onChange={handleDraftChange} nameOf={nameOf} />
+          <GroupProgress key={g.id} group={g} committed={committed} draft={draft} onChange={handleDraftChange} nameOf={nameOf} />
         ))}
       </section>
     </main>
@@ -253,16 +253,21 @@ function requiredShortfall(groups: readonly BoundaryGroup[]): number {
 
 function GroupProgress({
   group,
+  committed,
   draft,
   onChange,
   nameOf,
 }: {
   group: BoundaryGroup
+  committed: ReadonlyMap<string, SubjectStatus>
   draft: ReadonlyMap<string, SubjectStatus>
   onChange: (code: string, status: SubjectStatus | undefined) => void
   nameOf: (code: string) => string
 }) {
-  const remaining = group.subjects.filter((code) => draft.get(code) !== 'passed')
+  // 一覧に出す／消すのは committed（確定済み）で判断する。draft はプルダウンの表示値にだけ使う。
+  // こうしないと、「更新」を押す前にプルダウンを触っただけで行が消えてしまい、
+  // 「残りの必修」など他のセクションと表示の整合性が取れなくなる。
+  const remaining = group.subjects.filter((code) => committed.get(code) !== 'passed')
   return (
     <details>
       <summary>
