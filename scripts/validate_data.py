@@ -19,6 +19,17 @@ PROGRAM_FILES = [
     "requirements/2025-day-I-mathinfo.json",
     "requirements/2025-day-I-cs.json",
     "requirements/2025-day-I-designds.json",
+    "requirements/2025-day-II-security.json",
+    "requirements/2025-day-II-netinfo.json",
+    "requirements/2025-day-II-electroinfo.json",
+    "requirements/2025-day-II-control.json",
+    "requirements/2025-day-II-robotics.json",
+    "requirements/2025-day-III-mecha.json",
+    "requirements/2025-day-III-electro.json",
+    "requirements/2025-day-III-optical.json",
+    "requirements/2025-day-III-physics.json",
+    "requirements/2025-day-III-chembio.json",
+    "requirements/2025-evening.json",
 ]
 programs = {f: load(f) for f in PROGRAM_FILES}
 
@@ -87,7 +98,8 @@ for fname, doc in programs.items():
     if tot["general"] + tot["practical"] + tot["specialized"] + tot["common"] != doc["totalCredits"]:
         errors.append(f"{fname}: 小計の和が totalCredits と一致しない")
 
-    for r in doc["reviews"]:
+    # reviews はⅠ類5プログラムのみ持つ（Ⅱ類・Ⅲ類・夜間主は審査条件のデータ化がまだのため無い）
+    for r in doc.get("reviews", []):
         walk_cond(r, by_id)
         for code in r.get("onFail", {}).get("blockedSubjects", []):
             if code not in subjects:
