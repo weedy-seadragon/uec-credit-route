@@ -21,7 +21,6 @@ export default function SubjectStatusSelect({ code, value, onChange }: SubjectSt
       }}
     >
       <option value="none">未履修</option>
-      <option value="taking">履修中</option>
       <option value="passed">修得</option>
       <option value="failed">不合格</option>
     </select>

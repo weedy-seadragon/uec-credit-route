@@ -278,6 +278,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     }
   }
 
+  // 「リセット」ボタンを押したとき：確認してから、記録を全部「未履修」に戻す（プロフィールは残す）
+  function handleReset() {
+    if (!window.confirm('取得・不可の記録をすべて未履修に戻します。よろしいですか？（プロフィールは残ります）')) return
+    const empty: ReadonlyMap<string, SubjectStatus> = new Map()
+    setCommitted(empty)
+    setDraft(empty)
+    saveRecords(empty)
+    setDataMessage('すべての記録を未履修に戻しました。')
+  }
+
   // 科目コードから表示用の名前・単位数を引く小さなヘルパー（見つからなければコードをそのまま出す）
   function nameOf(code: string): string {
     return subjectsByCode.get(code)?.name ?? code
@@ -308,9 +318,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </select>{' '}
         <button type="button" onClick={handleUpdate}>
           更新
-        </button>{' '}
+        </button>
+        {/* 「更新」と、その後のダウンロード等のボタン群を分けて見せるための余白。
+            ボタン1個ぶんくらいの幅をあけたいだけなので、CSSクラスは作らずインラインで済ませる */}
+        <span style={{ display: 'inline-block', width: '4em' }} />
         <button type="button" onClick={handleDownload}>
-          ダウンロード
+          単位取得状況をダウンロード
         </button>{' '}
         {/* ファイル選択ボタンは<input type="file">が標準の見た目しか持てないので、
             <label>で挟んでボタンっぽく振る舞わせている（htmlForで結びつけると、
@@ -318,7 +331,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <label>
           読み込み
           <input type="file" accept="application/json" onChange={handleFileImport} style={{ display: 'none' }} />
-        </label>
+        </label>{' '}
+        <button type="button" onClick={handleReset}>
+          リセット（全て未履修へ）
+        </button>
         {dataMessage && <p role="status">{dataMessage}</p>}
       </div>
 
