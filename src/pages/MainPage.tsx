@@ -64,6 +64,8 @@ interface BoundaryGroup {
   kind: GroupKind
   required: number
   contribution: number
+  /** required を超えて修得した単位数（確定分）。区分の「上限なしの実際の取得単位」を表示するのに使う */
+  overflow: number
   shortfall: number
   satisfied: boolean
   subjects: string[]
@@ -111,7 +113,8 @@ function collectBoundaryGroups(reqGroups: readonly RequirementGroup[], evalGroup
       if (eg.kind !== undefined) {
         out.push({
           id: rg.id, name: rg.name, label: rg.label, kind: eg.kind,
-          required: eg.required, contribution: eg.contribution, shortfall: eg.shortfall, satisfied: eg.satisfied,
+          required: eg.required, contribution: eg.contribution, overflow: eg.overflow,
+          shortfall: eg.shortfall, satisfied: eg.satisfied,
           subjects: flattenLeafSubjects(rg),
         })
       }
@@ -501,9 +504,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <div key={label}>
               <h3>
                 {label}
+                {/* 必要単位に切り詰めたcontributionではなく、超過分（overflow）を足した「実際に取得した単位数」を出す。
+                    こうすると、必要単位を超えて取っている区分が「10/8単位」のように一目で分かる */}
                 {group && (
                   <>
-                    （{group.contribution}/{group.required}単位）
+                    （{group.contribution + group.overflow}/{group.required}単位）
                   </>
                 )}
               </h3>
