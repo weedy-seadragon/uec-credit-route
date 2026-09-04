@@ -1,13 +1,10 @@
 {
   "schemaVersion": 1,
-  "source": "学修要覧2025（情報理工学域）付録C。昼間コース共通科目＋Ⅰ類メディア情報学プログラムのみ収録",
-  "note": "曜日時限・担当・シラバスURLはシラバスから別途取得して offerings に入れる（scripts/fetch_syllabus.py 予定）",
+  "source": "学修要覧2025（情報理工学域）付録C。昼間コース共通科目＋Ⅰ類5プログラム収録",
+  "note": "曜日時限・担当・シラバスURLはシラバスから別途取得して offerings に入れる（scripts/fetch_syllabus.py 予定）。主キーは末尾記号を含むフルコード（例 COM405a）。同じ番号でもプログラムが違えば別科目のことがあるため、名寄せはしない",
   "subjects": [
     {
-      "code": "BIO201",
-      "codes": [
-        "BIO201z"
-      ],
+      "code": "BIO201z",
       "name": "生物学",
       "credits": 2,
       "field": "BIO",
@@ -22,10 +19,7 @@
       ]
     },
     {
-      "code": "CAR101",
-      "codes": [
-        "CAR101z"
-      ],
+      "code": "CAR101z",
       "name": "キャリア教育基礎",
       "credits": 2,
       "field": "CAR",
@@ -40,10 +34,7 @@
       ]
     },
     {
-      "code": "CAR201",
-      "codes": [
-        "CAR201z"
-      ],
+      "code": "CAR201z",
       "name": "アカデミックスキルズ",
       "credits": 1,
       "field": "CAR",
@@ -58,10 +49,7 @@
       ]
     },
     {
-      "code": "CAR401",
-      "codes": [
-        "CAR401z"
-      ],
+      "code": "CAR401z",
       "name": "キャリアデザイン",
       "credits": 2,
       "field": "CAR",
@@ -76,10 +64,7 @@
       ]
     },
     {
-      "code": "CAR402",
-      "codes": [
-        "CAR402z"
-      ],
+      "code": "CAR402z",
       "name": "ビジネスPBL",
       "credits": 1,
       "field": "CAR",
@@ -94,10 +79,7 @@
       ]
     },
     {
-      "code": "CAR501",
-      "codes": [
-        "CAR501z"
-      ],
+      "code": "CAR501z",
       "name": "キャリア教育リーダー",
       "credits": 2,
       "field": "CAR",
@@ -112,10 +94,7 @@
       ]
     },
     {
-      "code": "CAR502",
-      "codes": [
-        "CAR502z"
-      ],
+      "code": "CAR502z",
       "name": "イノベイティブ総合コミュニケーションデザイン1",
       "credits": 2,
       "field": "CAR",
@@ -130,10 +109,7 @@
       ]
     },
     {
-      "code": "CAR503",
-      "codes": [
-        "CAR503z"
-      ],
+      "code": "CAR503z",
       "name": "インターンシップ",
       "credits": 2,
       "field": "CAR",
@@ -149,10 +125,7 @@
       "note": "デザイン思考・データサイエンスPのみ必修"
     },
     {
-      "code": "CAR504",
-      "codes": [
-        "CAR504z"
-      ],
+      "code": "CAR504z",
       "name": "インターンシップ（海外）",
       "credits": 2,
       "field": "CAR",
@@ -167,10 +140,7 @@
       ]
     },
     {
-      "code": "CAR601",
-      "codes": [
-        "CAR601z"
-      ],
+      "code": "CAR601z",
       "name": "イノベイティブ総合コミュニケーションデザイン2",
       "credits": 2,
       "field": "CAR",
@@ -185,10 +155,7 @@
       ]
     },
     {
-      "code": "CAR602",
-      "codes": [
-        "CAR602z"
-      ],
+      "code": "CAR602z",
       "name": "ベンチャービジネス概論",
       "credits": 2,
       "field": "CAR",
@@ -203,10 +170,7 @@
       ]
     },
     {
-      "code": "CAR603",
-      "codes": [
-        "CAR603z"
-      ],
+      "code": "CAR603z",
       "name": "知的財産権",
       "credits": 2,
       "field": "CAR",
@@ -221,10 +185,7 @@
       ]
     },
     {
-      "code": "CAR604",
-      "codes": [
-        "CAR604z"
-      ],
+      "code": "CAR604z",
       "name": "技術者倫理",
       "credits": 2,
       "field": "CAR",
@@ -239,10 +200,7 @@
       ]
     },
     {
-      "code": "CHI101",
-      "codes": [
-        "CHI101z"
-      ],
+      "code": "CHI101z",
       "name": "中国語第一",
       "credits": 1,
       "field": "CHI",
@@ -257,10 +215,7 @@
       ]
     },
     {
-      "code": "CHI102",
-      "codes": [
-        "CHI102z"
-      ],
+      "code": "CHI102z",
       "name": "選択中国語第一",
       "credits": 1,
       "field": "CHI",
@@ -275,10 +230,7 @@
       ]
     },
     {
-      "code": "CHI201",
-      "codes": [
-        "CHI201z"
-      ],
+      "code": "CHI201z",
       "name": "中国語第二",
       "credits": 1,
       "field": "CHI",
@@ -293,10 +245,7 @@
       ]
     },
     {
-      "code": "CHI202",
-      "codes": [
-        "CHI202z"
-      ],
+      "code": "CHI202z",
       "name": "選択中国語第二",
       "credits": 1,
       "field": "CHI",
@@ -311,10 +260,7 @@
       ]
     },
     {
-      "code": "CHI301",
-      "codes": [
-        "CHI301z"
-      ],
+      "code": "CHI301z",
       "name": "中国語演習",
       "credits": 2,
       "field": "CHI",
@@ -329,10 +275,7 @@
       ]
     },
     {
-      "code": "CHI401",
-      "codes": [
-        "CHI401z"
-      ],
+      "code": "CHI401z",
       "name": "中国語運用演習",
       "credits": 2,
       "field": "CHI",
@@ -347,10 +290,7 @@
       ]
     },
     {
-      "code": "CHI501",
-      "codes": [
-        "CHI501z"
-      ],
+      "code": "CHI501z",
       "name": "外国語とその運用A【中国語】",
       "credits": 2,
       "field": "CHI",
@@ -365,10 +305,7 @@
       ]
     },
     {
-      "code": "CHI601",
-      "codes": [
-        "CHI601z"
-      ],
+      "code": "CHI601z",
       "name": "外国語とその運用B【中国語】",
       "credits": 2,
       "field": "CHI",
@@ -383,10 +320,7 @@
       ]
     },
     {
-      "code": "CHM101",
-      "codes": [
-        "CHM101z"
-      ],
+      "code": "CHM101z",
       "name": "基礎科学実験Ｂ１",
       "credits": 1,
       "field": "CHM",
@@ -401,10 +335,7 @@
       ]
     },
     {
-      "code": "CHM102",
-      "codes": [
-        "CHM102z"
-      ],
+      "code": "CHM102z",
       "name": "化学概論第一",
       "credits": 2,
       "field": "CHM",
@@ -415,14 +346,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-req"
       ]
     },
     {
-      "code": "CHM201",
-      "codes": [
-        "CHM201z"
-      ],
+      "code": "CHM201z",
       "name": "材料化学",
       "credits": 2,
       "field": "CHM",
@@ -437,10 +365,7 @@
       ]
     },
     {
-      "code": "CHM202",
-      "codes": [
-        "CHM202z"
-      ],
+      "code": "CHM202z",
       "name": "基礎科学実験Ｂ２",
       "credits": 1,
       "field": "CHM",
@@ -455,10 +380,7 @@
       ]
     },
     {
-      "code": "CHM203",
-      "codes": [
-        "CHM203z"
-      ],
+      "code": "CHM203z",
       "name": "化学概論第二",
       "credits": 2,
       "field": "CHM",
@@ -469,14 +391,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-sel"
       ]
     },
     {
-      "code": "CHM301",
-      "codes": [
-        "CHM301z"
-      ],
+      "code": "CHM301z",
       "name": "化学とエネルギー",
       "credits": 2,
       "field": "CHM",
@@ -491,10 +410,7 @@
       ]
     },
     {
-      "code": "COM001",
-      "codes": [
-        "COM001a"
-      ],
+      "code": "COM001a",
       "name": "情報工学工房A",
       "credits": 2,
       "field": "COM",
@@ -505,15 +421,76 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ],
       "note": "通年１〜４年次開講"
     },
     {
-      "code": "COM002",
-      "codes": [
-        "COM002a"
+      "code": "COM001b",
+      "name": "情報工学工房A",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
       ],
+      "note": "通年１〜４年次開講"
+    },
+    {
+      "code": "COM001c",
+      "name": "情報工学工房A",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ],
+      "note": "通年1-4年次開講"
+    },
+    {
+      "code": "COM001d",
+      "name": "情報工学工房A",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ],
+      "note": "通年1-4年次開講"
+    },
+    {
+      "code": "COM001e",
+      "name": "情報工学工房A",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ],
+      "note": "通年１〜４年次開講"
+    },
+    {
+      "code": "COM002a",
       "name": "情報工学工房B",
       "credits": 2,
       "field": "COM",
@@ -529,10 +506,71 @@
       "note": "通年"
     },
     {
-      "code": "COM003",
-      "codes": [
-        "COM003a"
+      "code": "COM002b",
+      "name": "情報工学工房B",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
       ],
+      "note": "通年"
+    },
+    {
+      "code": "COM002c",
+      "name": "情報工学工房B",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ],
+      "note": "通年"
+    },
+    {
+      "code": "COM002d",
+      "name": "情報工学工房B",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ],
+      "note": "通年"
+    },
+    {
+      "code": "COM002e",
+      "name": "情報工学工房B",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ],
+      "note": "通年"
+    },
+    {
+      "code": "COM003a",
       "name": "情報工学工房C",
       "credits": 2,
       "field": "COM",
@@ -548,10 +586,71 @@
       "note": "通年"
     },
     {
-      "code": "COM101",
-      "codes": [
-        "COM101z"
+      "code": "COM003b",
+      "name": "情報工学工房C",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
       ],
+      "note": "通年"
+    },
+    {
+      "code": "COM003c",
+      "name": "情報工学工房C",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ],
+      "note": "通年"
+    },
+    {
+      "code": "COM003d",
+      "name": "情報工学工房C",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ],
+      "note": "通年"
+    },
+    {
+      "code": "COM003e",
+      "name": "情報工学工房C",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ],
+      "note": "通年"
+    },
+    {
+      "code": "COM101z",
       "name": "コンピュータリテラシー",
       "credits": 2,
       "field": "COM",
@@ -566,10 +665,7 @@
       ]
     },
     {
-      "code": "COM201",
-      "codes": [
-        "COM201z"
-      ],
+      "code": "COM201z",
       "name": "基礎プログラミングおよび演習",
       "credits": 2,
       "field": "COM",
@@ -580,14 +676,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-req"
       ]
     },
     {
-      "code": "COM202",
-      "codes": [
-        "COM202a"
-      ],
+      "code": "COM202a",
       "name": "情報領域演習第一",
       "credits": 1,
       "field": "COM",
@@ -598,14 +691,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-req"
       ]
     },
     {
-      "code": "COM301",
-      "codes": [
-        "COM301a"
-      ],
+      "code": "COM202b",
+      "name": "情報領域演習第一",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM202c",
+      "name": "情報領域演習第一",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM202d",
+      "name": "情報領域演習第一",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM202e",
+      "name": "情報領域演習第一",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM301a",
       "name": "計算機通論",
       "credits": 2,
       "field": "COM",
@@ -616,14 +766,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-req"
       ]
     },
     {
-      "code": "COM302",
-      "codes": [
-        "COM302a"
-      ],
+      "code": "COM301b",
+      "name": "計算機通論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM301c",
+      "name": "計算機通論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM301d",
+      "name": "計算機通論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM301e",
+      "name": "計算機通論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM302a",
       "name": "論理設計学",
       "credits": 2,
       "field": "COM",
@@ -634,14 +841,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-req"
       ]
     },
     {
-      "code": "COM303",
-      "codes": [
-        "COM303a"
-      ],
+      "code": "COM302b",
+      "name": "論理設計学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM302c",
+      "name": "論理設計学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM302d",
+      "name": "論理設計学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM302e",
+      "name": "論理設計学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM303a",
       "name": "プログラミング通論",
       "credits": 2,
       "field": "COM",
@@ -652,14 +916,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-req"
       ]
     },
     {
-      "code": "COM304",
-      "codes": [
-        "COM304a"
-      ],
+      "code": "COM303b",
+      "name": "プログラミング通論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM303c",
+      "name": "プログラミング通論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM303d",
+      "name": "プログラミング通論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM303e",
+      "name": "プログラミング通論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM304a",
       "name": "情報領域演習第二",
       "credits": 1,
       "field": "COM",
@@ -670,14 +991,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-req"
       ]
     },
     {
-      "code": "COM401",
-      "codes": [
-        "COM401a"
-      ],
+      "code": "COM304b",
+      "name": "情報領域演習第二",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM304c",
+      "name": "情報領域演習第二",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM304d",
+      "name": "情報領域演習第二",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM304e",
+      "name": "情報領域演習第二",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM401a",
       "name": "情報領域演習第三",
       "credits": 1,
       "field": "COM",
@@ -688,14 +1066,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-req"
       ]
     },
     {
-      "code": "COM402",
-      "codes": [
-        "COM402a"
-      ],
+      "code": "COM401b",
+      "name": "情報領域演習第三",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM401c",
+      "name": "情報領域演習第三",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM401d",
+      "name": "情報領域演習第三",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM401e",
+      "name": "情報領域演習第三",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM402a",
       "name": "アルゴリズム論第一",
       "credits": 2,
       "field": "COM",
@@ -706,14 +1141,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-req"
       ]
     },
     {
-      "code": "COM403",
-      "codes": [
-        "COM403a"
-      ],
+      "code": "COM402b",
+      "name": "アルゴリズム論第一",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM402c",
+      "name": "アルゴリズム論第一",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM402d",
+      "name": "アルゴリズム論第一",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM402e",
+      "name": "アルゴリズム論第一",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "COM403a",
       "name": "コンピュータネットワーク",
       "credits": 2,
       "field": "COM",
@@ -724,14 +1216,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-sel"
       ]
     },
     {
-      "code": "COM404",
-      "codes": [
-        "COM404a"
-      ],
+      "code": "COM403b",
+      "name": "コンピュータネットワーク",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "COM403c",
+      "name": "コンピュータネットワーク",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "COM403d",
+      "name": "コンピュータネットワーク",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "COM403e",
+      "name": "コンピュータネットワーク",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "COM404a",
       "name": "コンピュータ設計論",
       "credits": 2,
       "field": "COM",
@@ -742,14 +1291,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-sel"
       ]
     },
     {
-      "code": "COM405",
-      "codes": [
-        "COM405a"
-      ],
+      "code": "COM404b",
+      "name": "コンピュータ設計論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "COM404c",
+      "name": "コンピュータ設計論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "COM404d",
+      "name": "コンピュータ設計論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "COM404e",
+      "name": "コンピュータ設計論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "COM405a",
       "name": "メディア情報学プログラミング演習",
       "credits": 1,
       "field": "COM",
@@ -760,14 +1366,56 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-req"
       ]
     },
     {
-      "code": "COM501",
-      "codes": [
-        "COM501a"
-      ],
+      "code": "COM405c",
+      "name": "形式言語理論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM405d",
+      "name": "形式言語理論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM405e",
+      "name": "メディア情報学プログラミング演習",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM501a",
       "name": "プログラミング言語実験",
       "credits": 2,
       "field": "COM",
@@ -778,14 +1426,26 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-req"
       ]
     },
     {
-      "code": "COM502",
-      "codes": [
-        "COM502a"
-      ],
+      "code": "COM501b",
+      "name": "プログラミング言語実験",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM501c",
       "name": "オペレーティングシステム論",
       "credits": 2,
       "field": "COM",
@@ -796,14 +1456,116 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-req"
       ]
     },
     {
-      "code": "COM503",
-      "codes": [
-        "COM503a"
-      ],
+      "code": "COM501d",
+      "name": "オペレーティングシステム論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM501e",
+      "name": "プログラミング言語実験",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM502a",
+      "name": "オペレーティングシステム論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM502b",
+      "name": "オペレーティングシステム論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM502c",
+      "name": "情報数理工学実験第一",
+      "credits": 4,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM502d",
+      "name": "コンピュータサイエンス実験第一",
+      "credits": 4,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM502e",
+      "name": "デザイン思考・データサイエンス実践演習１",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM503a",
       "name": "メディア分析法",
       "credits": 2,
       "field": "COM",
@@ -814,14 +1576,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "COM504",
-      "codes": [
-        "COM504a"
-      ],
+      "code": "COM503b",
       "name": "マルチメディア処理",
       "credits": 2,
       "field": "COM",
@@ -836,10 +1595,232 @@
       ]
     },
     {
-      "code": "COM601",
-      "codes": [
-        "COM601a"
-      ],
+      "code": "COM503c",
+      "name": "アルゴリズム論第二",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM503d",
+      "name": "アルゴリズム論第二",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM503e",
+      "name": "オペレーティングシステム論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM504a",
+      "name": "マルチメディア処理",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COM504c",
+      "name": "言語処理系論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM504d",
+      "name": "言語処理系論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM504e",
+      "name": "マルチメディア処理",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COM505c",
+      "name": "ヒューマンインタフェース",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM505d",
+      "name": "ヒューマンインタフェース",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM506c",
+      "name": "プログラム言語論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM506d",
+      "name": "プログラム言語論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM507c",
+      "name": "データベース論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM507d",
+      "name": "データベース論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM508c",
+      "name": "マルチメディア処理",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COM508d",
+      "name": "マルチメディア処理",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COM601a",
       "name": "メディア情報学実験",
       "credits": 2,
       "field": "COM",
@@ -850,14 +1831,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-req"
       ]
     },
     {
-      "code": "COM602",
-      "codes": [
-        "COM602a"
-      ],
+      "code": "COM601b",
       "name": "ソフトウェア工学",
       "credits": 2,
       "field": "COM",
@@ -868,14 +1846,116 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "COM603",
-      "codes": [
-        "COM603a"
-      ],
+      "code": "COM601c",
+      "name": "情報数理工学実験第二A",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM601d",
+      "name": "コンピュータサイエンス実験第二A",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM601e",
+      "name": "デザイン思考・データサイエンス実験",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM602a",
+      "name": "ソフトウェア工学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM602c",
+      "name": "情報数理工学実験第二B",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM602d",
+      "name": "コンピュータサイエンス実験第二B",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COM602e",
+      "name": "ソフトウェア工学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM603a",
       "name": "エージェント論",
       "credits": 2,
       "field": "COM",
@@ -886,14 +1966,41 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "COM604",
-      "codes": [
-        "COM604a"
-      ],
+      "code": "COM603c",
+      "name": "ソフトウェア工学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM603d",
+      "name": "ソフトウェア工学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM603e",
       "name": "ユビキタスネットワーク",
       "credits": 2,
       "field": "COM",
@@ -904,14 +2011,131 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "COMa01",
-      "codes": [
-        "COMa01a"
-      ],
+      "code": "COM604a",
+      "name": "ユビキタスネットワーク",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM604c",
+      "name": "ゲーム情報学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM604d",
+      "name": "ゲーム情報学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM605c",
+      "name": "計算理論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM605d",
+      "name": "計算理論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM606c",
+      "name": "コンピュータグラフィックス",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM606d",
+      "name": "コンピュータグラフィックス",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "COM701e",
+      "name": "デザイン思考・データサイエンス実践演習２",
+      "credits": 1,
+      "field": "COM",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "COMa01a",
       "name": "コンピュータグラフィックス応用",
       "credits": 2,
       "field": "COM",
@@ -926,10 +2150,7 @@
       ]
     },
     {
-      "code": "COMa02",
-      "codes": [
-        "COMa02a"
-      ],
+      "code": "COMa01b",
       "name": "実践ソフトウェア開発基礎論",
       "credits": 2,
       "field": "COM",
@@ -944,10 +2165,67 @@
       ]
     },
     {
-      "code": "COMa03",
-      "codes": [
-        "COMa03a"
-      ],
+      "code": "COMa01c",
+      "name": "情報・ネットワーク工学専攻基礎",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMa01d",
+      "name": "情報・ネットワーク工学専攻基礎",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMa01e",
+      "name": "コンピュータグラフィックス応用",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMa02a",
+      "name": "実践ソフトウェア開発基礎論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMa02b",
       "name": "実践ソフトウェア開発概論Ⅱ",
       "credits": 2,
       "field": "COM",
@@ -962,10 +2240,142 @@
       ]
     },
     {
-      "code": "COMb01",
-      "codes": [
-        "COMb01a"
-      ],
+      "code": "COMa02c",
+      "name": "計算機アーキテクチャ基礎論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMa02d",
+      "name": "計算機アーキテクチャ基礎論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMa02e",
+      "name": "実践ソフトウェア開発基礎論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMa03a",
+      "name": "実践ソフトウェア開発概論Ⅱ",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMa03c",
+      "name": "ソフトウェア基礎特論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMa03d",
+      "name": "ソフトウェア基礎特論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMa03e",
+      "name": "実践ソフトウェア開発概論Ⅱ",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMa04c",
+      "name": "アルゴリズム基礎論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMa04d",
+      "name": "アルゴリズム基礎論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMb01a",
       "name": "実践ソフトウェア開発概論Ⅲ",
       "credits": 2,
       "field": "COM",
@@ -980,10 +2390,112 @@
       ]
     },
     {
-      "code": "ELE301",
-      "codes": [
-        "ELE301a"
-      ],
+      "code": "COMb01b",
+      "name": "実践ソフトウェア開発概論Ⅲ",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMb01c",
+      "name": "応用アルゴリズム論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMb01d",
+      "name": "応用アルゴリズム論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMb01e",
+      "name": "実践ソフトウェア開発概論Ⅲ",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMb02b",
+      "name": "ソフトウェア品質学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMb02c",
+      "name": "アルゴリズム特論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COMb02d",
+      "name": "アルゴリズム特論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ELE301a",
       "name": "電気・電子回路",
       "credits": 2,
       "field": "ELE",
@@ -994,14 +2506,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-sel"
       ]
     },
     {
-      "code": "ELE501",
-      "codes": [
-        "ELE501a"
-      ],
+      "code": "ELE301b",
+      "name": "電気・電子回路",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "ELE301c",
+      "name": "電気・電子回路",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "ELE301d",
+      "name": "電気・電子回路",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "ELE301e",
+      "name": "電気・電子回路",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "ELE501a",
       "name": "情報通信システム",
       "credits": 2,
       "field": "ELE",
@@ -1012,14 +2581,41 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "ELE502",
-      "codes": [
-        "ELE502a"
-      ],
+      "code": "ELE501b",
+      "name": "情報通信システム",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE501e",
+      "name": "情報通信システム",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE502a",
       "name": "インタラクティブシステム",
       "credits": 2,
       "field": "ELE",
@@ -1030,14 +2626,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "ELE601",
-      "codes": [
-        "ELE601a"
-      ],
+      "code": "ELE601a",
       "name": "音響信号処理",
       "credits": 2,
       "field": "ELE",
@@ -1048,14 +2641,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "ELEb01",
-      "codes": [
-        "ELEb01a"
-      ],
+      "code": "ELEb01a",
       "name": "情報理論基礎",
       "credits": 2,
       "field": "ELE",
@@ -1070,10 +2660,37 @@
       ]
     },
     {
-      "code": "ENG101",
-      "codes": [
-        "ENG101z"
-      ],
+      "code": "ELEb01b",
+      "name": "情報理論基礎",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ELEb01e",
+      "name": "情報理論基礎",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ENG101z",
       "name": "Academic Written EnglishⅠ",
       "credits": 1,
       "field": "ENG",
@@ -1088,10 +2705,7 @@
       ]
     },
     {
-      "code": "ENG102",
-      "codes": [
-        "ENG102z"
-      ],
+      "code": "ENG102z",
       "name": "Academic Spoken EnglishⅠ",
       "credits": 1,
       "field": "ENG",
@@ -1106,10 +2720,7 @@
       ]
     },
     {
-      "code": "ENG201",
-      "codes": [
-        "ENG201z"
-      ],
+      "code": "ENG201z",
       "name": "Academic Written EnglishⅡ",
       "credits": 1,
       "field": "ENG",
@@ -1124,10 +2735,7 @@
       ]
     },
     {
-      "code": "ENG202",
-      "codes": [
-        "ENG202z"
-      ],
+      "code": "ENG202z",
       "name": "Academic Spoken EnglishⅡ",
       "credits": 1,
       "field": "ENG",
@@ -1142,10 +2750,7 @@
       ]
     },
     {
-      "code": "ENG301",
-      "codes": [
-        "ENG301z"
-      ],
+      "code": "ENG301z",
       "name": "Academic English for the Second YearⅠ",
       "credits": 1,
       "field": "ENG",
@@ -1160,10 +2765,7 @@
       ]
     },
     {
-      "code": "ENG302",
-      "codes": [
-        "ENG302z"
-      ],
+      "code": "ENG302z",
       "name": "英語演習",
       "credits": 2,
       "field": "ENG",
@@ -1178,10 +2780,7 @@
       ]
     },
     {
-      "code": "ENG401",
-      "codes": [
-        "ENG401z"
-      ],
+      "code": "ENG401z",
       "name": "Academic English for the Second YearⅡ",
       "credits": 1,
       "field": "ENG",
@@ -1196,10 +2795,7 @@
       ]
     },
     {
-      "code": "ENG501",
-      "codes": [
-        "ENG501z"
-      ],
+      "code": "ENG501z",
       "name": "Reading Scientific Research",
       "credits": 2,
       "field": "ENG",
@@ -1215,10 +2811,7 @@
       "note": "偶数年度開講"
     },
     {
-      "code": "ENG502",
-      "codes": [
-        "ENG502z"
-      ],
+      "code": "ENG502z",
       "name": "Research Presentation",
       "credits": 2,
       "field": "ENG",
@@ -1234,10 +2827,7 @@
       "note": "偶数年度開講"
     },
     {
-      "code": "ENG503",
-      "codes": [
-        "ENG503z"
-      ],
+      "code": "ENG503z",
       "name": "English for Interpersonal Communication across Cultures",
       "credits": 2,
       "field": "ENG",
@@ -1253,10 +2843,7 @@
       "note": "奇数年度開講"
     },
     {
-      "code": "ENG504",
-      "codes": [
-        "ENG504z"
-      ],
+      "code": "ENG504z",
       "name": "Preparation for Overseas Study",
       "credits": 2,
       "field": "ENG",
@@ -1272,10 +2859,7 @@
       "note": "奇数年度開講"
     },
     {
-      "code": "ENG601",
-      "codes": [
-        "ENG601z"
-      ],
+      "code": "ENG601z",
       "name": "Research Writing",
       "credits": 2,
       "field": "ENG",
@@ -1291,10 +2875,7 @@
       "note": "奇数年度開講"
     },
     {
-      "code": "ENG602",
-      "codes": [
-        "ENG602z"
-      ],
+      "code": "ENG602z",
       "name": "Advanced Reading in Academic English",
       "credits": 2,
       "field": "ENG",
@@ -1310,10 +2891,7 @@
       "note": "奇数年度開講"
     },
     {
-      "code": "ENG603",
-      "codes": [
-        "ENG603z"
-      ],
+      "code": "ENG603z",
       "name": "Innovative and Global Leadership Skills (IGLS)",
       "credits": 2,
       "field": "ENG",
@@ -1329,10 +2907,7 @@
       "note": "偶数年度開講"
     },
     {
-      "code": "ENG604",
-      "codes": [
-        "ENG604z"
-      ],
+      "code": "ENG604z",
       "name": "Preparation for Graduate School",
       "credits": 2,
       "field": "ENG",
@@ -1348,11 +2923,82 @@
       "note": "偶数年度開講"
     },
     {
-      "code": "FGN101",
-      "codes": [
-        "FGN101z",
-        "FGN101a"
-      ],
+      "code": "FGN101a",
+      "name": "基礎数学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN101b",
+      "name": "基礎数学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN101c",
+      "name": "基礎数学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN101d",
+      "name": "基礎数学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN101e",
+      "name": "基礎数学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN101z",
       "name": "日本文化Ａ",
       "credits": 2,
       "field": "FGN",
@@ -1363,15 +3009,11 @@
       "forInternational": true,
       "graduateLinked": false,
       "groups": [
-        "hss",
-        "major"
+        "hss"
       ]
     },
     {
-      "code": "FGN102",
-      "codes": [
-        "FGN102a"
-      ],
+      "code": "FGN102a",
       "name": "基礎物理学演習第一",
       "credits": 1,
       "field": "FGN",
@@ -1382,15 +3024,146 @@
       "forInternational": true,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "FGN201",
-      "codes": [
-        "FGN201z",
-        "FGN201a"
-      ],
+      "code": "FGN102b",
+      "name": "基礎物理学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN102c",
+      "name": "基礎物理学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN102d",
+      "name": "基礎物理学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN102e",
+      "name": "基礎物理学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN201a",
+      "name": "基礎数学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN201b",
+      "name": "基礎数学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN201c",
+      "name": "基礎数学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN201d",
+      "name": "基礎数学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN201e",
+      "name": "基礎数学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN201z",
       "name": "日本文化Ｂ",
       "credits": 2,
       "field": "FGN",
@@ -1401,15 +3174,11 @@
       "forInternational": true,
       "graduateLinked": false,
       "groups": [
-        "hss",
-        "major"
+        "hss"
       ]
     },
     {
-      "code": "FGN202",
-      "codes": [
-        "FGN202a"
-      ],
+      "code": "FGN202a",
       "name": "基礎物理学演習第二",
       "credits": 1,
       "field": "FGN",
@@ -1420,15 +3189,146 @@
       "forInternational": true,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "FGN301",
-      "codes": [
-        "FGN301z",
-        "FGN301a"
-      ],
+      "code": "FGN202b",
+      "name": "基礎物理学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN202c",
+      "name": "基礎物理学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN202d",
+      "name": "基礎物理学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN202e",
+      "name": "基礎物理学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN301a",
+      "name": "情報処理演習第一",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN301b",
+      "name": "情報処理演習第一",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN301c",
+      "name": "情報処理演習第一",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN301d",
+      "name": "情報処理演習第一",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN301e",
+      "name": "情報処理演習第一",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN301z",
       "name": "日本文化Ｃ",
       "credits": 2,
       "field": "FGN",
@@ -1439,15 +3339,11 @@
       "forInternational": true,
       "graduateLinked": false,
       "groups": [
-        "hss",
-        "major"
+        "hss"
       ]
     },
     {
-      "code": "FGN302",
-      "codes": [
-        "FGN302z"
-      ],
+      "code": "FGN302z",
       "name": "日本文化Ｅ",
       "credits": 2,
       "field": "FGN",
@@ -1462,11 +3358,82 @@
       ]
     },
     {
-      "code": "FGN401",
-      "codes": [
-        "FGN401z",
-        "FGN401a"
-      ],
+      "code": "FGN401a",
+      "name": "情報処理演習第二",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN401b",
+      "name": "情報処理演習第二",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN401c",
+      "name": "情報処理演習第二",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN401d",
+      "name": "情報処理演習第二",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN401e",
+      "name": "情報処理演習第二",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN401z",
       "name": "日本文化Ｄ",
       "credits": 2,
       "field": "FGN",
@@ -1477,15 +3444,11 @@
       "forInternational": true,
       "graduateLinked": false,
       "groups": [
-        "hss",
-        "major"
+        "hss"
       ]
     },
     {
-      "code": "FRE101",
-      "codes": [
-        "FRE101z"
-      ],
+      "code": "FRE101z",
       "name": "仏語第一",
       "credits": 1,
       "field": "FRE",
@@ -1500,10 +3463,7 @@
       ]
     },
     {
-      "code": "FRE102",
-      "codes": [
-        "FRE102z"
-      ],
+      "code": "FRE102z",
       "name": "選択仏語第一",
       "credits": 1,
       "field": "FRE",
@@ -1518,10 +3478,7 @@
       ]
     },
     {
-      "code": "FRE201",
-      "codes": [
-        "FRE201z"
-      ],
+      "code": "FRE201z",
       "name": "仏語第二",
       "credits": 1,
       "field": "FRE",
@@ -1536,10 +3493,7 @@
       ]
     },
     {
-      "code": "FRE202",
-      "codes": [
-        "FRE202z"
-      ],
+      "code": "FRE202z",
       "name": "選択仏語第二",
       "credits": 1,
       "field": "FRE",
@@ -1554,10 +3508,7 @@
       ]
     },
     {
-      "code": "FRE301",
-      "codes": [
-        "FRE301z"
-      ],
+      "code": "FRE301z",
       "name": "仏語演習",
       "credits": 2,
       "field": "FRE",
@@ -1572,10 +3523,7 @@
       ]
     },
     {
-      "code": "FRE401",
-      "codes": [
-        "FRE401z"
-      ],
+      "code": "FRE401z",
       "name": "仏語運用演習",
       "credits": 2,
       "field": "FRE",
@@ -1590,10 +3538,7 @@
       ]
     },
     {
-      "code": "FRE501",
-      "codes": [
-        "FRE501z"
-      ],
+      "code": "FRE501z",
       "name": "外国語とその運用A【仏語】",
       "credits": 2,
       "field": "FRE",
@@ -1608,10 +3553,7 @@
       ]
     },
     {
-      "code": "FRE601",
-      "codes": [
-        "FRE601z"
-      ],
+      "code": "FRE601z",
       "name": "外国語とその運用B【仏語】",
       "credits": 2,
       "field": "FRE",
@@ -1626,10 +3568,7 @@
       ]
     },
     {
-      "code": "GEO201",
-      "codes": [
-        "GEO201z"
-      ],
+      "code": "GEO201z",
       "name": "宇宙・地球科学",
       "credits": 2,
       "field": "GEO",
@@ -1644,10 +3583,7 @@
       ]
     },
     {
-      "code": "GER101",
-      "codes": [
-        "GER101z"
-      ],
+      "code": "GER101z",
       "name": "独語第一",
       "credits": 1,
       "field": "GER",
@@ -1662,10 +3598,7 @@
       ]
     },
     {
-      "code": "GER102",
-      "codes": [
-        "GER102z"
-      ],
+      "code": "GER102z",
       "name": "選択独語第一",
       "credits": 1,
       "field": "GER",
@@ -1680,10 +3613,7 @@
       ]
     },
     {
-      "code": "GER201",
-      "codes": [
-        "GER201z"
-      ],
+      "code": "GER201z",
       "name": "独語第二",
       "credits": 1,
       "field": "GER",
@@ -1698,10 +3628,7 @@
       ]
     },
     {
-      "code": "GER202",
-      "codes": [
-        "GER202z"
-      ],
+      "code": "GER202z",
       "name": "選択独語第二",
       "credits": 1,
       "field": "GER",
@@ -1716,10 +3643,7 @@
       ]
     },
     {
-      "code": "GER301",
-      "codes": [
-        "GER301z"
-      ],
+      "code": "GER301z",
       "name": "独語演習",
       "credits": 2,
       "field": "GER",
@@ -1734,10 +3658,7 @@
       ]
     },
     {
-      "code": "GER401",
-      "codes": [
-        "GER401z"
-      ],
+      "code": "GER401z",
       "name": "独語運用演習",
       "credits": 2,
       "field": "GER",
@@ -1752,10 +3673,7 @@
       ]
     },
     {
-      "code": "GER501",
-      "codes": [
-        "GER501z"
-      ],
+      "code": "GER501z",
       "name": "外国語とその運用A【独語】",
       "credits": 2,
       "field": "GER",
@@ -1770,10 +3688,7 @@
       ]
     },
     {
-      "code": "GER601",
-      "codes": [
-        "GER601z"
-      ],
+      "code": "GER601z",
       "name": "外国語とその運用B【独語】",
       "credits": 2,
       "field": "GER",
@@ -1788,10 +3703,7 @@
       ]
     },
     {
-      "code": "GSC501",
-      "codes": [
-        "GSC501z"
-      ],
+      "code": "GSC501z",
       "name": "サイエンス・コミュニケーション演習",
       "credits": 2,
       "field": "GSC",
@@ -1807,10 +3719,7 @@
       "note": "集中講義"
     },
     {
-      "code": "GSC502",
-      "codes": [
-        "GSC502z"
-      ],
+      "code": "GSC502z",
       "name": "情報と職業",
       "credits": 2,
       "field": "GSC",
@@ -1825,10 +3734,7 @@
       ]
     },
     {
-      "code": "GSC601",
-      "codes": [
-        "GSC601z"
-      ],
+      "code": "GSC601z",
       "name": "現代物理学を創った人々",
       "credits": 2,
       "field": "GSC",
@@ -1844,10 +3750,7 @@
       "note": "偶数年度開講"
     },
     {
-      "code": "GSC602",
-      "codes": [
-        "GSC602z"
-      ],
+      "code": "GSC602z",
       "name": "物理学の発展と最前線",
       "credits": 2,
       "field": "GSC",
@@ -1863,10 +3766,7 @@
       "note": "奇数年度開講"
     },
     {
-      "code": "GSC603",
-      "codes": [
-        "GSC603z"
-      ],
+      "code": "GSC603z",
       "name": "現代化学",
       "credits": 2,
       "field": "GSC",
@@ -1881,10 +3781,7 @@
       ]
     },
     {
-      "code": "GSE501",
-      "codes": [
-        "GSE501z"
-      ],
+      "code": "GSE501z",
       "name": "日本の科学と技術A",
       "credits": 2,
       "field": "GSE",
@@ -1900,10 +3797,7 @@
       "note": "外国人留学生の履修を優先"
     },
     {
-      "code": "GSE601",
-      "codes": [
-        "GSE601z"
-      ],
+      "code": "GSE601z",
       "name": "日本の科学と技術B",
       "credits": 2,
       "field": "GSE",
@@ -1919,10 +3813,7 @@
       "note": "外国人留学生の履修を優先"
     },
     {
-      "code": "HSP101",
-      "codes": [
-        "HSP101z"
-      ],
+      "code": "HSP101z",
       "name": "健康論",
       "credits": 1,
       "field": "HSP",
@@ -1937,10 +3828,7 @@
       ]
     },
     {
-      "code": "HSP201",
-      "codes": [
-        "HSP201z"
-      ],
+      "code": "HSP201z",
       "name": "健康・体力つくり実習",
       "credits": 1,
       "field": "HSP",
@@ -1955,10 +3843,7 @@
       ]
     },
     {
-      "code": "HSP301",
-      "codes": [
-        "HSP301z"
-      ],
+      "code": "HSP301z",
       "name": "生涯スポーツ演習Ａ",
       "credits": 1,
       "field": "HSP",
@@ -1973,10 +3858,7 @@
       ]
     },
     {
-      "code": "HSP302",
-      "codes": [
-        "HSP302z"
-      ],
+      "code": "HSP302z",
       "name": "生涯スポーツ演習Ｃ",
       "credits": 1,
       "field": "HSP",
@@ -1992,10 +3874,7 @@
       "note": "夏期集中講義"
     },
     {
-      "code": "HSP401",
-      "codes": [
-        "HSP401z"
-      ],
+      "code": "HSP401z",
       "name": "生涯スポーツ演習Ｂ",
       "credits": 1,
       "field": "HSP",
@@ -2010,10 +3889,7 @@
       ]
     },
     {
-      "code": "HSP402",
-      "codes": [
-        "HSP402z"
-      ],
+      "code": "HSP402z",
       "name": "生涯スポーツ演習Ｄ",
       "credits": 1,
       "field": "HSP",
@@ -2029,10 +3905,7 @@
       "note": "冬期集中講義"
     },
     {
-      "code": "HSP501",
-      "codes": [
-        "HSP501z"
-      ],
+      "code": "HSP501z",
       "name": "身体運動のバイオメカニクス",
       "credits": 2,
       "field": "HSP",
@@ -2047,10 +3920,7 @@
       ]
     },
     {
-      "code": "HSP502",
-      "codes": [
-        "HSP502z"
-      ],
+      "code": "HSP502z",
       "name": "運動と筋の科学",
       "credits": 2,
       "field": "HSP",
@@ -2065,10 +3935,7 @@
       ]
     },
     {
-      "code": "HSP503",
-      "codes": [
-        "HSP503z"
-      ],
+      "code": "HSP503z",
       "name": "エイジングの健康科学",
       "credits": 2,
       "field": "HSP",
@@ -2083,10 +3950,7 @@
       ]
     },
     {
-      "code": "HSP504",
-      "codes": [
-        "HSP504z"
-      ],
+      "code": "HSP504z",
       "name": "日常生活の対人関係",
       "credits": 2,
       "field": "HSP",
@@ -2101,10 +3965,7 @@
       ]
     },
     {
-      "code": "HSP601",
-      "codes": [
-        "HSP601z"
-      ],
+      "code": "HSP601z",
       "name": "健康の科学",
       "credits": 2,
       "field": "HSP",
@@ -2119,10 +3980,7 @@
       ]
     },
     {
-      "code": "HSP602",
-      "codes": [
-        "HSP602z"
-      ],
+      "code": "HSP602z",
       "name": "スポーツとコミュニケーション",
       "credits": 2,
       "field": "HSP",
@@ -2137,10 +3995,7 @@
       ]
     },
     {
-      "code": "HSP603",
-      "codes": [
-        "HSP603z"
-      ],
+      "code": "HSP603z",
       "name": "体力の科学",
       "credits": 2,
       "field": "HSP",
@@ -2155,10 +4010,7 @@
       ]
     },
     {
-      "code": "HSP604",
-      "codes": [
-        "HSP604z"
-      ],
+      "code": "HSP604z",
       "name": "メンタルヘルス論",
       "credits": 2,
       "field": "HSP",
@@ -2173,10 +4025,7 @@
       ]
     },
     {
-      "code": "HSS301",
-      "codes": [
-        "HSS301z"
-      ],
+      "code": "HSS301z",
       "name": "哲学Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2191,10 +4040,7 @@
       ]
     },
     {
-      "code": "HSS302",
-      "codes": [
-        "HSS302z"
-      ],
+      "code": "HSS302z",
       "name": "倫理学Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2209,10 +4055,7 @@
       ]
     },
     {
-      "code": "HSS303",
-      "codes": [
-        "HSS303z"
-      ],
+      "code": "HSS303z",
       "name": "心理学Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2227,10 +4070,7 @@
       ]
     },
     {
-      "code": "HSS304",
-      "codes": [
-        "HSS304z"
-      ],
+      "code": "HSS304z",
       "name": "歴史学Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2245,10 +4085,7 @@
       ]
     },
     {
-      "code": "HSS305",
-      "codes": [
-        "HSS305z"
-      ],
+      "code": "HSS305z",
       "name": "科学史Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2263,10 +4100,7 @@
       ]
     },
     {
-      "code": "HSS306",
-      "codes": [
-        "HSS306z"
-      ],
+      "code": "HSS306z",
       "name": "文学Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2281,10 +4115,7 @@
       ]
     },
     {
-      "code": "HSS307",
-      "codes": [
-        "HSS307z"
-      ],
+      "code": "HSS307z",
       "name": "美術Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2299,10 +4130,7 @@
       ]
     },
     {
-      "code": "HSS308",
-      "codes": [
-        "HSS308z"
-      ],
+      "code": "HSS308z",
       "name": "音楽Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2317,10 +4145,7 @@
       ]
     },
     {
-      "code": "HSS309",
-      "codes": [
-        "HSS309z"
-      ],
+      "code": "HSS309z",
       "name": "経済学Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2335,10 +4160,7 @@
       ]
     },
     {
-      "code": "HSS310",
-      "codes": [
-        "HSS310z"
-      ],
+      "code": "HSS310z",
       "name": "社会学Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2353,10 +4175,7 @@
       ]
     },
     {
-      "code": "HSS311",
-      "codes": [
-        "HSS311z"
-      ],
+      "code": "HSS311z",
       "name": "法学Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2371,10 +4190,7 @@
       ]
     },
     {
-      "code": "HSS312",
-      "codes": [
-        "HSS312z"
-      ],
+      "code": "HSS312z",
       "name": "政治学Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2389,10 +4205,7 @@
       ]
     },
     {
-      "code": "HSS313",
-      "codes": [
-        "HSS313z"
-      ],
+      "code": "HSS313z",
       "name": "地理学Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2407,10 +4220,7 @@
       ]
     },
     {
-      "code": "HSS314",
-      "codes": [
-        "HSS314z"
-      ],
+      "code": "HSS314z",
       "name": "社会思想史Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2425,10 +4235,7 @@
       ]
     },
     {
-      "code": "HSS315",
-      "codes": [
-        "HSS315z"
-      ],
+      "code": "HSS315z",
       "name": "文化人類学Ａ",
       "credits": 2,
       "field": "HSS",
@@ -2443,10 +4250,7 @@
       ]
     },
     {
-      "code": "HSS316",
-      "codes": [
-        "HSS316z"
-      ],
+      "code": "HSS316z",
       "name": "技術史",
       "credits": 2,
       "field": "HSS",
@@ -2461,10 +4265,7 @@
       ]
     },
     {
-      "code": "HSS317",
-      "codes": [
-        "HSS317z"
-      ],
+      "code": "HSS317z",
       "name": "言語学",
       "credits": 2,
       "field": "HSS",
@@ -2479,10 +4280,7 @@
       ]
     },
     {
-      "code": "HSS318",
-      "codes": [
-        "HSS318z"
-      ],
+      "code": "HSS318z",
       "name": "憲法",
       "credits": 2,
       "field": "HSS",
@@ -2497,10 +4295,7 @@
       ]
     },
     {
-      "code": "HSS319",
-      "codes": [
-        "HSS319z"
-      ],
+      "code": "HSS319z",
       "name": "外国文学",
       "credits": 2,
       "field": "HSS",
@@ -2515,10 +4310,7 @@
       ]
     },
     {
-      "code": "HSS320",
-      "codes": [
-        "HSS320z"
-      ],
+      "code": "HSS320z",
       "name": "アジアの文化",
       "credits": 2,
       "field": "HSS",
@@ -2533,10 +4325,7 @@
       ]
     },
     {
-      "code": "HSS401",
-      "codes": [
-        "HSS401z"
-      ],
+      "code": "HSS401z",
       "name": "哲学Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2551,10 +4340,7 @@
       ]
     },
     {
-      "code": "HSS402",
-      "codes": [
-        "HSS402z"
-      ],
+      "code": "HSS402z",
       "name": "倫理学Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2569,10 +4355,7 @@
       ]
     },
     {
-      "code": "HSS403",
-      "codes": [
-        "HSS403z"
-      ],
+      "code": "HSS403z",
       "name": "心理学Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2587,10 +4370,7 @@
       ]
     },
     {
-      "code": "HSS404",
-      "codes": [
-        "HSS404z"
-      ],
+      "code": "HSS404z",
       "name": "歴史学Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2605,10 +4385,7 @@
       ]
     },
     {
-      "code": "HSS405",
-      "codes": [
-        "HSS405z"
-      ],
+      "code": "HSS405z",
       "name": "科学史Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2623,10 +4400,7 @@
       ]
     },
     {
-      "code": "HSS406",
-      "codes": [
-        "HSS406z"
-      ],
+      "code": "HSS406z",
       "name": "文学Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2641,10 +4415,7 @@
       ]
     },
     {
-      "code": "HSS407",
-      "codes": [
-        "HSS407z"
-      ],
+      "code": "HSS407z",
       "name": "美術Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2659,10 +4430,7 @@
       ]
     },
     {
-      "code": "HSS408",
-      "codes": [
-        "HSS408z"
-      ],
+      "code": "HSS408z",
       "name": "音楽Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2677,10 +4445,7 @@
       ]
     },
     {
-      "code": "HSS409",
-      "codes": [
-        "HSS409z"
-      ],
+      "code": "HSS409z",
       "name": "経済学Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2695,10 +4460,7 @@
       ]
     },
     {
-      "code": "HSS410",
-      "codes": [
-        "HSS410z"
-      ],
+      "code": "HSS410z",
       "name": "社会学Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2713,10 +4475,7 @@
       ]
     },
     {
-      "code": "HSS411",
-      "codes": [
-        "HSS411z"
-      ],
+      "code": "HSS411z",
       "name": "法学Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2731,10 +4490,7 @@
       ]
     },
     {
-      "code": "HSS412",
-      "codes": [
-        "HSS412z"
-      ],
+      "code": "HSS412z",
       "name": "政治学Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2749,10 +4505,7 @@
       ]
     },
     {
-      "code": "HSS413",
-      "codes": [
-        "HSS413z"
-      ],
+      "code": "HSS413z",
       "name": "地理学Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2767,10 +4520,7 @@
       ]
     },
     {
-      "code": "HSS414",
-      "codes": [
-        "HSS414z"
-      ],
+      "code": "HSS414z",
       "name": "社会思想史Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2785,10 +4535,7 @@
       ]
     },
     {
-      "code": "HSS415",
-      "codes": [
-        "HSS415z"
-      ],
+      "code": "HSS415z",
       "name": "文化人類学Ｂ",
       "credits": 2,
       "field": "HSS",
@@ -2803,10 +4550,7 @@
       ]
     },
     {
-      "code": "HSS501",
-      "codes": [
-        "HSS501z"
-      ],
+      "code": "HSS501z",
       "name": "数学の哲学",
       "credits": 2,
       "field": "HSS",
@@ -2821,10 +4565,7 @@
       ]
     },
     {
-      "code": "HSS502",
-      "codes": [
-        "HSS502z"
-      ],
+      "code": "HSS502z",
       "name": "人間と外交",
       "credits": 2,
       "field": "HSS",
@@ -2839,10 +4580,7 @@
       ]
     },
     {
-      "code": "HSS503",
-      "codes": [
-        "HSS503z"
-      ],
+      "code": "HSS503z",
       "name": "日本の内政と外交",
       "credits": 2,
       "field": "HSS",
@@ -2857,10 +4595,7 @@
       ]
     },
     {
-      "code": "HSS504",
-      "codes": [
-        "HSS504z"
-      ],
+      "code": "HSS504z",
       "name": "認知科学",
       "credits": 2,
       "field": "HSS",
@@ -2875,10 +4610,7 @@
       ]
     },
     {
-      "code": "HSS505",
-      "codes": [
-        "HSS505z"
-      ],
+      "code": "HSS505z",
       "name": "江戸の社会と数学",
       "credits": 2,
       "field": "HSS",
@@ -2893,10 +4625,7 @@
       ]
     },
     {
-      "code": "HSS506",
-      "codes": [
-        "HSS506z"
-      ],
+      "code": "HSS506z",
       "name": "現代の教育",
       "credits": 2,
       "field": "HSS",
@@ -2911,10 +4640,7 @@
       ]
     },
     {
-      "code": "HSS507",
-      "codes": [
-        "HSS507z"
-      ],
+      "code": "HSS507z",
       "name": "科学技術と人間",
       "credits": 2,
       "field": "HSS",
@@ -2929,10 +4655,7 @@
       ]
     },
     {
-      "code": "HSS508",
-      "codes": [
-        "HSS508z"
-      ],
+      "code": "HSS508z",
       "name": "ドイツ倫理学",
       "credits": 2,
       "field": "HSS",
@@ -2947,10 +4670,7 @@
       ]
     },
     {
-      "code": "HSS509",
-      "codes": [
-        "HSS509z"
-      ],
+      "code": "HSS509z",
       "name": "日本語表現法",
       "credits": 2,
       "field": "HSS",
@@ -2965,10 +4685,7 @@
       ]
     },
     {
-      "code": "HSS510",
-      "codes": [
-        "HSS510z"
-      ],
+      "code": "HSS510z",
       "name": "比較文化論",
       "credits": 2,
       "field": "HSS",
@@ -2983,10 +4700,7 @@
       ]
     },
     {
-      "code": "HSS511",
-      "codes": [
-        "HSS511z"
-      ],
+      "code": "HSS511z",
       "name": "文化干渉論",
       "credits": 2,
       "field": "HSS",
@@ -3001,10 +4715,7 @@
       ]
     },
     {
-      "code": "HSS512",
-      "codes": [
-        "HSS512z"
-      ],
+      "code": "HSS512z",
       "name": "文化形態論",
       "credits": 2,
       "field": "HSS",
@@ -3019,10 +4730,7 @@
       ]
     },
     {
-      "code": "HSS601",
-      "codes": [
-        "HSS601z"
-      ],
+      "code": "HSS601z",
       "name": "計算と論理の哲学",
       "credits": 2,
       "field": "HSS",
@@ -3037,10 +4745,7 @@
       ]
     },
     {
-      "code": "HSS602",
-      "codes": [
-        "HSS602z"
-      ],
+      "code": "HSS602z",
       "name": "現代の世界政治",
       "credits": 2,
       "field": "HSS",
@@ -3055,10 +4760,7 @@
       ]
     },
     {
-      "code": "HSS603",
-      "codes": [
-        "HSS603z"
-      ],
+      "code": "HSS603z",
       "name": "心の科学",
       "credits": 2,
       "field": "HSS",
@@ -3073,10 +4775,7 @@
       ]
     },
     {
-      "code": "HSS604",
-      "codes": [
-        "HSS604z"
-      ],
+      "code": "HSS604z",
       "name": "伝統科学と近代科学の相克",
       "credits": 2,
       "field": "HSS",
@@ -3091,10 +4790,7 @@
       ]
     },
     {
-      "code": "HSS605",
-      "codes": [
-        "HSS605z"
-      ],
+      "code": "HSS605z",
       "name": "教育の歴史",
       "credits": 2,
       "field": "HSS",
@@ -3110,10 +4806,7 @@
       "note": "偶数年度開講"
     },
     {
-      "code": "HSS606",
-      "codes": [
-        "HSS606z"
-      ],
+      "code": "HSS606z",
       "name": "人間と教育",
       "credits": 2,
       "field": "HSS",
@@ -3129,10 +4822,7 @@
       "note": "奇数年度開講"
     },
     {
-      "code": "HSS607",
-      "codes": [
-        "HSS607z"
-      ],
+      "code": "HSS607z",
       "name": "環境論",
       "credits": 2,
       "field": "HSS",
@@ -3147,10 +4837,7 @@
       ]
     },
     {
-      "code": "HSS608",
-      "codes": [
-        "HSS608z"
-      ],
+      "code": "HSS608z",
       "name": "倫理学と哲学の間",
       "credits": 2,
       "field": "HSS",
@@ -3165,10 +4852,7 @@
       ]
     },
     {
-      "code": "HSS609",
-      "codes": [
-        "HSS609z"
-      ],
+      "code": "HSS609z",
       "name": "英米倫理学",
       "credits": 2,
       "field": "HSS",
@@ -3183,10 +4867,7 @@
       ]
     },
     {
-      "code": "HSS610",
-      "codes": [
-        "HSS610z"
-      ],
+      "code": "HSS610z",
       "name": "日本語読解法",
       "credits": 2,
       "field": "HSS",
@@ -3201,10 +4882,7 @@
       ]
     },
     {
-      "code": "HSS611",
-      "codes": [
-        "HSS611z"
-      ],
+      "code": "HSS611z",
       "name": "地域文化論",
       "credits": 2,
       "field": "HSS",
@@ -3219,10 +4897,7 @@
       ]
     },
     {
-      "code": "HSS612",
-      "codes": [
-        "HSS612z"
-      ],
+      "code": "HSS612z",
       "name": "国際文化論",
       "credits": 2,
       "field": "HSS",
@@ -3237,10 +4912,7 @@
       ]
     },
     {
-      "code": "HSS613",
-      "codes": [
-        "HSS613z"
-      ],
+      "code": "HSS613z",
       "name": "文化と言語",
       "credits": 2,
       "field": "HSS",
@@ -3255,10 +4927,7 @@
       ]
     },
     {
-      "code": "INS501",
-      "codes": [
-        "INS501a"
-      ],
+      "code": "INS501a",
       "name": "コミュニケーション論",
       "credits": 2,
       "field": "INS",
@@ -3269,14 +4938,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "INS502",
-      "codes": [
-        "INS502a"
-      ],
+      "code": "INS501b",
+      "name": "コミュニケーション論",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS501c",
+      "name": "情報通信システム",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS501d",
+      "name": "情報通信システム",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS501e",
+      "name": "デザイン思考概論",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS502a",
       "name": "メディアリテラシー",
       "credits": 2,
       "field": "INS",
@@ -3287,14 +5013,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "INS503",
-      "codes": [
-        "INS503a"
-      ],
+      "code": "INS502b",
+      "name": "多変量解析",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS502c",
+      "name": "データサイエンス",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS502d",
+      "name": "データサイエンス",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS502e",
+      "name": "社会シミュレーション",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS503a",
       "name": "ビジュアル情報処理",
       "credits": 2,
       "field": "INS",
@@ -3305,14 +5088,86 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "INS601",
-      "codes": [
-        "INS601a"
-      ],
+      "code": "INS503c",
+      "name": "囲碁とゲームAI",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INS503d",
+      "name": "囲碁とゲームAI",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INS503e",
+      "name": "コミュニケーション論",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS504e",
+      "name": "多変量解析",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS505e",
+      "name": "ビジュアル情報処理",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS601a",
       "name": "言語認知工学",
       "credits": 2,
       "field": "INS",
@@ -3323,14 +5178,41 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "INS602",
-      "codes": [
-        "INS602a"
-      ],
+      "code": "INS601b",
+      "name": "言語認知工学",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS601e",
+      "name": "システム思考概論",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS602a",
       "name": "物体認識論",
       "credits": 2,
       "field": "INS",
@@ -3341,14 +5223,26 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "INS603",
-      "codes": [
-        "INS603a"
-      ],
+      "code": "INS602e",
+      "name": "物体認識論",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INS603a",
       "name": "メディア論",
       "credits": 2,
       "field": "INS",
@@ -3359,14 +5253,26 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "INSa01",
-      "codes": [
-        "INSa01a"
-      ],
+      "code": "INS603e",
+      "name": "言語認知工学",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "INSa01a",
       "name": "メディアアート論",
       "credits": 2,
       "field": "INS",
@@ -3381,28 +5287,7 @@
       ]
     },
     {
-      "code": "INSa02",
-      "codes": [
-        "INSa02a"
-      ],
-      "name": "知的学習システム",
-      "credits": 2,
-      "field": "INS",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": null,
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "INSa03",
-      "codes": [
-        "INSa03a"
-      ],
+      "code": "INSa01b",
       "name": "データマイニング",
       "credits": 2,
       "field": "INS",
@@ -3417,10 +5302,82 @@
       ]
     },
     {
-      "code": "INSa04",
-      "codes": [
-        "INSa04a"
-      ],
+      "code": "INSa01e",
+      "name": "メディアアート論",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INSa02a",
+      "name": "知的学習システム",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INSa02e",
+      "name": "知的学習システム",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INSa03a",
+      "name": "データマイニング",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INSa03e",
+      "name": "データマイニング",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INSa04a",
       "name": "音声音響情報処理",
       "credits": 2,
       "field": "INS",
@@ -3435,10 +5392,22 @@
       ]
     },
     {
-      "code": "INSa05",
-      "codes": [
-        "INSa05a"
-      ],
+      "code": "INSa04e",
+      "name": "音声音響情報処理",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INSa05a",
       "name": "学習工学特論",
       "credits": 2,
       "field": "INS",
@@ -3453,10 +5422,22 @@
       ]
     },
     {
-      "code": "INSa06",
-      "codes": [
-        "INSa06a"
-      ],
+      "code": "INSa05e",
+      "name": "学習工学特論",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INSa06a",
       "name": "インタラクティブシステム特論",
       "credits": 2,
       "field": "INS",
@@ -3471,10 +5452,22 @@
       ]
     },
     {
-      "code": "INSb01",
-      "codes": [
-        "INSb01a"
-      ],
+      "code": "INSa06e",
+      "name": "インタラクティブシステム特論",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INSb01a",
       "name": "画像認識システム特論",
       "credits": 2,
       "field": "INS",
@@ -3489,11 +5482,97 @@
       ]
     },
     {
-      "code": "INT001",
-      "codes": [
-        "INT001z",
-        "INT001a"
-      ],
+      "code": "INSb01e",
+      "name": "画像認識システム特論",
+      "credits": 2,
+      "field": "INS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INT001a",
+      "name": "Topics in Informatics Ⅰ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT001b",
+      "name": "Topics in Informatics Ⅰ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT001c",
+      "name": "Advanced Communication Engineering and Informatics Ⅰ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT001d",
+      "name": "Advanced Communication Engineering and Informatics Ⅰ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT001e",
+      "name": "Topics in Informatics Ⅰ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT001z",
       "name": "UEC Academic Skills Ⅰ (Computer Literacy)",
       "credits": 2,
       "field": "INT",
@@ -3504,17 +5583,87 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "advanced",
-        "major-intl"
+        "advanced"
       ],
       "note": "1・2年次修得分は言語文化演習科目、3・4年次修得分は上級科目"
     },
     {
-      "code": "INT002",
-      "codes": [
-        "INT002z",
-        "INT002a"
-      ],
+      "code": "INT002a",
+      "name": "Topics in Informatics Ⅱ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT002b",
+      "name": "Topics in Informatics Ⅱ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT002c",
+      "name": "Advanced Communication Engineering and Informatics Ⅱ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT002d",
+      "name": "Advanced Communication Engineering and Informatics Ⅱ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT002e",
+      "name": "Topics in Informatics Ⅱ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT002z",
       "name": "UEC Academic Skills Ⅱ (Information Literacy and Research)",
       "credits": 2,
       "field": "INT",
@@ -3525,17 +5674,87 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "advanced",
-        "major-intl"
+        "advanced"
       ],
       "note": "1・2年次修得分は言語文化演習科目、3・4年次修得分は上級科目"
     },
     {
-      "code": "INT003",
-      "codes": [
-        "INT003z",
-        "INT003a"
-      ],
+      "code": "INT003a",
+      "name": "Topics in Informatics Ⅲ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT003b",
+      "name": "Topics in Informatics Ⅲ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT003c",
+      "name": "Advanced Communication Engineering and Informatics Ⅲ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT003d",
+      "name": "Advanced Communication Engineering and Informatics Ⅲ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT003e",
+      "name": "Topics in Informatics Ⅲ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT003z",
       "name": "UEC Academic Skills Ⅲ (Publishing and Research)",
       "credits": 2,
       "field": "INT",
@@ -3546,16 +5765,42 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "advanced",
-        "major-intl"
+        "advanced"
       ],
       "note": "3・4年次のみ。上級科目扱い"
     },
     {
-      "code": "INT004",
-      "codes": [
-        "INT004z"
-      ],
+      "code": "INT004c",
+      "name": "Advanced Communication Engineering and Informatics Ⅳ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT004d",
+      "name": "Advanced Communication Engineering and Informatics Ⅳ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT004z",
       "name": "海外語学研修Ⅰ",
       "credits": 1,
       "field": "INT",
@@ -3571,10 +5816,7 @@
       "note": "集中。共通単位"
     },
     {
-      "code": "INT005",
-      "codes": [
-        "INT005z"
-      ],
+      "code": "INT005z",
       "name": "海外語学研修Ⅱ",
       "credits": 2,
       "field": "INT",
@@ -3590,10 +5832,7 @@
       "note": "集中。共通単位"
     },
     {
-      "code": "INT501",
-      "codes": [
-        "INT501z"
-      ],
+      "code": "INT501z",
       "name": "Reading Scientific Research",
       "credits": 2,
       "field": "INT",
@@ -3609,10 +5848,7 @@
       "note": "偶数年度開講・上級科目扱い"
     },
     {
-      "code": "INT502",
-      "codes": [
-        "INT502z"
-      ],
+      "code": "INT502z",
       "name": "Research Presentation",
       "credits": 2,
       "field": "INT",
@@ -3628,10 +5864,7 @@
       "note": "偶数年度開講・上級科目扱い"
     },
     {
-      "code": "INT503",
-      "codes": [
-        "INT503z"
-      ],
+      "code": "INT503z",
       "name": "Preparation for Overseas Study",
       "credits": 2,
       "field": "INT",
@@ -3647,10 +5880,7 @@
       "note": "奇数年度開講・上級科目扱い"
     },
     {
-      "code": "INT504",
-      "codes": [
-        "INT504z"
-      ],
+      "code": "INT504z",
       "name": "English for Interpersonal Communication across Cultures",
       "credits": 2,
       "field": "INT",
@@ -3666,10 +5896,7 @@
       "note": "奇数年度開講・上級科目扱い"
     },
     {
-      "code": "INT505",
-      "codes": [
-        "INT505z"
-      ],
+      "code": "INT505z",
       "name": "Introduction to Computational Methods in Science and Engineering",
       "credits": 2,
       "field": "INT",
@@ -3685,10 +5912,7 @@
       "note": "上級科目扱い"
     },
     {
-      "code": "INT601",
-      "codes": [
-        "INT601z"
-      ],
+      "code": "INT601z",
       "name": "Preparation for Graduate School",
       "credits": 2,
       "field": "INT",
@@ -3704,10 +5928,7 @@
       "note": "偶数年度開講・上級科目扱い"
     },
     {
-      "code": "INT602",
-      "codes": [
-        "INT602z"
-      ],
+      "code": "INT602z",
       "name": "Innovative and Global Leadership Skills (IGLS)",
       "credits": 2,
       "field": "INT",
@@ -3723,10 +5944,7 @@
       "note": "偶数年度開講・上級科目扱い"
     },
     {
-      "code": "INT603",
-      "codes": [
-        "INT603z"
-      ],
+      "code": "INT603z",
       "name": "Research Writing",
       "credits": 2,
       "field": "INT",
@@ -3742,10 +5960,7 @@
       "note": "奇数年度開講・上級科目扱い"
     },
     {
-      "code": "INT604",
-      "codes": [
-        "INT604z"
-      ],
+      "code": "INT604z",
       "name": "Advanced Reading in Academic English",
       "credits": 2,
       "field": "INT",
@@ -3761,10 +5976,7 @@
       "note": "奇数年度開講・上級科目扱い"
     },
     {
-      "code": "JPN101",
-      "codes": [
-        "JPN101z"
-      ],
+      "code": "JPN101z",
       "name": "日本語第一",
       "credits": 2,
       "field": "JPN",
@@ -3779,10 +5991,7 @@
       ]
     },
     {
-      "code": "JPN201",
-      "codes": [
-        "JPN201z"
-      ],
+      "code": "JPN201z",
       "name": "日本語第二",
       "credits": 2,
       "field": "JPN",
@@ -3797,10 +6006,7 @@
       ]
     },
     {
-      "code": "JPN301",
-      "codes": [
-        "JPN301z"
-      ],
+      "code": "JPN301z",
       "name": "日本語第三",
       "credits": 2,
       "field": "JPN",
@@ -3815,10 +6021,7 @@
       ]
     },
     {
-      "code": "JPN401",
-      "codes": [
-        "JPN401z"
-      ],
+      "code": "JPN401z",
       "name": "日本語演習",
       "credits": 2,
       "field": "JPN",
@@ -3833,10 +6036,7 @@
       ]
     },
     {
-      "code": "JPN501",
-      "codes": [
-        "JPN501z"
-      ],
+      "code": "JPN501z",
       "name": "日本語とコミュニケーションA",
       "credits": 2,
       "field": "JPN",
@@ -3852,10 +6052,7 @@
       "note": "外国人留学生の履修を優先"
     },
     {
-      "code": "JPN601",
-      "codes": [
-        "JPN601z"
-      ],
+      "code": "JPN601z",
       "name": "日本語とコミュニケーションB",
       "credits": 2,
       "field": "JPN",
@@ -3871,10 +6068,7 @@
       "note": "外国人留学生の履修を優先"
     },
     {
-      "code": "KOR101",
-      "codes": [
-        "KOR101z"
-      ],
+      "code": "KOR101z",
       "name": "韓国朝鮮語第一",
       "credits": 1,
       "field": "KOR",
@@ -3889,10 +6083,7 @@
       ]
     },
     {
-      "code": "KOR102",
-      "codes": [
-        "KOR102z"
-      ],
+      "code": "KOR102z",
       "name": "選択韓国朝鮮語第一",
       "credits": 1,
       "field": "KOR",
@@ -3907,10 +6098,7 @@
       ]
     },
     {
-      "code": "KOR201",
-      "codes": [
-        "KOR201z"
-      ],
+      "code": "KOR201z",
       "name": "韓国朝鮮語第二",
       "credits": 1,
       "field": "KOR",
@@ -3925,10 +6113,7 @@
       ]
     },
     {
-      "code": "KOR202",
-      "codes": [
-        "KOR202z"
-      ],
+      "code": "KOR202z",
       "name": "選択韓国朝鮮語第二",
       "credits": 1,
       "field": "KOR",
@@ -3943,10 +6128,7 @@
       ]
     },
     {
-      "code": "KOR301",
-      "codes": [
-        "KOR301z"
-      ],
+      "code": "KOR301z",
       "name": "韓国朝鮮語演習",
       "credits": 2,
       "field": "KOR",
@@ -3961,10 +6143,7 @@
       ]
     },
     {
-      "code": "KOR401",
-      "codes": [
-        "KOR401z"
-      ],
+      "code": "KOR401z",
       "name": "韓国朝鮮語運用演習",
       "credits": 2,
       "field": "KOR",
@@ -3979,10 +6158,7 @@
       ]
     },
     {
-      "code": "KOR501",
-      "codes": [
-        "KOR501z"
-      ],
+      "code": "KOR501z",
       "name": "外国語とその運用A【韓国朝鮮語】",
       "credits": 2,
       "field": "KOR",
@@ -3997,10 +6173,7 @@
       ]
     },
     {
-      "code": "KOR601",
-      "codes": [
-        "KOR601z"
-      ],
+      "code": "KOR601z",
       "name": "外国語とその運用B【韓国朝鮮語】",
       "credits": 2,
       "field": "KOR",
@@ -4015,10 +6188,7 @@
       ]
     },
     {
-      "code": "LAB501",
-      "codes": [
-        "LAB501a"
-      ],
+      "code": "LAB501a",
       "name": "GLTPラボワーク",
       "credits": 1,
       "field": "LAB",
@@ -4034,10 +6204,71 @@
       "note": "GLTP学生のみ履修可"
     },
     {
-      "code": "LAB701",
-      "codes": [
-        "LAB701a"
+      "code": "LAB501b",
+      "name": "GLTPラボワーク",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
       ],
+      "note": "GLTP学生のみ履修可"
+    },
+    {
+      "code": "LAB501c",
+      "name": "GLTPラボワーク",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ],
+      "note": "GLTP学生のみ履修可"
+    },
+    {
+      "code": "LAB501d",
+      "name": "GLTPラボワーク",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ],
+      "note": "GLTP学生のみ履修可"
+    },
+    {
+      "code": "LAB501e",
+      "name": "GLTPラボワーク",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ],
+      "note": "GLTP学生のみ履修可"
+    },
+    {
+      "code": "LAB701a",
       "name": "輪講A",
       "credits": 1,
       "field": "LAB",
@@ -4048,14 +6279,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-req"
       ]
     },
     {
-      "code": "LAB702",
-      "codes": [
-        "LAB702a"
-      ],
+      "code": "LAB701b",
+      "name": "輪講A",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB701c",
+      "name": "輪講A",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB701d",
+      "name": "輪講A",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB701e",
+      "name": "輪講A",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB702a",
       "name": "卒業研究A",
       "credits": 3,
       "field": "LAB",
@@ -4066,14 +6354,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-req"
       ]
     },
     {
-      "code": "LAB801",
-      "codes": [
-        "LAB801a"
-      ],
+      "code": "LAB702b",
+      "name": "卒業研究A",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB702c",
+      "name": "卒業研究A",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB702d",
+      "name": "卒業研究A",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB702e",
+      "name": "卒業研究A",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB801a",
       "name": "輪講B",
       "credits": 1,
       "field": "LAB",
@@ -4084,14 +6429,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-req"
       ]
     },
     {
-      "code": "LAB802",
-      "codes": [
-        "LAB802a"
-      ],
+      "code": "LAB801b",
+      "name": "輪講B",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB801c",
+      "name": "輪講B",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB801d",
+      "name": "輪講B",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB801e",
+      "name": "輪講B",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB802a",
       "name": "卒業研究B",
       "credits": 3,
       "field": "LAB",
@@ -4102,14 +6504,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-req"
       ]
     },
     {
-      "code": "MSS401",
-      "codes": [
-        "MSS401a"
-      ],
+      "code": "LAB802b",
+      "name": "卒業研究B",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB802c",
+      "name": "卒業研究B",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB802d",
+      "name": "卒業研究B",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB802e",
+      "name": "卒業研究B",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MSS401a",
       "name": "オペレーションズ・リサーチ基礎",
       "credits": 2,
       "field": "MSS",
@@ -4120,14 +6579,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-sel"
       ]
     },
     {
-      "code": "MSS402",
-      "codes": [
-        "MSS402a"
-      ],
+      "code": "MSS401b",
+      "name": "オペレーションズ・リサーチ基礎",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MSS401c",
+      "name": "オペレーションズ・リサーチ基礎",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MSS401d",
+      "name": "オペレーションズ・リサーチ基礎",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MSS401e",
+      "name": "オペレーションズ・リサーチ基礎",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MSS402a",
       "name": "社会情報論",
       "credits": 2,
       "field": "MSS",
@@ -4138,14 +6654,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "MSS501",
-      "codes": [
-        "MSS501a"
-      ],
+      "code": "MSS402b",
+      "name": "社会情報論",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS402e",
+      "name": "社会情報論",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS403b",
+      "name": "生産管理",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS404b",
+      "name": "品質管理第一",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS501a",
       "name": "人間工学",
       "credits": 2,
       "field": "MSS",
@@ -4156,14 +6729,221 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "MTH101",
-      "codes": [
-        "MTH101z"
-      ],
+      "code": "MSS501b",
+      "name": "人間工学",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS501e",
+      "name": "人間工学",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS502b",
+      "name": "オペレーションズ・リサーチ第一",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS502e",
+      "name": "オペレーションズ・リサーチ第一",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS601b",
+      "name": "経営・社会情報学実験",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MSS601e",
+      "name": "オペレーションズ・リサーチ第二",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS602b",
+      "name": "品質管理第二",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS602e",
+      "name": "マーケティング科学",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS603b",
+      "name": "オペレーションズ・リサーチ第二",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS604b",
+      "name": "マーケティング科学",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSS605b",
+      "name": "信頼性工学",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MSSa01b",
+      "name": "会計情報システム",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MSSa02b",
+      "name": "経営情報システム",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MSSa03b",
+      "name": "サービス・サイエンス特論",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTH101z",
       "name": "微分積分学第一",
       "credits": 2,
       "field": "MTH",
@@ -4174,14 +6954,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-req"
       ]
     },
     {
-      "code": "MTH102",
-      "codes": [
-        "MTH102z"
-      ],
+      "code": "MTH102z",
       "name": "線形代数学第一",
       "credits": 2,
       "field": "MTH",
@@ -4192,14 +6969,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-req"
       ]
     },
     {
-      "code": "MTH103",
-      "codes": [
-        "MTH103z"
-      ],
+      "code": "MTH103z",
       "name": "数学演習第一",
       "credits": 1,
       "field": "MTH",
@@ -4210,14 +6984,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-req"
       ]
     },
     {
-      "code": "MTH201",
-      "codes": [
-        "MTH201z"
-      ],
+      "code": "MTH201z",
       "name": "微分積分学第二",
       "credits": 2,
       "field": "MTH",
@@ -4228,14 +6999,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-req"
       ]
     },
     {
-      "code": "MTH202",
-      "codes": [
-        "MTH202z"
-      ],
+      "code": "MTH202z",
       "name": "線形代数学第二",
       "credits": 2,
       "field": "MTH",
@@ -4246,14 +7014,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-req"
       ]
     },
     {
-      "code": "MTH203",
-      "codes": [
-        "MTH203z"
-      ],
+      "code": "MTH203z",
       "name": "解析学",
       "credits": 2,
       "field": "MTH",
@@ -4264,14 +7029,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-req"
       ]
     },
     {
-      "code": "MTH204",
-      "codes": [
-        "MTH204z"
-      ],
+      "code": "MTH204z",
       "name": "数学演習第二",
       "credits": 1,
       "field": "MTH",
@@ -4282,14 +7044,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-req"
       ]
     },
     {
-      "code": "MTH205",
-      "codes": [
-        "MTH205a"
-      ],
+      "code": "MTH205a",
       "name": "離散数学",
       "credits": 2,
       "field": "MTH",
@@ -4300,14 +7059,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-req"
       ]
     },
     {
-      "code": "MTH301",
-      "codes": [
-        "MTH301z"
-      ],
+      "code": "MTH205b",
+      "name": "離散数学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH205c",
+      "name": "離散数学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH205d",
+      "name": "離散数学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH205e",
+      "name": "離散数学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH301z",
       "name": "現代数学入門Ａ",
       "credits": 2,
       "field": "MTH",
@@ -4322,10 +7138,7 @@
       ]
     },
     {
-      "code": "MTH302",
-      "codes": [
-        "MTH302z"
-      ],
+      "code": "MTH302z",
       "name": "現代数学入門Ｂ",
       "credits": 2,
       "field": "MTH",
@@ -4340,10 +7153,7 @@
       ]
     },
     {
-      "code": "MTH303",
-      "codes": [
-        "MTH303a"
-      ],
+      "code": "MTH303a",
       "name": "確率論",
       "credits": 2,
       "field": "MTH",
@@ -4354,14 +7164,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-req"
       ]
     },
     {
-      "code": "MTH304",
-      "codes": [
-        "MTH304a"
-      ],
+      "code": "MTH303b",
+      "name": "確率論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH303c",
+      "name": "確率論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH303d",
+      "name": "確率論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH303e",
+      "name": "確率論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH304a",
       "name": "複素関数論",
       "credits": 2,
       "field": "MTH",
@@ -4372,14 +7239,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-sel"
       ]
     },
     {
-      "code": "MTH401",
-      "codes": [
-        "MTH401a"
-      ],
+      "code": "MTH304b",
+      "name": "複素関数論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MTH304c",
+      "name": "複素関数論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MTH304d",
+      "name": "複素関数論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MTH304e",
+      "name": "複素関数論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MTH401a",
       "name": "統計学",
       "credits": 2,
       "field": "MTH",
@@ -4390,14 +7314,71 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-sel"
       ]
     },
     {
-      "code": "MTH402",
-      "codes": [
-        "MTH402a"
-      ],
+      "code": "MTH401b",
+      "name": "統計学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MTH401c",
+      "name": "統計学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MTH401d",
+      "name": "統計学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MTH401e",
+      "name": "統計学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH402a",
       "name": "応用数学第一",
       "credits": 2,
       "field": "MTH",
@@ -4408,14 +7389,101 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "cluster-basic"
+        "cluster-basic-sel"
       ]
     },
     {
-      "code": "MTH501",
-      "codes": [
-        "MTH501a"
-      ],
+      "code": "MTH402b",
+      "name": "応用数学第一",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MTH402c",
+      "name": "応用数学第一",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MTH402d",
+      "name": "応用数学第一",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MTH402e",
+      "name": "応用数学第一",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-sel"
+      ]
+    },
+    {
+      "code": "MTH403c",
+      "name": "数値計算",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MTH403d",
+      "name": "数値計算",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "MTH501a",
       "name": "幾何学概論",
       "credits": 2,
       "field": "MTH",
@@ -4426,14 +7494,191 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major"
+        "major-sel"
       ]
     },
     {
-      "code": "MTH601",
-      "codes": [
-        "MTH601z"
-      ],
+      "code": "MTH501b",
+      "name": "幾何学概論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH501c",
+      "name": "幾何学概論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH501d",
+      "name": "幾何学概論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH501e",
+      "name": "統計学第二",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH502c",
+      "name": "数値解析",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH502d",
+      "name": "数値解析",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH503c",
+      "name": "応用数学第二",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH503d",
+      "name": "応用数学第二",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH504c",
+      "name": "グラフとネットワーク",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH504d",
+      "name": "グラフとネットワーク",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH505c",
+      "name": "シミュレーション理工学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH505d",
+      "name": "シミュレーション理工学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH601z",
       "name": "応用代数学",
       "credits": 2,
       "field": "MTH",
@@ -4448,10 +7693,157 @@
       ]
     },
     {
-      "code": "MTHb01",
-      "codes": [
-        "MTHb01a"
-      ],
+      "code": "MTH602c",
+      "name": "ハイパフォーマンスコンピューティング",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH602d",
+      "name": "ハイパフォーマンスコンピューティング",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH603c",
+      "name": "数理計画法",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH603d",
+      "name": "数理計画法",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH604c",
+      "name": "離散数理工学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH604d",
+      "name": "離散数理工学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH605c",
+      "name": "知的情報処理",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTH605d",
+      "name": "知的情報処理",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "MTHa01c",
+      "name": "応用解析基礎論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTHa01d",
+      "name": "プログラム言語基礎論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTHb01a",
       "name": "数理統計学基礎",
       "credits": 2,
       "field": "MTH",
@@ -4466,10 +7858,67 @@
       ]
     },
     {
-      "code": "MTHb02",
-      "codes": [
-        "MTHb02a"
-      ],
+      "code": "MTHb01b",
+      "name": "数理統計学基礎",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTHb01c",
+      "name": "ハイパフォーマンスコンピューティング基礎論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTHb01d",
+      "name": "ハイパフォーマンスコンピューティング基礎論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTHb01e",
+      "name": "数理統計学基礎",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTHb02a",
       "name": "現代代数学",
       "credits": 2,
       "field": "MTH",
@@ -4482,13 +7931,72 @@
       "groups": [
         "major-free"
       ],
-      "note": "偶数年度開講"
+      "note": "大学院連携科目（偶数年度開講）"
     },
     {
-      "code": "MTHb03",
-      "codes": [
-        "MTHb03a"
+      "code": "MTHb02b",
+      "name": "現代代数学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
       ],
+      "note": "大学院連携科目（偶数年度開講）"
+    },
+    {
+      "code": "MTHb02c",
+      "name": "シミュレーション理工学基礎論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTHb02d",
+      "name": "離散最適化基礎論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTHb02e",
+      "name": "現代代数学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ],
+      "note": "大学院連携科目（偶数年度開講）"
+    },
+    {
+      "code": "MTHb03a",
       "name": "数理解析学",
       "credits": 2,
       "field": "MTH",
@@ -4501,13 +8009,102 @@
       "groups": [
         "major-free"
       ],
-      "note": "奇数年度開講"
+      "note": "大学院連携科目（奇数年度開講）"
     },
     {
-      "code": "PHY101",
-      "codes": [
-        "PHY101z"
+      "code": "MTHb03b",
+      "name": "数理解析学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
       ],
+      "note": "大学院連携科目（奇数年度開講）"
+    },
+    {
+      "code": "MTHb03c",
+      "name": "離散最適化基礎論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTHb03d",
+      "name": "連続最適化基礎論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTHb03e",
+      "name": "数理解析学",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ],
+      "note": "大学院連携科目（奇数年度開講）"
+    },
+    {
+      "code": "MTHb04c",
+      "name": "連続最適化基礎論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MTHb04d",
+      "name": "画像認識システム特論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "PHY101z",
       "name": "基礎科学実験Ａ１",
       "credits": 1,
       "field": "PHY",
@@ -4522,10 +8119,7 @@
       ]
     },
     {
-      "code": "PHY102",
-      "codes": [
-        "PHY102z"
-      ],
+      "code": "PHY102z",
       "name": "物理学概論第一",
       "credits": 2,
       "field": "PHY",
@@ -4536,14 +8130,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-req"
       ]
     },
     {
-      "code": "PHY103",
-      "codes": [
-        "PHY103z"
-      ],
+      "code": "PHY103z",
       "name": "物理学演習第一",
       "credits": 1,
       "field": "PHY",
@@ -4554,14 +8145,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-sel"
       ]
     },
     {
-      "code": "PHY201",
-      "codes": [
-        "PHY201z"
-      ],
+      "code": "PHY201z",
       "name": "基礎科学実験Ａ２",
       "credits": 1,
       "field": "PHY",
@@ -4576,10 +8164,7 @@
       ]
     },
     {
-      "code": "PHY202",
-      "codes": [
-        "PHY202z"
-      ],
+      "code": "PHY202z",
       "name": "物理学概論第二",
       "credits": 2,
       "field": "PHY",
@@ -4590,14 +8175,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-sel"
       ]
     },
     {
-      "code": "PHY203",
-      "codes": [
-        "PHY203z"
-      ],
+      "code": "PHY203z",
       "name": "物理学演習第二",
       "credits": 1,
       "field": "PHY",
@@ -4608,14 +8190,11 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic"
+        "math-basic-sel"
       ]
     },
     {
-      "code": "PHY301",
-      "codes": [
-        "PHY301z"
-      ],
+      "code": "PHY301z",
       "name": "物理学概論第三",
       "credits": 2,
       "field": "PHY",
@@ -4630,10 +8209,7 @@
       ]
     },
     {
-      "code": "RUS101",
-      "codes": [
-        "RUS101z"
-      ],
+      "code": "RUS101z",
       "name": "露語第一",
       "credits": 1,
       "field": "RUS",
@@ -4648,10 +8224,7 @@
       ]
     },
     {
-      "code": "RUS102",
-      "codes": [
-        "RUS102z"
-      ],
+      "code": "RUS102z",
       "name": "選択露語第一",
       "credits": 1,
       "field": "RUS",
@@ -4666,10 +8239,7 @@
       ]
     },
     {
-      "code": "RUS201",
-      "codes": [
-        "RUS201z"
-      ],
+      "code": "RUS201z",
       "name": "露語第二",
       "credits": 1,
       "field": "RUS",
@@ -4684,10 +8254,7 @@
       ]
     },
     {
-      "code": "RUS202",
-      "codes": [
-        "RUS202z"
-      ],
+      "code": "RUS202z",
       "name": "選択露語第二",
       "credits": 1,
       "field": "RUS",
@@ -4702,10 +8269,7 @@
       ]
     },
     {
-      "code": "RUS301",
-      "codes": [
-        "RUS301z"
-      ],
+      "code": "RUS301z",
       "name": "露語演習",
       "credits": 2,
       "field": "RUS",
@@ -4720,10 +8284,7 @@
       ]
     },
     {
-      "code": "RUS401",
-      "codes": [
-        "RUS401z"
-      ],
+      "code": "RUS401z",
       "name": "露語運用演習",
       "credits": 2,
       "field": "RUS",
@@ -4738,10 +8299,7 @@
       ]
     },
     {
-      "code": "RUS501",
-      "codes": [
-        "RUS501z"
-      ],
+      "code": "RUS501z",
       "name": "外国語とその運用A【露語】",
       "credits": 2,
       "field": "RUS",
@@ -4756,10 +8314,7 @@
       ]
     },
     {
-      "code": "RUS601",
-      "codes": [
-        "RUS601z"
-      ],
+      "code": "RUS601z",
       "name": "外国語とその運用B【露語】",
       "credits": 2,
       "field": "RUS",
@@ -4774,10 +8329,7 @@
       ]
     },
     {
-      "code": "TEN501",
-      "codes": [
-        "TEN501z"
-      ],
+      "code": "TEN501z",
       "name": "Technical English – Basic English for Science",
       "credits": 2,
       "field": "TEN",
@@ -4792,10 +8344,7 @@
       ]
     },
     {
-      "code": "TEN601",
-      "codes": [
-        "TEN601z"
-      ],
+      "code": "TEN601z",
       "name": "Technical English – Intermediate English for Science",
       "credits": 2,
       "field": "TEN",
@@ -4810,10 +8359,7 @@
       ]
     },
     {
-      "code": "UEC001",
-      "codes": [
-        "UEC001z"
-      ],
+      "code": "UEC001z",
       "name": "学域特別講義A",
       "credits": 1,
       "field": "UEC",
@@ -4829,10 +8375,7 @@
       "note": "開講年度により扱いが異なる"
     },
     {
-      "code": "UEC002",
-      "codes": [
-        "UEC002z"
-      ],
+      "code": "UEC002z",
       "name": "学域特別講義B",
       "credits": 2,
       "field": "UEC",
@@ -4848,10 +8391,7 @@
       "note": "開講年度により扱いが異なる"
     },
     {
-      "code": "UEC301",
-      "codes": [
-        "UEC301z"
-      ],
+      "code": "UEC301z",
       "name": "総合コミュニケーション科学",
       "credits": 2,
       "field": "UEC",
@@ -4866,10 +8406,7 @@
       ]
     },
     {
-      "code": "UEC501",
-      "codes": [
-        "UEC501z"
-      ],
+      "code": "UEC501z",
       "name": "データサイエンス演習",
       "credits": 1,
       "field": "UEC",

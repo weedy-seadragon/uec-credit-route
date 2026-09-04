@@ -53,7 +53,7 @@ export interface RequirementGroup {
    * （子を持たないグループでは 'elective' として扱う）。
    */
   kind?: GroupKind
-  /** このグループに直接属する科目番号（末尾記号なし）の一覧 */
+  /** このグループに直接属する科目番号（末尾記号を含むフルコード。例: COM405a）の一覧 */
   subjects?: string[]
   /** 下位グループ（無ければ末端グループ） */
   children?: RequirementGroup[]

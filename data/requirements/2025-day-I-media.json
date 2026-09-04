@@ -36,16 +36,16 @@
               "label": "理数基礎（必修）",
               "required": 18,
               "subjects": [
-                "MTH101",
-                "MTH201",
-                "MTH102",
-                "MTH202",
-                "MTH203",
-                "MTH103",
-                "MTH204",
-                "PHY102",
-                "CHM102",
-                "COM201"
+                "MTH101z",
+                "MTH201z",
+                "MTH102z",
+                "MTH202z",
+                "MTH203z",
+                "MTH103z",
+                "MTH204z",
+                "PHY102z",
+                "CHM102z",
+                "COM201z"
               ],
               "kind": "required"
             },
@@ -55,10 +55,10 @@
               "label": "理数基礎（選択）",
               "required": 0,
               "subjects": [
-                "PHY103",
-                "PHY202",
-                "PHY203",
-                "CHM203"
+                "PHY103z",
+                "PHY202z",
+                "PHY203z",
+                "CHM203z"
               ],
               "kind": "elective",
               "countAs": "common",
@@ -79,15 +79,15 @@
               "label": "類共通基礎（必修）",
               "required": 15,
               "subjects": [
-                "MTH205",
-                "MTH303",
-                "COM301",
-                "COM302",
-                "COM303",
-                "COM202",
-                "COM304",
-                "COM401",
-                "COM402"
+                "MTH205a",
+                "MTH303a",
+                "COM301a",
+                "COM302a",
+                "COM303a",
+                "COM202a",
+                "COM304a",
+                "COM401a",
+                "COM402a"
               ],
               "kind": "required"
             },
@@ -97,13 +97,13 @@
               "label": "類共通基礎（選択）",
               "required": 8,
               "subjects": [
-                "ELE301",
-                "MTH304",
-                "MTH401",
-                "MSS401",
-                "MTH402",
-                "COM403",
-                "COM404"
+                "ELE301a",
+                "MTH304a",
+                "MTH401a",
+                "MSS401a",
+                "MTH402a",
+                "COM403a",
+                "COM404a"
               ],
               "kind": "elective"
             }
@@ -122,13 +122,13 @@
               "label": "類専門（必修）",
               "required": 13,
               "subjects": [
-                "COM405",
-                "COM501",
-                "COM601",
-                "LAB701",
-                "LAB801",
-                "LAB702",
-                "LAB802"
+                "COM405a",
+                "COM501a",
+                "COM601a",
+                "LAB701a",
+                "LAB801a",
+                "LAB702a",
+                "LAB802a"
               ],
               "kind": "required"
             },
@@ -138,34 +138,138 @@
               "label": "類専門（選択）",
               "required": 22,
               "subjects": [
-                "MSS402",
-                "COM502",
-                "MTH501",
-                "ELE501",
-                "MSS501",
-                "ELE502",
-                "INS501",
-                "COM503",
-                "INS502",
-                "COM602",
-                "COM603",
-                "COM604",
-                "INS601",
-                "INS602",
-                "INS503",
-                "INS603",
-                "ELE601",
-                "COM001",
-                "FGN101",
-                "FGN201",
-                "FGN102",
-                "FGN202",
-                "FGN301",
-                "FGN401"
+                "MSS402a",
+                "COM502a",
+                "MTH501a",
+                "ELE501a",
+                "MSS501a",
+                "ELE502a",
+                "INS501a",
+                "COM503a",
+                "INS502a",
+                "COM602a",
+                "COM603a",
+                "COM604a",
+                "INS601a",
+                "INS602a",
+                "INS503a",
+                "INS603a",
+                "ELE601a",
+                "COM001a",
+                "FGN101a",
+                "FGN201a",
+                "FGN102a",
+                "FGN202a",
+                "FGN301a",
+                "FGN401a",
+                "MSS402b",
+                "MSS403b",
+                "MSS404b",
+                "MSS602b",
+                "COM502b",
+                "MTH501b",
+                "ELE501b",
+                "MSS501b",
+                "INS501b",
+                "INS502b",
+                "MSS502b",
+                "MSS603b",
+                "COM601b",
+                "INS601b",
+                "MSS604b",
+                "MSS605b",
+                "COM001b",
+                "FGN101b",
+                "FGN201b",
+                "FGN102b",
+                "FGN202b",
+                "FGN301b",
+                "FGN401b",
+                "COM405c",
+                "MTH501c",
+                "MTH502c",
+                "COM503c",
+                "COM504c",
+                "COM505c",
+                "COM506c",
+                "COM507c",
+                "MTH503c",
+                "MTH504c",
+                "MTH505c",
+                "INS501c",
+                "INS502c",
+                "COM603c",
+                "MTH602c",
+                "COM604c",
+                "MTH603c",
+                "MTH604c",
+                "COM605c",
+                "COM606c",
+                "MTH605c",
+                "COM001c",
+                "FGN101c",
+                "FGN201c",
+                "FGN102c",
+                "FGN202c",
+                "FGN301c",
+                "FGN401c",
+                "COM405d",
+                "MTH501d",
+                "MTH502d",
+                "COM503d",
+                "COM504d",
+                "COM505d",
+                "COM506d",
+                "COM507d",
+                "MTH503d",
+                "MTH504d",
+                "MTH505d",
+                "INS501d",
+                "INS502d",
+                "COM603d",
+                "MTH602d",
+                "COM604d",
+                "MTH603d",
+                "MTH604d",
+                "COM605d",
+                "COM606d",
+                "MTH605d",
+                "COM001d",
+                "FGN101d",
+                "FGN201d",
+                "FGN102d",
+                "FGN202d",
+                "FGN301d",
+                "FGN401d",
+                "INS501e",
+                "INS601e",
+                "MSS402e",
+                "COM503e",
+                "MTH501e",
+                "ELE501e",
+                "MSS501e",
+                "INS502e",
+                "INS503e",
+                "INS504e",
+                "MSS502e",
+                "MSS601e",
+                "MSS602e",
+                "INS602e",
+                "COM602e",
+                "COM603e",
+                "INS603e",
+                "INS505e",
+                "COM001e",
+                "FGN101e",
+                "FGN201e",
+                "FGN102e",
+                "FGN202e",
+                "FGN301e",
+                "FGN401e"
               ],
               "kind": "elective",
               "alsoAccepts": "sameClusterOtherPrograms",
-              "note": "Ⅰ類の他プログラムの科目も選択として算入可（実験科目を除く）"
+              "note": "Ⅰ類の他プログラムの科目も選択として算入可（実験科目を除く。付録C 注1）。このJSONの subjects には他プログラム分もあらかじめ展開済み"
             },
             {
               "id": "major-free",
@@ -173,25 +277,25 @@
               "label": "自由科目",
               "required": 0,
               "subjects": [
-                "COM504",
-                "COM002",
-                "COM003",
-                "INSa01",
-                "INSa02",
-                "COMa01",
-                "INSa03",
-                "INSa04",
-                "INSa05",
-                "INSa06",
-                "COMa02",
-                "COMa03",
-                "COMb01",
-                "INSb01",
-                "ELEb01",
-                "MTHb01",
-                "MTHb02",
-                "MTHb03",
-                "LAB501"
+                "COM504a",
+                "COM002a",
+                "COM003a",
+                "INSa01a",
+                "INSa02a",
+                "COMa01a",
+                "INSa03a",
+                "INSa04a",
+                "INSa05a",
+                "INSa06a",
+                "COMa02a",
+                "COMa03a",
+                "COMb01a",
+                "INSb01a",
+                "ELEb01a",
+                "MTHb01a",
+                "MTHb02a",
+                "MTHb03a",
+                "LAB501a"
               ],
               "kind": "free",
               "countsTowardGraduation": false,
@@ -203,9 +307,9 @@
               "label": "国際科目",
               "required": 0,
               "subjects": [
-                "INT001",
-                "INT002",
-                "INT003"
+                "INT001a",
+                "INT002a",
+                "INT003a"
               ],
               "kind": "international",
               "note": "単位の扱いは年度ごとの科目一覧表による"
@@ -245,7 +349,7 @@
             {
               "type": "subjects",
               "codes": [
-                "UEC301"
+                "UEC301z"
               ]
             },
             {
@@ -255,8 +359,8 @@
             {
               "type": "subjects",
               "codes": [
-                "MTH205",
-                "COM202"
+                "MTH205a",
+                "COM202a"
               ],
               "note": "類共通基礎の1年次必修2科目3単位"
             }
@@ -270,10 +374,10 @@
       ],
       "onFail": {
         "blockedSubjects": [
-          "COM501",
-          "COM601"
+          "COM501a",
+          "COM601a"
         ],
-        "note": "不合格時はプログラミング言語実験・メディア情報学実験を履修できない"
+        "note": "不合格時はCOM501a・COM601aを履修できない"
       }
     },
     {
@@ -307,7 +411,7 @@
         {
           "type": "subjects",
           "codes": [
-            "UEC301"
+            "UEC301z"
           ]
         },
         {
@@ -321,8 +425,8 @@
         {
           "type": "subjects",
           "codes": [
-            "COM501",
-            "COM601"
+            "COM501a",
+            "COM601a"
           ]
         },
         {

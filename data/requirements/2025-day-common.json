@@ -17,46 +17,46 @@
           "label": "人文・社会",
           "required": 8,
           "subjects": [
-            "HSS301",
-            "HSS401",
-            "HSS302",
-            "HSS402",
-            "HSS303",
-            "HSS403",
-            "HSS304",
-            "HSS404",
-            "HSS305",
-            "HSS405",
-            "HSS306",
-            "HSS406",
-            "HSS307",
-            "HSS407",
-            "HSS308",
-            "HSS408",
-            "HSS309",
-            "HSS409",
-            "HSS310",
-            "HSS410",
-            "HSS311",
-            "HSS411",
-            "HSS312",
-            "HSS412",
-            "HSS313",
-            "HSS413",
-            "HSS314",
-            "HSS414",
-            "HSS315",
-            "HSS415",
-            "HSS316",
-            "HSS317",
-            "HSS318",
-            "HSS319",
-            "HSS320",
-            "FGN101",
-            "FGN201",
-            "FGN301",
-            "FGN401",
-            "FGN302"
+            "HSS301z",
+            "HSS401z",
+            "HSS302z",
+            "HSS402z",
+            "HSS303z",
+            "HSS403z",
+            "HSS304z",
+            "HSS404z",
+            "HSS305z",
+            "HSS405z",
+            "HSS306z",
+            "HSS406z",
+            "HSS307z",
+            "HSS407z",
+            "HSS308z",
+            "HSS408z",
+            "HSS309z",
+            "HSS409z",
+            "HSS310z",
+            "HSS410z",
+            "HSS311z",
+            "HSS411z",
+            "HSS312z",
+            "HSS412z",
+            "HSS313z",
+            "HSS413z",
+            "HSS314z",
+            "HSS414z",
+            "HSS315z",
+            "HSS415z",
+            "HSS316z",
+            "HSS317z",
+            "HSS318z",
+            "HSS319z",
+            "HSS320z",
+            "FGN101z",
+            "FGN201z",
+            "FGN301z",
+            "FGN401z",
+            "FGN302z"
           ],
           "kind": "elective",
           "overflowToCommon": false,
@@ -68,10 +68,10 @@
           "label": "英語（1年）",
           "required": 4,
           "subjects": [
-            "ENG101",
-            "ENG102",
-            "ENG201",
-            "ENG202"
+            "ENG101z",
+            "ENG102z",
+            "ENG201z",
+            "ENG202z"
           ],
           "kind": "required"
         },
@@ -81,8 +81,8 @@
           "label": "英語（2年）",
           "required": 2,
           "subjects": [
-            "ENG301",
-            "ENG401"
+            "ENG301z",
+            "ENG401z"
           ],
           "kind": "required"
         },
@@ -92,16 +92,16 @@
           "label": "第二外国語",
           "required": 2,
           "subjects": [
-            "GER101",
-            "GER201",
-            "FRE101",
-            "FRE201",
-            "RUS101",
-            "RUS201",
-            "CHI101",
-            "CHI201",
-            "KOR101",
-            "KOR201"
+            "GER101z",
+            "GER201z",
+            "FRE101z",
+            "FRE201z",
+            "RUS101z",
+            "RUS201z",
+            "CHI101z",
+            "CHI201z",
+            "KOR101z",
+            "KOR201z"
           ],
           "kind": "elective",
           "rule": {
@@ -115,23 +115,23 @@
           "label": "語学演習",
           "required": 2,
           "subjects": [
-            "ENG302",
-            "GER301",
-            "GER401",
-            "FRE301",
-            "FRE401",
-            "RUS301",
-            "RUS401",
-            "CHI301",
-            "CHI401",
-            "KOR301",
-            "KOR401",
-            "JPN401"
+            "ENG302z",
+            "GER301z",
+            "GER401z",
+            "FRE301z",
+            "FRE401z",
+            "RUS301z",
+            "RUS401z",
+            "CHI301z",
+            "CHI401z",
+            "KOR301z",
+            "KOR401z",
+            "JPN401z"
           ],
           "kind": "elective",
           "alsoAccepts": [
-            "INT001",
-            "INT002"
+            "INT001z",
+            "INT002z"
           ],
           "note": "INT001/002は1・2年次に修得した場合ここに算入"
         },
@@ -148,8 +148,8 @@
               "label": "健康論・実習",
               "required": 2,
               "subjects": [
-                "HSP101",
-                "HSP201"
+                "HSP101z",
+                "HSP201z"
               ],
               "kind": "required"
             },
@@ -159,10 +159,10 @@
               "label": "生涯スポーツ",
               "required": 1,
               "subjects": [
-                "HSP301",
-                "HSP401",
-                "HSP302",
-                "HSP402"
+                "HSP301z",
+                "HSP401z",
+                "HSP302z",
+                "HSP402z"
               ],
               "kind": "elective"
             }
@@ -174,13 +174,13 @@
           "label": "理工系教養",
           "required": 2,
           "subjects": [
-            "GEO201",
-            "PHY301",
-            "BIO201",
-            "CHM301",
-            "CHM201",
-            "MTH301",
-            "MTH302"
+            "GEO201z",
+            "PHY301z",
+            "BIO201z",
+            "CHM301z",
+            "CHM201z",
+            "MTH301z",
+            "MTH302z"
           ],
           "kind": "elective"
         },
@@ -198,25 +198,25 @@
               "label": "上級A",
               "required": 0,
               "subjects": [
-                "HSS501",
-                "HSS601",
-                "HSS502",
-                "HSS503",
-                "HSS602",
-                "HSS603",
-                "HSS504",
-                "HSS505",
-                "HSS604",
-                "HSS506",
-                "HSS605",
-                "HSS606",
-                "HSS507",
-                "HSS607",
-                "HSS608",
-                "HSS508",
-                "HSS609",
-                "HSS509",
-                "HSS610"
+                "HSS501z",
+                "HSS601z",
+                "HSS502z",
+                "HSS503z",
+                "HSS602z",
+                "HSS603z",
+                "HSS504z",
+                "HSS505z",
+                "HSS604z",
+                "HSS506z",
+                "HSS605z",
+                "HSS606z",
+                "HSS507z",
+                "HSS607z",
+                "HSS608z",
+                "HSS508z",
+                "HSS609z",
+                "HSS509z",
+                "HSS610z"
               ]
             },
             {
@@ -225,24 +225,24 @@
               "label": "上級B",
               "required": 0,
               "subjects": [
-                "ENG501",
-                "ENG601",
-                "ENG502",
-                "ENG602",
-                "ENG603",
-                "ENG503",
-                "ENG504",
-                "ENG604",
-                "GER501",
-                "FRE501",
-                "RUS501",
-                "CHI501",
-                "KOR501",
-                "GER601",
-                "FRE601",
-                "RUS601",
-                "CHI601",
-                "KOR601"
+                "ENG501z",
+                "ENG601z",
+                "ENG502z",
+                "ENG602z",
+                "ENG603z",
+                "ENG503z",
+                "ENG504z",
+                "ENG604z",
+                "GER501z",
+                "FRE501z",
+                "RUS501z",
+                "CHI501z",
+                "KOR501z",
+                "GER601z",
+                "FRE601z",
+                "RUS601z",
+                "CHI601z",
+                "KOR601z"
               ]
             },
             {
@@ -251,14 +251,14 @@
               "label": "上級C",
               "required": 0,
               "subjects": [
-                "HSS510",
-                "HSS611",
-                "HSS511",
-                "HSS612",
-                "HSS512",
-                "HSS613",
-                "JPN501",
-                "JPN601"
+                "HSS510z",
+                "HSS611z",
+                "HSS511z",
+                "HSS612z",
+                "HSS512z",
+                "HSS613z",
+                "JPN501z",
+                "JPN601z"
               ]
             },
             {
@@ -267,14 +267,14 @@
               "label": "上級D",
               "required": 0,
               "subjects": [
-                "GSC601",
-                "GSC501",
-                "GSC602",
-                "MTH601",
-                "GSC603",
-                "GSC502",
-                "GSE501",
-                "GSE601"
+                "GSC601z",
+                "GSC501z",
+                "GSC602z",
+                "MTH601z",
+                "GSC603z",
+                "GSC502z",
+                "GSE501z",
+                "GSE601z"
               ]
             },
             {
@@ -283,14 +283,14 @@
               "label": "上級E",
               "required": 0,
               "subjects": [
-                "HSP501",
-                "HSP502",
-                "HSP601",
-                "HSP503",
-                "HSP602",
-                "HSP603",
-                "HSP504",
-                "HSP604"
+                "HSP501z",
+                "HSP502z",
+                "HSP601z",
+                "HSP503z",
+                "HSP602z",
+                "HSP603z",
+                "HSP504z",
+                "HSP604z"
               ]
             },
             {
@@ -299,18 +299,18 @@
               "label": "上級（国際）",
               "required": 0,
               "subjects": [
-                "INT501",
-                "INT502",
-                "INT601",
-                "INT602",
-                "INT603",
-                "INT503",
-                "INT604",
-                "INT504",
-                "INT505",
-                "INT001",
-                "INT002",
-                "INT003"
+                "INT501z",
+                "INT502z",
+                "INT601z",
+                "INT602z",
+                "INT603z",
+                "INT503z",
+                "INT604z",
+                "INT504z",
+                "INT505z",
+                "INT001z",
+                "INT002z",
+                "INT003z"
               ],
               "note": "INT001/002は3・4年次修得分のみ。INT003は3・4年次のみ"
             }
@@ -330,11 +330,11 @@
           "label": "初年次導入",
           "required": 6,
           "subjects": [
-            "PHY101",
-            "PHY201",
-            "CHM101",
-            "CHM202",
-            "COM101"
+            "PHY101z",
+            "PHY201z",
+            "CHM101z",
+            "CHM202z",
+            "COM101z"
           ],
           "kind": "required"
         },
@@ -351,7 +351,7 @@
               "label": "総合コミュニケーション科学",
               "required": 2,
               "subjects": [
-                "UEC301"
+                "UEC301z"
               ],
               "kind": "required"
             },
@@ -361,7 +361,7 @@
               "label": "DS演習",
               "required": 1,
               "subjects": [
-                "UEC501"
+                "UEC501z"
               ],
               "kind": "required",
               "note": "Ⅰ類は必修。Ⅱ類計測制御/ロボ・Ⅲ類は選択（required=0, 超過は共通単位）"
@@ -374,18 +374,18 @@
           "label": "キャリア単位",
           "required": 4,
           "subjects": [
-            "CAR101",
-            "CAR201",
-            "CAR501",
-            "CAR401",
-            "CAR402",
-            "CAR502",
-            "CAR601",
-            "CAR503",
-            "CAR504",
-            "CAR602",
-            "CAR603",
-            "CAR604"
+            "CAR101z",
+            "CAR201z",
+            "CAR501z",
+            "CAR401z",
+            "CAR402z",
+            "CAR502z",
+            "CAR601z",
+            "CAR503z",
+            "CAR504z",
+            "CAR602z",
+            "CAR603z",
+            "CAR604z"
           ],
           "kind": "elective"
         },
@@ -395,8 +395,8 @@
           "label": "技術英語",
           "required": 4,
           "subjects": [
-            "TEN501",
-            "TEN601"
+            "TEN501z",
+            "TEN601z"
           ],
           "kind": "required"
         }
@@ -406,18 +406,18 @@
   "commonCreditSources": {
     "note": "卒業所要単位を超えた分に加え、以下はそのまま共通単位になる",
     "alwaysCommon": [
-      "GER102",
-      "GER202",
-      "FRE102",
-      "FRE202",
-      "RUS102",
-      "RUS202",
-      "CHI102",
-      "CHI202",
-      "KOR102",
-      "KOR202",
-      "INT004",
-      "INT005"
+      "GER102z",
+      "GER202z",
+      "FRE102z",
+      "FRE202z",
+      "RUS102z",
+      "RUS202z",
+      "CHI102z",
+      "CHI202z",
+      "KOR102z",
+      "KOR202z",
+      "INT004z",
+      "INT005z"
     ],
     "external": [
       {
@@ -430,13 +430,13 @@
   },
   "otherSubjects": {
     "japanese": [
-      "JPN101",
-      "JPN201",
-      "JPN301"
+      "JPN101z",
+      "JPN201z",
+      "JPN301z"
     ],
     "special": [
-      "UEC001",
-      "UEC002"
+      "UEC001z",
+      "UEC002z"
     ]
   }
 }
