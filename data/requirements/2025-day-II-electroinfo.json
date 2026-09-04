@@ -125,8 +125,7 @@
               "subjects": [
                 "ELE604h", "ELE605h", "ELE606h", "ELE607h", "GSE601h",
                 "ELE701h", "ELE702h", "ELE703h", "ELE505h", "ELE801h", "ELE001h",
-                "FGN101h", "FGN201h", "FGN102h", "FGN202h", "FGN301h", "FGN401h",
-                "MTH501h", "COM507h"
+                "FGN101h", "FGN201h", "FGN102h", "FGN202h", "FGN301h", "FGN401h"
               ]
             },
             {
@@ -136,8 +135,9 @@
               "required": 0,
               "kind": "free",
               "countsTowardGraduation": false,
-              "note": "大学院連携科目（大学院情報理工学研究科の授業科目）。卒業要件に含まれない",
+              "note": "大学院連携科目（大学院情報理工学研究科の授業科目）。卒業要件に含まれない。幾何学概論・マルチメディア処理も自由科目区分",
               "subjects": [
+                "MTH501h", "COM507h",
                 "INSa01h", "ELEa01h", "ELEa02h", "ELEa03h",
                 "ELEb01h", "GSEb01h", "GSEb02h", "ELEa04h", "LAB501h"
               ]
