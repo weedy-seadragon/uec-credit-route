@@ -10,7 +10,7 @@
 //   （取得単位への追加も、この操作を通じて行う。ファイルからの読み込み等はフェーズ2-5で対応）
 // - 先修科目・曜日時限のデータがまだ無いので、同時限警告は出ない（recommend.ts参照）
 // - 審査（2年次終了時審査など）の合否表示はまだ実装していない
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import type { ChangeEvent, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import type { GroupKind, RequirementGroup, SubjectStatus } from '../domain/requirements'
@@ -81,6 +81,23 @@ function flattenLeafSubjects(rg: RequirementGroup): string[] {
   const own = rg.subjects ?? []
   const fromChildren = (rg.children ?? []).filter((c) => c.kind === undefined).flatMap(flattenLeafSubjects)
   return [...own, ...fromChildren]
+}
+
+/**
+ * 科目コードの並びを、科目名が同じもの同士でまとめて1つにする（「幾何学概論」がMTH501a/b/c/dの
+ * ように、実質同じ科目が複数プログラムの科目コードとして重複して並ぶケースがあるため）。
+ * 同じ名前が複数あるときは、自分のプログラムの科目（isOtherProgramがfalseのもの）を優先して残す。
+ * 出てくる順番は、その名前が最初に出てきた位置のまま変えない。
+ */
+function dedupeByName(codes: readonly string[], nameOf: (code: string) => string, isOtherProgram: (code: string) => boolean): string[] {
+  const chosenByName = new Map<string, string>()
+  for (const code of codes) {
+    const name = nameOf(code)
+    const chosen = chosenByName.get(name)
+    // まだ無ければそのまま採用。既にあるが、それが他プログラムの科目で今回が自分のプログラムの科目なら差し替える
+    if (!chosen || (isOtherProgram(chosen) && !isOtherProgram(code))) chosenByName.set(name, code)
+  }
+  return [...chosenByName.values()]
 }
 
 function collectBoundaryGroups(reqGroups: readonly RequirementGroup[], evalGroups: readonly GroupResult[]): BoundaryGroup[] {
@@ -228,6 +245,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const [termKey, setTermKey] = useState('all')
   // ダウンロード・読み込みの結果を一言表示するためのメッセージ（F-8）
   const [dataMessage, setDataMessage] = useState<string | null>(null)
+  // 「単位取得状況をファイルから読み込む」ボタンから、見えない<input type="file">を操作するための参照
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Ⅱ・Ⅲ類・夜間主などまだデータが無い組み合わせの場合はここで終わる
   if (!requirementSet) {
@@ -420,14 +439,19 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <button type="button" onClick={handleDownload}>
           単位取得状況をダウンロード
         </button>{' '}
-        {/* ファイル選択ボタンは<input type="file">が標準の見た目しか持てないので、
-            <label>で挟んでボタンっぽく振る舞わせている（htmlForで結びつけると、
-            ラベルをクリック＝隠れたinputをクリックしたことになる）。
-            見た目を<button>と揃えるため、index.cssの.button-likeクラスを当てる */}
-        <label className="button-like">
+        {/* ファイル選択は、見えない<input type="file">をrefで持っておき、
+            普通の<button>のクリックでそれを間接的にクリックする形にする。
+            <label>で代用する方法だと<button>と見た目をぴったり揃えられなかったため */}
+        <button type="button" onClick={() => fileInputRef.current?.click()}>
           単位取得状況をファイルから読み込む
-          <input type="file" accept="application/json" onChange={handleFileImport} style={{ display: 'none' }} />
-        </label>
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/json"
+          onChange={handleFileImport}
+          style={{ display: 'none' }}
+        />
         {dataMessage && <p role="status">{dataMessage}</p>}
       </div>
 
@@ -437,7 +461,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           const { regular, otherProgram, international } = splitSpecialSubjects(items, ([code]) => code)
           const row = (code: string) => (
             <>
-              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{' '}
               <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
             </>
           )
@@ -468,7 +492,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             const { regular, otherProgram, international } = splitSpecialSubjects(failedSubjects, ([code]) => code)
             const row = (code: string) => (
               <>
-                {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+                {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{' '}
                 <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
               </>
             )
@@ -495,7 +519,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           const { regular, otherProgram, international } = splitSpecialSubjects(items, (r) => r.code)
           const row = (code: string) => (
             <>
-              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{' '}
               <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
             </>
           )
@@ -573,7 +597,11 @@ function GroupProgress({
   // 一覧に出す／消すのは committed（確定済み）で判断する。draft はプルダウンの表示値にだけ使う。
   // こうしないと、「更新」を押す前にプルダウンを触っただけで行が消えてしまい、
   // 「残りの必修」など他のセクションと表示の整合性が取れなくなる。
-  const remaining = group.subjects.filter((code) => committed.get(code) !== 'passed')
+  const remainingAll = group.subjects.filter((code) => committed.get(code) !== 'passed')
+  // 「幾何学概論」のように、実質同じ科目が他プログラムの科目コードとして重複して選択肢に
+  // 入ってしまうことがあるので、科目名が同じものは1つにまとめる（自分のプログラムの科目が
+  // あればそちらを優先し、他プログラム専門科目としては出さない）
+  const remaining = dedupeByName(remainingAll, nameOf, isOtherProgram)
   // 他プログラム専門科目・留学生のみ履修できる科目は、下の折りたたみにまとめる（他の一覧と同じ扱い）。
   // 両方に該当する科目は留学生のみの方に入れる
   const international = remaining.filter((code) => isInternational(code))
@@ -581,7 +609,7 @@ function GroupProgress({
   const regular = remaining.filter((code) => !isInternational(code) && !isOtherProgram(code))
   const row = (code: string) => (
     <>
-      {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+      {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}{' '}
       <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
     </>
   )

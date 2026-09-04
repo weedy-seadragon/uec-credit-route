@@ -7,16 +7,3 @@
 body {
   margin: 0;
 }
-
-/* <label>を<input type="file">のボタン代わりに使っている箇所（メイン画面のツールバー）を、
-   <button>と見た目が揃うようにするためのクラス。system-uiのボタン配色（ButtonFace等）を使う */
-.button-like {
-  display: inline-block;
-  padding: 1px 6px;
-  border: 1px solid ButtonBorder;
-  border-radius: 3px;
-  background: ButtonFace;
-  color: ButtonText;
-  font: inherit;
-  cursor: pointer;
-}
