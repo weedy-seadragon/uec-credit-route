@@ -3,32 +3,29 @@
 電気通信大学 情報理工学域の学生向けに、「あと何を取れば卒業できるか」を一目で示す非公式サイト。
 
 - 仕様書: [docs/SPEC.md](docs/SPEC.md)
-- Claude Code 向けの作業ルール: [CLAUDE.md](CLAUDE.md)
+- ディレクトリ構成の説明: [docs/STRUCTURE.md](docs/STRUCTURE.md)
+- Claude Code 向けの作業ルール（進捗ログ含む）: [CLAUDE.md](CLAUDE.md)
 
 ## 状態
 
 - [x] 仕様書 v0.1
-- [x] Ⅰ類メディア情報学プログラム（2025年度入学）の要件データ
-- [ ] 充足判定ロジック（フェーズ1）
-- [ ] メイン画面（フェーズ2）
-- [ ] 他プログラム・夜間主のデータ（フェーズ3）
+- [x] Ⅰ類5プログラム（2025年度入学）の要件データ
+- [x] 充足判定ロジック（フェーズ1）
+- [x] 最小UI：プロフィール設定・メイン画面・JSON入出力（フェーズ2）
+- [ ] GitHub Pages公開（ワークフローは用意済み。リポジトリ設定でSourceをGitHub Actionsにする作業待ち）
+- [ ] Ⅱ類・Ⅲ類・夜間主のデータ（フェーズ3、継続中）
 
-## ディレクトリ
-
-```
-CLAUDE.md                     Claude Code が守るルール
-docs/SPEC.md                  仕様書
-data/requirements/            要件セット（入学年度 × コース × 類 × プログラム）
-data/subjects/                科目マスタ（学修要覧由来）
-scripts/gen_data.py           要覧の転記データから data/ を生成
-scripts/validate_data.py      data/ が別表2・3・4と矛盾しないか検査
-```
-
-## データの検証
+## 使い方（開発）
 
 ```
-python scripts/validate_data.py
+npm install
+npm run dev        # 開発サーバー
+npm test           # テスト
+npm run build      # 型チェック＋本番ビルド
+python scripts/validate_data.py   # data/ の整合性チェック
 ```
+
+ディレクトリの詳しい説明は [docs/STRUCTURE.md](docs/STRUCTURE.md) を参照。
 
 ## 出典
 
