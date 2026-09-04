@@ -16490,6 +16490,1026 @@
       "groups": [
         "major-intl"
       ]
+    },
+    {
+      "code": "PHY204n",
+      "name": "力学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "PHY205n",
+      "name": "力学演習",
+      "credits": 1,
+      "field": "PHY",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH301n",
+      "name": "工学基礎数学および演習",
+      "credits": 3,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "PHY301n",
+      "name": "熱力学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "PHY302n",
+      "name": "基礎電磁気学および演習",
+      "credits": 3,
+      "field": "PHY",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "PHY401n",
+      "name": "電磁気学および演習",
+      "credits": 3,
+      "field": "PHY",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "ELE301n",
+      "name": "基礎電気回路",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "ELE401n",
+      "name": "基礎電子回路",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-req"
+      ]
+    },
+    {
+      "code": "MTH302n",
+      "name": "複素関数論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "MTH303n",
+      "name": "確率統計",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "GSE301n",
+      "name": "計測工学概論",
+      "credits": 2,
+      "field": "GSE",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "COM301n",
+      "name": "数値解析",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "COM401n",
+      "name": "プログラミング演習",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "COM402n",
+      "name": "計算機工学",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "BIO401n",
+      "name": "分子生物学",
+      "credits": 2,
+      "field": "BIO",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "cluster-basic-elecreq"
+      ]
+    },
+    {
+      "code": "ELE402n",
+      "name": "理工学基礎実験",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "PHY402n",
+      "name": "波動と光",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "PHO501n",
+      "name": "光工学実験第一",
+      "credits": 3,
+      "field": "PHO",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "PHO601n",
+      "name": "光工学実験第二",
+      "credits": 3,
+      "field": "PHO",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "PHY501n",
+      "name": "固体電子論",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "PHY502n",
+      "name": "基礎量子工学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "ELE501n",
+      "name": "電磁波工学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "PHY601n",
+      "name": "光電子材料学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "PHO602n",
+      "name": "量子エレクトロニクス",
+      "credits": 2,
+      "field": "PHO",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "PHO603n",
+      "name": "光波工学",
+      "credits": 2,
+      "field": "PHO",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "ELE601n",
+      "name": "画像工学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "PHO604n",
+      "name": "光通信工学",
+      "credits": 2,
+      "field": "PHO",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB701n",
+      "name": "輪講A",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB801n",
+      "name": "輪講B",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB702n",
+      "name": "卒業研究A",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "LAB802n",
+      "name": "卒業研究B",
+      "credits": 3,
+      "field": "LAB",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-req"
+      ]
+    },
+    {
+      "code": "CHM401n",
+      "name": "基礎物理化学",
+      "credits": 2,
+      "field": "CHM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "CHM402n",
+      "name": "無機化学",
+      "credits": 2,
+      "field": "CHM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "BIO501n",
+      "name": "生体計測工学",
+      "credits": 2,
+      "field": "BIO",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "PHY602n",
+      "name": "熱・統計物理学基礎",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "PHY603n",
+      "name": "熱・統計物理学応用",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "PHY604n",
+      "name": "半導体工学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE602n",
+      "name": "電子回路学",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "PHY605n",
+      "name": "計算数理工学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "ELE603n",
+      "name": "デジタル信号処理",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 7,
+      "standardYear": 4,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "CHM601n",
+      "name": "高分子有機化学",
+      "credits": 2,
+      "field": "CHM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN101n",
+      "name": "基礎数学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN201n",
+      "name": "基礎数学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN102n",
+      "name": "基礎物理学演習第一",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN202n",
+      "name": "基礎物理学演習第二",
+      "credits": 1,
+      "field": "FGN",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN301n",
+      "name": "情報処理演習第一",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "FGN401n",
+      "name": "情報処理演習第二",
+      "credits": 2,
+      "field": "FGN",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": true,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
+      "code": "GEO201n",
+      "name": "地学",
+      "credits": 2,
+      "field": "GEO",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "GEO501n",
+      "name": "地学実験",
+      "credits": 2,
+      "field": "GEO",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "BIO502n",
+      "name": "生物学実験",
+      "credits": 2,
+      "field": "BIO",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "UEC302n",
+      "name": "UECパスポートプログラムA",
+      "credits": 2,
+      "field": "UEC",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "UEC501n",
+      "name": "UECパスポートプログラムB",
+      "credits": 2,
+      "field": "UEC",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "UEC701n",
+      "name": "UECパスポートプログラムC",
+      "credits": 2,
+      "field": "UEC",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "COM501n",
+      "name": "上級コンピュータ演習",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "PHOa01n",
+      "name": "光・量子エレクトロニクス基礎",
+      "credits": 2,
+      "field": "PHO",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "PHOa02n",
+      "name": "光デバイス工学基礎",
+      "credits": 2,
+      "field": "PHO",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "PHYa01n",
+      "name": "量子物理工学基礎",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "PHYa02n",
+      "name": "固体物性論基礎",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ELEa01n",
+      "name": "集積回路基礎",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ELEa02n",
+      "name": "画像情報学基礎",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "CHMa01n",
+      "name": "光化学",
+      "credits": 2,
+      "field": "CHM",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "PHYb01n",
+      "name": "先端半導体デバイス基礎",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "PHYb02n",
+      "name": "応用電磁気学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "LAB501n",
+      "name": "GLTPラボワーク",
+      "credits": 1,
+      "field": "LAB",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "INT401n",
+      "name": "Experimental Electronics Laboratory",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT001n",
+      "name": "Advanced Engineering Science Ⅰ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT002n",
+      "name": "Advanced Engineering Science Ⅱ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
+    },
+    {
+      "code": "INT003n",
+      "name": "Advanced Engineering Science Ⅲ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-intl"
+      ]
     }
   ]
 }
