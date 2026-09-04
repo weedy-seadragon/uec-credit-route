@@ -35,8 +35,17 @@
               "required": 20,
               "kind": "required",
               "subjects": [
-                "MTH101z", "MTH201z", "MTH102z", "MTH202z", "MTH203z",
-                "MTH103z", "MTH204z", "PHY102z", "PHY202z", "CHM102z", "COM201z"
+                "MTH101z",
+                "MTH201z",
+                "MTH102z",
+                "MTH202z",
+                "MTH203z",
+                "MTH103z",
+                "MTH204z",
+                "PHY102z",
+                "PHY202z",
+                "CHM102z",
+                "COM201z"
               ]
             },
             {
@@ -47,7 +56,11 @@
               "kind": "elective",
               "countAs": "common",
               "note": "修得した単位は共通単位とする",
-              "subjects": ["PHY103z", "PHY203z", "CHM203z"]
+              "subjects": [
+                "PHY103z",
+                "PHY203z",
+                "CHM203z"
+              ]
             }
           ]
         },
@@ -63,8 +76,16 @@
               "required": 20,
               "kind": "required",
               "subjects": [
-                "MTH301h", "PHY204h", "MTH302h", "MTH401h", "ELE301h",
-                "PHY301h", "GSE301h", "GSE401h", "COM301h", "COM401h"
+                "MTH301h",
+                "PHY204h",
+                "MTH302h",
+                "MTH401h",
+                "ELE301h",
+                "PHY301h",
+                "GSE301h",
+                "GSE401h",
+                "COM301h",
+                "COM401h"
               ],
               "note": "基礎演習A履修時は応用数学A・基礎電気回路・基礎電磁気学、基礎演習B履修時は応用数学B・回路システム学第一も同じクラスで履修（注2）"
             },
@@ -74,7 +95,11 @@
               "label": "類共通基礎（選択必修）",
               "required": 4,
               "kind": "elective-required",
-              "subjects": ["MTH303h", "MTH304h", "PHY302h"]
+              "subjects": [
+                "MTH303h",
+                "MTH304h",
+                "PHY302h"
+              ]
             },
             {
               "id": "cluster-basic-free",
@@ -83,7 +108,9 @@
               "required": 0,
               "kind": "free",
               "countsTowardGraduation": false,
-              "subjects": ["PHY303h"]
+              "subjects": [
+                "PHY303h"
+              ]
             }
           ]
         },
@@ -99,8 +126,17 @@
               "required": 22,
               "kind": "required",
               "subjects": [
-                "ELE401h", "ELE402h", "ELE501h", "ELE601h", "ELE502h", "ELE602h",
-                "ELE603h", "LAB701h", "LAB801h", "LAB702h", "LAB802h"
+                "ELE401h",
+                "ELE402h",
+                "ELE501h",
+                "ELE601h",
+                "ELE502h",
+                "ELE602h",
+                "ELE603h",
+                "LAB701h",
+                "LAB801h",
+                "LAB702h",
+                "LAB802h"
               ]
             },
             {
@@ -111,8 +147,16 @@
               "kind": "elective-required",
               "note": "計算機アーキテクチャーは計算機工学と重複履修不可（注3）",
               "subjects": [
-                "MTH402h", "ELE403h", "ELE404h", "COM402h", "PHY401h",
-                "PHY501h", "ELE503h", "ELE504h", "PHY502h", "COM501h"
+                "MTH402h",
+                "ELE403h",
+                "ELE404h",
+                "COM402h",
+                "PHY401h",
+                "PHY501h",
+                "ELE503h",
+                "ELE504h",
+                "PHY502h",
+                "COM501h"
               ]
             },
             {
@@ -123,9 +167,94 @@
               "kind": "elective",
               "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み",
               "subjects": [
-                "ELE604h", "ELE605h", "ELE606h", "ELE607h", "GSE601h",
-                "ELE701h", "ELE702h", "ELE703h", "ELE505h", "ELE801h", "ELE001h",
-                "FGN101h", "FGN201h", "FGN102h", "FGN202h", "FGN301h", "FGN401h"
+                "ELE604h",
+                "ELE605h",
+                "ELE606h",
+                "ELE607h",
+                "GSE601h",
+                "ELE701h",
+                "ELE702h",
+                "ELE703h",
+                "ELE505h",
+                "ELE801h",
+                "ELE001h",
+                "FGN101h",
+                "FGN201h",
+                "FGN102h",
+                "FGN202h",
+                "FGN301h",
+                "FGN401h",
+                "MTH402f",
+                "COM402f",
+                "ELE501f",
+                "MTH501f",
+                "COM502f",
+                "COM503f",
+                "COM504f",
+                "COM505f",
+                "COM602f",
+                "COM603f",
+                "COM604f",
+                "COM605f",
+                "COM606f",
+                "COM607f",
+                "COM506f",
+                "ELE601f",
+                "FGN101f",
+                "FGN201f",
+                "FGN102f",
+                "FGN202f",
+                "FGN301f",
+                "FGN401f",
+                "ELE608g",
+                "GSE601g",
+                "MTH701g",
+                "ELE701g",
+                "ELE702g",
+                "ELE505g",
+                "ELE801g",
+                "ELE001g",
+                "FGN101g",
+                "FGN201g",
+                "FGN102g",
+                "FGN202g",
+                "FGN301g",
+                "FGN401g",
+                "MTH403i",
+                "COM405i",
+                "MCE506i",
+                "MCE507i",
+                "MCE508i",
+                "MCE509i",
+                "MCE607i",
+                "MCE608i",
+                "MCE609i",
+                "MCE701i",
+                "MCE702i",
+                "FGN101i",
+                "FGN201i",
+                "FGN102i",
+                "FGN202i",
+                "FGN301i",
+                "FGN401i",
+                "MTH403j",
+                "COM405j",
+                "GSE401j",
+                "MCE508j",
+                "MCE509j",
+                "GSE501j",
+                "MCE607j",
+                "GSE601j",
+                "MCE608j",
+                "MCE609j",
+                "MCE701j",
+                "MCE702j",
+                "FGN101j",
+                "FGN201j",
+                "FGN102j",
+                "FGN202j",
+                "FGN301j",
+                "FGN401j"
               ]
             },
             {
@@ -137,9 +266,17 @@
               "countsTowardGraduation": false,
               "note": "大学院連携科目（大学院情報理工学研究科の授業科目）。卒業要件に含まれない。幾何学概論・マルチメディア処理も自由科目区分",
               "subjects": [
-                "MTH501h", "COM507h",
-                "INSa01h", "ELEa01h", "ELEa02h", "ELEa03h",
-                "ELEb01h", "GSEb01h", "GSEb02h", "ELEa04h", "LAB501h"
+                "MTH501h",
+                "COM507h",
+                "INSa01h",
+                "ELEa01h",
+                "ELEa02h",
+                "ELEa03h",
+                "ELEb01h",
+                "GSEb01h",
+                "GSEb02h",
+                "ELEa04h",
+                "LAB501h"
               ]
             },
             {
@@ -149,7 +286,12 @@
               "required": 0,
               "kind": "international",
               "note": "単位の扱いは年度ごとの科目一覧表による",
-              "subjects": ["INT001h", "INT002h", "INT003h", "INT004h"]
+              "subjects": [
+                "INT001h",
+                "INT002h",
+                "INT003h",
+                "INT004h"
+              ]
             }
           ]
         }
