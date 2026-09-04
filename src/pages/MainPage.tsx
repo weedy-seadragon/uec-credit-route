@@ -133,15 +133,20 @@ function buildCategoryLookup(groups: readonly BoundaryGroup[]): Map<string, Boun
   return lookup
 }
 
-/** items を、対応表（codeToGroup）で引ける区分ごとに振り分ける。区分が見つからないものは「その他」に入る */
+/**
+ * items を、判定境界グループごとに振り分ける。区分が見つからないものは「その他」に入る。
+ * 表示順は items が出てきた順（記録した順）ではなく、orderedGroups の並び――つまり
+ * 学修要覧の卒業所要単位表に書かれている順番（別表2の左から）に揃える。中身が無い区分は出さない。
+ */
 function groupByCategory<T>(
   items: readonly T[],
   codeOf: (item: T) => string,
   codeToGroup: ReadonlyMap<string, BoundaryGroup>,
-): { label: string; items: T[] }[] {
-  const byGroupId = new Map<string, { label: string; items: T[] }>()
+  orderedGroups: readonly BoundaryGroup[],
+): { label: string; group: BoundaryGroup | null; items: T[] }[] {
+  const byGroupId = new Map<string, T[]>()
   const others: T[] = []
-  // 1件ずつ、対応表から区分を引いて、区分IDごとのバケツに積んでいく
+  // 1件ずつ、対応表から区分を引いて、区分IDごとのバケツに積んでいく（この時点では順番は気にしない）
   for (const item of items) {
     const group = codeToGroup.get(codeOf(item))
     if (!group) {
@@ -149,11 +154,16 @@ function groupByCategory<T>(
       continue
     }
     const bucket = byGroupId.get(group.id)
-    if (bucket) bucket.items.push(item)
-    else byGroupId.set(group.id, { label: group.label ?? group.name, items: [item] })
+    if (bucket) bucket.push(item)
+    else byGroupId.set(group.id, [item])
   }
-  const result = [...byGroupId.values()]
-  if (others.length > 0) result.push({ label: 'その他', items: others })
+  // 最後に、学修要覧の並び順（orderedGroups）に沿って結果を組み立て直す
+  const result: { label: string; group: BoundaryGroup | null; items: T[] }[] = []
+  for (const group of orderedGroups) {
+    const bucket = byGroupId.get(group.id)
+    if (bucket) result.push({ label: group.label ?? group.name, group, items: bucket })
+  }
+  if (others.length > 0) result.push({ label: 'その他', group: null, items: others })
   return result
 }
 
@@ -281,9 +291,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 取得単位・不可の単位のセクションは、committed（確定済み）を状態別に振り分けるだけでよい
   const passedSubjects = [...committed.entries()].filter(([, status]) => status === 'passed')
   const failedSubjects = [...committed.entries()].filter(([, status]) => status === 'failed')
+  // 取得単位の見出しに出す合計単位数（科目数ではなく単位数）
+  const passedCredits = passedSubjects.reduce((sum, [code]) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
   // 「取得単位」「残りの必修」は区分ごとの見出しを付けて表示する（例:「理数基礎（必修）」「類専門（必修）」）
-  const passedByCategory = groupByCategory(passedSubjects, ([code]) => code, categoryLookup)
-  const remainingRequiredByCategory = groupByCategory(remainingRequired, (r) => r.code, categoryLookup)
+  const passedByCategory = groupByCategory(passedSubjects, ([code]) => code, categoryLookup, boundaryGroups)
+  const remainingRequiredByCategory = groupByCategory(remainingRequired, (r) => r.code, categoryLookup, boundaryGroups)
 
   // プルダウンで状態を変えたとき：draftだけを更新する（committedはまだ変えない）
   function handleDraftChange(code: string, status: SubjectStatus | undefined) {
@@ -473,8 +485,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </div>
 
       <section>
-        <h2>取得単位（{passedSubjects.length}）</h2>
-        {passedByCategory.map(({ label, items }) => {
+        <h2>取得単位（{passedCredits}単位）</h2>
+        {passedByCategory.map(({ label, group, items }) => {
           const { regular, otherProgram, international } = splitSpecialSubjects(items, ([code]) => code)
           const row = (code: string) => (
             <>
@@ -487,7 +499,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           )
           return (
             <div key={label}>
-              <h3>{label}</h3>
+              <h3>
+                {label}
+                {group && (
+                  <>
+                    （{group.contribution}/{group.required}単位）
+                  </>
+                )}
+              </h3>
               <ul>
                 {regular.map(([code]) => (
                   <li key={code}>{row(code)}</li>
