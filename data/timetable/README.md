@@ -9,13 +9,21 @@
 一方、`https://kyoumu.office.uec.ac.jp/timet/A1.pdf` 〜 `A8.pdf`（学期ごとの時間割表）には、
 「このクラスのこの曜日時限にはこの科目・この教員」という格子状の情報が載っている。
 
-このフォルダの `class_schedule.csv` に、そのPDFの格子を1行ずつ書き起こしたものを溜めていく。
-`class_schedule.csv` の担当教員名と `offerings` の担当教員名を突き合わせれば、
-「学籍番号→1年次クラス→（このCSV経由で）曜日時限」が機械的に決まるようになる
-（この突き合わせスクリプト自体はまだ書いていない。CSVが埋まってから書く）。
+**今の運用（2026-09-05〜）は `class_assignment.csv` を埋める方式。** `class_schedule.csv`
+（PDFの格子を1コマずつゼロから書き起こす方式）は手間が大きすぎたため、
+「科目名・曜日時限・担当教員は`offerings`から自動で埋めておくので、`class_id`（受講対象クラス）
+だけ書き込んでもらう」という逆向きの方式に変えた。
 
-**このフォルダの作業は画像認識（PDFを読んで書き起こす部分）を別途行う前提。**
-このREADMEと`class_schedule.csv`はその受け皿（テンプレート）。
+- `scripts/build_class_assignment.py` を実行すると、複数セクションがある科目（386件中、
+  英語系を除いた385件）の`offerings`を1行ずつ展開して `class_assignment.csv` を作る
+- 同じ科目名・曜日時限・担当教員の行が `class_schedule.csv` に既にあれば、そこから`class_id`を
+  自動で埋める（`status`列が`auto`になる）。`class_schedule.csv`にA2・A3…と追記していくほど、
+  自動で埋まる行が増えていく
+- **画像認識でPDFを読む作業は別途行う前提**。時間割PDFを見て、`class_assignment.csv`の
+  `status`が空欄の行（＝自動で埋まらなかった行）の`class_id`列に、対応するクラスを書き込む
+
+`class_schedule.csv`（PDFの格子の書き起こし）も、`class_assignment.csv`の自動補完のタネとして
+引き続き使うので、残しておく。両方に同じ情報を書く必要はない（`class_assignment.csv`だけ埋めればよい）。
 
 ## 対象PDFと、そのPDFで使われるクラス表記（`class_id`列に何を書くか）
 
@@ -53,9 +61,30 @@ CLAUDE.mdの進捗ログ（2026-09-05時点の調査）より。曖昧な場合�
   実際に文字が書かれている列（プログラム名など）ごとに行を分けて書く
 - 迷ったら`note`列に状況を書いておけば後で判断できる
 
+## `class_assignment.csv` の列（こちらを埋める）
+
+| 列名 | 内容 | 埋めるかどうか |
+|---|---|---|
+| `subject_code` | 科目コード（`offerings`から自動生成） | 埋め済み |
+| `subject_name` | 科目名（同上） | 埋め済み |
+| `term` | `前学期`／`後学期`（同上） | 埋め済み |
+| `day` / `period` | 曜日・時限（同上） | 埋め済み |
+| `instructors` | 担当教員名（同上） | 埋め済み |
+| `class_id` | 受講対象クラス。上表（A1〜A8の表記ルール）に従って書く。同じPDFの複数クラスが対象なら`,`区切りで並べる（例:`A1-7,A1-8`） | **`status`が空欄の行だけ書く** |
+| `status` | `auto`なら自動で埋まった行（確認だけしてもらえば十分、書き換え不要）。空欄なら未解決 | 触らなくてよい |
+| `note` | 気づいたことがあれば自由記述 | 任意 |
+
 ## 埋め終わったら
 
-`class_schedule.csv`が埋まったら、`offerings`の`instructors`と`teacher_name`を突き合わせて
-`class_id`→`timetableCode`を決定するスクリプトを書く（未着手）。それができれば、
+`class_assignment.csv`の`class_id`が埋まったら、それをそのまま`offerings`側に
+（`timetableCode`ごとに）反映するスクリプトを書く（未着手）。それができれば、
 プロフィールで入力したクラス情報から、複数セクションがある科目でも正しい曜日時限を
 一意に表示できるようになる。
+
+`class_schedule.csv`に新しいPDF（A2など）のデータを追記したら、
+`python scripts/build_class_assignment.py` を再実行すると、
+`class_assignment.csv`の自動解決行が増えた状態で作り直される
+（それまでに書き込んだ`class_id`は上書きされてしまうので、
+`class_schedule.csv`を追記したらなるべく早めに`class_assignment.csv`への
+手書き分をどこかに控えておくか、`class_schedule.csv`側への追記を先に済ませてから
+`class_assignment.csv`を埋め始めるのがおすすめ）。
