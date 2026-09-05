@@ -104,7 +104,7 @@ export default function SetupPage() {
         </div>
 
         <div>
-          <label htmlFor="course">コース</label>
+          <label htmlFor="course">コース（昼夜）</label>
           <select
             id="course"
             value={course}
@@ -206,7 +206,7 @@ export default function SetupPage() {
 
             {cluster === 'I' && (
               <div>
-                <label htmlFor="classIABC">1年後期〜2年後期クラス（第二外国語など一部科目用）</label>
+                <label htmlFor="classIABC">1年後期〜2年後期クラス（一部科目用）</label>
                 <select
                   id="classIABC"
                   value={classIABC ?? ''}
