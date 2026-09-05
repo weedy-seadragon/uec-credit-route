@@ -702,7 +702,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       {/* 上のツールバーの「更新」と同じボタン。プルダウンをたくさん触った後、
           いちいちページ上部まで戻らなくて済むように一番下にも置いておく。
           共通単位の入れ子とくっつきすぎないよう少し余白をあける */}
-      <button type="button" onClick={handleUpdate} style={{ marginTop: '0.5em' }}>
+      <button type="button" onClick={handleUpdate} style={{ marginTop: '1em' }}>
         更新
       </button>
     </main>
