@@ -63,12 +63,41 @@ SLOT_RE = re.compile(r"^([月火水木金土日])(\d+)$")
 # 素の名前と完全一致させるだけだと、クラスが多い科目（語学・実験科目など）を一件も
 # 拾えなくなってしまう（2026-09-05に発覚したバグ：本来12クラスある金曜日の授業が
 # 1件も取得できず、たまたま名前が完全一致した無関係な1件だけを「唯一の時限」として
-# 誤って扱っていた）。末尾の（…）を取り除いた名前でも科目マスタと突き合わせる
+# 誤って扱っていた）。末尾の（…）を取り除いた名前でも科目マスタと突き合わせる。
+# 「日本語第一（１年）（月２・木２）」のように末尾の（…）が2つ連続することがあるため、
+# 1回だけでなく、無くなるまで繰り返し取り除く（2026-09-06に発覚。取りきらないと
+# 「日本語第一（１年）」のような半端な文字列が残ってマッチしなかった）
 TRAILING_PAREN_RE = re.compile(r"[（(][^（）()]*[）)]$")
 
 
 def strip_class_suffix(name: str) -> str:
-    return TRAILING_PAREN_RE.sub("", name).strip()
+    while True:
+        stripped = TRAILING_PAREN_RE.sub("", name).strip()
+        if stripped == name:
+            return stripped
+        name = stripped
+
+
+# 全角/半角スペースの有無（「Academic Spoken English Ⅰ」と科目マスタの
+# 「Academic Spoken EnglishⅠ」など）や、ローマ数字と半角英字の表記ゆれ（「Academic English
+# for the 2nd Year Ⅰ」と科目マスタの「...Year I」など）、ダッシュの字体違い（「Technical
+# English － Basic English for Science」と科目マスタの「Technical English – Basic English
+# for Science」など）で名前が一致しない科目が多数あることが判明した（2026-09-06）。
+# これらは科目名の表記ゆれであって別の科目ではないので、マッチング専用の正規化を行う
+# （科目マスタ側のnameフィールド自体は学修要覧の表記のまま変更しない）
+ROMAN_NUMERAL_TO_ASCII = str.maketrans({
+    "Ⅰ": "I", "Ⅱ": "II", "Ⅲ": "III", "Ⅳ": "IV", "Ⅴ": "V",
+    "Ⅵ": "VI", "Ⅶ": "VII", "Ⅷ": "VIII", "Ⅸ": "IX", "Ⅹ": "X",
+})
+DASH_CHARS = ["－", "‐", "‑", "–", "—", "―", "−"]
+
+
+def normalize_for_match(name: str) -> str:
+    normalized = re.sub(r"[\s　]+", "", name)
+    normalized = normalized.translate(ROMAN_NUMERAL_TO_ASCII)
+    for dash in DASH_CHARS:
+        normalized = normalized.replace(dash, "-")
+    return normalized
 
 
 def fetch(url: str) -> str:
@@ -119,6 +148,7 @@ def main():
     with open(SUBJECTS_PATH, encoding="utf-8") as f:
         subjects_data = json.load(f)
     known_names = {s["name"] for s in subjects_data["subjects"]}
+    known_names_normalized = {normalize_for_match(n) for n in known_names}
     known_codes = {s["code"] for s in subjects_data["subjects"]}
 
     offerings_by_code: dict[str, list[dict]] = {}
@@ -133,7 +163,11 @@ def main():
 
         candidates = [
             r for r in rows
-            if r["href"] and (r["name"] in known_names or strip_class_suffix(r["name"]) in known_names)
+            if r["href"] and (
+                r["name"] in known_names
+                or strip_class_suffix(r["name"]) in known_names
+                or normalize_for_match(strip_class_suffix(r["name"])) in known_names_normalized
+            )
         ]
         print(f"[{faculty}] 科目名が一致する行数（個別ページを取得する件数）: {len(candidates)}", file=sys.stderr)
 
