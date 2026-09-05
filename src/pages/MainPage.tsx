@@ -535,7 +535,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         )
         const hasMajorSel = passedByCategory.some(({ group }) => group?.id === 'major-sel')
         const rendered = passedByCategory.flatMap(({ label, group, items }) => {
-          const { regular, otherProgram, international } = splitSpecialSubjects(items, ([code]) => code)
+          // 選択科目と同じく学年学期順に並べ替える。ただし第二外国語（第一・第二のペア）・
+          // 生涯スポーツは元の並び順（言語ごと・科目のまとまり）を崩したくないので対象外
+          const sortedItems = group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
+            ? items
+            : sortByYearTerm(items, ([code]) => code, standardYearOf, termTypeOf)
+          const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, ([code]) => code)
           const row = (code: string) => (
             <>
               {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
@@ -695,8 +700,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </section>
 
       {/* 上のツールバーの「更新」と同じボタン。プルダウンをたくさん触った後、
-          いちいちページ上部まで戻らなくて済むように一番下にも置いておく */}
-      <button type="button" onClick={handleUpdate}>
+          いちいちページ上部まで戻らなくて済むように一番下にも置いておく。
+          共通単位の入れ子とくっつきすぎないよう少し余白をあける */}
+      <button type="button" onClick={handleUpdate} style={{ marginTop: '0.5em' }}>
         更新
       </button>
     </main>
@@ -716,17 +722,21 @@ const GROUPS_SPLIT_BY_TERM = new Set(['hss', 'advanced'])
 // を崩したくないので、学年学期順への並べ替えの対象から外す
 const GROUPS_KEEP_ORIGINAL_ORDER = new Set(['lang-basic-2', 'health-sel'])
 
-/** 科目コードの並びを「1年前期→1年後期→2年前期→…」の学年学期順にする。年次が無い科目は最後に回す */
-function sortByYearTerm(codes: readonly string[], standardYearOf: (code: string) => number | null, termTypeOf: (code: string) => string | null): string[] {
+/**
+ * 科目コードの並びを「1年前期→1年後期→2年前期→…」の学年学期順にする。年次が無い科目は最後に回す。
+ * codeOfで科目コードの取り出し方を指定できるので、コードそのものの配列でも[コード, 状態]のような
+ * タプルの配列でも、どちらの並び替えにも使える
+ */
+function sortByYearTerm<T>(items: readonly T[], codeOf: (item: T) => string, standardYearOf: (code: string) => number | null, termTypeOf: (code: string) => string | null): T[] {
   const termRank = (t: string | null) => (t === '前学期' ? 0 : t === '後学期' ? 1 : 2)
-  return [...codes].sort((a, b) => {
-    const yearA = standardYearOf(a)
-    const yearB = standardYearOf(b)
+  return [...items].sort((a, b) => {
+    const yearA = standardYearOf(codeOf(a))
+    const yearB = standardYearOf(codeOf(b))
     if (yearA === null && yearB === null) return 0
     if (yearA === null) return 1 // 年次不明は最後に回す
     if (yearB === null) return -1
     if (yearA !== yearB) return yearA - yearB
-    return termRank(termTypeOf(a)) - termRank(termTypeOf(b))
+    return termRank(termTypeOf(codeOf(a))) - termRank(termTypeOf(codeOf(b)))
   })
 }
 
@@ -771,7 +781,7 @@ function GroupProgress({
   // 元の順番を保つので、ここで並べ替えておけば下流にもそのまま反映される）
   const remaining = GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
     ? dedupedRemaining
-    : sortByYearTerm(dedupedRemaining, standardYearOf, termTypeOf)
+    : sortByYearTerm(dedupedRemaining, (code) => code, standardYearOf, termTypeOf)
   // 他プログラム専門科目・留学生のみ履修できる科目は、下の折りたたみにまとめる（他の一覧と同じ扱い）。
   // 両方に該当する科目は留学生のみの方に入れる
   const international = remaining.filter((code) => isInternational(code))
