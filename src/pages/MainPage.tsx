@@ -300,6 +300,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const commonOverflowTotal = overflowToCommonGroups.reduce((sum, g) => sum + g.overflowToCommon, 0)
   const commonDirectTotal = directCommonSubjects.reduce((sum, code) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
   const commonEarnedTotal = commonOverflowTotal + commonDirectTotal
+  // 「選択科目」の共通単位の入れ子に出す、まだ修得していない常時共通単位科目
+  // （理数基礎（選択）などcountAsCommonの区分の残り科目＋選択第二外国語などalwaysCommonSubjectsの残り）。
+  // required=0の区分やalwaysCommonSubjectsはGroupProgressの対象外（required>0で絞っている）なので、
+  // ここで拾わないとどこにも選択状態を変えるプルダウンが出ない
+  const commonOnlyRemaining = [
+    ...commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) !== 'passed')),
+    ...(requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) !== 'passed'),
+  ]
 
   // 表示フィルタ（学期）に応じて、履修できる科目だけをスコア順に並べたものを取得する
   const termFilter = TERM_OPTIONS.find((t) => t.key === termKey)?.filter ?? 'all'
@@ -511,34 +519,17 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {(() => {
         const commonCreditsElement = (
           <div key="common-credits">
+            {/* 「取得した単位」（countAsCommonの区分・alwaysCommonSubjectsの修得済み科目）は、
+                それぞれ自分の区分（理数基礎（選択）など）や「選択科目」の共通単位の入れ子で
+                既に一覧できるので、ここでは二重に出さない。あぶれ分（他区分の超過分）だけを出す */}
             <h3>共通単位（{commonEarnedTotal}/{requirementSet.commonCredits}単位）</h3>
-            <ul style={{ listStyleType: 'none' }}>
-              <li style={{ listStyleType: 'none' }}>
-                <details open>
-                  <summary>あぶれ分（{commonOverflowTotal}単位）</summary>
-                  <ul style={{ listStyleType: 'disc' }}>
-                    {overflowToCommonGroups.map((g) => (
-                      <li key={g.id}>
-                        {g.label ?? g.name}から{g.overflowToCommon}単位
-                      </li>
-                    ))}
-                    {overflowToCommonGroups.length === 0 && <li>（まだありません）</li>}
-                  </ul>
-                </details>
-              </li>
-              <li style={{ listStyleType: 'none' }}>
-                <details>
-                  <summary>取得した単位（{commonDirectTotal}単位）</summary>
-                  <ul style={{ listStyleType: 'disc' }}>
-                    {directCommonSubjects.map((code) => (
-                      <li key={code}>
-                        {nameOf(code)}（{creditsLabel(code)}）
-                      </li>
-                    ))}
-                    {directCommonSubjects.length === 0 && <li>（まだありません）</li>}
-                  </ul>
-                </details>
-              </li>
+            <ul>
+              {overflowToCommonGroups.map((g) => (
+                <li key={g.id}>
+                  {g.label ?? g.name}から{g.overflowToCommon}単位
+                </li>
+              ))}
+              {overflowToCommonGroups.length === 0 && <li>（まだありません）</li>}
             </ul>
           </div>
         )
@@ -658,25 +649,49 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {/* ここに出すのは「選択」「選択必修」の区分だけ（必修は上の「残りの必修」で扱う。自由・国際は対象外）。
             必要単位が0のグループ（そのプログラムでは使わない区分）も出す意味が無いので除く。
             この条件だけで絞るので、プログラムによって実際に何が出るかは自然に変わる */}
-        {boundaryGroups
-          .filter((g) => (g.kind === 'elective' || g.kind === 'elective-required') && g.required > 0)
-          .map((g) => (
-            <GroupProgress
-              key={g.id}
-              group={g}
-              committed={committed}
-              draft={draft}
-              onChange={handleDraftChange}
-              nameOf={nameOf}
-              creditsLabel={creditsLabel}
-              yearTermTag={yearTermTag}
-              termTypeOf={termTypeOf}
-              standardYearOf={standardYearOf}
-              yearOnlyTag={yearOnlyTag}
-              isOtherProgram={isOtherProgram}
-              isInternational={isInternational}
-            />
-          ))}
+        {(() => {
+          // 共通単位（選択第二外国語、物理学概論第二(一類)など、元から共通単位にしかならない科目）は、
+          // required=0でGroupProgressの対象外だったり、alwaysCommonSubjectsでどの区分にも属さないため、
+          // これまで選択状態を変える場所が無かった。類専門（選択）の直後に専用の入れ子を出す
+          const commonCreditsElement = (
+            <details key="common-credits">
+              <summary>共通単位（{commonOnlyRemaining.length}）</summary>
+              <ul>
+                {commonOnlyRemaining.map((code) => (
+                  <li key={code}>
+                    {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+                    {'  '}
+                    <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+                  </li>
+                ))}
+                {commonOnlyRemaining.length === 0 && <li>（すべて修得済みです）</li>}
+              </ul>
+            </details>
+          )
+          const electiveGroups = boundaryGroups.filter((g) => (g.kind === 'elective' || g.kind === 'elective-required') && g.required > 0)
+          const rendered = electiveGroups.flatMap((g) => {
+            const groupElement = (
+              <GroupProgress
+                key={g.id}
+                group={g}
+                committed={committed}
+                draft={draft}
+                onChange={handleDraftChange}
+                nameOf={nameOf}
+                creditsLabel={creditsLabel}
+                yearTermTag={yearTermTag}
+                termTypeOf={termTypeOf}
+                standardYearOf={standardYearOf}
+                yearOnlyTag={yearOnlyTag}
+                isOtherProgram={isOtherProgram}
+                isInternational={isInternational}
+              />
+            )
+            return g.id === 'major-sel' ? [groupElement, commonCreditsElement] : [groupElement]
+          })
+          const hasMajorSel = electiveGroups.some((g) => g.id === 'major-sel')
+          return hasMajorSel ? rendered : [...rendered, commonCreditsElement]
+        })()}
       </section>
     </main>
   )
