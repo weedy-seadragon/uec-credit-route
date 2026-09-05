@@ -11,7 +11,7 @@
 // JavaScriptのオブジェクトとして読み込んでくれる機能（tsconfig.app.json の
 // resolveJsonModule で型チェックも通るようにしている）。
 
-import type { RequirementGroup, RequirementSet } from '../domain/requirements'
+import type { RequirementGroup, RequirementSet, ReviewDef } from '../domain/requirements'
 import common from '../../data/requirements/2025-day-common.json'
 import media from '../../data/requirements/2025-day-I-media.json'
 import management from '../../data/requirements/2025-day-I-management.json'
@@ -66,6 +66,8 @@ interface ProgramDoc {
    * 選択（required: 0）になる（学修要覧2025 §2.5.1・別表2の注記）。夜間主（course: 'evening'）には適用されない。
    */
   commonOverrides?: Record<string, Partial<RequirementGroup>>
+  /** 審査（2年次終了時審査など）の定義。今のところⅠ類5プログラムのJSONにしか無い */
+  reviews?: ReviewDef[]
 }
 
 /**
@@ -122,6 +124,7 @@ export function getRequirementSet(entryYear: number, course: string, cluster: st
     groups,
     alwaysCommonSubjects: doc.course === 'evening' ? [] : (commonDoc.commonCreditSources?.alwaysCommon ?? []),
     programSuffix: doc.programSuffix,
+    reviews: doc.reviews,
   }
 }
 
