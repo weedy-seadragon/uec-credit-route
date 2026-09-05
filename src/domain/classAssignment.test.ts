@@ -76,9 +76,24 @@ describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () =>
   it('未知の表記・未入力のプロフィールに対しては一致させない（誤判定より非表示を優先）', () => {
     expect(classIdMatchesProfile('謎のクラス', {}, 'I')).toBe(false)
     expect(classIdMatchesProfile('クラス3', {}, 'I')).toBe(false)
-    // まだプロフィールに項目がない表記（留学生・再履)も未知表記と同様false
+    // まだプロフィールに項目がない表記（留学生)も未知表記と同様false
     expect(classIdMatchesProfile('留学生', {}, 'I')).toBe(false)
+  })
+
+  it('「再履全員/再履生」はisRetakingがtrueのときだけ一致し、通常は一致しない', () => {
     expect(classIdMatchesProfile('再履生', {}, 'I')).toBe(false)
+    expect(classIdMatchesProfile('再履生', {}, 'I', false)).toBe(false)
+    expect(classIdMatchesProfile('再履生', {}, 'I', true)).toBe(true)
+    expect(classIdMatchesProfile('再履全員', {}, 'II', true)).toBe(true)
+  })
+
+  it('isRetakingがtrueのときは、再履セクション以外（通常のクラス・プログラム向け）とは一致しない', () => {
+    const profile: ClassProfile = { yearOneClass: 3, programName: 'メディア情報学プログラム' }
+    expect(classIdMatchesProfile('クラス3', profile, 'I', true)).toBe(false)
+    expect(classIdMatchesProfile('全クラス', profile, 'I', true)).toBe(false)
+    expect(classIdMatchesProfile('メディア情報学プログラム', profile, 'I', true)).toBe(false)
+    // isRetakingがfalseなら、これらは今まで通り一致する
+    expect(classIdMatchesProfile('クラス3', profile, 'I', false)).toBe(true)
   })
 })
 
@@ -147,5 +162,29 @@ describe('resolveSlotsForProfile（複数セクションからの解決）', () 
     ]
     const profile: ClassProfile = { yearOneClass: 1 }
     expect(resolveSlotsForProfile('GER101z', offerings, conflictingAssignments, profile, 'I')).toBeUndefined()
+  })
+
+  it('isRetaking:trueなら、通常セクションではなく再履セクションの曜日時限を返す（不合格科目の再履修）', () => {
+    // COM401f（アルゴリズムとデータ構造およびプログラミング演習）で実際に起きているケース：
+    // 通常はIエリア向け（金1・金2）、再履修中の学生向けは別セクション（金5・金6）
+    const comAssignments: ClassAssignmentEntry[] = [
+      { code: 'COM401f', term: '後学期', day: '金', period: '1', classIds: ['Iエリア'] },
+      { code: 'COM401f', term: '後学期', day: '金', period: '2', classIds: ['Iエリア'] },
+      { code: 'COM401f', term: '後学期', day: '金', period: '5', classIds: ['再履生'] },
+      { code: 'COM401f', term: '後学期', day: '金', period: '6', classIds: ['再履生'] },
+    ]
+    const offerings = [
+      { term: '後学期', slots: [{ day: '金', period: 1 }, { day: '金', period: 2 }] },
+      { term: '後学期', slots: [{ day: '金', period: 5 }, { day: '金', period: 6 }] },
+    ]
+    const profile: ClassProfile = { classIIArea: 'I3' }
+    expect(resolveSlotsForProfile('COM401f', offerings, comAssignments, profile, 'II', false)).toEqual([
+      { day: '金', period: 1 },
+      { day: '金', period: 2 },
+    ])
+    expect(resolveSlotsForProfile('COM401f', offerings, comAssignments, profile, 'II', true)).toEqual([
+      { day: '金', period: 5 },
+      { day: '金', period: 6 },
+    ])
   })
 })

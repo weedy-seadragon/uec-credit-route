@@ -481,10 +481,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // data/timetable/class_assignment.json（開発者が時間割PDFを見て手作業で埋めたクラス対応表）と
   // プロフィールのクラス情報を突き合わせて、一意に決まる場合だけ表示する。
   // どちらの方法でも決められない場合は、誤った時限を出すより何も出さない方を選ぶ
-  // （CLAUDE.mdの進捗ログ参照）
+  // （CLAUDE.mdの進捗ログ参照）。
+  // committedが'failed'（不合格）の科目は再履修中とみなし、「再履全員/再履生」向けの
+  // セクションから曜日時限を出す（開発者提案、2026-09-06）
   function dayPeriodTag(code: string) {
     const offerings = subjectsByCode.get(code)?.offerings
     if (!offerings || offerings.length === 0) return null
+    const isRetaking = committed.get(code) === 'failed'
     const slots =
       offerings.length === 1
         ? offerings[0].slots
@@ -501,6 +504,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               programName,
             },
             profile.cluster,
+            isRetaking,
           )
     if (!slots || slots.length === 0) return null
     const text = slots.map((s) => `${s.day}・${s.period}限`).join('/')

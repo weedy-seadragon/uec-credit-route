@@ -50,12 +50,28 @@ interface OfferingLike {
  *   （開発者指摘、2026-09-06）
  * - 「全クラス」：クラス分けに関係なく全員が対象
  * - それ以外（プログラム名）：2年後期以降、プログラムが決まった学生向け
+ * - 「再履全員/再履生」：この科目を再履修中（＝committedの状態が'failed'）の学生向けの特別セクション。
+ *   isRetakingがtrueのときだけ一致し、その代わり他の（通常セクション向けの）表記とは一致しなくなる
+ *   （再履修中の学生は、その科目については通常セクションではなく再履セクションに出る前提。
+ *   開発者提案、2026-09-06。呼び出し側（MainPage.tsxのdayPeriodTag）でcommitted.get(code)==='failed'
+ *   のときisRetaking=trueを渡す）
  *
- * なお「留学生」「再履全員/再履生」もclass_assignment_filled.csvに実在するが、プロフィールに
- * その情報を持たせるかどうかは別途判断が必要なため未対応（常にfalseを返し、該当セクションは
- * resolveSlotsForProfileで曜日時限なし扱いになる。2026-09-06の点検で発見。CLAUDE.md参照）
+ * なお「留学生」もclass_assignment_filled.csvに実在するが、プロフィールにその情報を持たせるか
+ * どうかは別途判断が必要なため未対応（常にfalseを返し、該当セクションはresolveSlotsForProfileで
+ * 曜日時限なし扱いになる。2026-09-06の点検で発見。CLAUDE.md参照）
  */
-export function classIdMatchesProfile(classId: string, profile: ClassProfile, cluster: 'I' | 'II' | 'III' | null): boolean {
+export function classIdMatchesProfile(
+  classId: string,
+  profile: ClassProfile,
+  cluster: 'I' | 'II' | 'III' | null,
+  isRetaking = false,
+): boolean {
+  if (classId === '再履全員' || classId === '再履生') return isRetaking
+  // 再履修中の科目は、再履セクション以外（通常のクラス・プログラム向けセクション）は
+  // 対象外にする（同じ科目で通常セクションと再履セクションの両方が一致してしまうと、
+  // 曜日時限が食い違って一意に決まらなくなるため）
+  if (isRetaking) return false
+
   if (profile.programName && classId === profile.programName) return true
   if (classId === '全クラス') return true
 
@@ -110,6 +126,10 @@ function slotsKey(slots: readonly { day: string; period: number }[]): string {
  * 完全に同じであれば、担当教員までは分からなくても曜日時限自体は一意に決まるので、
  * その曜日時限を返す（2026-09-06の点検で発見。CLAUDE.md参照）。曜日時限が食い違う場合のみ
  * 本当に決められないのでundefinedにする。
+ *
+ * isRetaking（デフォルトfalse）をtrueにすると、「再履全員/再履生」向けセクションだけを対象にする
+ * （通常セクションは無視する）。呼び出し側で、その科目の履修状態が'failed'（不合格・再履修中）の
+ * ときにtrueを渡す想定（開発者提案、2026-09-06）
  */
 export function resolveSlotsForProfile(
   code: string,
@@ -117,13 +137,14 @@ export function resolveSlotsForProfile(
   assignments: readonly ClassAssignmentEntry[],
   profile: ClassProfile,
   cluster: 'I' | 'II' | 'III' | null,
+  isRetaking = false,
 ): { day: string; period: number }[] | undefined {
   const matchedOfferings = offerings.filter((o) =>
     o.slots.some((slot) => {
       const entry = assignments.find(
         (a) => a.code === code && a.term === o.term && a.day === slot.day && a.period === String(slot.period),
       )
-      return entry?.classIds.some((id) => classIdMatchesProfile(id, profile, cluster)) ?? false
+      return entry?.classIds.some((id) => classIdMatchesProfile(id, profile, cluster, isRetaking)) ?? false
     }),
   )
   if (matchedOfferings.length === 0) return undefined
