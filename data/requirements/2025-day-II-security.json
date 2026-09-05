@@ -276,5 +276,151 @@
         }
       ]
     }
+  ],
+  "reviews": [
+    {
+      "id": "y2-end",
+      "name": "2年次終了時審査",
+      "when": "2年次終了時",
+      "source": "2.4.1, 別表3, 別表3の2",
+      "anyOf": [
+        {
+          "allOf": [
+            {
+              "type": "groupMin",
+              "groupId": "lang-basic-1",
+              "min": 4
+            },
+            {
+              "type": "groupMin",
+              "groupId": "lang-basic-2",
+              "min": 2
+            },
+            {
+              "type": "allPassed",
+              "groupId": "health-req"
+            },
+            {
+              "type": "allPassed",
+              "groupId": "intro"
+            },
+            {
+              "type": "subjects",
+              "codes": [
+                "UEC301z"
+              ]
+            },
+            {
+              "type": "allPassed",
+              "groupId": "math-basic-req"
+            },
+            {
+              "type": "subjects",
+              "codes": [
+                "PHY204f",
+                "MTH301f"
+              ],
+              "note": "別表3: 類共通基礎科目のうち力学・確率統計（1・2年次開講の必修科目、計4単位）"
+            }
+          ]
+        },
+        {
+          "type": "totalCredits",
+          "min": 60,
+          "note": "特例。ただし卒業研究着手までには前項の科目の単位を必ず修得しなければならない"
+        }
+      ],
+      "onFail": {
+        "blockedSubjects": [
+          "COM501f",
+          "COM601f"
+        ],
+        "note": "不合格時はCOM501f・COM601fを履修できない"
+      }
+    },
+    {
+      "id": "thesis-start",
+      "name": "卒業研究着手審査",
+      "when": "3年次終了時",
+      "source": "2.4.3, 別表4",
+      "allOf": [
+        {
+          "type": "review",
+          "id": "y2-end"
+        },
+        {
+          "type": "groupMin",
+          "groupId": "lang-basic-1",
+          "min": 4
+        },
+        {
+          "type": "groupMin",
+          "groupId": "lang-basic-2",
+          "min": 2
+        },
+        {
+          "type": "allPassed",
+          "groupId": "health-req"
+        },
+        {
+          "type": "allPassed",
+          "groupId": "intro"
+        },
+        {
+          "type": "subjects",
+          "codes": [
+            "UEC301z"
+          ]
+        },
+        {
+          "type": "allPassed",
+          "groupId": "math-basic-req"
+        },
+        {
+          "allOf": [
+            {
+              "type": "allPassed",
+              "groupId": "cluster-basic-req"
+            },
+            {
+              "type": "groupMin",
+              "groupId": "cluster-basic-sel",
+              "min": 2
+            }
+          ]
+        },
+        {
+          "type": "subjects",
+          "codes": [
+            "COM501f",
+            "COM601f"
+          ],
+          "note": "別表4: 類専門科目の指定科目"
+        },
+        {
+          "type": "totalCredits",
+          "min": 104
+        }
+      ]
+    },
+    {
+      "id": "graduation",
+      "name": "卒業審査",
+      "when": "4年次終了時",
+      "source": "2.4.4, 別表2",
+      "allOf": [
+        {
+          "type": "allGroups"
+        },
+        {
+          "type": "commonCredits",
+          "min": 8
+        },
+        {
+          "type": "totalCredits",
+          "min": 133
+        }
+      ]
+    }
   ]
 }

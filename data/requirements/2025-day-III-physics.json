@@ -296,5 +296,157 @@
         }
       ]
     }
+  ],
+  "reviews": [
+    {
+      "id": "y2-end",
+      "name": "2年次終了時審査",
+      "when": "2年次終了時",
+      "source": "2.4.1, 別表3, 別表3の2",
+      "anyOf": [
+        {
+          "allOf": [
+            {
+              "type": "groupMin",
+              "groupId": "lang-basic-1",
+              "min": 4
+            },
+            {
+              "type": "groupMin",
+              "groupId": "lang-basic-2",
+              "min": 2
+            },
+            {
+              "type": "allPassed",
+              "groupId": "health-req"
+            },
+            {
+              "type": "allPassed",
+              "groupId": "intro"
+            },
+            {
+              "type": "subjects",
+              "codes": [
+                "UEC301z"
+              ]
+            },
+            {
+              "type": "allPassed",
+              "groupId": "math-basic-req"
+            },
+            {
+              "type": "subjects",
+              "codes": [
+                "PHY204p",
+                "PHY205p"
+              ],
+              "note": "別表3: 類共通基礎科目のうち力学・力学演習（1年次開講の必修科目2科目、計3単位）"
+            }
+          ]
+        },
+        {
+          "type": "totalCredits",
+          "min": 60,
+          "note": "特例。ただし卒業研究着手までには前項の科目の単位を必ず修得しなければならない"
+        }
+      ],
+      "onFail": {
+        "blockedSubjects": [
+          "PHY501p",
+          "PHY601p"
+        ],
+        "note": "不合格時はPHY501p・PHY601pを履修できない"
+      }
+    },
+    {
+      "id": "thesis-start",
+      "name": "卒業研究着手審査",
+      "when": "3年次終了時",
+      "source": "2.4.3, 別表4",
+      "allOf": [
+        {
+          "type": "review",
+          "id": "y2-end"
+        },
+        {
+          "type": "groupMin",
+          "groupId": "lang-basic-1",
+          "min": 4
+        },
+        {
+          "type": "groupMin",
+          "groupId": "lang-basic-2",
+          "min": 2
+        },
+        {
+          "type": "allPassed",
+          "groupId": "health-req"
+        },
+        {
+          "type": "allPassed",
+          "groupId": "intro"
+        },
+        {
+          "type": "subjects",
+          "codes": [
+            "UEC301z"
+          ]
+        },
+        {
+          "type": "allPassed",
+          "groupId": "math-basic-req"
+        },
+        {
+          "type": "subjectsCreditMin",
+          "codes": [
+            "PHY204p",
+            "PHY205p",
+            "MTH301p",
+            "PHY301p",
+            "PHY302p",
+            "PHY401p",
+            "ELE301p",
+            "ELE401p",
+            "COM401p",
+            "ELE402p",
+            "PHY402p"
+          ],
+          "min": 18,
+          "note": "別表4: 2年次までの類共通基礎科目及び類専門科目の必修科目のうち規定単位数以上"
+        },
+        {
+          "type": "subjects",
+          "codes": [
+            "ELE402p",
+            "PHY501p",
+            "PHY601p"
+          ],
+          "note": "別表4: 類専門科目の指定科目"
+        },
+        {
+          "type": "totalCredits",
+          "min": 104
+        }
+      ]
+    },
+    {
+      "id": "graduation",
+      "name": "卒業審査",
+      "when": "4年次終了時",
+      "source": "2.4.4, 別表2",
+      "allOf": [
+        {
+          "type": "allGroups"
+        },
+        {
+          "type": "commonCredits",
+          "min": 6
+        },
+        {
+          "type": "totalCredits",
+          "min": 133
+        }
+      ]
+    }
   ]
 }

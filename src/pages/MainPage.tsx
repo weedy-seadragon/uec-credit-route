@@ -292,7 +292,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 審査（2年次終了時審査など）。reviewsデータが無いプログラム（Ⅱ・Ⅲ類・夜間主）では空配列になる。
   // reviewsを一度ローカル変数に受けておく（入れ子関数の中ではrequirementSetの絞り込みが効かないため）
   const reviews = requirementSet.reviews
-  const reviewStatuses = reviews ? evaluateReviews(reviews, evaluation, committed) : []
+  const reviewStatuses = reviews ? evaluateReviews(reviews, evaluation, committed, subjectCredits) : []
   const requiredCodes = new Set(boundaryGroups.filter((g) => g.kind === 'required').flatMap((g) => g.subjects))
   // 「取得単位」「残りの必修」を区分ごとに見出しを分けて表示するための対応表
   const categoryLookup = buildCategoryLookup(boundaryGroups)
@@ -444,6 +444,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       case 'review': {
         const target = reviews?.find((r) => r.id === cond.id)
         return `「${target?.name ?? cond.id}」に合格`
+      }
+      case 'subjectsCountMin': {
+        const passedCount = cond.codes.filter((code) => committed.get(code) === 'passed').length
+        return `${cond.codes.map((code) => nameOf(code)).join('・')} のうち${cond.min}科目以上（現在${passedCount}科目）`
+      }
+      case 'subjectsCreditMin': {
+        const earned = cond.codes
+          .filter((code) => committed.get(code) === 'passed')
+          .reduce((sum, code) => sum + (subjectCredits.get(code) ?? 0), 0)
+        return `${cond.codes.map((code) => nameOf(code)).join('・')} のうち${cond.min}単位以上（現在${earned}単位）`
       }
     }
   }
@@ -801,6 +811,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 {r.name}
                 {r.when && <span style={{ marginLeft: '0.4em', color: '#555' }}>（{r.when}）</span>}
                 {r.satisfied ? ' ✔ 合格見込み' : ' ✖ 不足あり'}
+                {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
+                {r.caveat && <p style={{ fontSize: '0.9em', color: '#555', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
                 {!r.satisfied && (
                   <details>
                     <summary>詳細</summary>

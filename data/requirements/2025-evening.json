@@ -313,5 +313,72 @@
         }
       ]
     }
+  ],
+  "reviews": [
+    {
+      "id": "seminar-eligibility",
+      "name": "輪講履修条件",
+      "when": "3年次前学期（5学期）終了まで",
+      "source": "2.4.2",
+      "allOf": [
+        {
+          "type": "totalCredits",
+          "min": 71
+        }
+      ]
+    },
+    {
+      "id": "thesis-start",
+      "name": "卒業研究着手審査（卒業研究を選択履修する場合）",
+      "when": "3年次終了時",
+      "source": "2.4.3, 別表4 4.2（夜間主コース）",
+      "allOf": [
+        {
+          "type": "groupMin",
+          "groupId": "intro",
+          "min": 4
+        },
+        {
+          "type": "subjects",
+          "codes": [
+            "UEC301s"
+          ]
+        },
+        {
+          "type": "groupMin",
+          "groupId": "math-basic-req",
+          "min": 12
+        },
+        {
+          "type": "groupMin",
+          "groupId": "prof-basic-req",
+          "min": 19
+        },
+        {
+          "type": "totalCredits",
+          "min": 90
+        }
+      ],
+      "caveat": "この審査基準を満たした上、先端工学基礎課程長（会議）の了承を必要とする"
+    },
+    {
+      "id": "graduation",
+      "name": "卒業審査",
+      "when": "4年次終了時",
+      "source": "2.4.4, 別表2",
+      "allOf": [
+        {
+          "type": "allGroups"
+        },
+        {
+          "type": "commonCredits",
+          "min": 6
+        },
+        {
+          "type": "totalCredits",
+          "min": 124
+        }
+      ]
+    }
   ]
 }

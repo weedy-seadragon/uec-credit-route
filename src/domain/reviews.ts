@@ -21,6 +21,8 @@ export interface ReviewStatus {
    */
   unsatisfied: ReviewCondition[]
   onFail?: { blockedSubjects?: string[]; note?: string }
+  /** 合否に関わらず常に表示する注記（ReviewDef.caveatをそのまま渡すだけ） */
+  caveat?: string
 }
 
 /** evaluation.groups の木を再帰的にたどって、指定idの判定結果を探す（無ければundefined） */
@@ -41,6 +43,7 @@ function allBoundaryGroupsSatisfied(groups: readonly GroupResult[]): boolean {
 interface Context {
   evaluation: EvaluationResult
   records: ReadonlyMap<string, SubjectStatus>
+  subjectCredits: ReadonlyMap<string, number>
   reviews: readonly ReviewDef[]
   /** review条件（他の審査への参照）が循環しないよう、評価中の審査idを覚えておく */
   visiting: Set<string>
@@ -64,7 +67,29 @@ function isConditionSatisfied(cond: ReviewCondition, ctx: Context): boolean {
       return allBoundaryGroupsSatisfied(ctx.evaluation.groups)
     case 'review':
       return evaluateReviewSatisfied(cond.id, ctx)
+    case 'subjectsCountMin':
+      // 単位数ではなく「何科目修得したか」を数える（別表4の「◯科目のうち◯科目以上」用）
+      return cond.codes.filter((code) => ctx.records.get(code) === 'passed').length >= cond.min
+    case 'subjectsCreditMin':
+      // 複数グループにまたがる科目をまとめて単位数で数える（別表4の複数区分合算の条件用）
+      return sumCreditsOfPassed(cond.codes, ctx) >= cond.min
   }
+}
+
+/** 指定した科目番号のうち、修得済み（passed）のものだけ単位数を合計する */
+function sumCreditsOfPassed(codes: readonly string[], ctx: Context): number {
+  let total = 0
+  for (const code of codes) {
+    if (ctx.records.get(code) !== 'passed') continue
+    const credits = ctx.subjectCredits.get(code)
+    if (credits === undefined) {
+      // data/ の整合性は scripts/validate_data.py で保証している前提なので、
+      // ここに来るのは審査データ側の科目番号ミスとして扱う
+      throw new Error(`科目マスタに存在しない科目番号です: ${code}`)
+    }
+    total += credits
+  }
+  return total
 }
 
 function isNodeSatisfied(node: ReviewNode, ctx: Context): boolean {
@@ -113,8 +138,9 @@ export function evaluateReviews(
   reviews: readonly ReviewDef[],
   evaluation: EvaluationResult,
   records: ReadonlyMap<string, SubjectStatus>,
+  subjectCredits: ReadonlyMap<string, number>,
 ): ReviewStatus[] {
-  const ctx: Context = { evaluation, records, reviews, visiting: new Set(), cache: new Map() }
+  const ctx: Context = { evaluation, records, subjectCredits, reviews, visiting: new Set(), cache: new Map() }
   return reviews.map((review) => {
     const nodes = reviewNodes(review)
     const satisfied = nodes.every((n) => isNodeSatisfied(n, ctx))
@@ -126,6 +152,7 @@ export function evaluateReviews(
       satisfied,
       unsatisfied: satisfied ? [] : nodes.flatMap((n) => collectUnsatisfied(n, ctx)),
       onFail: review.onFail,
+      caveat: review.caveat,
     }
   })
 }

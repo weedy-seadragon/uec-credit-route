@@ -137,6 +137,19 @@ export type ReviewCondition =
   | { type: 'allGroups'; note?: string }
   /** 別の審査（idで指定）に合格しているか */
   | { type: 'review'; id: string; note?: string }
+  /**
+   * 指定した科目番号のうち、修得済み（passed）のものが min 科目以上あるか（単位数ではなく科目数で数える）。
+   * 別表4の「全必修科目10科目のうち、9科目以上の単位を修得し」のような、
+   * グループ全体の必修（allPassed）までは要求しない条件のために追加した（2026-09-06）
+   */
+  | { type: 'subjectsCountMin'; codes: string[]; min: number; note?: string }
+  /**
+   * 指定した科目番号のうち、修得済み（passed）のものの単位数の合計がmin以上か。
+   * 別表4の「2年次までの類共通基礎科目及び類専門科目の必修科目9科目の21単位のうち、
+   * 16単位以上」のように、複数のグループにまたがる科目をまとめて単位数で判定したい場合に使う
+   * （既存のgroupMinは単一グループのcontributionしか参照できないため。2026-09-06）
+   */
+  | { type: 'subjectsCreditMin'; codes: string[]; min: number; note?: string }
 
 /** 条件の入れ子（AND/OR）。ReviewDef自身もこの形の一部（allOf/anyOfを直接持つ） */
 export interface ReviewConditionAllOf {
@@ -158,6 +171,11 @@ export interface ReviewDef {
   anyOf?: ReviewNode[]
   /** 不合格だった場合の追加情報（例: 履修できなくなる実験科目） */
   onFail?: { blockedSubjects?: string[]; note?: string }
+  /**
+   * 合否に関わらず常に表示する注記（例:「この審査基準を満たした上、会議の了承を必要とする」）。
+   * onFail.noteと違い、合格していても表示する（2026-09-06、夜間主コースの卒業研究着手審査用に追加）
+   */
+  caveat?: string
 }
 
 /**
