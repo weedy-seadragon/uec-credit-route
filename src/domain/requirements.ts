@@ -113,6 +113,51 @@ export interface RequirementSet {
    * 共通科目（総合文化・実践教育）や末尾"z"の科目のように、そもそもプログラム別でない科目には使わない。
    */
   programSuffix?: string
+  /** 審査（2年次終了時審査など）の定義一覧。データが無いプログラムではundefined（reviews.ts参照） */
+  reviews?: ReviewDef[]
+}
+
+/**
+ * 審査（2年次終了時審査・卒業研究着手審査・卒業審査など）の合否条件、1つぶん。
+ * data/requirements/2025-day-I-*.json の `reviews` にそのまま対応する（docs/SPEC.md参照）。
+ * 実際の合否判定ロジックは src/domain/reviews.ts が担当する（このファイルはデータの形だけを定義する）。
+ */
+export type ReviewCondition =
+  /** 指定した判定境界グループの修得単位数がmin以上か */
+  | { type: 'groupMin'; groupId: string; min: number; note?: string }
+  /** 指定した判定境界グループを（必修科目として）すべて修得しているか */
+  | { type: 'allPassed'; groupId: string; note?: string }
+  /** 指定した科目番号をすべて修得しているか（グループに属さない個別科目指定） */
+  | { type: 'subjects'; codes: string[]; note?: string }
+  /** 卒業要件全体の合計修得単位数がmin以上か */
+  | { type: 'totalCredits'; min: number; note?: string }
+  /** 共通単位の修得単位数がmin以上か */
+  | { type: 'commonCredits'; min: number; note?: string }
+  /** すべての判定境界グループを満たしているか（卒業審査で使う） */
+  | { type: 'allGroups'; note?: string }
+  /** 別の審査（idで指定）に合格しているか */
+  | { type: 'review'; id: string; note?: string }
+
+/** 条件の入れ子（AND/OR）。ReviewDef自身もこの形の一部（allOf/anyOfを直接持つ） */
+export interface ReviewConditionAllOf {
+  allOf: ReviewNode[]
+}
+export interface ReviewConditionAnyOf {
+  anyOf: ReviewNode[]
+}
+export type ReviewNode = ReviewCondition | ReviewConditionAllOf | ReviewConditionAnyOf
+
+export interface ReviewDef {
+  id: string
+  name: string
+  /** 審査の時期（例:「2年次終了時」）。表示用の説明文字列で、判定には使わない */
+  when?: string
+  /** 学修要覧のどこに書かれているかの出典（表示用） */
+  source?: string
+  allOf?: ReviewNode[]
+  anyOf?: ReviewNode[]
+  /** 不合格だった場合の追加情報（例: 履修できなくなる実験科目） */
+  onFail?: { blockedSubjects?: string[]; note?: string }
 }
 
 /**
