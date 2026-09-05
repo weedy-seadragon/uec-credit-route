@@ -484,9 +484,21 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // （CLAUDE.mdの進捗ログ参照）。
   // committedが'failed'（不合格）の科目は再履修中とみなし、「再履全員/再履生」向けの
   // セクションから曜日時限を出す（開発者提案、2026-09-06）
+  // シラバス上に曜日時限が一切無い（＝offeringsは取れているが全セクションのslotsが空）科目は
+  // 「時間割に入っていない」科目とみなす。学修要覧のnoteに「集中」（集中講義・夏期集中講義・
+  // 冬期集中講義等）とある場合はそのまま何も表示しないが、それ以外（卒業研究・オンデマンド
+  // 授業等）は「オンデマンド」と表示する（開発者指示、2026-09-06）。
+  // offeringsが1件も無い（＝シラバスで名前が一致せずデータ自体が無い）科目は、本当に
+  // 時間割が無いのか単なるデータ欠落なのか区別できないため、従来通り何も表示しない
   function dayPeriodTag(code: string) {
-    const offerings = subjectsByCode.get(code)?.offerings
+    const subject = subjectsByCode.get(code)
+    const offerings = subject?.offerings
     if (!offerings || offerings.length === 0) return null
+    const hasAnySlots = offerings.some((o) => o.slots.length > 0)
+    if (!hasAnySlots) {
+      if (subject?.note?.includes('集中')) return null
+      return <span style={{ marginLeft: '0.4em' }}>オンデマンド</span>
+    }
     const isRetaking = committed.get(code) === 'failed'
     const slots =
       offerings.length === 1
