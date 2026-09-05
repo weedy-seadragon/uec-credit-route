@@ -435,6 +435,19 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (!s || s.standardYear === null) return null
     return <span style={{ marginLeft: '0.4em' }}>{s.standardYear}年次</span>
   }
+  // 曜日時限（例:「木・1限」）。状態プルダウンの右に添える。
+  // シラバスにセクション（クラス）が複数ある科目は、今のところどのクラスの学生か
+  // 判別する手段が無い（同じ科目でもクラスごとに曜日時限が違うことがあるため）ので、
+  // 誤った時限を出すよりは何も出さない方を選ぶ。セクションが1つだけの科目にだけ表示する
+  // （CLAUDE.mdの進捗ログ参照）
+  function dayPeriodTag(code: string) {
+    const offerings = subjectsByCode.get(code)?.offerings
+    if (!offerings || offerings.length !== 1) return null
+    const slots = offerings[0].slots
+    if (slots.length === 0) return null
+    const text = slots.map((s) => `${s.day}・${s.period}限`).join('/')
+    return <span style={{ marginLeft: '0.4em' }}>{text}</span>
+  }
   // 他プログラムの専門科目かどうか
   function isOtherProgram(code: string): boolean {
     return isOtherProgramSubject(code, requirementSet?.programSuffix)
@@ -548,6 +561,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
       {'\u00A0\u00A0'}
               <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+              {dayPeriodTag(code)}
             </>
           )
           const categoryElement = (
@@ -594,6 +608,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
       {'\u00A0\u00A0'}
                 <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+              {dayPeriodTag(code)}
               </>
             )
             return (
@@ -624,6 +639,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
       {'\u00A0\u00A0'}
               <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+              {dayPeriodTag(code)}
             </>
           )
           return (
@@ -667,6 +683,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                     {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
                     {'  '}
                     <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+              {dayPeriodTag(code)}
                   </li>
                 ))}
                 {commonOnlyRemaining.length === 0 && <li>（すべて修得済みです）</li>}
@@ -688,6 +705,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 termTypeOf={termTypeOf}
                 standardYearOf={standardYearOf}
                 yearOnlyTag={yearOnlyTag}
+                dayPeriodTag={dayPeriodTag}
                 isOtherProgram={isOtherProgram}
                 isInternational={isInternational}
               />
@@ -751,6 +769,7 @@ function GroupProgress({
   termTypeOf,
   standardYearOf,
   yearOnlyTag,
+  dayPeriodTag,
   isOtherProgram,
   isInternational,
 }: {
@@ -764,6 +783,7 @@ function GroupProgress({
   termTypeOf: (code: string) => string | null
   standardYearOf: (code: string) => number | null
   yearOnlyTag: (code: string) => ReactNode
+  dayPeriodTag: (code: string) => ReactNode
   isOtherProgram: (code: string) => boolean
   isInternational: (code: string) => boolean
 }) {
@@ -794,6 +814,7 @@ function GroupProgress({
           折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
       {'\u00A0\u00A0'}
       <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
+      {dayPeriodTag(code)}
     </>
   )
   // 前学期・後学期で折りたたんだ行では、学期は見出し側で分かるので年次だけ添える（yearOnlyTag）
@@ -801,6 +822,7 @@ function GroupProgress({
     <>
       {nameOf(code)}（{creditsLabel(code)}）{yearOnlyTag(code)}
       <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
+      {dayPeriodTag(code)}
     </>
   )
   // 人文・社会科学科目・上級科目は科目数が多いので、通常の科目一覧の代わりに前学期・後学期の

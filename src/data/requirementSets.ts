@@ -128,6 +128,17 @@ export function getSubjectCredits(): ReadonlyMap<string, number> {
   return new Map(subjectsMaster.subjects.map((s) => [s.code, s.credits]))
 }
 
+/** シラバスWeb公開システムから取得した、1つの開講セクション（クラス）の情報（docs/SPEC.md §7.1） */
+interface SubjectOffering {
+  timetableCode: string
+  faculty: string
+  term: string
+  slots: { day: string; period: number }[]
+  instructors: string[]
+  syllabusUrl: string
+  updatedAt: string
+}
+
 interface SubjectMasterEntry {
   code: string
   name: string
@@ -138,6 +149,9 @@ interface SubjectMasterEntry {
   forInternational: boolean
   eveningAllowed: boolean
   graduateLinked: boolean
+  /** シラバスから取得できた科目だけ持つ（scripts/fetch_syllabus.py参照）。同じ科目に複数セクション
+   *  （クラス）があることがあり、その場合は曜日時限がセクションごとに違うことがある */
+  offerings?: SubjectOffering[]
 }
 
 /** 科目番号（フルコード）→科目マスタの情報 のマップ。科目一覧・詳細（F-5）や推奨計算に使う */
