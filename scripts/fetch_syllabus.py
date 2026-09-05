@@ -3,8 +3,17 @@ data/subjects/youran-2025.json の各科目に offerings（docs/SPEC.md §7.1）
 
 実行: python scripts/fetch_syllabus.py
 
+**重要（2026-09-05に発覚）**：シラバスは学修要覧の入学年度（2025）ではなく、
+「今実際に開講されている年度」で見る必要がある。データファイル名の「2025」は
+学修要覧の入学年度（カリキュラムの版）であって、シラバスの年度とは別物。
+時間割PDF（https://kyoumu.office.uec.ac.jp/timet/A*.pdf）は2026（令和8）年度のものなので、
+シラバスも2026年度分（SYLLABUS_YEAR）を見る。過去に2025年度分を取得していたことがあったが、
+年度がずれていたため、同じ科目でも担当教員・曜日時限が実際の時間割と食い違っていた
+（例: コンピュータリテラシーの担当教員2人の曜日時限が、2025年度と2026年度で入れ替わっていた）。
+SYLLABUS_YEARは学年が進んでも定期的に見直すこと（来年度以降は2027などに変える）。
+
 やること：
-1. 学期一覧ページ（情報理工学域2025年度）から全科目行（時間割コード・科目名・
+1. 学期一覧ページ（情報理工学域、SYLLABUS_YEAR年度）から全科目行（時間割コード・科目名・
    曜日時限・担当教員・個別シラバスページへのリンク）を取得する。学域コードは
    昼間コースが31、夜間主課程が32（2026-09-05に発見。学籍番号末尾s/tの科目名で
    実際に確認済み）の2つがあり、両方まわる
@@ -27,8 +36,10 @@ SUBJECTS_PATH = os.path.join(ROOT, "data", "subjects", "youran-2025.json")
 
 # 31=昼間コース、32=夜間主課程（先端工学基礎課程）
 FACULTIES = ["31", "32"]
-LIST_URL_TMPL = "https://kyoumu.office.uec.ac.jp/syllabus/2025/GakkiIchiran_{faculty}_0.html"
-DETAIL_URL_TMPL = "https://kyoumu.office.uec.ac.jp/syllabus/2025/{faculty}/{faculty}_{code}.html"
+# シラバスを見る年度（学修要覧の入学年度2025とは別物。上のコメント参照）
+SYLLABUS_YEAR = "2026"
+LIST_URL_TMPL = f"https://kyoumu.office.uec.ac.jp/syllabus/{SYLLABUS_YEAR}/GakkiIchiran_{{faculty}}_0.html"
+DETAIL_URL_TMPL = f"https://kyoumu.office.uec.ac.jp/syllabus/{SYLLABUS_YEAR}/{{faculty}}/{{faculty}}_{{code}}.html"
 USER_AGENT = "uec-credit-route data collection (https://github.com/weedy-seadragon/uec-credit-route)"
 REQUEST_INTERVAL_SEC = 1.2
 
