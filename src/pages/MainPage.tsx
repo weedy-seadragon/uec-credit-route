@@ -510,12 +510,15 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <h2>
           共通単位（{commonEarnedTotal}/{requirementSet.commonCredits}単位）
         </h2>
+        {/* 外側の<li>にはCollapsedSubjectGroupと同じ理由（▼と中の・が並ぶと紛らわしい）で・を付けない。
+            中の<ul>はCSSの既定だと「ulの中のul」になって・が中抜き丸に変わってしまうので、
+            他の一覧の・と揃うようlistStyleType: 'disc'で明示的に指定し直す */}
         <ul>
-          <li>
+          <li style={{ listStyleType: 'none' }}>
             {/* あぶれ分は、他の折りたたみと違って最初から中身が見えるようにしておく（<details open>） */}
             <details open>
               <summary>あぶれ分（{commonOverflowTotal}単位）</summary>
-              <ul>
+              <ul style={{ listStyleType: 'disc' }}>
                 {overflowToCommonGroups.map((g) => (
                   <li key={g.id}>
                     {g.label ?? g.name}から{g.overflowToCommon}単位
@@ -525,10 +528,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               </ul>
             </details>
           </li>
-          <li>
+          <li style={{ listStyleType: 'none' }}>
             <details>
               <summary>取得した単位（{commonDirectTotal}単位）</summary>
-              <ul>
+              <ul style={{ listStyleType: 'disc' }}>
                 {directCommonSubjects.map((code) => (
                   <li key={code}>
                     {nameOf(code)}（{creditsLabel(code)}）
