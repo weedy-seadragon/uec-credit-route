@@ -44,10 +44,18 @@ interface OfferingLike {
  * - 「INクラス」（N=1〜6）：Ⅱ類の2年前期クラス
  * - 「Mエリア」：Ⅱ類の2年前期エリア、またはⅢ類の2年後期エリア（類で意味が変わる）
  * - 「Mエリア(Nクラス)」：Ⅲ類の2年後期エリアMのうち、2年前期クラスNに対応する学生向け
+ * - 「Iエリア」：Ⅱ類の2年前期エリアのうち、I1〜I6のどれか（Mエリアの逆）
+ * - 「全クラス」：クラス分けに関係なく全員が対象
  * - それ以外（プログラム名）：2年後期以降、プログラムが決まった学生向け
+ *
+ * なお「二類学籍番号偶数/奇数」「留学生」「再履全員/再履生」もclass_assignment_filled.csvに
+ * 実在するが、プロフィールにその情報を持たせるかどうかは別途判断が必要なため未対応
+ * （常にfalseを返し、該当セクションはresolveSlotsForProfileで曜日時限なし扱いになる。
+ * 2026-09-06の点検で発見。CLAUDE.md参照）
  */
 export function classIdMatchesProfile(classId: string, profile: ClassProfile, cluster: 'I' | 'II' | 'III' | null): boolean {
   if (profile.programName && classId === profile.programName) return true
+  if (classId === '全クラス') return true
 
   const yearOneMatch = classId.match(/^クラス(\d+)$/)
   if (yearOneMatch) return profile.yearOneClass === Number(yearOneMatch[1])
@@ -57,6 +65,10 @@ export function classIdMatchesProfile(classId: string, profile: ClassProfile, cl
 
   const iAreaMatch = classId.match(/^I([1-6])クラス$/)
   if (iAreaMatch) return cluster === 'II' && profile.classIIArea === `I${iAreaMatch[1]}`
+
+  if (classId === 'Iエリア') {
+    return cluster === 'II' && profile.classIIArea != null && profile.classIIArea !== 'M'
+  }
 
   const mAreaSubMatch = classId.match(/^Mエリア\((\d+)クラス\)$/)
   if (mAreaSubMatch) {
@@ -72,10 +84,24 @@ export function classIdMatchesProfile(classId: string, profile: ClassProfile, cl
   return false
 }
 
+/** 曜日時限の集合を比較用の文字列にする（順序に依存しないよう並べ替えてから結合） */
+function slotsKey(slots: readonly { day: string; period: number }[]): string {
+  return slots
+    .map((s) => `${s.day}${s.period}`)
+    .sort()
+    .join(',')
+}
+
 /**
  * 複数セクションがある科目について、プロフィールから受講セクションが一意に決まれば、
- * そのセクションの曜日時限を返す。0件・複数件で一意に決まらない場合はundefined
+ * そのセクションの曜日時限を返す。0件で一致しない場合はundefined
  * （誤った時限を適当に選んで返すことはしない。CLAUDE.mdのフォールバック方針参照）。
+ *
+ * 複数のセクションが一致することもある（例：第二外国語で、同じクラス向けの科目が
+ * 教員違いで複数開講されているケース）。その場合でも、一致した全セクションの曜日時限が
+ * 完全に同じであれば、担当教員までは分からなくても曜日時限自体は一意に決まるので、
+ * その曜日時限を返す（2026-09-06の点検で発見。CLAUDE.md参照）。曜日時限が食い違う場合のみ
+ * 本当に決められないのでundefinedにする。
  */
 export function resolveSlotsForProfile(
   code: string,
@@ -92,6 +118,8 @@ export function resolveSlotsForProfile(
       return entry?.classIds.some((id) => classIdMatchesProfile(id, profile, cluster)) ?? false
     }),
   )
-  if (matchedOfferings.length !== 1) return undefined
-  return matchedOfferings[0].slots
+  if (matchedOfferings.length === 0) return undefined
+  const firstKey = slotsKey(matchedOfferings[0].slots)
+  if (matchedOfferings.every((o) => slotsKey(o.slots) === firstKey)) return matchedOfferings[0].slots
+  return undefined
 }

@@ -51,9 +51,25 @@ describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () =>
     expect(classIdMatchesProfile('経営・社会情報学プログラム', profile, 'I')).toBe(false)
   })
 
+  it('「全クラス」はクラス分けに関係なく誰でも一致する', () => {
+    expect(classIdMatchesProfile('全クラス', {}, 'I')).toBe(true)
+    expect(classIdMatchesProfile('全クラス', { classIIArea: 'M' }, 'II')).toBe(true)
+  })
+
+  it('「Iエリア」はⅡ類のときだけ、classIIAreaがMエリア以外（I1〜I6のどれか）で一致する', () => {
+    expect(classIdMatchesProfile('Iエリア', { classIIArea: 'I3' }, 'II')).toBe(true)
+    expect(classIdMatchesProfile('Iエリア', { classIIArea: 'M' }, 'II')).toBe(false)
+    expect(classIdMatchesProfile('Iエリア', {}, 'II')).toBe(false)
+    expect(classIdMatchesProfile('Iエリア', { classIIArea: 'I3' }, 'III')).toBe(false)
+  })
+
   it('未知の表記・未入力のプロフィールに対しては一致させない（誤判定より非表示を優先）', () => {
     expect(classIdMatchesProfile('謎のクラス', {}, 'I')).toBe(false)
     expect(classIdMatchesProfile('クラス3', {}, 'I')).toBe(false)
+    // まだプロフィールに項目がない表記（学籍番号奇偶・留学生・再履)も未知表記と同様false
+    expect(classIdMatchesProfile('二類学籍番号偶数', {}, 'II')).toBe(false)
+    expect(classIdMatchesProfile('留学生', {}, 'I')).toBe(false)
+    expect(classIdMatchesProfile('再履生', {}, 'I')).toBe(false)
   })
 })
 
@@ -93,5 +109,34 @@ describe('resolveSlotsForProfile（複数セクションからの解決）', () 
       { term: '前学期', slots: [{ day: '火', period: 3 }] },
     ]
     expect(resolveSlotsForProfile('MTH101z', offerings, assignments, {}, 'I')).toBeUndefined()
+  })
+
+  it('複数セクションが一致しても、曜日時限が全部同じなら（教員違いなど）その曜日時限を返す', () => {
+    // 第二外国語で実際に起きているケース：同じクラス向けの科目が教員違いで複数開講され、
+    // どちらも同じ曜日時限（例：月2）に配置されている
+    const sameSlotAssignments: ClassAssignmentEntry[] = [
+      { code: 'GER101z', term: '前学期', day: '月', period: '2', classIds: ['クラス1'] },
+    ]
+    const offerings = [
+      { term: '前学期', slots: [{ day: '月', period: 2 }] }, // 岡野先生
+      { term: '前学期', slots: [{ day: '月', period: 2 }] }, // 白木先生
+    ]
+    const profile: ClassProfile = { yearOneClass: 1 }
+    expect(resolveSlotsForProfile('GER101z', offerings, sameSlotAssignments, profile, 'I')).toEqual([
+      { day: '月', period: 2 },
+    ])
+  })
+
+  it('複数セクションが一致し、曜日時限が食い違う場合はundefined', () => {
+    const conflictingAssignments: ClassAssignmentEntry[] = [
+      { code: 'GER101z', term: '前学期', day: '月', period: '2', classIds: ['クラス1'] },
+      { code: 'GER101z', term: '前学期', day: '火', period: '3', classIds: ['クラス1'] },
+    ]
+    const offerings = [
+      { term: '前学期', slots: [{ day: '月', period: 2 }] },
+      { term: '前学期', slots: [{ day: '火', period: 3 }] },
+    ]
+    const profile: ClassProfile = { yearOneClass: 1 }
+    expect(resolveSlotsForProfile('GER101z', offerings, conflictingAssignments, profile, 'I')).toBeUndefined()
   })
 })
