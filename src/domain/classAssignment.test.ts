@@ -63,11 +63,20 @@ describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () =>
     expect(classIdMatchesProfile('Iエリア', { classIIArea: 'I3' }, 'III')).toBe(false)
   })
 
+  it('「二類学籍番号偶数/奇数」はⅡ類のときだけ、1年次クラス番号の偶奇と一致するかで判定する（1年次クラスの偶奇＝学籍番号の偶奇）', () => {
+    expect(classIdMatchesProfile('二類学籍番号偶数', { yearOneClass: 6 }, 'II')).toBe(true)
+    expect(classIdMatchesProfile('二類学籍番号奇数', { yearOneClass: 6 }, 'II')).toBe(false)
+    expect(classIdMatchesProfile('二類学籍番号奇数', { yearOneClass: 7 }, 'II')).toBe(true)
+    expect(classIdMatchesProfile('二類学籍番号偶数', { yearOneClass: 7 }, 'II')).toBe(false)
+    // Ⅱ類以外・未入力では判定できないのでfalse
+    expect(classIdMatchesProfile('二類学籍番号偶数', { yearOneClass: 6 }, 'III')).toBe(false)
+    expect(classIdMatchesProfile('二類学籍番号偶数', {}, 'II')).toBe(false)
+  })
+
   it('未知の表記・未入力のプロフィールに対しては一致させない（誤判定より非表示を優先）', () => {
     expect(classIdMatchesProfile('謎のクラス', {}, 'I')).toBe(false)
     expect(classIdMatchesProfile('クラス3', {}, 'I')).toBe(false)
-    // まだプロフィールに項目がない表記（学籍番号奇偶・留学生・再履)も未知表記と同様false
-    expect(classIdMatchesProfile('二類学籍番号偶数', {}, 'II')).toBe(false)
+    // まだプロフィールに項目がない表記（留学生・再履)も未知表記と同様false
     expect(classIdMatchesProfile('留学生', {}, 'I')).toBe(false)
     expect(classIdMatchesProfile('再履生', {}, 'I')).toBe(false)
   })

@@ -45,13 +45,15 @@ interface OfferingLike {
  * - 「Mエリア」：Ⅱ類の2年前期エリア、またはⅢ類の2年後期エリア（類で意味が変わる）
  * - 「Mエリア(Nクラス)」：Ⅲ類の2年後期エリアMのうち、2年前期クラスNに対応する学生向け
  * - 「Iエリア」：Ⅱ類の2年前期エリアのうち、I1〜I6のどれか（Mエリアの逆）
+ * - 「二類学籍番号偶数/奇数」：Ⅱ類の学籍番号の偶奇。1年次クラスの番号と学籍番号の偶奇は
+ *   一致する（1年次クラスが偶数なら学籍番号も偶数、奇数なら奇数）ため、yearOneClassから導出する
+ *   （開発者指摘、2026-09-06）
  * - 「全クラス」：クラス分けに関係なく全員が対象
  * - それ以外（プログラム名）：2年後期以降、プログラムが決まった学生向け
  *
- * なお「二類学籍番号偶数/奇数」「留学生」「再履全員/再履生」もclass_assignment_filled.csvに
- * 実在するが、プロフィールにその情報を持たせるかどうかは別途判断が必要なため未対応
- * （常にfalseを返し、該当セクションはresolveSlotsForProfileで曜日時限なし扱いになる。
- * 2026-09-06の点検で発見。CLAUDE.md参照）
+ * なお「留学生」「再履全員/再履生」もclass_assignment_filled.csvに実在するが、プロフィールに
+ * その情報を持たせるかどうかは別途判断が必要なため未対応（常にfalseを返し、該当セクションは
+ * resolveSlotsForProfileで曜日時限なし扱いになる。2026-09-06の点検で発見。CLAUDE.md参照）
  */
 export function classIdMatchesProfile(classId: string, profile: ClassProfile, cluster: 'I' | 'II' | 'III' | null): boolean {
   if (profile.programName && classId === profile.programName) return true
@@ -59,6 +61,12 @@ export function classIdMatchesProfile(classId: string, profile: ClassProfile, cl
 
   const yearOneMatch = classId.match(/^クラス(\d+)$/)
   if (yearOneMatch) return profile.yearOneClass === Number(yearOneMatch[1])
+
+  if (classId === '二類学籍番号偶数' || classId === '二類学籍番号奇数') {
+    if (cluster !== 'II' || profile.yearOneClass == null) return false
+    const isEven = profile.yearOneClass % 2 === 0
+    return classId === '二類学籍番号偶数' ? isEven : !isEven
+  }
 
   const abcMatch = classId.match(/^([ABC])クラス$/)
   if (abcMatch) return cluster === 'I' && profile.classIABC === abcMatch[1]
