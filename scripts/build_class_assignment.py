@@ -10,8 +10,15 @@ A1=1年前期分のみ）に、同じ科目名・曜日時限・担当教員の�
 そこからclass_idを自動で埋める（status列が"auto"になる）。
 class_schedule.csvにA2・A3…と追記していくほど、自動で埋まる行が増える。
 
-再実行しても、既存のclass_assignment.csvに人が書き込んだclass_id（空でないもの）は
-上書きしない（そのまま引き継ぐ）。空欄のままだった行にだけ、新しい自動解決結果を入れる。
+再実行しても、既存の記入済みデータ（data/timetable/class_assignment_filled.csv があれば
+そちらを優先、無ければ data/timetable/class_assignment.csv）に人が書き込んだclass_id
+（空でないもの）は上書きしない（そのまま引き継ぐ）。空欄のままだった行にだけ、
+新しい自動解決結果を入れる。
+
+引き継ぎのキーは「科目コード・学期・曜日・時限」で、担当教員名は含めない
+（シラバスの年度を切り替えると、同じ時限でも担当教員が変わることがあるが、
+その時限に来るクラスは変わらない、という前提。2026-09-05にシラバスの年度を
+2025→2026に切り替えた際、担当教員名だけ変わったケースが見つかったため）。
 
 英語系科目（Academic Spoken English等）は、そもそもクラスを聞かない方針
 （CLAUDE.md参照。曜日時限は範囲表示で済ませる）なので対象外にしている。
@@ -24,6 +31,7 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 SUBJECTS_PATH = os.path.join(ROOT, "data", "subjects", "youran-2025.json")
 SCHEDULE_PATH = os.path.join(ROOT, "data", "timetable", "class_schedule.csv")
 OUT_PATH = os.path.join(ROOT, "data", "timetable", "class_assignment.csv")
+FILLED_PATH = os.path.join(ROOT, "data", "timetable", "class_assignment_filled.csv")
 
 
 def norm_name(name: str) -> str:
@@ -32,7 +40,26 @@ def norm_name(name: str) -> str:
 
 def teacher_tokens(text: str) -> set[str]:
     tokens = re.split(r"[・,、]", text)
-    return {t.strip().lstrip("○*〇") for t in tokens if t.strip()}
+    # 姓のみ・フルネームどちらの表記でも比較できるよう、空白（全角・半角）も取り除く
+    return {re.sub(r"[\s　]", "", t).lstrip("○*〇") for t in tokens if t.strip()}
+
+
+def teacher_overlaps(tokens_a: set[str], tokens_b: set[str]) -> bool:
+    return any(a and b and (a in b or b in a) for a in tokens_a for b in tokens_b)
+
+
+def find_existing(existing_by_key: dict, code: str, term: str, day: str, period: str, my_tokens: set[str]):
+    """同じ(科目・学期・曜日・時限)の記入済み行を探す。
+    同時限に教員違いの複数セクションがある科目（例:分子生物学の学籍番号偶数/奇数クラス）は
+    1つのキーに複数行がぶら下がることがあるので、教員名が重なる行を優先して選ぶ。
+    1件しか無ければ教員名が変わっていても（シラバス年度の切り替え等で）そのまま使う。"""
+    candidates = existing_by_key.get((code, term, day, period), [])
+    if len(candidates) == 1:
+        return candidates[0]
+    for c in candidates:
+        if teacher_overlaps(my_tokens, teacher_tokens(c["instructors"])):
+            return c
+    return None
 
 
 def main():
@@ -44,14 +71,16 @@ def main():
         with open(SCHEDULE_PATH, encoding="utf-8-sig") as f:
             schedule_rows = list(csv.DictReader(f))
 
-    # 既存のclass_assignment.csvに人が書き込んだclass_idは、再生成時も引き継ぐ
-    # （このスクリプトを再実行するたびに手書き分が消えてしまうと運用が壊れるため）
-    existing_by_key: dict[tuple[str, str, str, str, str], dict] = {}
-    if os.path.exists(OUT_PATH):
-        with open(OUT_PATH, encoding="utf-8-sig") as f:
+    # 既存の記入済みデータに人が書き込んだclass_idは、再生成時も引き継ぐ
+    # （このスクリプトを再実行するたびに手書き分が消えてしまうと運用が壊れるため）。
+    # class_assignment_filled.csv（実際に記入している方）があればそちらを優先する
+    existing_source = FILLED_PATH if os.path.exists(FILLED_PATH) else OUT_PATH
+    existing_by_key: dict[tuple[str, str, str, str], list[dict]] = {}
+    if os.path.exists(existing_source):
+        with open(existing_source, encoding="utf-8-sig") as f:
             for r in csv.DictReader(f):
-                key = (r["subject_code"], r["term"], r["day"], r["period"], r["instructors"])
-                existing_by_key[key] = r
+                key = (r["subject_code"], r["term"], r["day"], r["period"])
+                existing_by_key.setdefault(key, []).append(r)
 
     # 突き合わせを速くするため、科目名(正規化)＋曜日＋時限をキーにして時間割データを引けるようにする
     schedule_by_key: dict[tuple[str, str, str], list[dict]] = {}
@@ -81,7 +110,7 @@ def main():
                 # 担当教員名が1人でも重なっている時間割データの行だけを採用する
                 matched = [
                     c for c in candidates
-                    if my_tokens & teacher_tokens(c["teacher_name"])
+                    if teacher_overlaps(my_tokens, teacher_tokens(c["teacher_name"]))
                 ]
                 if matched:
                     class_ids = sorted({f"{c['pdf']}-{c['class_id']}" for c in matched})
@@ -91,7 +120,7 @@ def main():
                     class_id = ""
                     status = ""
                 note = ""
-                existing = existing_by_key.get((s["code"], o["term"], day, period, instructors_text))
+                existing = find_existing(existing_by_key, s["code"], o["term"], day, period, my_tokens)
                 if existing and existing["class_id"]:
                     class_id = existing["class_id"]
                     status = existing["status"]
