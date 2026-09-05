@@ -25,7 +25,7 @@ SUBJECTS_PATH = os.path.join(ROOT, "data", "subjects", "youran-2025.json")
 
 LIST_URL = "https://kyoumu.office.uec.ac.jp/syllabus/2025/GakkiIchiran_31_0.html"
 DETAIL_URL_TMPL = "https://kyoumu.office.uec.ac.jp/syllabus/2025/31/31_{code}.html"
-USER_AGENT = "UEC-credit-route-dev (contact: kaymaersuutsyaamnan2@gmail.com)"
+USER_AGENT = "uec-credit-route data collection (https://github.com/weedy-seadragon/uec-credit-route)"
 REQUEST_INTERVAL_SEC = 1.2
 
 ROW_RE = re.compile(
