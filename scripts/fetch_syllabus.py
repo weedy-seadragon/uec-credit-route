@@ -39,6 +39,13 @@ ROW_RE = re.compile(
 TD_RE = re.compile(r"<td[^>]*>(.*?)</td>", re.S)
 LINK_RE = re.compile(r'href="([^"]+)">([^<]*)<')
 CODE_CELL_RE = re.compile(r"科目番号<br\s*/?>/Code</th>\s*<td[^>]*>([^<]+)</td>")
+# 「前もって履修しておくべき科目」欄は自由記述のテキストで、科目コードの一覧ではない
+# （例:「なし」「化学関連授業。化学構造式を多く用いて授業を進めます。」）。中身が
+# 自由記述である以上、ここから科目コードを機械的に抜き出すのは誤検出のリスクが高いので、
+# テキストのまま保存するだけにとどめる（docs/SPEC.md §7.1の`prerequisites`とは別に
+# `prerequisitesText`として持つ）。このtdは閉じタグ</td>が無いままになっていることが
+# あるHTMLなので、次の<th>が出てくるところまでを内容とみなす
+PREREQ_RE = re.compile(r"Prerequisites.*?</th>\s*<td[^>]*>(.*?)<th", re.S)
 SLOT_RE = re.compile(r"^([月火水木金土日])(\d+)$")
 # 一覧表の科目名には「Academic Written EnglishⅠ（金1・F）」のように、末尾にクラス表記
 # （曜日時限・クラス記号）が付いていることが多い。科目マスタの名前にはこの表記が無いので、
@@ -78,6 +85,14 @@ def parse_list(html: str):
     return rows
 
 
+def clean_text(html_fragment: str) -> str:
+    text = re.sub(r"<br\s*/?>", "\n", html_fragment)
+    text = re.sub(r"<[^>]+>", "", text)
+    text = text.replace("&nbsp;", " ").replace("&amp;", "&")
+    lines = [line.strip() for line in text.splitlines()]
+    return "\n".join(line for line in lines if line).strip()
+
+
 def parse_slots(day_period: str):
     if not day_period or day_period == "他":
         return []
@@ -96,6 +111,7 @@ def main():
     known_codes = {s["code"] for s in subjects_data["subjects"]}
 
     offerings_by_code: dict[str, list[dict]] = {}
+    prereq_text_by_code: dict[str, str] = {}
     today = time.strftime("%Y-%m-%d")
 
     for faculty in FACULTIES:
@@ -122,7 +138,11 @@ def main():
             raw_codes = m.group(1).strip().split() if m else []
             matched_codes = [c for c in raw_codes if c in known_codes]
             instructors = [s.strip() for s in re.split(r"[・,、]", row["instructor"]) if s.strip()]
+            prereq_m = PREREQ_RE.search(detail_html)
+            prereq_text = clean_text(prereq_m.group(1)) if prereq_m else ""
             for code in matched_codes:
+                if prereq_text and prereq_text != "なし":
+                    prereq_text_by_code[code] = prereq_text
                 offerings_by_code.setdefault(code, []).append({
                     "timetableCode": row["timetableCode"],
                     "faculty": faculty,
@@ -152,15 +172,19 @@ def main():
             offerings_by_code[code_b] = a
 
     updated = 0
+    prereq_updated = 0
     for s in subjects_data["subjects"]:
         if s["code"] in offerings_by_code:
             s["offerings"] = offerings_by_code[s["code"]]
             updated += 1
+        if s["code"] in prereq_text_by_code:
+            s["prerequisitesText"] = prereq_text_by_code[s["code"]]
+            prereq_updated += 1
 
     with open(SUBJECTS_PATH, "w", encoding="utf-8") as f:
         json.dump(subjects_data, f, ensure_ascii=False, indent=2)
         f.write("\n")
-    print(f"完了: offerings付与 {updated} 科目 / 全体 {len(subjects_data['subjects'])}", file=sys.stderr)
+    print(f"完了: offerings付与 {updated} 科目、prerequisitesText付与 {prereq_updated} 科目 / 全体 {len(subjects_data['subjects'])}", file=sys.stderr)
 
 
 if __name__ == "__main__":
