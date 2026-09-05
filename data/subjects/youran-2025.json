@@ -17951,7 +17951,7 @@
       "field": "ENG",
       "standardSemester": 3,
       "standardYear": 2,
-      "termType": "前学期",
+      "termType": null,
       "eveningAllowed": true,
       "forInternational": false,
       "graduateLinked": false,
