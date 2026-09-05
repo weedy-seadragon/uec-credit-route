@@ -135,8 +135,14 @@ function slotsKey(slots: readonly { day: string; period: number }[]): string {
  * 「まだ修得していない学生向けの補講枠」のような意味で使われていることがある（例：生涯スポーツ
  * 演習Ａ/Ｂ）。この場合「全クラス」を無条件一致にすると、本来の（クラスに応じた）セクションと
  * 重複してしまい曜日時限が決められなくなるため、まず「全クラス」を除いた表記だけで一致を探し、
- * 1件でも見つかればそちらを優先する。「全クラス」しか無い科目（語学演習など）では今まで通り
- * 「全クラス」も候補にする（2026-09-06、開発者の指摘で発見）。
+ * 1件でも見つかればそちらを優先する（2026-09-06、開発者の指摘で発見）。
+ *
+ * 「全クラス」しか無い科目（英語演習・独語演習などの演習系科目）は、そもそも学生が複数の
+ * セクションから自由に選んで受講してよいもの。この場合は一意に決める必要が無いので、
+ * 曜日時限が食い違っていてもundefinedにはせず、候補をすべて列挙して返す
+ * （2026-09-06、開発者の指摘）。クラス指定で一致した場合（上のクラス優先の分岐）は、
+ * 従来通り曜日時限が食い違えばundefinedのまま（本来一意に決まるはずのものが決まらないケース
+ * なので、適当に選ぶより非表示を優先する）。
  */
 export function resolveSlotsForProfile(
   code: string,
@@ -161,10 +167,21 @@ export function resolveSlotsForProfile(
   }
 
   const specificMatches = offerings.filter((o) => offeringMatches(o, false))
-  const matchedOfferings = specificMatches.length > 0 ? specificMatches : offerings.filter((o) => offeringMatches(o, true))
+  if (specificMatches.length > 0) {
+    const firstKey = slotsKey(specificMatches[0].slots)
+    if (specificMatches.every((o) => slotsKey(o.slots) === firstKey)) return specificMatches[0].slots
+    return undefined
+  }
 
-  if (matchedOfferings.length === 0) return undefined
-  const firstKey = slotsKey(matchedOfferings[0].slots)
-  if (matchedOfferings.every((o) => slotsKey(o.slots) === firstKey)) return matchedOfferings[0].slots
-  return undefined
+  const catchAllMatches = offerings.filter((o) => offeringMatches(o, true))
+  if (catchAllMatches.length === 0) return undefined
+  const seen = new Set<string>()
+  return catchAllMatches
+    .flatMap((o) => o.slots)
+    .filter((slot) => {
+      const key = `${slot.day}${slot.period}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
 }

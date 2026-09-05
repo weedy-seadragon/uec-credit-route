@@ -212,7 +212,31 @@ describe('resolveSlotsForProfile（複数セクションからの解決）', () 
     expect(resolveSlotsForProfile('HSP301z', offerings, hspAssignments, profileII, 'II')).toEqual([{ day: '火', period: 3 }])
 
     // どの具体的なクラスにも属さない（＝該当する専用セクションが無い）学生は、
-    // 「全クラス」の補講枠2つが候補になるが、時限が食い違うのでundefined
-    expect(resolveSlotsForProfile('HSP301z', offerings, hspAssignments, {}, 'III')).toBeUndefined()
+    // 「全クラス」の補講枠が候補になる。誰でも受けられる枠なので、複数あっても
+    // 一意に決めず全部列挙する（開発者の指摘、2026-09-06）
+    expect(resolveSlotsForProfile('HSP301z', offerings, hspAssignments, {}, 'III')).toEqual([
+      { day: '水', period: 1 },
+      { day: '水', period: 2 },
+    ])
+  })
+
+  it('「全クラス」しか無い演習系科目は、複数セクションでも一意に決めず全部列挙する（英語演習・独語演習など）', () => {
+    // ENG302z/GER301zで実際に起きているケース：どのセクションを選ぶかは学生の自由なので、
+    // 曜日時限が食い違っていてもundefinedにはしない
+    const engAssignments: ClassAssignmentEntry[] = [
+      { code: 'ENG302z', term: '前学期', day: '月', period: '4', classIds: ['全クラス'] },
+      { code: 'ENG302z', term: '前学期', day: '木', period: '1', classIds: ['全クラス'] },
+      { code: 'ENG302z', term: '前学期', day: '金', period: '4', classIds: ['全クラス'] },
+    ]
+    const offerings = [
+      { term: '前学期', slots: [{ day: '月', period: 4 }] },
+      { term: '前学期', slots: [{ day: '木', period: 1 }] },
+      { term: '前学期', slots: [{ day: '金', period: 4 }] },
+    ]
+    expect(resolveSlotsForProfile('ENG302z', offerings, engAssignments, {}, 'I')).toEqual([
+      { day: '月', period: 4 },
+      { day: '木', period: 1 },
+      { day: '金', period: 4 },
+    ])
   })
 })
