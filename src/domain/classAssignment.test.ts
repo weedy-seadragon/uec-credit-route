@@ -1,0 +1,97 @@
+// classAssignment.ts の単体テスト。class_assignment.json の表記パターンごとに、
+// プロフィールとの一致判定・セクション解決が正しく動くことを確認する。
+import { describe, expect, it } from 'vitest'
+import { classIdMatchesProfile, resolveSlotsForProfile } from './classAssignment'
+import type { ClassAssignmentEntry, ClassProfile } from './classAssignment'
+
+describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () => {
+  it('「クラスN」は1年次クラス（全類共通）と一致するかどうかで判定する', () => {
+    const profile: ClassProfile = { yearOneClass: 3 }
+    expect(classIdMatchesProfile('クラス3', profile, 'I')).toBe(true)
+    expect(classIdMatchesProfile('クラス4', profile, 'I')).toBe(false)
+  })
+
+  it('「Xクラス」（A/B/C）はⅠ類のときだけ、classIABCと一致するかで判定する', () => {
+    const profile: ClassProfile = { classIABC: 'B' }
+    expect(classIdMatchesProfile('Bクラス', profile, 'I')).toBe(true)
+    expect(classIdMatchesProfile('Aクラス', profile, 'I')).toBe(false)
+    // 類が違えば、たまたま値が同じでも一致とはしない（Ⅰ類専用の表記のため）
+    expect(classIdMatchesProfile('Bクラス', profile, 'II')).toBe(false)
+  })
+
+  it('「INクラス」はⅡ類のときだけ、classIIAreaと一致するかで判定する', () => {
+    const profile: ClassProfile = { classIIArea: 'I5' }
+    expect(classIdMatchesProfile('I5クラス', profile, 'II')).toBe(true)
+    expect(classIdMatchesProfile('I3クラス', profile, 'II')).toBe(false)
+    expect(classIdMatchesProfile('I5クラス', profile, 'III')).toBe(false)
+  })
+
+  it('「Mエリア」はⅡ類ならclassIIArea、Ⅲ類ならclassIIIYear2Areaと、参照するフィールドが変わる', () => {
+    const profileII: ClassProfile = { classIIArea: 'M' }
+    expect(classIdMatchesProfile('Mエリア', profileII, 'II')).toBe(true)
+
+    const profileIII: ClassProfile = { classIIIYear2Area: 'M' }
+    expect(classIdMatchesProfile('Mエリア', profileIII, 'III')).toBe(true)
+
+    // Ⅱ類のclassIIAreaがMでも、Ⅲ類の学生としては一致しない（別フィールドを見ているため）
+    expect(classIdMatchesProfile('Mエリア', profileII, 'III')).toBe(false)
+  })
+
+  it('「Mエリア(Nクラス)」はⅢ類で、エリアがMかつ2年前期クラスがNのときだけ一致する', () => {
+    const profile: ClassProfile = { classIIIYear2Area: 'M', classIIIYear2Class: '2' }
+    expect(classIdMatchesProfile('Mエリア(2クラス)', profile, 'III')).toBe(true)
+    expect(classIdMatchesProfile('Mエリア(3クラス)', profile, 'III')).toBe(false)
+    // エリアがSなら、クラス番号が同じでも一致しない
+    expect(classIdMatchesProfile('Mエリア(2クラス)', { ...profile, classIIIYear2Area: 'S' }, 'III')).toBe(false)
+  })
+
+  it('プログラム名は、2年後期以降にプログラムが決まっていればどの類でも一致する', () => {
+    const profile: ClassProfile = { programName: 'メディア情報学プログラム' }
+    expect(classIdMatchesProfile('メディア情報学プログラム', profile, 'I')).toBe(true)
+    expect(classIdMatchesProfile('経営・社会情報学プログラム', profile, 'I')).toBe(false)
+  })
+
+  it('未知の表記・未入力のプロフィールに対しては一致させない（誤判定より非表示を優先）', () => {
+    expect(classIdMatchesProfile('謎のクラス', {}, 'I')).toBe(false)
+    expect(classIdMatchesProfile('クラス3', {}, 'I')).toBe(false)
+  })
+})
+
+describe('resolveSlotsForProfile（複数セクションからの解決）', () => {
+  const assignments: ClassAssignmentEntry[] = [
+    { code: 'MTH101z', term: '前学期', day: '水', period: '1', classIds: ['クラス2'] },
+    { code: 'MTH101z', term: '前学期', day: '火', period: '3', classIds: ['クラス1', 'クラス7'] },
+  ]
+
+  it('プロフィールに合うセクションが1つだけなら、その曜日時限を返す', () => {
+    const offerings = [
+      { term: '前学期', slots: [{ day: '水', period: 1 }] },
+      { term: '前学期', slots: [{ day: '火', period: 3 }] },
+    ]
+    const profile: ClassProfile = { yearOneClass: 2 }
+    expect(resolveSlotsForProfile('MTH101z', offerings, assignments, profile, 'I')).toEqual([{ day: '水', period: 1 }])
+  })
+
+  it('複数クラスに開講されているセクションでも、そのうちの1つに該当すれば一致する', () => {
+    const offerings = [
+      { term: '前学期', slots: [{ day: '水', period: 1 }] },
+      { term: '前学期', slots: [{ day: '火', period: 3 }] },
+    ]
+    const profile: ClassProfile = { yearOneClass: 7 }
+    expect(resolveSlotsForProfile('MTH101z', offerings, assignments, profile, 'III')).toEqual([{ day: '火', period: 3 }])
+  })
+
+  it('該当するセクションが無ければundefined（class_assignment.jsonが未整備な科目・時限も含む）', () => {
+    const offerings = [{ term: '前学期', slots: [{ day: '水', period: 1 }] }]
+    const profile: ClassProfile = { yearOneClass: 99 }
+    expect(resolveSlotsForProfile('MTH101z', offerings, assignments, profile, 'I')).toBeUndefined()
+  })
+
+  it('プロフィール未入力で複数セクションとも該当しない場合もundefined', () => {
+    const offerings = [
+      { term: '前学期', slots: [{ day: '水', period: 1 }] },
+      { term: '前学期', slots: [{ day: '火', period: 3 }] },
+    ]
+    expect(resolveSlotsForProfile('MTH101z', offerings, assignments, {}, 'I')).toBeUndefined()
+  })
+})

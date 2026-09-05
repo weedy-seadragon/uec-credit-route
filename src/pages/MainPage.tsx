@@ -20,7 +20,8 @@ import type { SubjectInfo, TermFilter } from '../domain/recommend'
 import { recommend } from '../domain/recommend'
 import type { ExportedData } from '../domain/importers'
 import { mergeRecords, parseOwnFormat } from '../domain/importers'
-import { getRequirementSet, getSubjectCredits, getSubjectsByCode } from '../data/requirementSets'
+import { getClassAssignments, getProgramName, getRequirementSet, getSubjectCredits, getSubjectsByCode } from '../data/requirementSets'
+import { resolveSlotsForProfile } from '../domain/classAssignment'
 import type { Profile } from '../storage/profile'
 import { loadProfile } from '../storage/profile'
 import { loadRecords, saveRecords } from '../storage/records'
@@ -247,6 +248,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   )
   const subjectsByCode = useMemo(() => getSubjectsByCode(), [])
   const subjectCredits = useMemo(() => getSubjectCredits(), [])
+  const classAssignments = useMemo(() => getClassAssignments(), [])
+  // プログラムが決まっていれば（2年後期以降）、その名前をクラス判定にも使う
+  const programName = getProgramName(profile.program)
   // recommend.ts が要求する SubjectInfo 型（必要な項目だけ）に、科目マスタの情報を詰め替える
   const recommendSubjects = useMemo<ReadonlyMap<string, SubjectInfo>>(() => {
     const map = new Map<string, SubjectInfo>()
@@ -436,15 +440,32 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     return <span style={{ marginLeft: '0.4em' }}>{s.standardYear}年次</span>
   }
   // 曜日時限（例:「木・1限」）。状態プルダウンの右に添える。
-  // シラバスにセクション（クラス）が複数ある科目は、今のところどのクラスの学生か
-  // 判別する手段が無い（同じ科目でもクラスごとに曜日時限が違うことがあるため）ので、
-  // 誤った時限を出すよりは何も出さない方を選ぶ。セクションが1つだけの科目にだけ表示する
+  // セクション（クラス）が1つだけの科目はそのまま表示する。複数ある科目は、
+  // data/timetable/class_assignment.json（開発者が時間割PDFを見て手作業で埋めたクラス対応表）と
+  // プロフィールのクラス情報を突き合わせて、一意に決まる場合だけ表示する。
+  // どちらの方法でも決められない場合は、誤った時限を出すより何も出さない方を選ぶ
   // （CLAUDE.mdの進捗ログ参照）
   function dayPeriodTag(code: string) {
     const offerings = subjectsByCode.get(code)?.offerings
-    if (!offerings || offerings.length !== 1) return null
-    const slots = offerings[0].slots
-    if (slots.length === 0) return null
+    if (!offerings || offerings.length === 0) return null
+    const slots =
+      offerings.length === 1
+        ? offerings[0].slots
+        : resolveSlotsForProfile(
+            code,
+            offerings,
+            classAssignments,
+            {
+              yearOneClass: profile.yearOneClass,
+              classIABC: profile.classIABC,
+              classIIArea: profile.classIIArea,
+              classIIIYear2Class: profile.classIIIYear2Class,
+              classIIIYear2Area: profile.classIIIYear2Area,
+              programName,
+            },
+            profile.cluster,
+          )
+    if (!slots || slots.length === 0) return null
     const text = slots.map((s) => `${s.day}・${s.period}限`).join('/')
     return <span style={{ marginLeft: '0.4em' }}>{text}</span>
   }

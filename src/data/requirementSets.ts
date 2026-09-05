@@ -30,6 +30,8 @@ import physics from '../../data/requirements/2025-day-III-physics.json'
 import chembio from '../../data/requirements/2025-day-III-chembio.json'
 import evening from '../../data/requirements/2025-evening.json'
 import subjectsMaster from '../../data/subjects/youran-2025.json'
+import classAssignmentData from '../../data/timetable/class_assignment.json'
+import type { ClassAssignmentEntry } from '../domain/classAssignment'
 
 /** プロフィール設定画面（F-1）の選択肢1つぶん */
 export interface ProgramOption {
@@ -160,4 +162,18 @@ interface SubjectMasterEntry {
 /** 科目番号（フルコード）→科目マスタの情報 のマップ。科目一覧・詳細（F-5）や推奨計算に使う */
 export function getSubjectsByCode(): ReadonlyMap<string, SubjectMasterEntry> {
   return new Map((subjectsMaster.subjects as SubjectMasterEntry[]).map((s) => [s.code, s]))
+}
+
+/**
+ * 複数セクションがある科目の「このクラスはこの曜日時限」対応表（data/timetable/README.md参照）。
+ * 開発者が時間割PDFを見ながら手作業で埋めた分だけ入っている（全科目分ではない）。
+ * 曜日時限の解決は src/domain/classAssignment.ts の resolveSlotsForProfile に渡して使う
+ */
+export function getClassAssignments(): ClassAssignmentEntry[] {
+  return classAssignmentData as ClassAssignmentEntry[]
+}
+
+/** プログラムID（例:"media"）から、学修要覧の表記そのままのプログラム名（例:「メディア情報学プログラム」）を引く */
+export function getProgramName(program: string | null): string | null {
+  return programOptions.find((p) => p.program === program)?.programName ?? null
 }
