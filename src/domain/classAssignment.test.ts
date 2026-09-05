@@ -187,4 +187,32 @@ describe('resolveSlotsForProfile（複数セクションからの解決）', () 
       { day: '金', period: 6 },
     ])
   })
+
+  it('「全クラス」は、他のクラス向けセクションと同じ科目に混在する場合は補講枠として後回しにする（生涯スポーツ演習Ａ）', () => {
+    // HSP301zで実際に起きているケース：通常はクラス/エリア別のセクションがあり、
+    // 「全クラス」は3年次までに未修得の学生向けの補講枠
+    const hspAssignments: ClassAssignmentEntry[] = [
+      { code: 'HSP301z', term: '前学期', day: '火', period: '2', classIds: ['Aクラス', 'Bクラス', 'Cクラス'] },
+      { code: 'HSP301z', term: '前学期', day: '火', period: '3', classIds: ['I1クラス', 'I2クラス', 'I3クラス', 'I4クラス', 'I5クラス', 'I6クラス', 'Mエリア'] },
+      { code: 'HSP301z', term: '前学期', day: '水', period: '1', classIds: ['全クラス'] },
+      { code: 'HSP301z', term: '前学期', day: '水', period: '2', classIds: ['全クラス'] },
+    ]
+    const offerings = [
+      { term: '前学期', slots: [{ day: '火', period: 2 }] },
+      { term: '前学期', slots: [{ day: '火', period: 3 }] },
+      { term: '前学期', slots: [{ day: '水', period: 1 }] },
+      { term: '前学期', slots: [{ day: '水', period: 2 }] },
+    ]
+    // Ⅰ類でAクラスの学生は、「全クラス」の2セクションと重複せず、自分のクラスのセクションに決まる
+    const profileI: ClassProfile = { classIABC: 'A' }
+    expect(resolveSlotsForProfile('HSP301z', offerings, hspAssignments, profileI, 'I')).toEqual([{ day: '火', period: 2 }])
+
+    // Ⅱ類でI3エリアの学生も同様
+    const profileII: ClassProfile = { classIIArea: 'I3' }
+    expect(resolveSlotsForProfile('HSP301z', offerings, hspAssignments, profileII, 'II')).toEqual([{ day: '火', period: 3 }])
+
+    // どの具体的なクラスにも属さない（＝該当する専用セクションが無い）学生は、
+    // 「全クラス」の補講枠2つが候補になるが、時限が食い違うのでundefined
+    expect(resolveSlotsForProfile('HSP301z', offerings, hspAssignments, {}, 'III')).toBeUndefined()
+  })
 })

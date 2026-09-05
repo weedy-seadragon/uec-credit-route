@@ -130,6 +130,13 @@ function slotsKey(slots: readonly { day: string; period: number }[]): string {
  * isRetaking（デフォルトfalse）をtrueにすると、「再履全員/再履生」向けセクションだけを対象にする
  * （通常セクションは無視する）。呼び出し側で、その科目の履修状態が'failed'（不合格・再履修中）の
  * ときにtrueを渡す想定（開発者提案、2026-09-06）
+ *
+ * 「全クラス」は、他のクラス/エリア/プログラム向けの表記が同じ科目に混在している場合は
+ * 「まだ修得していない学生向けの補講枠」のような意味で使われていることがある（例：生涯スポーツ
+ * 演習Ａ/Ｂ）。この場合「全クラス」を無条件一致にすると、本来の（クラスに応じた）セクションと
+ * 重複してしまい曜日時限が決められなくなるため、まず「全クラス」を除いた表記だけで一致を探し、
+ * 1件でも見つかればそちらを優先する。「全クラス」しか無い科目（語学演習など）では今まで通り
+ * 「全クラス」も候補にする（2026-09-06、開発者の指摘で発見）。
  */
 export function resolveSlotsForProfile(
   code: string,
@@ -139,14 +146,23 @@ export function resolveSlotsForProfile(
   cluster: 'I' | 'II' | 'III' | null,
   isRetaking = false,
 ): { day: string; period: number }[] | undefined {
-  const matchedOfferings = offerings.filter((o) =>
-    o.slots.some((slot) => {
+  function offeringMatches(o: OfferingLike, allowCatchAll: boolean): boolean {
+    return o.slots.some((slot) => {
       const entry = assignments.find(
         (a) => a.code === code && a.term === o.term && a.day === slot.day && a.period === String(slot.period),
       )
-      return entry?.classIds.some((id) => classIdMatchesProfile(id, profile, cluster, isRetaking)) ?? false
-    }),
-  )
+      return (
+        entry?.classIds.some((id) => {
+          if (id === '全クラス' && !allowCatchAll) return false
+          return classIdMatchesProfile(id, profile, cluster, isRetaking)
+        }) ?? false
+      )
+    })
+  }
+
+  const specificMatches = offerings.filter((o) => offeringMatches(o, false))
+  const matchedOfferings = specificMatches.length > 0 ? specificMatches : offerings.filter((o) => offeringMatches(o, true))
+
   if (matchedOfferings.length === 0) return undefined
   const firstKey = slotsKey(matchedOfferings[0].slots)
   if (matchedOfferings.every((o) => slotsKey(o.slots) === firstKey)) return matchedOfferings[0].slots
