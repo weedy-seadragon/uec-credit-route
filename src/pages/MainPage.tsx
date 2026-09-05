@@ -655,7 +655,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           // これまで選択状態を変える場所が無かった。類専門（選択）の直後に専用の入れ子を出す
           const commonCreditsElement = (
             <details key="common-credits">
-              <summary>共通単位（{commonOnlyRemaining.length}）</summary>
+              <summary>共通単位 {commonEarnedTotal}/{requirementSet.commonCredits}単位</summary>
               <ul>
                 {commonOnlyRemaining.map((code) => (
                   <li key={code}>
@@ -801,7 +801,7 @@ function GroupProgress({
   return (
     <details>
       <summary>
-        {group.label ?? group.name} {group.contribution} / {group.required}
+        {group.label ?? group.name} {group.contribution}/{group.required}単位
         {group.satisfied ? ' ✔' : ''}
       </summary>
       <ul>
