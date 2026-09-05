@@ -66,6 +66,8 @@ def main():
             continue  # セクションが1つだけの科目は既にMainPageで表示できているので対象外
         if "English" in s["name"]:
             continue  # 英語系は範囲表示にする方針なので対象外（CLAUDE.md参照）
+        if all(len(o["slots"]) == 0 for o in offerings):
+            continue  # インターンシップ等、そもそも曜日時限が無い科目は解決しようがないので対象外
 
         for o in offerings:
             slots = o["slots"] or [{"day": "", "period": ""}]
@@ -93,7 +95,8 @@ def main():
                 if existing and existing["class_id"]:
                     class_id = existing["class_id"]
                     status = existing["status"]
-                    note = existing["note"]
+                    # note列は"note"または"note(特筆事項)"のどちらの見出しでも読めるようにする
+                    note = existing.get("note") or existing.get("note(特筆事項)") or ""
                 out_rows.append([
                     s["code"], s["name"], o["term"], day, period,
                     instructors_text, class_id, status, note,
