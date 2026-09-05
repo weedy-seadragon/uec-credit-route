@@ -507,46 +507,43 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </div>
 
       <section>
-        <h2>
-          共通単位（{commonEarnedTotal}/{requirementSet.commonCredits}単位）
-        </h2>
-        {/* 外側の<li>にはCollapsedSubjectGroupと同じ理由（▼と中の・が並ぶと紛らわしい）で・を付けない。
-            中の<ul>はCSSの既定だと「ulの中のul」になって・が中抜き丸に変わってしまうので、
-            他の一覧の・と揃うようlistStyleType: 'disc'で明示的に指定し直す */}
-        <ul>
-          <li style={{ listStyleType: 'none' }}>
-            {/* あぶれ分は、他の折りたたみと違って最初から中身が見えるようにしておく（<details open>） */}
-            <details open>
-              <summary>あぶれ分（{commonOverflowTotal}単位）</summary>
-              <ul style={{ listStyleType: 'disc' }}>
-                {overflowToCommonGroups.map((g) => (
-                  <li key={g.id}>
-                    {g.label ?? g.name}から{g.overflowToCommon}単位
-                  </li>
-                ))}
-                {overflowToCommonGroups.length === 0 && <li>（まだありません）</li>}
-              </ul>
-            </details>
-          </li>
-          <li style={{ listStyleType: 'none' }}>
-            <details>
-              <summary>取得した単位（{commonDirectTotal}単位）</summary>
-              <ul style={{ listStyleType: 'disc' }}>
-                {directCommonSubjects.map((code) => (
-                  <li key={code}>
-                    {nameOf(code)}（{creditsLabel(code)}）
-                  </li>
-                ))}
-                {directCommonSubjects.length === 0 && <li>（まだありません）</li>}
-              </ul>
-            </details>
-          </li>
-        </ul>
-      </section>
-
-      <section>
         <h2>取得単位（{passedCredits}単位）</h2>
-        {passedByCategory.map(({ label, group, items }) => {
+        {(() => {
+        const commonCreditsElement = (
+          <div key="common-credits">
+            <h3>共通単位（{commonEarnedTotal}/{requirementSet.commonCredits}単位）</h3>
+            <ul style={{ listStyleType: 'none' }}>
+              <li style={{ listStyleType: 'none' }}>
+                <details open>
+                  <summary>あぶれ分（{commonOverflowTotal}単位）</summary>
+                  <ul style={{ listStyleType: 'disc' }}>
+                    {overflowToCommonGroups.map((g) => (
+                      <li key={g.id}>
+                        {g.label ?? g.name}から{g.overflowToCommon}単位
+                      </li>
+                    ))}
+                    {overflowToCommonGroups.length === 0 && <li>（まだありません）</li>}
+                  </ul>
+                </details>
+              </li>
+              <li style={{ listStyleType: 'none' }}>
+                <details>
+                  <summary>取得した単位（{commonDirectTotal}単位）</summary>
+                  <ul style={{ listStyleType: 'disc' }}>
+                    {directCommonSubjects.map((code) => (
+                      <li key={code}>
+                        {nameOf(code)}（{creditsLabel(code)}）
+                      </li>
+                    ))}
+                    {directCommonSubjects.length === 0 && <li>（まだありません）</li>}
+                  </ul>
+                </details>
+              </li>
+            </ul>
+          </div>
+        )
+        const hasMajorSel = passedByCategory.some(({ group }) => group?.id === 'major-sel')
+        const rendered = passedByCategory.flatMap(({ label, group, items }) => {
           const { regular, otherProgram, international } = splitSpecialSubjects(items, ([code]) => code)
           const row = (code: string) => (
             <>
@@ -557,7 +554,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
             </>
           )
-          return (
+          const categoryElement = (
             <div key={label}>
               <h3>
                 {label}
@@ -578,7 +575,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               </ul>
             </div>
           )
-        })}
+          return group?.id === 'major-sel' ? [categoryElement, commonCreditsElement] : [categoryElement]
+        })
+        return hasMajorSel ? rendered : [...rendered, commonCreditsElement]
+        })()}
         {passedSubjects.length === 0 && (
           <ul>
             <li>（まだありません）</li>
