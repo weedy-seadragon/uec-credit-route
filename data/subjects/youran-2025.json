@@ -895,6 +895,24 @@
       "graduateLinked": false,
       "groups": [
         "sangaku"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22018103",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "山田（祥）"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018103.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -1008,6 +1026,24 @@
       "graduateLinked": false,
       "groups": [
         "sangaku"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22018204",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "山田（祥）"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018204.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -1071,6 +1107,26 @@
       "graduateLinked": false,
       "groups": [
         "career"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22018104",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "本間",
+            "○重森",
+            "○尾原"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018104.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -1086,6 +1142,24 @@
       "graduateLinked": false,
       "groups": [
         "career"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22018205",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "原田　忠則"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018205.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -1101,6 +1175,26 @@
       "graduateLinked": false,
       "groups": [
         "gijutsu"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22018104",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "本間",
+            "○重森",
+            "○尾原"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018104.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -1116,6 +1210,24 @@
       "graduateLinked": false,
       "groups": [
         "gijutsu"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22018205",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "原田　忠則"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018205.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -1775,6 +1887,24 @@
       "graduateLinked": false,
       "groups": [
         "math-basic-elec"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22019105",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "加固　昌寛"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22019105.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -1820,6 +1950,30 @@
       "graduateLinked": false,
       "groups": [
         "intro"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22018202",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 4
+            },
+            {
+              "day": "土",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "加固",
+            "○大橋",
+            "○池田"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018202.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -2752,6 +2906,26 @@
       "graduateLinked": false,
       "groups": [
         "intro"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22018102",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "江木",
+            "佐藤(光)",
+            "木下"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018102.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -2782,6 +2956,25 @@
       "graduateLinked": false,
       "groups": [
         "math-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22019205",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "月",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "戸田",
+            "藤田"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22019205.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -3807,6 +4000,25 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021102",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "高橋(裕)",
+            "佐藤(寛)"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021102.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -4122,6 +4334,24 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021103",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "策力木格"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021103.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -5267,6 +5497,24 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-elec"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021206",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "月",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "兼岩　憲"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021206.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -6922,6 +7170,30 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021106",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 4
+            },
+            {
+              "day": "土",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "水戸",
+            "内海",
+            "橋本（直）"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021106.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -7159,6 +7431,24 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-elec"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021107",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "藤井　威生"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021107.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -8085,6 +8375,24 @@
       "graduateLinked": false,
       "groups": [
         "major-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023201",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "月",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "大森　匡"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023201.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -8305,6 +8613,24 @@
       "graduateLinked": false,
       "groups": [
         "major-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023202",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "高橋　弘太"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023202.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -8526,6 +8852,31 @@
       "graduateLinked": false,
       "groups": [
         "major-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023205",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 4
+            },
+            {
+              "day": "土",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "梶本",
+            "水野",
+            "佐藤（寛）",
+            "岡本（一）"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023205.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -8929,6 +9280,24 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023103",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "月",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "KITSUWAN　NATTAPONG"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023103.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -8944,6 +9313,35 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023209",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "崎山",
+            "山口",
+            "大坐畠",
+            "市野",
+            "菅原",
+            "渡邊（洋）",
+            "石上",
+            "岩本",
+            "榎本",
+            "松本",
+            "李",
+            "山本（嶺"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023209.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -10412,6 +10810,28 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021204",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 2
+            },
+            {
+              "day": "土",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "石川　亮"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021204.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -10675,6 +11095,24 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021205",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "塚本　貴広"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021205.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -11092,6 +11530,31 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021105",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 4
+            },
+            {
+              "day": "土",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "キットスワン",
+            "○藤澤",
+            "*早川",
+            "*梶川"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021105.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -11203,6 +11666,24 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-elec"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021110",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "小野　哲"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021110.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -11350,6 +11831,24 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-elec"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021111",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "西　一樹"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021111.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -11901,6 +12400,24 @@
       "graduateLinked": false,
       "groups": [
         "major-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023204",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "秋田　学"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023204.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -12432,6 +12949,19 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023104",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "木寺　正平"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023104.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -12987,6 +13517,25 @@
       "graduateLinked": false,
       "groups": [
         "lang-basic-1"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22012101",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "○Dusza",
+            "Jeffreys"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22012101.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -13377,6 +13926,25 @@
       "graduateLinked": false,
       "groups": [
         "language"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22012104",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "○Go",
+            "Shi"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22012104.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -13492,6 +14060,25 @@
       "graduateLinked": false,
       "groups": [
         "language"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22012204",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "Go",
+            "Shi"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22012204.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -19575,6 +20162,24 @@
       "graduateLinked": false,
       "groups": [
         "sci-liberal"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22015101",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "山北　佳宏"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22015101.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -20310,6 +20915,24 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023106",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "高田　治樹"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023106.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -20625,6 +21248,28 @@
       "graduateLinked": false,
       "groups": [
         "health"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22014101",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "大河原",
+            "安藤(創)",
+            "岡田(英)",
+            "狩野",
+            "星野"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22014101.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -21245,6 +21890,24 @@
       "graduateLinked": false,
       "groups": [
         "hss"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22011101",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 6
+            }
+          ],
+          "instructors": [
+            "倉橋　良伸"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22011101.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -21260,6 +21923,24 @@
       "graduateLinked": false,
       "groups": [
         "hss"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22011103",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "小寺　未知留"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22011103.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -21275,6 +21956,24 @@
       "graduateLinked": false,
       "groups": [
         "hss"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22011105",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 6
+            }
+          ],
+          "instructors": [
+            "渡辺　彰規"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22011105.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -21290,6 +21989,24 @@
       "graduateLinked": false,
       "groups": [
         "hss"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22011106",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "田中　祥之"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22011106.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -21335,6 +22052,24 @@
       "graduateLinked": false,
       "groups": [
         "hss"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22011201",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "秋吉　亮太"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22011201.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -21380,6 +22115,24 @@
       "graduateLinked": false,
       "groups": [
         "hss"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22011204",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 6
+            }
+          ],
+          "instructors": [
+            "佐藤　賢一"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22011204.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -22560,6 +23313,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22016101",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 6
+            }
+          ],
+          "instructors": [
+            "飯島　和樹"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22016101.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -22608,6 +23379,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22016103",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "高橋　幸平"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22016103.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -22656,6 +23445,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22016102",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "野内　聡"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22016102.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -23351,6 +24158,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22016102",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "野内　聡"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22016102.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -23399,6 +24224,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22016104",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "高橋　博文"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22016104.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -24189,6 +25032,28 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023102",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "羽田",
+            "庄野",
+            "清",
+            "田原",
+            "児玉"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023102.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -24204,6 +25069,24 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023208",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "伊藤　毅志"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023208.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -27430,6 +28313,24 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-elec"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021108",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "月",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "小木曽　公尚"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021108.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -27490,6 +28391,24 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-elec"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021109",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "増田　宏"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021109.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -27958,6 +28877,30 @@
       "graduateLinked": false,
       "groups": [
         "major-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023206",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 4
+            },
+            {
+              "day": "土",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "孫",
+            "仲田",
+            "金田"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023206.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -28378,6 +29321,24 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023105",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "菅　哲朗"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023105.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -28438,6 +29399,24 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023210",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "小泉　憲裕"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023210.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -28453,6 +29432,19 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023211",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [],
+          "instructors": [
+            "中村　友昭"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023211.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -30231,6 +31223,20 @@
       "graduateLinked": false,
       "groups": [
         "intro"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22018101",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "渡邉(洋)",
+            "児玉"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018101.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -30261,6 +31267,25 @@
       "graduateLinked": false,
       "groups": [
         "math-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22019101",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "月",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "○加治佐",
+            "天野"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22019101.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -30291,6 +31316,24 @@
       "graduateLinked": false,
       "groups": [
         "math-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22019103",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "天野　友之"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22019103.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -30321,6 +31364,25 @@
       "graduateLinked": false,
       "groups": [
         "math-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22019201",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "○加治佐",
+            "石田（晴）"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22019201.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -30351,6 +31413,24 @@
       "graduateLinked": false,
       "groups": [
         "math-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22019203",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "石田　晴久"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22019203.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -30381,6 +31461,24 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021201",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "栗田　和宏"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021201.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -31561,6 +32659,24 @@
       "graduateLinked": false,
       "groups": [
         "math-basic-elec"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22019106",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "上野　芳康"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22019106.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -31759,6 +32875,25 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021101",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "月",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "米田",
+            "戸倉川"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021101.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -33012,6 +34147,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22016201",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "月",
+              "period": 6
+            }
+          ],
+          "instructors": [
+            "丸亀　泰二"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22016201.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -33347,6 +34500,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22016202",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 6
+            }
+          ],
+          "instructors": [
+            "榎本　直也"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22016202.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -33490,6 +34661,20 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021202",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [],
+          "instructors": [
+            "野嶋",
+            "松本"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021202.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -33505,6 +34690,24 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021203",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "天野　友之"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021203.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -33987,6 +35190,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22016202",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 6
+            }
+          ],
+          "instructors": [
+            "榎本　直也"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22016202.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -34974,6 +36195,24 @@
       "graduateLinked": false,
       "groups": [
         "math-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22019104",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "〇鈴木(勝)"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22019104.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -35072,6 +36311,30 @@
       "graduateLinked": false,
       "groups": [
         "intro"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22018201",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 4
+            },
+            {
+              "day": "土",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "中村(仁)",
+            "村中",
+            "○須田"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018201.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -35102,6 +36365,24 @@
       "graduateLinked": false,
       "groups": [
         "math-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22019204",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "尾関　之康"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22019204.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -36880,6 +38161,24 @@
       "graduateLinked": false,
       "groups": [
         "math-basic-elec"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22019107",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "跡部　隆"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22019107.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -37590,6 +38889,29 @@
       "graduateLinked": false,
       "groups": [
         "prof-basic-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22021104",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 2
+            },
+            {
+              "day": "土",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "岸本",
+            "桂川"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22021104.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -38700,6 +40022,24 @@
       "graduateLinked": false,
       "groups": [
         "major-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22023203",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "萓野　良樹"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22023203.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -39994,6 +41334,19 @@
       "graduateLinked": false,
       "groups": [
         "datasci-req"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22018203",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "山田　祥之"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018203.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -40245,6 +41598,19 @@
       "graduateLinked": false,
       "groups": [
         "datasci-ex"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22018107",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "庄野　逸"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018107.html",
+          "updatedAt": "2026-09-05"
+        }
       ]
     },
     {
@@ -40261,7 +41627,20 @@
       "groups": [
         "datasci"
       ],
-      "note": "Ⅰ類全P・Ⅱ類ｾｷｭﾘﾃｨ/情報通信/電子情報は必修、Ⅱ類計測制御/ﾛﾎﾞ・Ⅲ類は選択"
+      "note": "Ⅰ類全P・Ⅱ類ｾｷｭﾘﾃｨ/情報通信/電子情報は必修、Ⅱ類計測制御/ﾛﾎﾞ・Ⅲ類は選択",
+      "offerings": [
+        {
+          "timetableCode": "22018107",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "庄野　逸"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2025/32/32_22018107.html",
+          "updatedAt": "2026-09-05"
+        }
+      ]
     },
     {
       "code": "UEC701m",

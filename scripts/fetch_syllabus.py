@@ -4,8 +4,10 @@ data/subjects/youran-2025.json の各科目に offerings（docs/SPEC.md §7.1）
 実行: python scripts/fetch_syllabus.py
 
 やること：
-1. 学期一覧ページ（情報理工学域2025年度、学部コード31）から全科目行（時間割コード・科目名・
-   曜日時限・担当教員・個別シラバスページへのリンク）を取得する
+1. 学期一覧ページ（情報理工学域2025年度）から全科目行（時間割コード・科目名・
+   曜日時限・担当教員・個別シラバスページへのリンク）を取得する。学域コードは
+   昼間コースが31、夜間主課程が32（2026-09-05に発見。学籍番号末尾s/tの科目名で
+   実際に確認済み）の2つがあり、両方まわる
 2. 一覧表には科目コード（COM405aのような形式）が載っていないので、まず現在の
    data/subjects/youran-2025.json に載っている科目名と一致する行だけに絞り込む
    （名前が一致しない行の個別ページは開かない＝全1157件ではなく数百件で済む）
@@ -23,8 +25,10 @@ import json, os, re, sys, time, urllib.request
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 SUBJECTS_PATH = os.path.join(ROOT, "data", "subjects", "youran-2025.json")
 
-LIST_URL = "https://kyoumu.office.uec.ac.jp/syllabus/2025/GakkiIchiran_31_0.html"
-DETAIL_URL_TMPL = "https://kyoumu.office.uec.ac.jp/syllabus/2025/31/31_{code}.html"
+# 31=昼間コース、32=夜間主課程（先端工学基礎課程）
+FACULTIES = ["31", "32"]
+LIST_URL_TMPL = "https://kyoumu.office.uec.ac.jp/syllabus/2025/GakkiIchiran_{faculty}_0.html"
+DETAIL_URL_TMPL = "https://kyoumu.office.uec.ac.jp/syllabus/2025/{faculty}/{faculty}_{code}.html"
 USER_AGENT = "uec-credit-route data collection (https://github.com/weedy-seadragon/uec-credit-route)"
 REQUEST_INTERVAL_SEC = 1.2
 
@@ -80,41 +84,43 @@ def main():
     known_names = {s["name"] for s in subjects_data["subjects"]}
     known_codes = {s["code"] for s in subjects_data["subjects"]}
 
-    print("一覧ページを取得中...", file=sys.stderr)
-    list_html = fetch(LIST_URL)
-    rows = parse_list(list_html)
-    print(f"総行数: {len(rows)}", file=sys.stderr)
-
-    candidates = [r for r in rows if r["name"] in known_names and r["href"]]
-    print(f"科目名が一致する行数（個別ページを取得する件数）: {len(candidates)}", file=sys.stderr)
-
     offerings_by_code: dict[str, list[dict]] = {}
     today = time.strftime("%Y-%m-%d")
-    for i, row in enumerate(candidates, 1):
-        url = f"https://kyoumu.office.uec.ac.jp/syllabus/2025/{row['href']}"
-        try:
-            detail_html = fetch(url)
-        except Exception as e:
-            print(f"  取得失敗: {row['timetableCode']} {row['name']}: {e}", file=sys.stderr)
+
+    for faculty in FACULTIES:
+        print(f"[{faculty}] 一覧ページを取得中...", file=sys.stderr)
+        list_html = fetch(LIST_URL_TMPL.format(faculty=faculty))
+        rows = parse_list(list_html)
+        print(f"[{faculty}] 総行数: {len(rows)}", file=sys.stderr)
+
+        candidates = [r for r in rows if r["name"] in known_names and r["href"]]
+        print(f"[{faculty}] 科目名が一致する行数（個別ページを取得する件数）: {len(candidates)}", file=sys.stderr)
+
+        for i, row in enumerate(candidates, 1):
+            url = f"https://kyoumu.office.uec.ac.jp/syllabus/2025/{row['href']}"
+            try:
+                detail_html = fetch(url)
+            except Exception as e:
+                print(f"  取得失敗: {row['timetableCode']} {row['name']}: {e}", file=sys.stderr)
+                time.sleep(REQUEST_INTERVAL_SEC)
+                continue
+            m = CODE_CELL_RE.search(detail_html)
+            raw_codes = m.group(1).strip().split() if m else []
+            matched_codes = [c for c in raw_codes if c in known_codes]
+            instructors = [s.strip() for s in re.split(r"[・,、]", row["instructor"]) if s.strip()]
+            for code in matched_codes:
+                offerings_by_code.setdefault(code, []).append({
+                    "timetableCode": row["timetableCode"],
+                    "faculty": faculty,
+                    "term": row["semester"],
+                    "slots": parse_slots(row["dayPeriod"]),
+                    "instructors": instructors,
+                    "syllabusUrl": DETAIL_URL_TMPL.format(faculty=faculty, code=row["timetableCode"]),
+                    "updatedAt": today,
+                })
+            if i % 20 == 0:
+                print(f"[{faculty}] 進捗: {i}/{len(candidates)}", file=sys.stderr)
             time.sleep(REQUEST_INTERVAL_SEC)
-            continue
-        m = CODE_CELL_RE.search(detail_html)
-        raw_codes = m.group(1).strip().split() if m else []
-        matched_codes = [c for c in raw_codes if c in known_codes]
-        instructors = [s.strip() for s in re.split(r"[・,、]", row["instructor"]) if s.strip()]
-        for code in matched_codes:
-            offerings_by_code.setdefault(code, []).append({
-                "timetableCode": row["timetableCode"],
-                "faculty": "31",
-                "term": row["semester"],
-                "slots": parse_slots(row["dayPeriod"]),
-                "instructors": instructors,
-                "syllabusUrl": f"https://kyoumu.office.uec.ac.jp/syllabus/2025/31/31_{row['timetableCode']}.html",
-                "updatedAt": today,
-            })
-        if i % 20 == 0:
-            print(f"進捗: {i}/{len(candidates)}", file=sys.stderr)
-        time.sleep(REQUEST_INTERVAL_SEC)
 
     updated = 0
     for s in subjects_data["subjects"]:
