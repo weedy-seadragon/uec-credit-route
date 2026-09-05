@@ -693,6 +693,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           return hasMajorSel ? rendered : [...rendered, commonCreditsElement]
         })()}
       </section>
+
+      {/* 上のツールバーの「更新」と同じボタン。プルダウンをたくさん触った後、
+          いちいちページ上部まで戻らなくて済むように一番下にも置いておく */}
+      <button type="button" onClick={handleUpdate}>
+        更新
+      </button>
     </main>
   )
 }
