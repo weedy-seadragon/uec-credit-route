@@ -1,7 +1,10 @@
 // reviews.ts の単体テスト。allOf/anyOf・各条件タイプ・審査どうしの参照(review)を検証する。
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { evaluateRequirements } from './requirements'
-import type { RequirementSet, ReviewDef, SubjectStatus } from './requirements'
+import type { RequirementGroup, RequirementSet, ReviewDef, SubjectStatus } from './requirements'
 import { evaluateReviews } from './reviews'
 
 /** テスト用の要件セット。必修グループ2つ（G1, G2）と選択グループ1つ（G3）を持つ */
@@ -127,3 +130,81 @@ describe('evaluateReviews（審査どうしの参照）', () => {
     expect(result.at(0)?.onFail).toEqual({ blockedSubjects: ['S1'], note: '不合格時はS1を履修できない' })
   })
 })
+
+// ---------------------------------------------------------------------------
+// 実データでの統合テスト（requirements.test.ts と同じ考え方。ここではreviewsだけ見る）
+// ---------------------------------------------------------------------------
+
+const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
+function loadJson(relativePathFromProjectRoot: string): unknown {
+  return JSON.parse(readFileSync(path.join(projectRoot, relativePathFromProjectRoot), 'utf-8'))
+}
+
+describe('実データ（Ⅰ類メディア情報学プログラム）でのreviews評価', () => {
+  const common = loadJson('data/requirements/2025-day-common.json') as {
+    groups: RequirementGroup[]
+    commonCreditSources?: { alwaysCommon?: string[] }
+  }
+  const media = loadJson('data/requirements/2025-day-I-media.json') as {
+    totalCredits: number
+    commonCredits: number
+    groups: RequirementGroup[]
+    reviews: ReviewDef[]
+  }
+  const subjectsMaster = loadJson('data/subjects/youran-2025.json') as { subjects: { code: string; credits: number }[] }
+  const subjectCredits = new Map(subjectsMaster.subjects.map((s) => [s.code, s.credits]))
+  const mediaRequirementSet: RequirementSet = {
+    totalCredits: media.totalCredits,
+    commonCredits: media.commonCredits,
+    groups: [...common.groups, ...media.groups],
+    alwaysCommonSubjects: common.commonCreditSources?.alwaysCommon ?? [],
+  }
+
+  it('何も履修していない状態では、3つの審査すべてが不合格（エラー無く実データが評価できることの確認も兼ねる）', () => {
+    const evaluation = evaluateRequirements(mediaRequirementSet, records({}), subjectCredits)
+    const result = evaluateReviews(media.reviews, evaluation, records({}))
+    expect(result.map((r) => r.id)).toEqual(['y2-end', 'thesis-start', 'graduation'])
+    expect(result.every((r) => !r.satisfied)).toBe(true)
+    // 各審査、不合格の原因が最低1つは説明できる状態になっている
+    expect(result.every((r) => r.unsatisfied.length > 0)).toBe(true)
+  })
+
+  it('2年次終了時審査の条件をすべて修得すると、その審査だけ合格になる（卒研着手はまだ不合格）', () => {
+    const y2Review = media.reviews.find((r) => r.id === 'y2-end')
+    expect(y2Review).toBeDefined()
+    // y2-endのallOf[0]（allOfの中のallOf）に出てくる科目コードを全部拾って合格にする
+    const codes = new Set<string>()
+    function collectSubjectCodes(node: unknown) {
+      if (node && typeof node === 'object') {
+        const n = node as Record<string, unknown>
+        if (n.type === 'subjects' && Array.isArray(n.codes)) for (const c of n.codes) codes.add(c as string)
+        if (n.type === 'allPassed' && typeof n.groupId === 'string') {
+          const g = findRequirementGroupById(common.groups, n.groupId) ?? findRequirementGroupById(media.groups, n.groupId)
+          for (const c of g?.subjects ?? []) codes.add(c)
+        }
+        if (n.type === 'groupMin' && typeof n.groupId === 'string') {
+          const g = findRequirementGroupById(common.groups, n.groupId) ?? findRequirementGroupById(media.groups, n.groupId)
+          for (const c of g?.subjects ?? []) codes.add(c)
+        }
+        for (const v of Object.values(n)) if (Array.isArray(v)) v.forEach(collectSubjectCodes)
+      }
+    }
+    collectSubjectCodes(y2Review)
+    const allPassedRecords = records(Object.fromEntries([...codes].map((c) => [c, 'passed' as SubjectStatus])))
+    const evaluation = evaluateRequirements(mediaRequirementSet, allPassedRecords, subjectCredits)
+    const result = evaluateReviews(media.reviews, evaluation, allPassedRecords)
+    const byId = Object.fromEntries(result.map((r) => [r.id, r]))
+    expect(byId['y2-end'].satisfied).toBe(true)
+    expect(byId['thesis-start'].satisfied).toBe(false)
+  })
+})
+
+/** RequirementGroup木をidで検索する（requirements.test.tsのfindRequirementGroupByIdと同じ発想） */
+function findRequirementGroupById(groups: readonly RequirementGroup[], id: string): RequirementGroup | undefined {
+  for (const g of groups) {
+    if (g.id === id) return g
+    const found = g.children ? findRequirementGroupById(g.children, id) : undefined
+    if (found) return found
+  }
+  return undefined
+}

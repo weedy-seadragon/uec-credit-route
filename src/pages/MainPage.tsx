@@ -22,6 +22,8 @@ import type { ExportedData } from '../domain/importers'
 import { mergeRecords, parseOwnFormat } from '../domain/importers'
 import { getClassAssignments, getProgramName, getRequirementSet, getSubjectCredits, getSubjectsByCode } from '../data/requirementSets'
 import { resolveSlotsForProfile } from '../domain/classAssignment'
+import { evaluateReviews, findGroupResult } from '../domain/reviews'
+import type { ReviewCondition } from '../domain/requirements'
 import type { Profile } from '../storage/profile'
 import { loadProfile } from '../storage/profile'
 import { loadRecords, saveRecords } from '../storage/records'
@@ -287,6 +289,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 充足状況の本体計算はrequirements.tsに丸ごと任せる。ここから先はその結果を並べるだけ
   const evaluation = evaluateRequirements(requirementSet, committed, subjectCredits)
   const boundaryGroups = collectBoundaryGroups(requirementSet.groups, evaluation.groups)
+  // 審査（2年次終了時審査など）。reviewsデータが無いプログラム（Ⅱ・Ⅲ類・夜間主）では空配列になる。
+  // reviewsを一度ローカル変数に受けておく（入れ子関数の中ではrequirementSetの絞り込みが効かないため）
+  const reviews = requirementSet.reviews
+  const reviewStatuses = reviews ? evaluateReviews(reviews, evaluation, committed) : []
   const requiredCodes = new Set(boundaryGroups.filter((g) => g.kind === 'required').flatMap((g) => g.subjects))
   // 「取得単位」「残りの必修」を区分ごとに見出しを分けて表示するための対応表
   const categoryLookup = buildCategoryLookup(boundaryGroups)
@@ -409,6 +415,37 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // ()内に入れる単位数の表示（単位数だけにする。年次・学期は別枠のyearTermTagで出す）
   function creditsLabel(code: string): string {
     return `${creditsOf(code) ?? '?'}単位`
+  }
+  // 区分IDから表示用のラベルを引く（審査の不足条件の説明文で使う）
+  function groupLabelOf(groupId: string): string {
+    const g = findGroupResult(evaluation.groups, groupId)
+    return g ? (g.label ?? g.name) : groupId
+  }
+  // 審査の不足条件（ReviewCondition）を、人が読める1文にする
+  function describeCondition(cond: ReviewCondition): string {
+    switch (cond.type) {
+      case 'groupMin': {
+        const g = findGroupResult(evaluation.groups, cond.groupId)
+        return `${groupLabelOf(cond.groupId)} を${cond.min}単位以上（現在${g?.contribution ?? 0}単位）`
+      }
+      case 'allPassed':
+        return `${groupLabelOf(cond.groupId)} をすべて修得`
+      case 'subjects': {
+        // 既に修得済みのものは省いて、まだ足りない科目だけ見せる
+        const remaining = cond.codes.filter((code) => committed.get(code) !== 'passed')
+        return `${remaining.map((code) => nameOf(code)).join('・')} を修得`
+      }
+      case 'totalCredits':
+        return `合計 ${cond.min}単位以上（現在${evaluation.totalCredits.contribution}単位）`
+      case 'commonCredits':
+        return `共通単位 ${cond.min}単位以上（現在${evaluation.commonCredits.contribution}単位）`
+      case 'allGroups':
+        return 'すべての区分の必要単位を満たす'
+      case 'review': {
+        const target = reviews?.find((r) => r.id === cond.id)
+        return `「${target?.name ?? cond.id}」に合格`
+      }
+    }
   }
   // 「◯年次前学期」のような表示文字列を作る（標準年次・学期が無い科目は空文字を返す）
   function yearTermOf(code: string): string {
@@ -737,6 +774,33 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           return hasMajorSel ? rendered : [...rendered, commonCreditsElement]
         })()}
       </section>
+
+      {/* 審査（2年次終了時審査など）。reviewsデータがあるプログラム（今のところⅠ類5プログラムのみ）だけ表示する */}
+      {reviewStatuses.length > 0 && (
+        <section>
+          <h2>審査</h2>
+          <ul>
+            {reviewStatuses.map((r) => (
+              <li key={r.id}>
+                {r.name}
+                {r.when && <span style={{ marginLeft: '0.4em', color: '#555' }}>（{r.when}）</span>}
+                {r.satisfied ? ' ✔ 合格見込み' : ' ✖ 不足あり'}
+                {!r.satisfied && (
+                  <details>
+                    <summary>詳細</summary>
+                    <ul>
+                      {r.unsatisfied.map((cond, i) => (
+                        <li key={i}>{describeCondition(cond)}</li>
+                      ))}
+                    </ul>
+                    {r.onFail?.note && <p style={{ fontSize: '0.9em', color: '#555' }}>※ {r.onFail.note}</p>}
+                  </details>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* 上のツールバーの「更新」と同じボタン。プルダウンをたくさん触った後、
           いちいちページ上部まで戻らなくて済むように一番下にも置いておく。
