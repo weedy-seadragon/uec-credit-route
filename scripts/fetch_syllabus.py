@@ -40,6 +40,17 @@ TD_RE = re.compile(r"<td[^>]*>(.*?)</td>", re.S)
 LINK_RE = re.compile(r'href="([^"]+)">([^<]*)<')
 CODE_CELL_RE = re.compile(r"科目番号<br\s*/?>/Code</th>\s*<td[^>]*>([^<]+)</td>")
 SLOT_RE = re.compile(r"^([月火水木金土日])(\d+)$")
+# 一覧表の科目名には「Academic Written EnglishⅠ（金1・F）」のように、末尾にクラス表記
+# （曜日時限・クラス記号）が付いていることが多い。科目マスタの名前にはこの表記が無いので、
+# 素の名前と完全一致させるだけだと、クラスが多い科目（語学・実験科目など）を一件も
+# 拾えなくなってしまう（2026-09-05に発覚したバグ：本来12クラスある金曜日の授業が
+# 1件も取得できず、たまたま名前が完全一致した無関係な1件だけを「唯一の時限」として
+# 誤って扱っていた）。末尾の（…）を取り除いた名前でも科目マスタと突き合わせる
+TRAILING_PAREN_RE = re.compile(r"[（(][^（）()]*[）)]$")
+
+
+def strip_class_suffix(name: str) -> str:
+    return TRAILING_PAREN_RE.sub("", name).strip()
 
 
 def fetch(url: str) -> str:
@@ -93,7 +104,10 @@ def main():
         rows = parse_list(list_html)
         print(f"[{faculty}] 総行数: {len(rows)}", file=sys.stderr)
 
-        candidates = [r for r in rows if r["name"] in known_names and r["href"]]
+        candidates = [
+            r for r in rows
+            if r["href"] and (r["name"] in known_names or strip_class_suffix(r["name"]) in known_names)
+        ]
         print(f"[{faculty}] 科目名が一致する行数（個別ページを取得する件数）: {len(candidates)}", file=sys.stderr)
 
         for i, row in enumerate(candidates, 1):
@@ -121,6 +135,21 @@ def main():
             if i % 20 == 0:
                 print(f"[{faculty}] 進捗: {i}/{len(candidates)}", file=sys.stderr)
             time.sleep(REQUEST_INTERVAL_SEC)
+
+    # シラバスWeb公開システム側の登録ミスと思われる補正（2026-09-05に発覚）：
+    # ENG101s（夜間主・Academic Written English I）とENG101z（昼間・同科目）で、
+    # 科目番号欄の記載が入れ替わっている。ENG101sの欄には昼間の金曜多クラス分（26件、
+    # 学修要覧の昼間用担当教員陣と一致）が、ENG101zの欄には夜間主の1クラス分（土曜、
+    # Dusza/Jeffreys担当）が、それぞれ逆に登録されていた。他の夜間主科目にはこの現象は
+    # 見られない（この2科目だけの個別の登録ミスと判断）ため、ここで入れ替えて補正する
+    CODE_SWAP_FIXUPS = [("ENG101s", "ENG101z")]
+    for code_a, code_b in CODE_SWAP_FIXUPS:
+        a = offerings_by_code.pop(code_a, None)
+        b = offerings_by_code.pop(code_b, None)
+        if b is not None:
+            offerings_by_code[code_a] = b
+        if a is not None:
+            offerings_by_code[code_b] = a
 
     updated = 0
     for s in subjects_data["subjects"]:
