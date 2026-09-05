@@ -98,6 +98,8 @@
   - 464件の候補は「科目名が`data/subjects/youran-2025.json`に存在する行」で絞り込んだもので、全1157件は回っていない（他学域・他年度相当・まだデータ化していない科目名などは対象外）。取りこぼしがある可能性がある
   - `src/domain/recommend.ts`の`SubjectInfo.slots`/`prerequisites`は「科目1つにつき1つの時限」を想定した設計だが、今回取得した`offerings`は科目によって複数セクション（クラス）で曜日時限が違うことがある（例:語学科目で同じ科目コードに6セクション）。**`offerings`をどう`slots`に落とし込むか（先頭のセクションを使う／全セクションを比較して警告するなど）は未決定・未実装**。今回はデータ取得（`data/`への格納）までで、`recommend.ts`側への配線はまだ行っていない
 
+- **学域特別講義（UEC001z・UEC002z）を常時共通単位に分類**：これまで`otherSubjects.special`という未使用の別枠に置いていた（`groups`のどの区分にも属さず、アプリからも一切参照されていなかった）が、開発者の指示（2026-09-05）で`commonCreditSources.alwaysCommon`に移した。理由は元々の科目データの`note`の通り「開講年度により扱いが異なり、必修/選択のどの区分にも一意に割り当てられない」ため。`data/requirements/2025-day-common.json`と`scripts/gen_data.py`を修正済み（`otherSubjects`には`japanese`のみ残した）。これで選択科目の「共通単位」の入れ子（前述）にも表示され、状態プルダウンで選択できるようになった
+
 ### 次回以降にやること
 
 1. **`scripts/gen_data.py`／`scripts/validate_data.py`／`scripts/fetch_syllabus.py` の実行確認**：上記の通り、Pythonが使える環境でまだ試せていない。**実行する場合は`gen_data.py`→`fetch_syllabus.py`の順で**（逆だとofferingsが消える）

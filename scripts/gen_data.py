@@ -231,12 +231,13 @@ common = {
     ],
     "commonCreditSources": {
         "note": "卒業所要単位を超えた分に加え、以下はそのまま共通単位になる",
-        "alwaysCommon": add("lang-appl-2", LANG_APPL_2) + add("intl-abroad", INTL_ABROAD),
+        # 学域特別講義（SPECIAL）は開講年度により扱いが異なり必修/選択のどの区分にも一意に
+        # 割り当てられないため、修得した単位はそのまま共通単位として扱う（開発者の指示、2026-09-05）
+        "alwaysCommon": add("lang-appl-2", LANG_APPL_2) + add("intl-abroad", INTL_ABROAD) + add("special", SPECIAL),
         "external": [{"code": "EXT-ENG", "name": "学外英語能力試験", "credits": 2, "note": "TOEFL iBT 62 / TOEIC 600 / 英検2級 / IELTS 5"}],
     },
     "otherSubjects": {
         "japanese": add("japanese", JAPANESE),
-        "special": add("special", SPECIAL),
     },
 }
 
