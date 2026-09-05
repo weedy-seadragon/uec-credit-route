@@ -230,7 +230,7 @@ common = {
         ]},
     ],
     "commonCreditSources": {
-        "note": "卒業所要単位を超えた分に加え、以下はそのまま共通単位になる",
+        "note": "卒業所要単位を超えた分に加え、以下はそのまま共通単位になる。UEC001z・UEC002z（学域特別講義A・B）は、開講年度により必修/選択の扱いが異なり一意の区分に割り当てられないため、修得した単位はそのまま共通単位として扱う（開発者の指示、2026-09-05）",
         # 学域特別講義（SPECIAL）は開講年度により扱いが異なり必修/選択のどの区分にも一意に
         # 割り当てられないため、修得した単位はそのまま共通単位として扱う（開発者の指示、2026-09-05）
         "alwaysCommon": add("lang-appl-2", LANG_APPL_2) + add("intl-abroad", INTL_ABROAD) + add("special", SPECIAL),
@@ -456,6 +456,9 @@ for p in cluster_i:
     own = p["_majorSelOwn"]
     others = [code for other in cluster_i if other is not p for code in other["_majorSelOwn"]]
     p["groups"][0]["children"][2]["children"][1]["subjects"] = own + others
+# _majorSelOwnの削除は全プログラム分の合算が終わってから行う。ループ内で消すと、
+# 後の方で処理するプログラムが前のプログラムの_majorSelOwnを読めなくなる（KeyError）
+for p in cluster_i:
     del p["_majorSelOwn"]
 
 # ---------------------------------------------------------------- Ⅱ類・Ⅲ類・夜間主
