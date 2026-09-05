@@ -8,8 +8,8 @@
 // - 科目ごとの状態変更は、要覧のスケッチにある「履修予定チェック」ではなく、
 //   すべての一覧で共通の「未履修/履修中/修得/不合格」プルダウン1つに統一している
 //   （取得単位への追加も、この操作を通じて行う。ファイルからの読み込み等はフェーズ2-5で対応）
-// - 先修科目・曜日時限のデータがまだ無いので、同時限警告は出ない（recommend.ts参照）
-// - 審査（2年次終了時審査など）の合否表示はまだ実装していない
+// - 履修中というステータス自体が無い（未履修/修得/不合格の3択）ため、busySlots（同時限警告）は
+//   常に空のまま。先修科目（prerequisites）は2026-09-06にprerequisites.ts経由で配線した
 import { useMemo, useRef, useState } from 'react'
 import type { ChangeEvent, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
@@ -18,6 +18,7 @@ import { evaluateRequirements } from '../domain/requirements'
 import type { GroupResult } from '../domain/requirements'
 import type { SubjectInfo, TermFilter } from '../domain/recommend'
 import { recommend } from '../domain/recommend'
+import { buildNameToCodes, derivePrerequisites } from '../domain/prerequisites'
 import type { ExportedData } from '../domain/importers'
 import { mergeRecords, parseOwnFormat } from '../domain/importers'
 import { getClassAssignments, getProgramName, getRequirementSet, getSubjectCredits, getSubjectsByCode } from '../data/requirementSets'
@@ -253,11 +254,20 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const classAssignments = useMemo(() => getClassAssignments(), [])
   // プログラムが決まっていれば（2年後期以降）、その名前をクラス判定にも使う
   const programName = getProgramName(profile.program)
-  // recommend.ts が要求する SubjectInfo 型（必要な項目だけ）に、科目マスタの情報を詰め替える
+  // recommend.ts が要求する SubjectInfo 型（必要な項目だけ）に、科目マスタの情報を詰め替える。
+  // prerequisites（先修科目）は、シラバスの自由記述テキスト（prerequisitesText）から
+  // prerequisites.ts が安全に（完全一致するものだけ）抜き出したコード配列を使う
   const recommendSubjects = useMemo<ReadonlyMap<string, SubjectInfo>>(() => {
+    const nameToCodes = buildNameToCodes([...subjectsByCode.values()])
     const map = new Map<string, SubjectInfo>()
     for (const s of subjectsByCode.values()) {
-      map.set(s.code, { code: s.code, credits: s.credits, standardYear: s.standardYear, termType: s.termType })
+      map.set(s.code, {
+        code: s.code,
+        credits: s.credits,
+        standardYear: s.standardYear,
+        termType: s.termType,
+        prerequisites: derivePrerequisites(s.prerequisitesText, s.code, nameToCodes),
+      })
     }
     return map
   }, [subjectsByCode])
