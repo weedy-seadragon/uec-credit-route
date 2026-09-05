@@ -26,6 +26,12 @@ export default function SetupPage() {
   const [program, setProgram] = useState<string | null>(saved?.program ?? null)
   const [grade, setGrade] = useState(saved?.grade ?? 1)
   const [recommended, setRecommended] = useState(saved?.recommended ?? false)
+  // 曜日時限表示用のクラス情報（docs/SPEC.md §7.1、CLAUDE.md進捗ログ参照）。昼間コースのみ使う
+  const [yearOneClass, setYearOneClass] = useState(saved?.yearOneClass ?? 1)
+  const [classIABC, setClassIABC] = useState<Profile['classIABC']>(saved?.classIABC ?? null)
+  const [classIIArea, setClassIIArea] = useState<Profile['classIIArea']>(saved?.classIIArea ?? null)
+  const [classIIIYear2Class, setClassIIIYear2Class] = useState<Profile['classIIIYear2Class']>(saved?.classIIIYear2Class ?? null)
+  const [classIIIYear2Area, setClassIIIYear2Area] = useState<Profile['classIIIYear2Area']>(saved?.classIIIYear2Area ?? null)
   // 夜間主コース用の学年（昼間コースの grade とは別に持つ。プログラム配属の概念が無いので推薦入学欄も出さない）
   const [eveningGrade, setEveningGrade] = useState(saved?.course === 'evening' ? (saved?.grade ?? 1) : 1)
 
@@ -45,6 +51,11 @@ export default function SetupPage() {
     [entryYear, course, cluster],
   )
 
+  // 1年次クラスの選べる範囲（類に直結。docs/SPEC.md §7.1、CLAUDE.md進捗ログ参照）。
+  // 類を切り替えたときに前の範囲の番号が残らないよう、範囲外なら先頭の番号に読み替える
+  const yearOneClassRange = cluster === 'I' ? [1, 2, 3, 4] : cluster === 'II' ? [5, 6, 7, 8] : [9, 10, 11, 12]
+  const effectiveYearOneClass = yearOneClassRange.includes(yearOneClass) ? yearOneClass : yearOneClassRange[0]
+
   // 1年生（推薦入学でない場合）はまだプログラムに配属されていないので、選択欄を無効化して「未定」に固定する。
   // ここでは program の状態そのものは書き換えず、「実際に使う値」をその場で導出するだけにする
   // （useEffectでstateを書き換えると再描画が連鎖してしまうため、これは今の描画中に計算できる値として扱う）。
@@ -63,7 +74,14 @@ export default function SetupPage() {
       return
     }
     if (!cluster) return // 昼間コースは類が必須（docs/SPEC.md F-1）
-    const profile: Profile = { entryYear, course, cluster, program: effectiveProgram, grade, recommended }
+    const profile: Profile = {
+      entryYear, course, cluster, program: effectiveProgram, grade, recommended,
+      yearOneClass: effectiveYearOneClass,
+      classIABC: cluster === 'I' ? classIABC : null,
+      classIIArea: cluster === 'II' ? classIIArea : null,
+      classIIIYear2Class: cluster === 'III' ? classIIIYear2Class : null,
+      classIIIYear2Area: cluster === 'III' ? classIIIYear2Area : null,
+    }
     saveProfile(profile)
     navigate('/main')
   }
@@ -166,6 +184,93 @@ export default function SetupPage() {
               </select>
               {programLocked && <p>1年生は2年次後学期にプログラム配属されるまで「未定」になります。</p>}
             </div>
+
+            {/* 曜日時限の表示に使うクラス情報（docs/SPEC.md §7.1、CLAUDE.md進捗ログ参照）。
+                1年次クラスは学籍番号による機械的な割り当てで、本人には選べないが他から逆算する
+                方法も無いので、必ず本人に直接答えてもらう。2番目以降は類によって聞く内容が変わる
+                （該当しない類の分は聞かず、nullのまま保存する） */}
+            <div>
+              <label htmlFor="yearOneClass">1年次クラス</label>
+              <select
+                id="yearOneClass"
+                value={effectiveYearOneClass}
+                onChange={(e) => setYearOneClass(Number(e.target.value))}
+              >
+                {yearOneClassRange.map((n) => (
+                  <option key={n} value={n}>
+                    クラス{n}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {cluster === 'I' && (
+              <div>
+                <label htmlFor="classIABC">1年後期〜2年後期クラス（第二外国語など一部科目用）</label>
+                <select
+                  id="classIABC"
+                  value={classIABC ?? ''}
+                  onChange={(e) => setClassIABC(e.target.value === '' ? null : (e.target.value as 'A' | 'B' | 'C'))}
+                >
+                  <option value="">未定</option>
+                  <option value="A">Aクラス</option>
+                  <option value="B">Bクラス</option>
+                  <option value="C">Cクラス</option>
+                </select>
+              </div>
+            )}
+
+            {cluster === 'II' && (
+              <div>
+                <label htmlFor="classIIArea">2年前期クラス/エリア</label>
+                <select
+                  id="classIIArea"
+                  value={classIIArea ?? ''}
+                  onChange={(e) => setClassIIArea(e.target.value === '' ? null : (e.target.value as NonNullable<Profile['classIIArea']>))}
+                >
+                  <option value="">未定</option>
+                  {(['I1', 'I2', 'I3', 'I4', 'I5', 'I6'] as const).map((c) => (
+                    <option key={c} value={c}>
+                      {c}クラス
+                    </option>
+                  ))}
+                  <option value="M">Mエリア</option>
+                </select>
+              </div>
+            )}
+
+            {cluster === 'III' && (
+              <>
+                <div>
+                  <label htmlFor="classIIIYear2Class">2年前期クラス</label>
+                  <select
+                    id="classIIIYear2Class"
+                    value={classIIIYear2Class ?? ''}
+                    onChange={(e) => setClassIIIYear2Class(e.target.value === '' ? null : (e.target.value as '1' | '2' | '3' | '4'))}
+                  >
+                    <option value="">未定</option>
+                    {(['1', '2', '3', '4'] as const).map((c) => (
+                      <option key={c} value={c}>
+                        {c}クラス
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="classIIIYear2Area">2年後期エリア</label>
+                  <select
+                    id="classIIIYear2Area"
+                    value={classIIIYear2Area ?? ''}
+                    onChange={(e) => setClassIIIYear2Area(e.target.value === '' ? null : (e.target.value as 'M' | 'S'))}
+                  >
+                    <option value="">未定</option>
+                    <option value="M">Mエリア</option>
+                    <option value="S">Sエリア</option>
+                  </select>
+                </div>
+              </>
+            )}
           </>
         )}
 
