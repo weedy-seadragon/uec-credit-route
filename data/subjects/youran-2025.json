@@ -2343,7 +2343,7 @@
     },
     {
       "code": "CHM101z",
-      "name": "基礎科学実験Ｂ１",
+      "name": "基礎科学実験B1",
       "credits": 1,
       "field": "CHM",
       "standardSemester": 1,
@@ -2354,6 +2354,128 @@
       "graduateLinked": false,
       "groups": [
         "intro"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21018404",
+          "faculty": "31",
+          "term": "春ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "月",
+              "period": 3
+            },
+            {
+              "day": "月",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "加固　昌寛"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018404.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018405",
+          "faculty": "31",
+          "term": "春ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            },
+            {
+              "day": "木",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "山北　佳宏"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018405.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018406",
+          "faculty": "31",
+          "term": "春ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "金",
+              "period": 3
+            },
+            {
+              "day": "金",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "三輪　寛子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018406.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018504",
+          "faculty": "31",
+          "term": "夏ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "月",
+              "period": 3
+            },
+            {
+              "day": "月",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "加固　昌寛"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018504.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018505",
+          "faculty": "31",
+          "term": "夏ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            },
+            {
+              "day": "木",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "山北　佳宏"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018505.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018506",
+          "faculty": "31",
+          "term": "夏ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "金",
+              "period": 3
+            },
+            {
+              "day": "金",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "三輪　寛子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018506.html",
+          "updatedAt": "2026-09-06"
+        }
       ]
     },
     {
@@ -2641,7 +2763,7 @@
     },
     {
       "code": "CHM202z",
-      "name": "基礎科学実験Ｂ２",
+      "name": "基礎科学実験B2",
       "credits": 1,
       "field": "CHM",
       "standardSemester": 2,
@@ -2652,6 +2774,128 @@
       "graduateLinked": false,
       "groups": [
         "intro"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21018604",
+          "faculty": "31",
+          "term": "秋ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "月",
+              "period": 3
+            },
+            {
+              "day": "月",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "加固　昌寛"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018604.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018605",
+          "faculty": "31",
+          "term": "秋ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            },
+            {
+              "day": "木",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "山北　佳宏"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018605.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018606",
+          "faculty": "31",
+          "term": "秋ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "金",
+              "period": 3
+            },
+            {
+              "day": "金",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "三輪　寛子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018606.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018704",
+          "faculty": "31",
+          "term": "冬ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "月",
+              "period": 3
+            },
+            {
+              "day": "月",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "加固　昌寛"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018704.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018705",
+          "faculty": "31",
+          "term": "冬ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            },
+            {
+              "day": "木",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "山北　佳宏"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018705.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018706",
+          "faculty": "31",
+          "term": "冬ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "金",
+              "period": 3
+            },
+            {
+              "day": "金",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "三輪　寛子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018706.html",
+          "updatedAt": "2026-09-06"
+        }
       ]
     },
     {
@@ -50322,7 +50566,7 @@
     },
     {
       "code": "PHY101z",
-      "name": "基礎科学実験Ａ１",
+      "name": "基礎科学実験A1",
       "credits": 1,
       "field": "PHY",
       "standardSemester": 1,
@@ -50333,6 +50577,187 @@
       "graduateLinked": false,
       "groups": [
         "intro"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21018401",
+          "faculty": "31",
+          "term": "春ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "月",
+              "period": 3
+            },
+            {
+              "day": "月",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "大饗",
+            "菊池",
+            "村上",
+            "饗庭",
+            "〇吉村",
+            "〇須田",
+            "*高田"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018401.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018402",
+          "faculty": "31",
+          "term": "春ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            },
+            {
+              "day": "木",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "奥野",
+            "木寺",
+            "松倉",
+            "梶川",
+            "〇近藤",
+            "〇大石"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018402.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018407",
+          "faculty": "31",
+          "term": "春ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "木",
+              "period": 6
+            },
+            {
+              "day": "木",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "中村（仁）",
+            "小久保",
+            "佐藤（隆）",
+            "○近藤",
+            "○大石",
+            "○矢野",
+            "○篠田",
+            "○柏野"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018407.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018403",
+          "faculty": "31",
+          "term": "春ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "金",
+              "period": 3
+            },
+            {
+              "day": "金",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "中村(信)",
+            "溝口",
+            "李(鯤)細川",
+            "永松",
+            "〇富田",
+            "〇内田"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018403.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018501",
+          "faculty": "31",
+          "term": "夏ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "月",
+              "period": 3
+            },
+            {
+              "day": "月",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "大饗",
+            "菊池",
+            "村上",
+            "饗庭",
+            "〇吉村",
+            "〇須田",
+            "*高田"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018501.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018502",
+          "faculty": "31",
+          "term": "夏ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            },
+            {
+              "day": "木",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "奥野",
+            "松倉",
+            "津田",
+            "梶川",
+            "〇近藤",
+            "〇大石"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018502.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018503",
+          "faculty": "31",
+          "term": "夏ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "金",
+              "period": 3
+            },
+            {
+              "day": "金",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "中村(信)",
+            "萱野",
+            "溝口",
+            "永松",
+            "〇富田",
+            "〇未定"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018503.html",
+          "updatedAt": "2026-09-06"
+        }
       ]
     },
     {
@@ -50679,7 +51104,7 @@
     },
     {
       "code": "PHY201z",
-      "name": "基礎科学実験Ａ２",
+      "name": "基礎科学実験A2",
       "credits": 1,
       "field": "PHY",
       "standardSemester": 2,
@@ -50690,7 +51115,189 @@
       "graduateLinked": false,
       "groups": [
         "intro"
-      ]
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21018508",
+          "faculty": "31",
+          "term": "夏ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "木",
+              "period": 6
+            },
+            {
+              "day": "木",
+              "period": 7
+            }
+          ],
+          "instructors": [
+            "中村（仁）",
+            "小久保",
+            "佐藤（隆）",
+            "○近藤",
+            "○大石",
+            "○矢野",
+            "○篠田",
+            "○柏野"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018508.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018601",
+          "faculty": "31",
+          "term": "秋ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "月",
+              "period": 3
+            },
+            {
+              "day": "月",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "中村(仁)",
+            "板倉",
+            "横川",
+            "饗庭",
+            "〇吉村",
+            "〇矢野"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018601.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018602",
+          "faculty": "31",
+          "term": "秋ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            },
+            {
+              "day": "木",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "臼井",
+            "木村",
+            "伊藤(毅)",
+            "姜",
+            "ZHOU JIAYI",
+            "○近藤",
+            "○大石"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018602.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018603",
+          "faculty": "31",
+          "term": "秋ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "金",
+              "period": 3
+            },
+            {
+              "day": "金",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "佐々木(成)",
+            "小久保",
+            "朱",
+            "〇須田",
+            "〇未定",
+            "○篠田"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018603.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018701",
+          "faculty": "31",
+          "term": "冬ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "月",
+              "period": 3
+            },
+            {
+              "day": "月",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "中村(仁)",
+            "板倉",
+            "横川",
+            "饗庭",
+            "〇吉村",
+            "〇矢野"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018701.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018702",
+          "faculty": "31",
+          "term": "冬ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            },
+            {
+              "day": "木",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "臼井",
+            "木村",
+            "伊藤(毅)",
+            "姜",
+            "ZHOU JIAYI",
+            "○近藤",
+            "○大石"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018702.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21018703",
+          "faculty": "31",
+          "term": "冬ﾀｰﾑ",
+          "slots": [
+            {
+              "day": "金",
+              "period": 3
+            },
+            {
+              "day": "金",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "佐々木(成)",
+            "小久保",
+            "朱",
+            "〇須田",
+            "〇未定",
+            "○篠田"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018703.html",
+          "updatedAt": "2026-09-06"
+        }
+      ],
+      "prerequisitesText": "基礎科学実験Ａ１"
     },
     {
       "code": "PHY202t",

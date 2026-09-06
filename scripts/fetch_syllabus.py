@@ -172,7 +172,12 @@ def main():
         print(f"[{faculty}] 科目名が一致する行数（個別ページを取得する件数）: {len(candidates)}", file=sys.stderr)
 
         for i, row in enumerate(candidates, 1):
-            url = f"https://kyoumu.office.uec.ac.jp/syllabus/2025/{row['href']}"
+            # 個別ページのURLも一覧ページと同じSYLLABUS_YEARを使う（2026-09-06に発覚：
+            # ここだけ"2025"が直書きされたままで、一覧はSYLLABUS_YEAR（2026）を見ているのに
+            # 個別ページ（科目コード・前もって履修しておくべき科目の抽出元）だけ2025年度分を
+            # 見てしまっていた。timetableCodeが年度で変わることがあるため、抽出される
+            # 科目コードや前提科目テキストが実際とずれる可能性があった）
+            url = f"https://kyoumu.office.uec.ac.jp/syllabus/{SYLLABUS_YEAR}/{row['href']}"
             try:
                 detail_html = fetch(url)
             except Exception as e:
