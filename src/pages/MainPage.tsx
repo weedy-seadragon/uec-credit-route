@@ -21,7 +21,8 @@ import { recommend } from '../domain/recommend'
 import { buildNameToCodes, derivePrerequisites } from '../domain/prerequisites'
 import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
-import { getClassAssignments, getProgramName, getRequirementSet, getSubjectCredits, getSubjectsByCode } from '../data/requirementSets'
+import { getClassAssignments, getProgramName, getRequirementSet, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
+import type { TransferBucketItem } from '../data/requirementSets'
 import { resolveSlotsForProfile } from '../domain/classAssignment'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
 import type { ReviewCondition } from '../domain/requirements'
@@ -301,8 +302,29 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     )
   }
 
+  // 転類・転プログラムした学生向けの「その他の科目」一覧（2026-09-07追加）。
+  // 元の類・プログラムでは必修だったが今の要件には出てこない科目で、修得すれば共通単位になる。
+  // 対象が無ければ空配列（getTransferBucketSubjects側でもチェックしているが、profileの
+  // 入力が揃っていない場合はここで先に弾く）
+  const clusterTransferBucket: TransferBucketItem[] =
+    profile.transferredCluster && profile.previousCluster
+      ? getTransferBucketSubjects(profile.entryYear, profile.previousCluster, null, 1, requirementSet)
+      : []
+  const programTransferBucket: TransferBucketItem[] =
+    profile.transferredProgram && profile.previousProgramCluster
+      ? getTransferBucketSubjects(profile.entryYear, profile.previousProgramCluster, profile.previousProgram ?? null, 2, requirementSet)
+      : []
+  // 「修得」にした分の単位を、その他単位認定と同じように共通単位の計算に足し込む
+  // （これらの科目はrequirementSet.groupsのどこにも属さないので、放っておくとevaluateRequirements
+  // からは見えない。commonCreditsの上限で頭打ちになる既存の仕組みをそのまま使うため、
+  // otherCommonCreditsの引数にまとめて渡す）
+  const transferBucketCreditsSum = [...clusterTransferBucket, ...programTransferBucket]
+    .filter((item) => committed.get(item.code) === 'passed')
+    .reduce((sum, item) => sum + item.credits, 0)
+  const commonCreditsWithTransferBucket = otherCommonCommitted + transferBucketCreditsSum
+
   // 充足状況の本体計算はrequirements.tsに丸ごと任せる。ここから先はその結果を並べるだけ
-  const evaluation = evaluateRequirements(requirementSet, committed, subjectCredits, otherCommonCommitted)
+  const evaluation = evaluateRequirements(requirementSet, committed, subjectCredits, commonCreditsWithTransferBucket)
   const boundaryGroups = collectBoundaryGroups(requirementSet.groups, evaluation.groups)
   // 審査（2年次終了時審査など）。reviewsデータが無いプログラムでは空配列になる（現在は全16課程にreviewsがある）。
   // reviewsを一度ローカル変数に受けておく（入れ子関数の中ではrequirementSetの絞り込みが効かないため）
@@ -324,7 +346,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // （取得単位のカテゴリ見出しと同じ考え方。上限は下の一覧の外の「合計」側で別途わかる）
   const commonOverflowTotal = overflowToCommonGroups.reduce((sum, g) => sum + g.overflowToCommon, 0)
   const commonDirectTotal = directCommonSubjects.reduce((sum, code) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
-  const commonEarnedTotal = commonOverflowTotal + commonDirectTotal + otherCommonCommitted
+  const commonEarnedTotal = commonOverflowTotal + commonDirectTotal + commonCreditsWithTransferBucket
   // 「選択科目」の共通単位の入れ子に出す、まだ修得していない常時共通単位科目
   // （理数基礎（選択）などcountAsCommonの区分の残り科目＋選択第二外国語などalwaysCommonSubjectsの残り）。
   // required=0の区分やalwaysCommonSubjectsはGroupProgressの対象外（required>0で絞っている）なので、
@@ -831,6 +853,44 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           </ul>
         )}
       </section>
+
+      {(clusterTransferBucket.length > 0 || programTransferBucket.length > 0) && (
+        <section>
+          <h2>その他の科目（転類・転プログラム前に必修だった科目）</h2>
+          <p style={{ fontSize: '0.9em', color: '#555' }}>
+            元の類・プログラムでは必修だったものの、今の要件には出てこない科目です。修得にすると共通単位に加算されます
+            （同名の科目は他の一覧の必修・選択にそのまま出てくるので、ここには出しません）。
+          </p>
+          {clusterTransferBucket.length > 0 && (
+            <div>
+              <h3>1年次科目（転類前）</h3>
+              <ul>
+                {clusterTransferBucket.map((item) => (
+                  <li key={item.code}>
+                    {item.name}（{item.credits}単位）
+                    {'  '}
+                    <SubjectStatusSelect code={item.code} value={draft.get(item.code)} onChange={handleDraftChange} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {programTransferBucket.length > 0 && (
+            <div>
+              <h3>2年次科目（転プログラム前）</h3>
+              <ul>
+                {programTransferBucket.map((item) => (
+                  <li key={item.code}>
+                    {item.name}（{item.credits}単位）
+                    {'  '}
+                    <SubjectStatusSelect code={item.code} value={draft.get(item.code)} onChange={handleDraftChange} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
 
       <section>
         <h2>選択科目</h2>

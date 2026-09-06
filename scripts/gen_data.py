@@ -1209,7 +1209,7 @@ II_III_EVENING_ROWS = [
     ('PHY204n', '力学', 2, 1, 2, '後学期', '', None, ['cluster-basic-req']),
     ('PHY204p', '力学', 2, 1, 2, '後学期', '', None, ['cluster-basic-req']),
     ('PHY204r', '力学', 2, 1, 2, '後学期', '', None, ['cluster-basic-req']),
-    ('PHY205k', '力学演習', 1, 2, 4, '後学期', '', None, ['cluster-basic-req']),
+    ('PHY205k', '力学演習', 1, 1, 2, '後学期', '', None, ['cluster-basic-req']),
     ('PHY205m', '力学演習', 1, 1, 2, '後学期', '', None, ['cluster-basic-req']),
     ('PHY205n', '力学演習', 1, 1, 2, '後学期', '', None, ['cluster-basic-req']),
     ('PHY205p', '力学演習', 1, 1, 2, '後学期', '', None, ['cluster-basic-req']),

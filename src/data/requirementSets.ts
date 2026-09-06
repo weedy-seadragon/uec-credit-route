@@ -223,3 +223,83 @@ export function findSubjectUsages(code: string): SubjectUsage[] {
   }
   return usages
 }
+
+// グループ木から、kind === 'required'（必修）な科目コードだけを再帰的に集める
+function collectRequiredCodes(groups: readonly RequirementGroup[], out: Set<string>): void {
+  for (const g of groups) {
+    if (g.kind === 'required' && g.subjects) {
+      for (const c of g.subjects) out.add(c)
+    }
+    if (g.children) collectRequiredCodes(g.children, out)
+  }
+}
+
+// グループ木にある科目コードを、必修かどうかを問わず全部集める（「既にどこかにある科目」の判定用）
+function collectAllCodes(groups: readonly RequirementGroup[], out: Set<string>): void {
+  for (const g of groups) {
+    if (g.subjects) for (const c of g.subjects) out.add(c)
+    if (g.children) collectAllCodes(g.children, out)
+  }
+}
+
+/** 転類・転プログラムした学生向けの「その他の科目」一覧の1件ぶん */
+export interface TransferBucketItem {
+  code: string
+  name: string
+  credits: number
+}
+
+/**
+ * 転類・転プログラムした学生が、転属する前に必修として履修した科目のうち、
+ * 今の類・プログラムの卒業要件には出てこないものを一覧にする（開発者判断、2026-09-07）。
+ *
+ * ルール：
+ * - 「必修だった科目」は、元の類・プログラムの要件セットで kind:'required' の科目に限る
+ * - 今の要件セットに同じ科目番号がそのまま出てくる場合は対象外（理数基礎科目のように
+ *   類を問わず共通の科目はここに出す必要が無い）
+ * - 今の要件セットのどこかに「同じ科目名」の科目番号がある場合も対象外
+ *   （同名の科目＝実質同じ内容の科目とみなし、そちらで数えられるようにする。修得すれば
+ *   共通単位になる、という開発者の説明の裏返しで、対象外にならなかった科目＝共通単位になる科目）
+ * - 転類（1年次のみ経験）はyearLevel=1、転プログラム（1・2年次を経験）はyearLevel=2を渡す
+ *
+ * 転類の場合、まだプログラムが決まっていない時点の話なので、具体的にどのプログラムの科目番号
+ * だったかは学生自身も意識していないはず。同じ類なら1年次の必修科目は名前・単位数が共通のはず
+ * なので、その類の最初のプログラムを代表として使う（oldProgramにnullを渡す）
+ */
+export function getTransferBucketSubjects(
+  entryYear: number,
+  oldCluster: 'I' | 'II' | 'III',
+  oldProgram: string | null,
+  yearLevel: 1 | 2,
+  currentSet: RequirementSet,
+): TransferBucketItem[] {
+  const subjectsByCode = getSubjectsByCode()
+
+  const oldProgramId =
+    oldProgram ?? programOptions.find((p) => p.entryYear === entryYear && p.course === 'day' && p.cluster === oldCluster)?.program
+  if (!oldProgramId) return []
+  const oldSet = getRequirementSet(entryYear, 'day', oldCluster, oldProgramId)
+  if (!oldSet) return []
+
+  const oldRequired = new Set<string>()
+  collectRequiredCodes(oldSet.groups, oldRequired)
+
+  const currentAllCodes = new Set<string>()
+  collectAllCodes(currentSet.groups, currentAllCodes)
+  const currentNames = new Set(
+    [...currentAllCodes].map((c) => subjectsByCode.get(c)?.name).filter((n): n is string => n !== undefined),
+  )
+
+  const seenNames = new Set<string>()
+  const result: TransferBucketItem[] = []
+  for (const code of [...oldRequired].sort()) {
+    const s = subjectsByCode.get(code)
+    if (!s || s.standardYear !== yearLevel) continue
+    if (currentAllCodes.has(code)) continue
+    if (currentNames.has(s.name)) continue
+    if (seenNames.has(s.name)) continue
+    seenNames.add(s.name)
+    result.push({ code, name: s.name, credits: s.credits })
+  }
+  return result
+}
