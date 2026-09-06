@@ -299,7 +299,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 充足状況の本体計算はrequirements.tsに丸ごと任せる。ここから先はその結果を並べるだけ
   const evaluation = evaluateRequirements(requirementSet, committed, subjectCredits)
   const boundaryGroups = collectBoundaryGroups(requirementSet.groups, evaluation.groups)
-  // 審査（2年次終了時審査など）。reviewsデータが無いプログラム（Ⅱ・Ⅲ類・夜間主）では空配列になる。
+  // 審査（2年次終了時審査など）。reviewsデータが無いプログラムでは空配列になる（現在は全16課程にreviewsがある）。
   // reviewsを一度ローカル変数に受けておく（入れ子関数の中ではrequirementSetの絞り込みが効かないため）
   const reviews = requirementSet.reviews
   const reviewStatuses = reviews ? evaluateReviews(reviews, evaluation, committed, subjectCredits) : []
@@ -811,7 +811,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         })()}
       </section>
 
-      {/* 審査（2年次終了時審査など）。reviewsデータがあるプログラム（今のところⅠ類5プログラムのみ）だけ表示する */}
+      {/* 審査（2年次終了時審査など）。reviewsデータがあるプログラムだけ表示する */}
       {reviewStatuses.length > 0 && (
         <section>
           <h2>審査</h2>
