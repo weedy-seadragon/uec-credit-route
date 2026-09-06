@@ -38,6 +38,17 @@ export default function SetupPage() {
   const [classIIArea, setClassIIArea] = useState<Profile['classIIArea']>(saved?.classIIArea ?? null)
   const [classIIIYear2Class, setClassIIIYear2Class] = useState<Profile['classIIIYear2Class']>(saved?.classIIIYear2Class ?? null)
   const [classIIIYear2Area, setClassIIIYear2Area] = useState<Profile['classIIIYear2Area']>(saved?.classIIIYear2Area ?? null)
+  // 転類・転プログラムに関する情報（転類=1年次→2年次、転プログラム=2年次→3年次のときだけ
+  // 起こる。CLAUDE.md参照）。今のところ判定ロジックには使わず記録するだけ
+  const [transferredCluster, setTransferredCluster] = useState(saved?.transferredCluster ?? false)
+  const [previousCluster, setPreviousCluster] = useState<Profile['previousCluster']>(saved?.previousCluster ?? null)
+  const [previousYearOneClass, setPreviousYearOneClass] = useState(saved?.previousYearOneClass ?? null)
+  const [transferredProgram, setTransferredProgram] = useState(saved?.transferredProgram ?? false)
+  const [previousProgramCluster, setPreviousProgramCluster] = useState<Profile['previousProgramCluster']>(saved?.previousProgramCluster ?? null)
+  const [previousProgram, setPreviousProgram] = useState<Profile['previousProgram']>(saved?.previousProgram ?? null)
+  const [previousClassIABC, setPreviousClassIABC] = useState<Profile['previousClassIABC']>(saved?.previousClassIABC ?? null)
+  const [previousClassIIArea, setPreviousClassIIArea] = useState<Profile['previousClassIIArea']>(saved?.previousClassIIArea ?? null)
+  const [previousClassIIIYear2Class, setPreviousClassIIIYear2Class] = useState<Profile['previousClassIIIYear2Class']>(saved?.previousClassIIIYear2Class ?? null)
   // 夜間主コース用の学年（昼間コースの grade とは別に持つ。プログラム配属の概念が無いので推薦入学欄も出さない）
   const [eveningGrade, setEveningGrade] = useState(saved?.course === 'evening' ? (saved?.grade ?? 1) : 1)
 
@@ -61,6 +72,18 @@ export default function SetupPage() {
   // 類を切り替えたときに前の範囲の番号が残らないよう、範囲外なら先頭の番号に読み替える
   const yearOneClassRange = cluster === 'I' ? [1, 2, 3, 4] : cluster === 'II' ? [5, 6, 7, 8] : [9, 10, 11, 12]
   const effectiveYearOneClass = yearOneClassRange.includes(yearOneClass) ? yearOneClass : yearOneClassRange[0]
+
+  // 転類した場合の「元の1年次クラス」の選べる範囲（元の類に応じて決まる。上と同じ考え方）
+  const previousYearOneClassRange =
+    previousCluster === 'I' ? [1, 2, 3, 4] : previousCluster === 'II' ? [5, 6, 7, 8] : previousCluster === 'III' ? [9, 10, 11, 12] : []
+  const effectivePreviousYearOneClass =
+    previousYearOneClass !== null && previousYearOneClassRange.includes(previousYearOneClass) ? previousYearOneClass : (previousYearOneClassRange[0] ?? null)
+
+  // 転プログラムした場合の「元のプログラム」の選べる一覧（元の類で絞り込む）
+  const previousProgramOptions = useMemo(
+    () => (previousProgramCluster ? programOptions.filter((p) => p.entryYear === entryYear && p.course === 'day' && p.cluster === previousProgramCluster) : []),
+    [entryYear, previousProgramCluster],
+  )
 
   // 1年生（推薦入学でない場合）はまだプログラムに配属されていないので、選択欄を無効化して「未定」に固定する。
   // ここでは program の状態そのものは書き換えず、「実際に使う値」をその場で導出するだけにする
@@ -87,6 +110,15 @@ export default function SetupPage() {
       classIIArea: cluster === 'II' ? classIIArea : null,
       classIIIYear2Class: cluster === 'III' ? classIIIYear2Class : null,
       classIIIYear2Area: cluster === 'III' ? classIIIYear2Area : null,
+      transferredCluster,
+      previousCluster: transferredCluster ? previousCluster : null,
+      previousYearOneClass: transferredCluster ? effectivePreviousYearOneClass : null,
+      transferredProgram,
+      previousProgramCluster: transferredProgram ? previousProgramCluster : null,
+      previousProgram: transferredProgram ? previousProgram : null,
+      previousClassIABC: transferredProgram && previousProgramCluster === 'I' ? previousClassIABC : null,
+      previousClassIIArea: transferredProgram && previousProgramCluster === 'II' ? previousClassIIArea : null,
+      previousClassIIIYear2Class: transferredProgram && previousProgramCluster === 'III' ? previousClassIIIYear2Class : null,
     }
     saveProfile(profile)
     navigate('/main')
@@ -279,6 +311,151 @@ export default function SetupPage() {
                 </div>
               </>
             )}
+
+            {/* 転類・転プログラムに関する情報（2026-09-07追加）。留学生については
+                特に対応しない方針。転類は1年次→2年次、転プログラムは2年次→3年次の
+                タイミングでしか起こらない制度上の制約を前提にしている（CLAUDE.md参照） */}
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={transferredCluster}
+                  onChange={(e) => setTransferredCluster(e.target.checked)}
+                />
+                転類した（1年次から2年次にかけて、所属する類が変わった）
+              </label>
+              {transferredCluster && (
+                <div>
+                  <label htmlFor="previousCluster">元の類（1年次に所属していた類）</label>
+                  <select
+                    id="previousCluster"
+                    value={previousCluster ?? ''}
+                    onChange={(e) => setPreviousCluster(e.target.value === '' ? null : (e.target.value as 'I' | 'II' | 'III'))}
+                  >
+                    <option value="">未定</option>
+                    <option value="I">Ⅰ類</option>
+                    <option value="II">Ⅱ類</option>
+                    <option value="III">Ⅲ類</option>
+                  </select>
+
+                  {previousCluster && (
+                    <>
+                      <label htmlFor="previousYearOneClass">元の1年次クラス</label>
+                      <select
+                        id="previousYearOneClass"
+                        value={effectivePreviousYearOneClass ?? ''}
+                        onChange={(e) => setPreviousYearOneClass(Number(e.target.value))}
+                      >
+                        {previousYearOneClassRange.map((n) => (
+                          <option key={n} value={n}>
+                            クラス{n}
+                          </option>
+                        ))}
+                      </select>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={transferredProgram}
+                  onChange={(e) => setTransferredProgram(e.target.checked)}
+                />
+                転プログラムした（2年次から3年次にかけて、所属するプログラムが変わった）
+              </label>
+              {transferredProgram && (
+                <div>
+                  <label htmlFor="previousProgramCluster">元の類（2年次に所属していた類）</label>
+                  <select
+                    id="previousProgramCluster"
+                    value={previousProgramCluster ?? ''}
+                    onChange={(e) => {
+                      const v = e.target.value === '' ? null : (e.target.value as 'I' | 'II' | 'III')
+                      setPreviousProgramCluster(v)
+                      setPreviousProgram(null) // 類を変えたら、それまで選んでいた元のプログラムは無効になるのでリセットする
+                    }}
+                  >
+                    <option value="">未定</option>
+                    <option value="I">Ⅰ類</option>
+                    <option value="II">Ⅱ類</option>
+                    <option value="III">Ⅲ類</option>
+                  </select>
+
+                  {previousProgramCluster && (
+                    <>
+                      <label htmlFor="previousProgram">元のプログラム</label>
+                      <select
+                        id="previousProgram"
+                        value={previousProgram ?? ''}
+                        onChange={(e) => setPreviousProgram(e.target.value === '' ? null : e.target.value)}
+                      >
+                        <option value="">未定</option>
+                        {previousProgramOptions.map((p) => (
+                          <option key={p.program} value={p.program}>
+                            {p.programName}
+                          </option>
+                        ))}
+                      </select>
+
+                      {previousProgramCluster === 'I' && (
+                        <>
+                          <label htmlFor="previousClassIABC">元のクラス</label>
+                          <select
+                            id="previousClassIABC"
+                            value={previousClassIABC ?? ''}
+                            onChange={(e) => setPreviousClassIABC(e.target.value === '' ? null : (e.target.value as 'A' | 'B' | 'C'))}
+                          >
+                            <option value="">未定</option>
+                            <option value="A">Aクラス</option>
+                            <option value="B">Bクラス</option>
+                            <option value="C">Cクラス</option>
+                          </select>
+                        </>
+                      )}
+                      {previousProgramCluster === 'II' && (
+                        <>
+                          <label htmlFor="previousClassIIArea">元のクラス</label>
+                          <select
+                            id="previousClassIIArea"
+                            value={previousClassIIArea ?? ''}
+                            onChange={(e) => setPreviousClassIIArea(e.target.value === '' ? null : (e.target.value as NonNullable<Profile['previousClassIIArea']>))}
+                          >
+                            <option value="">未定</option>
+                            {(['I1', 'I2', 'I3', 'I4', 'I5', 'I6'] as const).map((c) => (
+                              <option key={c} value={c}>
+                                {c}クラス
+                              </option>
+                            ))}
+                            <option value="M">Mエリア</option>
+                          </select>
+                        </>
+                      )}
+                      {previousProgramCluster === 'III' && (
+                        <>
+                          <label htmlFor="previousClassIIIYear2Class">元のクラス</label>
+                          <select
+                            id="previousClassIIIYear2Class"
+                            value={previousClassIIIYear2Class ?? ''}
+                            onChange={(e) => setPreviousClassIIIYear2Class(e.target.value === '' ? null : (e.target.value as '1' | '2' | '3' | '4'))}
+                          >
+                            <option value="">未定</option>
+                            {(['1', '2', '3', '4'] as const).map((c) => (
+                              <option key={c} value={c}>
+                                {c}クラス
+                              </option>
+                            ))}
+                          </select>
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
           </>
         )}
 

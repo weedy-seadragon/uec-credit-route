@@ -31,6 +31,37 @@ export interface Profile {
   classIIIYear2Class?: '1' | '2' | '3' | '4' | null
   /** Ⅲ類のみ：2年後期のエリア（M/Sエリア） */
   classIIIYear2Area?: 'M' | 'S' | null
+
+  /**
+   * 転類・転プログラムに関する情報（2026-09-07、開発者判断で追加）。
+   * 留学生については特に対応しない方針（プロフィール項目は追加しない）。
+   *
+   * 転類は1年次→2年次、転プログラムは2年次→3年次のタイミングでしか起こらないという
+   * 大学の制度上の制約を前提にしている（開発者確認）。転類した学生は、1年次は今と違う類に
+   * 所属していたことになる。転プログラムした学生は、2年次は今と違うプログラムに
+   * 所属していたことになる。
+   *
+   * 現時点では、この情報を使う具体的な判定ロジック（class_assignment.json側に対応する
+   * class_id表記の実例）が無いため、ここでは記録するだけにとどめ、
+   * src/domain/classAssignment.ts の classIdMatchesProfile には配線していない。
+   * 将来「転類生」「転プログラム生」のような専用のclass_id表記が実際に見つかったときに使う
+   */
+  /** 転類したかどうか */
+  transferredCluster?: boolean
+  /** 転類した場合の、1年次に所属していた元の類 */
+  previousCluster?: 'I' | 'II' | 'III' | null
+  /** 転類した場合の、元の類での1年次クラス（元の類の範囲内の番号。Ⅰ類=1〜4／Ⅱ類=5〜8／Ⅲ類=9〜12） */
+  previousYearOneClass?: number | null
+  /** 転プログラムしたかどうか */
+  transferredProgram?: boolean
+  /** 転プログラムした場合の、2年次に所属していた元の類（今と同じ類のこともある） */
+  previousProgramCluster?: 'I' | 'II' | 'III' | null
+  /** 転プログラムした場合の、2年次に所属していた元のプログラム */
+  previousProgram?: string | null
+  /** 転プログラムした場合の、元の類・プログラムでの2年前期クラス（元の類に応じた形式） */
+  previousClassIABC?: 'A' | 'B' | 'C' | null
+  previousClassIIArea?: 'I1' | 'I2' | 'I3' | 'I4' | 'I5' | 'I6' | 'M' | null
+  previousClassIIIYear2Class?: '1' | '2' | '3' | '4' | null
 }
 
 const STORAGE_KEY = 'profile'
