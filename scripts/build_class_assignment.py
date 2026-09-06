@@ -53,8 +53,10 @@ def split_periods(period: str) -> list[str]:
     一致せず引き継ぎが効かない（2026-09-07に発覚：シラバス再取得のたびに
     基礎科学実験のまとめ書き行が引き継がれず消えるバグの原因だった）。
     ここで個々の時限に展開してキーを作ることで、まとめ書き行も個別時限の
-    lookupで見つけられるようにする。"""
-    return [p for p in re.split(r"[，,]", period) if p]
+    lookupで見つけられるようにする。区切り文字は半角/全角カンマ「,」「，」の
+    ほか、読点「、」で書かれることもある（MCE602i等で発覚、2026-09-07）ため
+    3種類とも受け付ける。"""
+    return [p for p in re.split(r"[，,、]", period) if p]
 
 
 def teacher_tokens(text: str) -> set[str]:
