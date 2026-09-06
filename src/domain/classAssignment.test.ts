@@ -11,6 +11,16 @@ describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () =>
     expect(classIdMatchesProfile('クラス4', profile, 'I')).toBe(false)
   })
 
+  it('「A1-N」「A2-N」は「クラスN」と同じ意味（class_schedule.csvとの自動突き合わせ由来）', () => {
+    // 基礎科学実験A1/B1の時限が表示されない不具合の根本原因（2026-09-06）：
+    // build_class_assignment.pyがclass_schedule.csvと自動突き合わせできた行に
+    // 「A1-7」のような{pdf名}-{class_id}形式を生成するが、これまで未対応だった
+    const profile: ClassProfile = { yearOneClass: 7 }
+    expect(classIdMatchesProfile('A1-7', profile, 'I')).toBe(true)
+    expect(classIdMatchesProfile('A2-7', profile, 'I')).toBe(true)
+    expect(classIdMatchesProfile('A1-8', profile, 'I')).toBe(false)
+  })
+
   it('「Xクラス」（A/B/C）はⅠ類のときだけ、classIABCと一致するかで判定する', () => {
     const profile: ClassProfile = { classIABC: 'B' }
     expect(classIdMatchesProfile('Bクラス', profile, 'I')).toBe(true)

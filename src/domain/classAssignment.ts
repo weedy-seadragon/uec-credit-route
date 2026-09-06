@@ -39,7 +39,9 @@ interface OfferingLike {
  * 「Mエリア(2クラス)」「メディア情報学プログラム」）が、このプロフィールに当てはまるかどうかを判定する。
  *
  * 表記の意味はCLAUDE.mdの進捗ログ・data/timetable/README.mdの対応表を参照：
- * - 「クラスN」：1年次クラス（全類共通、N=1〜12）
+ * - 「クラスN」・「A1-N」・「A2-N」：1年次クラス（全類共通、N=1〜12）。「A1-N」「A2-N」は
+ *   scripts/build_class_assignment.pyがclass_schedule.csvと自動突き合わせできたときに
+ *   生成する「{pdf名}-{class_id}」形式で、意味は「クラスN」と同じ
  * - 「Xクラス」（X=A/B/C）：Ⅰ類の1年後期〜2年後期クラス
  * - 「INクラス」（N=1〜6）：Ⅱ類の2年前期クラス
  * - 「Mエリア」：Ⅱ類の2年前期エリア、またはⅢ類の2年後期エリア（類で意味が変わる）
@@ -87,6 +89,14 @@ export function classIdMatchesProfile(
 
   const yearOneMatch = classId.match(/^クラス(\d+)$/)
   if (yearOneMatch) return profile.yearOneClass === Number(yearOneMatch[1])
+
+  // 「A1-7」「A2-3」のような表記：scripts/build_class_assignment.pyがclass_schedule.csv
+  // （時間割PDFの書き起こし）と自動突き合わせできたときに生成する「{pdf名}-{class_id}」形式。
+  // A1（1年前期）・A2（1年後期）はどちらも1年次クラス1〜12と同じ番号なので、「クラスN」と
+  // 同じ扱いにする（2026-09-06、基礎科学実験A1/B1の時限が出ない不具合の根本原因として発覚：
+  // 自動突き合わせでこの形式が入っていたが、ここでずっと未対応のままだった）
+  const a1a2Match = classId.match(/^A[12]-(\d+)$/)
+  if (a1a2Match) return profile.yearOneClass === Number(a1a2Match[1])
 
   if (classId === '二類学籍番号偶数' || classId === '二類学籍番号奇数') {
     if (cluster !== 'II' || profile.yearOneClass == null) return false
