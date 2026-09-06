@@ -386,6 +386,86 @@
     ]
   },
   {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "A1-6",
+      "A1-9"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "A1-11",
+      "A1-12"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "A1-3",
+      "A1-4"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "A1-1",
+      "A1-4"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "A1-6",
+      "A1-9"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "A1-11",
+      "A1-12"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "A1-3",
+      "A1-4"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "A1-1",
+      "A1-4"
+    ]
+  },
+  {
     "code": "CHM102z",
     "term": "前学期",
     "day": "月",
@@ -4113,6 +4193,1380 @@
     ]
   },
   {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "1",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス3"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "1",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス3"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "1",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス3"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "1",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス3"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "1",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス3"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "1",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス3"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "クラス4",
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "クラス4",
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "クラス4",
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "クラス4",
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "クラス4",
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "クラス4",
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG101z",
+    "term": "前学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "クラス9",
+      "クラス10",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "クラス9",
+      "クラス10",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "クラス9",
+      "クラス10",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "クラス9",
+      "クラス10",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "クラス9",
+      "クラス10",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "クラス9",
+      "クラス10",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス5"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス5"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス5"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス5"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス5"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス5"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "ENG102z",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "1",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス3"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "1",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス3"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "1",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス3"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "1",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス3"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "1",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス3"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "1",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス3"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "クラス4",
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "クラス4",
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "クラス4",
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "クラス4",
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "クラス4",
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "クラス4",
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG201z",
+    "term": "後学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "クラス9",
+      "クラス10",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "クラス9",
+      "クラス10",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "クラス9",
+      "クラス10",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "クラス9",
+      "クラス10",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "クラス9",
+      "クラス10",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "クラス9",
+      "クラス10",
+      "クラス11"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス5"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス5"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス5"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス5"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス5"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "クラス1",
+      "クラス2",
+      "クラス5"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "ENG202z",
+    "term": "後学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG301z",
+    "term": "前学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
     "code": "ENG302z",
     "term": "前学期",
     "day": "月",
@@ -4153,6 +5607,15 @@
     "term": "前学期",
     "day": "木",
     "period": "1",
+    "classIds": [
+      "全クラス"
+    ]
+  },
+  {
+    "code": "ENG302z",
+    "term": "前学期",
+    "day": "金",
+    "period": "4",
     "classIds": [
       "全クラス"
     ]
@@ -4227,6 +5690,258 @@
     "period": "4",
     "classIds": [
       "全クラス"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "1",
+    "classIds": [
+      "一類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "2",
+    "classIds": [
+      "二類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
+    ]
+  },
+  {
+    "code": "ENG401z",
+    "term": "後学期",
+    "day": "火",
+    "period": "3",
+    "classIds": [
+      "三類"
     ]
   },
   {
@@ -7329,6 +9044,78 @@
     ]
   },
   {
+    "code": "JPN101z",
+    "term": "前学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "留学生のみ"
+    ]
+  },
+  {
+    "code": "JPN101z",
+    "term": "前学期",
+    "day": "木",
+    "period": "2",
+    "classIds": [
+      "留学生のみ"
+    ]
+  },
+  {
+    "code": "JPN101z",
+    "term": "前学期",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "留学生のみ"
+    ]
+  },
+  {
+    "code": "JPN101z",
+    "term": "前学期",
+    "day": "木",
+    "period": "2",
+    "classIds": [
+      "留学生のみ"
+    ]
+  },
+  {
+    "code": "JPN201z",
+    "term": "後学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "留学生のみ"
+    ]
+  },
+  {
+    "code": "JPN201z",
+    "term": "後学期",
+    "day": "木",
+    "period": "2",
+    "classIds": [
+      "留学生のみ"
+    ]
+  },
+  {
+    "code": "JPN201z",
+    "term": "後学期",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "留学生のみ"
+    ]
+  },
+  {
+    "code": "JPN201z",
+    "term": "後学期",
+    "day": "木",
+    "period": "2",
+    "classIds": [
+      "留学生のみ"
+    ]
+  },
+  {
     "code": "KOR101z",
     "term": "前学期",
     "day": "月",
@@ -9303,6 +11090,160 @@
     ]
   },
   {
+    "code": "MTH302i",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH302i",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH302i",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH302j",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH302j",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH302j",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH302k",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Ⅲ-1",
+      "Ⅲ-2"
+    ]
+  },
+  {
+    "code": "MTH302k",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Ⅲ-3",
+      "Ⅲ-4"
+    ]
+  },
+  {
+    "code": "MTH302m",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Ⅲ-1",
+      "Ⅲ-2"
+    ]
+  },
+  {
+    "code": "MTH302m",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Ⅲ-3",
+      "Ⅲ-4"
+    ]
+  },
+  {
+    "code": "MTH302n",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Ⅲ-1",
+      "Ⅲ-2"
+    ]
+  },
+  {
+    "code": "MTH302n",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Ⅲ-3",
+      "Ⅲ-4"
+    ]
+  },
+  {
+    "code": "MTH302p",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Ⅲ-1",
+      "Ⅲ-2"
+    ]
+  },
+  {
+    "code": "MTH302p",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Ⅲ-3",
+      "Ⅲ-4"
+    ]
+  },
+  {
+    "code": "MTH302r",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Ⅲ-1",
+      "Ⅲ-2"
+    ]
+  },
+  {
+    "code": "MTH302r",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Ⅲ-3",
+      "Ⅲ-4"
+    ]
+  },
+  {
     "code": "MTH303a",
     "term": "前学期",
     "day": "月",
@@ -9489,6 +11430,187 @@
     "period": "1",
     "classIds": [
       "二類学籍番号偶数"
+    ]
+  },
+  {
+    "code": "MTH304a",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "MTH304a",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "MTH304b",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "MTH304b",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "MTH304c",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "MTH304c",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "MTH304d",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "MTH304d",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "MTH304e",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "MTH304e",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "MTH304f",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH304f",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH304f",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH304g",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH304g",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH304g",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH304h",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH304h",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH304h",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
     ]
   },
   {
@@ -9987,6 +12109,88 @@
     "classIds": [
       "電子工学プログラム",
       "物理工学プログラム"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "A1-11",
+      "A1-12",
+      "A1-8"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "A1-7",
+      "A1-9"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "A1-3",
+      "A1-4",
+      "A1-5"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "A1-1"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "A1-11",
+      "A1-12",
+      "A1-8"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "A1-7",
+      "A1-9"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "A1-3",
+      "A1-4",
+      "A1-5"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "A1-1"
     ]
   },
   {
@@ -10098,6 +12302,24 @@
     ]
   },
   {
+    "code": "PHY102z",
+    "term": "後学期",
+    "day": "火",
+    "period": "5",
+    "classIds": [
+      "再履生のみ"
+    ]
+  },
+  {
+    "code": "PHY102z",
+    "term": "後学期",
+    "day": "火",
+    "period": "5",
+    "classIds": [
+      "再履生のみ"
+    ]
+  },
+  {
     "code": "PHY103z",
     "term": "前学期",
     "day": "水",
@@ -10123,6 +12345,24 @@
       "クラス9",
       "クラス11",
       "クラス12"
+    ]
+  },
+  {
+    "code": "PHY202z",
+    "term": "前学期",
+    "day": "火",
+    "period": "5",
+    "classIds": [
+      "再履生のみ"
+    ]
+  },
+  {
+    "code": "PHY202z",
+    "term": "前学期",
+    "day": "火",
+    "period": "5",
+    "classIds": [
+      "再履生のみ"
     ]
   },
   {
@@ -12454,1930 +14694,6 @@
     ]
   },
   {
-    "code": "COM403i",
-    "term": "後学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "Mエリア"
-    ]
-  },
-  {
-    "code": "COM403j",
-    "term": "後学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "Mエリア"
-    ]
-  },
-  {
-    "code": "COM402m",
-    "term": "後学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "機械システムプログラム",
-      "電子工学プログラム",
-      "光工学プログラム",
-      "物理工学プログラム",
-      "化学生命工学プログラム"
-    ]
-  },
-  {
-    "code": "COM402n",
-    "term": "後学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "機械システムプログラム",
-      "電子工学プログラム",
-      "光工学プログラム",
-      "物理工学プログラム",
-      "化学生命工学プログラム"
-    ]
-  },
-  {
-    "code": "COM402p",
-    "term": "後学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "機械システムプログラム",
-      "電子工学プログラム",
-      "光工学プログラム",
-      "物理工学プログラム",
-      "化学生命工学プログラム"
-    ]
-  },
-  {
-    "code": "COM402r",
-    "term": "後学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "機械システムプログラム",
-      "電子工学プログラム",
-      "光工学プログラム",
-      "物理工学プログラム",
-      "化学生命工学プログラム"
-    ]
-  },
-  {
-    "code": "JPN101z",
-    "term": "前学期",
-    "day": "月",
-    "period": "2",
-    "classIds": [
-      "留学生のみ"
-    ]
-  },
-  {
-    "code": "JPN101z",
-    "term": "前学期",
-    "day": "木",
-    "period": "2",
-    "classIds": [
-      "留学生のみ"
-    ]
-  },
-  {
-    "code": "JPN101z",
-    "term": "前学期",
-    "day": "月",
-    "period": "3",
-    "classIds": [
-      "留学生のみ"
-    ]
-  },
-  {
-    "code": "JPN101z",
-    "term": "前学期",
-    "day": "木",
-    "period": "2",
-    "classIds": [
-      "留学生のみ"
-    ]
-  },
-  {
-    "code": "JPN201z",
-    "term": "後学期",
-    "day": "月",
-    "period": "2",
-    "classIds": [
-      "留学生のみ"
-    ]
-  },
-  {
-    "code": "JPN201z",
-    "term": "後学期",
-    "day": "木",
-    "period": "2",
-    "classIds": [
-      "留学生のみ"
-    ]
-  },
-  {
-    "code": "JPN201z",
-    "term": "後学期",
-    "day": "月",
-    "period": "3",
-    "classIds": [
-      "留学生のみ"
-    ]
-  },
-  {
-    "code": "JPN201z",
-    "term": "後学期",
-    "day": "木",
-    "period": "2",
-    "classIds": [
-      "留学生のみ"
-    ]
-  },
-  {
-    "code": "PHY102z",
-    "term": "後学期",
-    "day": "火",
-    "period": "5",
-    "classIds": [
-      "再履生のみ"
-    ]
-  },
-  {
-    "code": "PHY102z",
-    "term": "後学期",
-    "day": "火",
-    "period": "5",
-    "classIds": [
-      "再履生のみ"
-    ]
-  },
-  {
-    "code": "PHY202z",
-    "term": "前学期",
-    "day": "火",
-    "period": "5",
-    "classIds": [
-      "再履生のみ"
-    ]
-  },
-  {
-    "code": "PHY202z",
-    "term": "前学期",
-    "day": "火",
-    "period": "5",
-    "classIds": [
-      "再履生のみ"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス3"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス3"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス3"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス3"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス3"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス3"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "クラス4",
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "クラス4",
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "クラス4",
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "クラス4",
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "クラス4",
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "クラス4",
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG101z",
-    "term": "前学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "クラス9",
-      "クラス10",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "クラス9",
-      "クラス10",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "クラス9",
-      "クラス10",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "クラス9",
-      "クラス10",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "クラス9",
-      "クラス10",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "クラス9",
-      "クラス10",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス5"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス5"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス5"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス5"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス5"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス5"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "ENG102z",
-    "term": "前学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス3"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス3"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス3"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス3"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス3"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "1",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス3"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "クラス4",
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "クラス4",
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "クラス4",
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "クラス4",
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "クラス4",
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "クラス4",
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG201z",
-    "term": "後学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "クラス9",
-      "クラス10",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "クラス9",
-      "クラス10",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "クラス9",
-      "クラス10",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "クラス9",
-      "クラス10",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "クラス9",
-      "クラス10",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "クラス9",
-      "クラス10",
-      "クラス11"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス5"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス5"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス5"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス5"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス5"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "クラス1",
-      "クラス2",
-      "クラス5"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "ENG202z",
-    "term": "後学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG301z",
-    "term": "前学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "1",
-    "classIds": [
-      "一類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "2",
-    "classIds": [
-      "二類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "ENG401z",
-    "term": "後学期",
-    "day": "火",
-    "period": "3",
-    "classIds": [
-      "三類"
-    ]
-  },
-  {
-    "code": "MTH302k",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Ⅲ-1",
-      "Ⅲ-2"
-    ]
-  },
-  {
-    "code": "MTH302k",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Ⅲ-3",
-      "Ⅲ-4"
-    ]
-  },
-  {
-    "code": "MTH302m",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Ⅲ-1",
-      "Ⅲ-2"
-    ]
-  },
-  {
-    "code": "MTH302m",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Ⅲ-3",
-      "Ⅲ-4"
-    ]
-  },
-  {
-    "code": "MTH302n",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Ⅲ-1",
-      "Ⅲ-2"
-    ]
-  },
-  {
-    "code": "MTH302n",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Ⅲ-3",
-      "Ⅲ-4"
-    ]
-  },
-  {
-    "code": "MTH302p",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Ⅲ-1",
-      "Ⅲ-2"
-    ]
-  },
-  {
-    "code": "MTH302p",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Ⅲ-3",
-      "Ⅲ-4"
-    ]
-  },
-  {
-    "code": "MTH302r",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Ⅲ-1",
-      "Ⅲ-2"
-    ]
-  },
-  {
-    "code": "MTH302r",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Ⅲ-3",
-      "Ⅲ-4"
-    ]
-  },
-  {
-    "code": "MTH304b",
-    "term": "前学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "MTH304b",
-    "term": "前学期",
-    "day": "水",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4"
-    ]
-  },
-  {
     "code": "TEN501z",
     "term": "前学期",
     "day": "水",
@@ -14497,7 +14813,8 @@
     "day": "木",
     "period": "3",
     "classIds": [
-      "デザイン思考・データサイエンスプログラム"
+      "情報通信工学プログラム",
+      "電気情報学プログラム"
     ]
   },
   {
@@ -14506,8 +14823,7 @@
     "day": "木",
     "period": "3",
     "classIds": [
-      "情報通信工学プログラム",
-      "電気情報学プログラム"
+      "デザイン思考・データサイエンスプログラム"
     ]
   },
   {
@@ -14714,1006 +15030,265 @@
     "code": "TEN601z",
     "term": "後学期",
     "day": "木",
-    "period": "2",
-    "classIds": [
-      "計測・制御システムプログラム",
-      "先端ロボティクスプログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "木",
-    "period": "2",
-    "classIds": [
-      "計測・制御システムプログラム",
-      "先端ロボティクスプログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "木",
-    "period": "2",
-    "classIds": [
-      "計測・制御システムプログラム",
-      "先端ロボティクスプログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "木",
-    "period": "2",
-    "classIds": [
-      "計測・制御システムプログラム",
-      "先端ロボティクスプログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "物理工学プログラム",
-      "化学生命工学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "物理工学プログラム",
-      "化学生命工学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "木",
-    "period": "4",
-    "classIds": [
-      "情報通信工学プログラム",
-      "電気情報学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "木",
-    "period": "4",
-    "classIds": [
-      "情報通信工学プログラム",
-      "電気情報学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "木",
-    "period": "4",
-    "classIds": [
-      "情報通信工学プログラム",
-      "電気情報学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "木",
-    "period": "5",
-    "classIds": [
-      "再履生"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "情報数理工学プログラム",
-      "コンピュータサイエンスプログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "情報数理工学プログラム",
-      "コンピュータサイエンスプログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "情報数理工学プログラム",
-      "コンピュータサイエンスプログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "情報数理工学プログラム",
-      "コンピュータサイエンスプログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "2",
-    "classIds": [
-      "デザイン思考・データサイエンスプログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "メディア情報学プログラム",
-      "経営社会情報学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "メディア情報学プログラム",
-      "経営社会情報学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "メディア情報学プログラム",
-      "経営社会情報学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "メディア情報学プログラム",
-      "経営社会情報学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "デザイン思考・データサイエンスプログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "電子工学プログラム",
-      "光工学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "電子工学プログラム",
-      "光工学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "電子工学プログラム",
-      "光工学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "電子工学プログラム",
-      "光工学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "金",
-    "period": "5",
-    "classIds": [
-      "再履生"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "木",
-    "period": "2",
-    "classIds": [
-      "計測・制御システムプログラム",
-      "先端ロボティクスプログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "物理工学プログラム",
-      "化学生命工学プログラム"
-    ]
-  },
-  {
-    "code": "TEN601z",
-    "term": "後学期",
-    "day": "木",
     "period": "1",
     "classIds": [
       "機械システムプログラム"
     ]
   },
   {
-    "code": "CHM101z",
-    "term": "春ﾀｰﾑ",
-    "day": "月",
-    "period": "3",
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "木",
+    "period": "2",
     "classIds": [
-      "クラス7",
-      "クラス8"
+      "計測・制御システムプログラム",
+      "先端ロボティクスプログラム"
     ]
   },
   {
-    "code": "CHM101z",
-    "term": "春ﾀｰﾑ",
-    "day": "月",
-    "period": "4",
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "木",
+    "period": "2",
     "classIds": [
-      "クラス7",
-      "クラス8"
+      "計測・制御システムプログラム",
+      "先端ロボティクスプログラム"
     ]
   },
   {
-    "code": "CHM101z",
-    "term": "春ﾀｰﾑ",
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "木",
+    "period": "2",
+    "classIds": [
+      "計測・制御システムプログラム",
+      "先端ロボティクスプログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "木",
+    "period": "2",
+    "classIds": [
+      "計測・制御システムプログラム",
+      "先端ロボティクスプログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
     "day": "木",
     "period": "3",
     "classIds": [
-      "クラス3",
-      "クラス4"
+      "物理工学プログラム",
+      "化学生命工学プログラム"
     ]
   },
   {
-    "code": "CHM101z",
-    "term": "春ﾀｰﾑ",
-    "day": "木",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4"
-    ]
-  },
-  {
-    "code": "CHM101z",
-    "term": "春ﾀｰﾑ",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "CHM101z",
-    "term": "春ﾀｰﾑ",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "CHM101z",
-    "term": "夏ﾀｰﾑ",
-    "day": "月",
-    "period": "3",
-    "classIds": [
-      "クラス11",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "CHM101z",
-    "term": "夏ﾀｰﾑ",
-    "day": "月",
-    "period": "4",
-    "classIds": [
-      "クラス11",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "CHM101z",
-    "term": "夏ﾀｰﾑ",
+    "code": "TEN601z",
+    "term": "後学期",
     "day": "木",
     "period": "3",
     "classIds": [
-      "クラス5",
-      "クラス6"
+      "物理工学プログラム",
+      "化学生命工学プログラム"
     ]
   },
   {
-    "code": "CHM101z",
-    "term": "夏ﾀｰﾑ",
-    "day": "木",
-    "period": "4",
-    "classIds": [
-      "クラス5",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "CHM101z",
-    "term": "夏ﾀｰﾑ",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "CHM101z",
-    "term": "夏ﾀｰﾑ",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "CHM202z",
-    "term": "秋ﾀｰﾑ",
-    "day": "月",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8"
-    ]
-  },
-  {
-    "code": "CHM202z",
-    "term": "秋ﾀｰﾑ",
-    "day": "月",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8"
-    ]
-  },
-  {
-    "code": "CHM202z",
-    "term": "秋ﾀｰﾑ",
+    "code": "TEN601z",
+    "term": "後学期",
     "day": "木",
     "period": "3",
     "classIds": [
-      "クラス3",
-      "クラス4"
+      "物理工学プログラム",
+      "化学生命工学プログラム"
     ]
   },
   {
-    "code": "CHM202z",
-    "term": "秋ﾀｰﾑ",
+    "code": "TEN601z",
+    "term": "後学期",
     "day": "木",
     "period": "4",
     "classIds": [
-      "クラス3",
-      "クラス4"
+      "情報通信工学プログラム",
+      "電気情報学プログラム"
     ]
   },
   {
-    "code": "CHM202z",
-    "term": "秋ﾀｰﾑ",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "CHM202z",
-    "term": "秋ﾀｰﾑ",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "CHM202z",
-    "term": "冬ﾀｰﾑ",
-    "day": "月",
-    "period": "3",
-    "classIds": [
-      "クラス11",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "CHM202z",
-    "term": "冬ﾀｰﾑ",
-    "day": "月",
-    "period": "4",
-    "classIds": [
-      "クラス11",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "CHM202z",
-    "term": "冬ﾀｰﾑ",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "CHM202z",
-    "term": "冬ﾀｰﾑ",
+    "code": "TEN601z",
+    "term": "後学期",
     "day": "木",
     "period": "4",
     "classIds": [
-      "クラス5",
-      "クラス6"
+      "情報通信工学プログラム",
+      "電気情報学プログラム"
     ]
   },
   {
-    "code": "CHM202z",
-    "term": "冬ﾀｰﾑ",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "CHM202z",
-    "term": "冬ﾀｰﾑ",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "PHY101z",
-    "term": "春ﾀｰﾑ",
-    "day": "月",
-    "period": "3",
-    "classIds": [
-      "クラス11",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "PHY101z",
-    "term": "春ﾀｰﾑ",
-    "day": "月",
-    "period": "4",
-    "classIds": [
-      "クラス11",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "PHY101z",
-    "term": "春ﾀｰﾑ",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "PHY101z",
-    "term": "春ﾀｰﾑ",
+    "code": "TEN601z",
+    "term": "後学期",
     "day": "木",
     "period": "4",
     "classIds": [
-      "クラス5",
-      "クラス6"
+      "情報通信工学プログラム",
+      "電気情報学プログラム"
     ]
   },
   {
-    "code": "PHY101z",
-    "term": "春ﾀｰﾑ",
+    "code": "TEN601z",
+    "term": "後学期",
     "day": "木",
-    "period": "6",
+    "period": "5",
     "classIds": [
       "再履生"
     ]
   },
   {
-    "code": "PHY101z",
-    "term": "春ﾀｰﾑ",
-    "day": "木",
-    "period": "7",
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "情報数理工学プログラム",
+      "コンピュータサイエンスプログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "情報数理工学プログラム",
+      "コンピュータサイエンスプログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "情報数理工学プログラム",
+      "コンピュータサイエンスプログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "情報数理工学プログラム",
+      "コンピュータサイエンスプログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "デザイン思考・データサイエンスプログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "メディア情報学プログラム",
+      "経営社会情報学プログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "メディア情報学プログラム",
+      "経営社会情報学プログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "メディア情報学プログラム",
+      "経営社会情報学プログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "メディア情報学プログラム",
+      "経営社会情報学プログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "デザイン思考・データサイエンスプログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "電子工学プログラム",
+      "光工学プログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "電子工学プログラム",
+      "光工学プログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "電子工学プログラム",
+      "光工学プログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "電子工学プログラム",
+      "光工学プログラム"
+    ]
+  },
+  {
+    "code": "TEN601z",
+    "term": "後学期",
+    "day": "金",
+    "period": "5",
     "classIds": [
       "再履生"
-    ]
-  },
-  {
-    "code": "PHY101z",
-    "term": "春ﾀｰﾑ",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "PHY101z",
-    "term": "春ﾀｰﾑ",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "PHY101z",
-    "term": "夏ﾀｰﾑ",
-    "day": "月",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8"
-    ]
-  },
-  {
-    "code": "PHY101z",
-    "term": "夏ﾀｰﾑ",
-    "day": "月",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8"
-    ]
-  },
-  {
-    "code": "PHY101z",
-    "term": "夏ﾀｰﾑ",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "クラス3",
-      "クラス4"
-    ]
-  },
-  {
-    "code": "PHY101z",
-    "term": "夏ﾀｰﾑ",
-    "day": "木",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4"
-    ]
-  },
-  {
-    "code": "PHY101z",
-    "term": "夏ﾀｰﾑ",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "PHY101z",
-    "term": "夏ﾀｰﾑ",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "夏ﾀｰﾑ",
-    "day": "木",
-    "period": "6",
-    "classIds": [
-      "再履生"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "夏ﾀｰﾑ",
-    "day": "木",
-    "period": "7",
-    "classIds": [
-      "再履生"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "秋ﾀｰﾑ",
-    "day": "月",
-    "period": "3",
-    "classIds": [
-      "クラス11",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "秋ﾀｰﾑ",
-    "day": "月",
-    "period": "4",
-    "classIds": [
-      "クラス11",
-      "クラス12"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "秋ﾀｰﾑ",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "クラス5",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "秋ﾀｰﾑ",
-    "day": "木",
-    "period": "4",
-    "classIds": [
-      "クラス5",
-      "クラス6"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "秋ﾀｰﾑ",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "秋ﾀｰﾑ",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "冬ﾀｰﾑ",
-    "day": "月",
-    "period": "3",
-    "classIds": [
-      "クラス7",
-      "クラス8"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "冬ﾀｰﾑ",
-    "day": "月",
-    "period": "4",
-    "classIds": [
-      "クラス7",
-      "クラス8"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "冬ﾀｰﾑ",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "クラス3",
-      "クラス4"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "冬ﾀｰﾑ",
-    "day": "木",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "冬ﾀｰﾑ",
-    "day": "金",
-    "period": "3",
-    "classIds": [
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "PHY201z",
-    "term": "冬ﾀｰﾑ",
-    "day": "金",
-    "period": "4",
-    "classIds": [
-      "クラス9",
-      "クラス10"
-    ]
-  },
-  {
-    "code": "MTH304a",
-    "term": "前学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "MTH304a",
-    "term": "前学期",
-    "day": "水",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4"
-    ]
-  },
-  {
-    "code": "MTH304c",
-    "term": "前学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "MTH304c",
-    "term": "前学期",
-    "day": "水",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4"
-    ]
-  },
-  {
-    "code": "MTH304d",
-    "term": "前学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "MTH304d",
-    "term": "前学期",
-    "day": "水",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4"
-    ]
-  },
-  {
-    "code": "MTH304e",
-    "term": "前学期",
-    "day": "火",
-    "period": "4",
-    "classIds": [
-      "クラス1",
-      "クラス2"
-    ]
-  },
-  {
-    "code": "MTH304e",
-    "term": "前学期",
-    "day": "水",
-    "period": "4",
-    "classIds": [
-      "クラス3",
-      "クラス4"
-    ]
-  },
-  {
-    "code": "MTH302i",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Mエリア"
-    ]
-  },
-  {
-    "code": "MTH302i",
-    "term": "前学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "Iエリア"
-    ]
-  },
-  {
-    "code": "MTH302i",
-    "term": "前学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "Iエリア"
-    ]
-  },
-  {
-    "code": "MTH302j",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Mエリア"
-    ]
-  },
-  {
-    "code": "MTH302j",
-    "term": "前学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "Iエリア"
-    ]
-  },
-  {
-    "code": "MTH302j",
-    "term": "前学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "Iエリア"
-    ]
-  },
-  {
-    "code": "MTH304f",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Mエリア"
-    ]
-  },
-  {
-    "code": "MTH304f",
-    "term": "前学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "Iエリア"
-    ]
-  },
-  {
-    "code": "MTH304f",
-    "term": "前学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "Iエリア"
-    ]
-  },
-  {
-    "code": "MTH304g",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Mエリア"
-    ]
-  },
-  {
-    "code": "MTH304g",
-    "term": "前学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "Iエリア"
-    ]
-  },
-  {
-    "code": "MTH304g",
-    "term": "前学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "Iエリア"
-    ]
-  },
-  {
-    "code": "MTH304h",
-    "term": "前学期",
-    "day": "水",
-    "period": "3",
-    "classIds": [
-      "Mエリア"
-    ]
-  },
-  {
-    "code": "MTH304h",
-    "term": "前学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "Iエリア"
-    ]
-  },
-  {
-    "code": "MTH304h",
-    "term": "前学期",
-    "day": "木",
-    "period": "3",
-    "classIds": [
-      "Iエリア"
     ]
   }
 ]

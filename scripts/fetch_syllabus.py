@@ -271,6 +271,43 @@ def main():
         "syllabusUrl": f"{DETAIL_URL_TMPL.format(faculty='31', code='21018234')}", "updatedAt": today,
     }]
 
+    # 複素関数論：Ⅰ類（media/mathinfo/cs/designds）・Ⅱ類（control/robotics/security/netinfo/electroinfo）の
+    # 9科目コードは、シラバスWeb公開システム上でこれらの科目番号自体が登録されていない
+    # （南泰浩先生・龍野智哉先生の講義＝Ⅰ類向け、宮脇陽一先生／鈴木淳先生／小木曽公尚先生の講義＝
+    # Ⅱ類向けの、いずれの個別ページも科目番号欄が空欄）。一方、古川怜先生・遠藤晋平先生が担当する
+    # 別講義（Ⅲ類向け、複素関数論(Ⅲ類)）の個別ページには、本来登録されるべきでないこの9科目コードが
+    # まとめて誤登録されている（大学側の登録ミス、2026-09-06に開発者が直接確認・専門知識で判明）。
+    # 自動マッチングに任せると誤って古川・遠藤先生側のofferingsを拾ってしまうため、
+    # 正しい担当・時限を固定値として上書きする（管理プログラム(management, MTH304b)は
+    # 元々別講義で対象外。将来もし大学側の登録が修正されて自動マッチングが正しく機能するように
+    # なっても、この上書きが優先されたままになる点は注意）
+    fukusokansuuron_i = [{
+        "timetableCode": "21122118", "faculty": "31", "term": "前学期",
+        "slots": [{"day": "火", "period": 4}], "instructors": ["南　泰浩"],
+        "syllabusUrl": DETAIL_URL_TMPL.format(faculty="31", code="21122118"), "updatedAt": today,
+    }, {
+        "timetableCode": "21122119", "faculty": "31", "term": "前学期",
+        "slots": [{"day": "水", "period": 4}], "instructors": ["龍野　智哉"],
+        "syllabusUrl": DETAIL_URL_TMPL.format(faculty="31", code="21122119"), "updatedAt": today,
+    }]
+    fukusokansuuron_ii = [{
+        "timetableCode": "21222124", "faculty": "31", "term": "前学期",
+        "slots": [{"day": "水", "period": 3}], "instructors": ["宮脇　陽一"],
+        "syllabusUrl": DETAIL_URL_TMPL.format(faculty="31", code="21222124"), "updatedAt": today,
+    }, {
+        "timetableCode": "21222122", "faculty": "31", "term": "前学期",
+        "slots": [{"day": "木", "period": 3}], "instructors": ["鈴木　淳"],
+        "syllabusUrl": DETAIL_URL_TMPL.format(faculty="31", code="21222122"), "updatedAt": today,
+    }, {
+        "timetableCode": "21222123", "faculty": "31", "term": "前学期",
+        "slots": [{"day": "木", "period": 3}], "instructors": ["小木曽　公尚"],
+        "syllabusUrl": DETAIL_URL_TMPL.format(faculty="31", code="21222123"), "updatedAt": today,
+    }]
+    for code in ["MTH304a", "MTH304c", "MTH304d", "MTH304e"]:
+        offerings_by_code[code] = fukusokansuuron_i
+    for code in ["MTH302i", "MTH302j", "MTH304f", "MTH304g", "MTH304h"]:
+        offerings_by_code[code] = fukusokansuuron_ii
+
     updated = 0
     prereq_updated = 0
     for s in subjects_data["subjects"]:
