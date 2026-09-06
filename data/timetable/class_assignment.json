@@ -12801,8 +12801,8 @@
   {
     "code": "COM403i",
     "term": "後学期",
-    "day": "木",
-    "period": "2",
+    "day": "金",
+    "period": "1",
     "classIds": [
       "Mエリア"
     ]
@@ -12810,8 +12810,8 @@
   {
     "code": "COM403j",
     "term": "後学期",
-    "day": "木",
-    "period": "2",
+    "day": "金",
+    "period": "1",
     "classIds": [
       "Mエリア"
     ]
@@ -12819,8 +12819,8 @@
   {
     "code": "COM402m",
     "term": "後学期",
-    "day": "木",
-    "period": "2",
+    "day": "金",
+    "period": "1",
     "classIds": [
       "機械システムプログラム",
       "電子工学プログラム",
@@ -12832,8 +12832,8 @@
   {
     "code": "COM402n",
     "term": "後学期",
-    "day": "木",
-    "period": "2",
+    "day": "金",
+    "period": "1",
     "classIds": [
       "機械システムプログラム",
       "電子工学プログラム",
@@ -12845,8 +12845,8 @@
   {
     "code": "COM402p",
     "term": "後学期",
-    "day": "木",
-    "period": "2",
+    "day": "金",
+    "period": "1",
     "classIds": [
       "機械システムプログラム",
       "電子工学プログラム",
@@ -12858,14 +12858,176 @@
   {
     "code": "COM402r",
     "term": "後学期",
-    "day": "木",
-    "period": "2",
+    "day": "金",
+    "period": "1",
     "classIds": [
       "機械システムプログラム",
       "電子工学プログラム",
       "光工学プログラム",
       "物理工学プログラム",
       "化学生命工学プログラム"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "A1-6",
+      "A1-9"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "A1-11",
+      "A1-12"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "A1-3",
+      "A1-4"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "A1-1",
+      "A1-4"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "A1-6",
+      "A1-9"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "A1-11",
+      "A1-12"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "A1-3",
+      "A1-4"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "A1-1",
+      "A1-4"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "A1-11",
+      "A1-12",
+      "A1-8"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "A1-7",
+      "A1-9"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "A1-3",
+      "A1-4",
+      "A1-5"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "A1-1"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "A1-11",
+      "A1-12",
+      "A1-8"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "A1-7",
+      "A1-9"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "A1-3",
+      "A1-4",
+      "A1-5"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "A1-1"
     ]
   }
 ]
