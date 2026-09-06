@@ -10,10 +10,8 @@
 // という指定で、C++でいう関数ポインタを渡すようなイメージに近い。
 import { HashRouter, Link, Route, Routes } from 'react-router-dom'
 import AboutPage from './pages/AboutPage'
-import ComparePage from './pages/ComparePage'
 import CourseDetailPage from './pages/CourseDetailPage'
 import CoursesPage from './pages/CoursesPage'
-import DataPage from './pages/DataPage'
 import MainPage from './pages/MainPage'
 import RoutePage from './pages/RoutePage'
 import SetupPage from './pages/SetupPage'
@@ -26,7 +24,6 @@ function App() {
       <nav>
         <Link to="/">トップ</Link> | <Link to="/setup">プロフィール設定</Link> |{' '}
         <Link to="/main">メイン画面</Link> | <Link to="/courses">科目一覧</Link> |{' '}
-        <Link to="/compare">プログラム比較</Link> | <Link to="/data">データ</Link> |{' '}
         <Link to="/about">このサイトについて</Link>
       </nav>
       <Routes>
@@ -35,8 +32,6 @@ function App() {
         <Route path="/main" element={<MainPage />} />
         <Route path="/courses" element={<CoursesPage />} />
         <Route path="/courses/:id" element={<CourseDetailPage />} />
-        <Route path="/compare" element={<ComparePage />} />
-        <Route path="/data" element={<DataPage />} />
         <Route path="/route/:year/:cls/:prog" element={<RoutePage />} />
         <Route path="/about" element={<AboutPage />} />
       </Routes>
