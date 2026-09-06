@@ -90,11 +90,19 @@ ROMAN_NUMERAL_TO_ASCII = str.maketrans({
     "Ⅵ": "VI", "Ⅶ": "VII", "Ⅷ": "VIII", "Ⅸ": "IX", "Ⅹ": "X",
 })
 DASH_CHARS = ["－", "‐", "‑", "–", "—", "―", "−"]
+# 全角英数字・全角記号（Ｕ+FF01〜FF5E）は、対応する半角（Ｕ+0021〜007E）へ一括変換する
+# （2026-09-06に発覚：「イノベイティブ総合コミュニケーションデザイン２」のように、シラバス側
+# だけ全角数字になっていて科目マスタの半角「2」と一致しない科目があった。哲学Ａ・生涯スポーツ
+# 演習Ａ等、シラバス側も全角のまま一致している科目はこの変換後も両辺が揃うので問題ない）
+FULLWIDTH_TO_HALFWIDTH = str.maketrans(
+    {chr(c): chr(c - 0xFEE0) for c in range(0xFF01, 0xFF5F)}
+)
 
 
 def normalize_for_match(name: str) -> str:
     normalized = re.sub(r"[\s　]+", "", name)
     normalized = normalized.translate(ROMAN_NUMERAL_TO_ASCII)
+    normalized = normalized.translate(FULLWIDTH_TO_HALFWIDTH)
     for dash in DASH_CHARS:
         normalized = normalized.replace(dash, "-")
     return normalized
@@ -244,6 +252,24 @@ def main():
         "slots": [{"day": "金", "period": 5}], "instructors": [],
         "syllabusUrl": "", "updatedAt": today,
     }])
+
+    # 昼間の「知的財産権」(CAR603z)・「技術者倫理」(CAR604z)の登録漏れ補正（2026-09-06発覚）：
+    # シラバスWeb公開システム側で、夜間主の個別ページ（22018104・22018205）の科目番号欄に
+    # 昼間コード（CAR603z・CAR604z）と夜間コード（CAR701s・CAR801s）が両方書かれている一方、
+    # 昼間の個別ページ（21018233・21018234）の科目番号欄は空欄になっていた。このため
+    # CAR603z/CAR604zには夜間の時限（水7）が誤って付いてしまい、本来の昼間の時限
+    # （知的財産権=月1、技術者倫理=水1）が一件も取得できていなかった。開発者確認・
+    # 一覧ページの行データから直接補う（CAR701s/CAR801sは夜間の時限のままで正しい）
+    offerings_by_code["CAR603z"] = [{
+        "timetableCode": "21018233", "faculty": "31", "term": "後学期",
+        "slots": [{"day": "月", "period": 1}], "instructors": ["本間", "○重森"],
+        "syllabusUrl": f"{DETAIL_URL_TMPL.format(faculty='31', code='21018233')}", "updatedAt": today,
+    }]
+    offerings_by_code["CAR604z"] = [{
+        "timetableCode": "21018234", "faculty": "31", "term": "後学期",
+        "slots": [{"day": "水", "period": 1}], "instructors": ["濁川　義和"],
+        "syllabusUrl": f"{DETAIL_URL_TMPL.format(faculty='31', code='21018234')}", "updatedAt": today,
+    }]
 
     updated = 0
     prereq_updated = 0

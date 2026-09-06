@@ -1412,6 +1412,24 @@
       "graduateLinked": false,
       "groups": [
         "career"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21018232",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "山田　祥之"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018232.html",
+          "updatedAt": "2026-09-06"
+        }
       ]
     },
     {
@@ -1463,21 +1481,20 @@
       ],
       "offerings": [
         {
-          "timetableCode": "22018104",
-          "faculty": "32",
-          "term": "前学期",
+          "timetableCode": "21018233",
+          "faculty": "31",
+          "term": "後学期",
           "slots": [
             {
-              "day": "水",
-              "period": 7
+              "day": "月",
+              "period": 1
             }
           ],
           "instructors": [
             "本間",
-            "○重森",
-            "○尾原"
+            "○重森"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22018104.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018233.html",
           "updatedAt": "2026-09-06"
         }
       ],
@@ -1499,19 +1516,19 @@
       ],
       "offerings": [
         {
-          "timetableCode": "22018205",
-          "faculty": "32",
+          "timetableCode": "21018234",
+          "faculty": "31",
           "term": "後学期",
           "slots": [
             {
               "day": "水",
-              "period": 7
+              "period": 1
             }
           ],
           "instructors": [
             "濁川　義和"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22018205.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018234.html",
           "updatedAt": "2026-09-06"
         }
       ],
