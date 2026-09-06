@@ -48,6 +48,9 @@ interface OfferingLike {
  * - 「二類学籍番号偶数/奇数」：Ⅱ類の学籍番号の偶奇。1年次クラスの番号と学籍番号の偶奇は
  *   一致する（1年次クラスが偶数なら学籍番号も偶数、奇数なら奇数）ため、yearOneClassから導出する
  *   （開発者指摘、2026-09-06）
+ * - 「一類/二類/三類」：プログラムや1年次クラスに関係なく、その類（Ⅰ/Ⅱ/Ⅲ類）の学生全員が対象
+ *   （例:ENG301z/401z「Academic English for the 2nd Year」で時限ごとに受講する類が決まっている。
+ *   開発者提案、2026-09-06）
  * - 「全クラス」：クラス分けに関係なく全員が対象
  * - それ以外（プログラム名）：2年後期以降、プログラムが決まった学生向け
  * - 「再履全員/再履生」：この科目を再履修中（＝committedの状態が'failed'）の学生向けの特別セクション。
@@ -74,6 +77,13 @@ export function classIdMatchesProfile(
 
   if (profile.programName && classId === profile.programName) return true
   if (classId === '全クラス') return true
+
+  // 「一類」「二類」「三類」：プログラムや1年次クラスに関係なく、その類の学生全員が対象
+  // （例:ENG301z/401z「Academic English for the 2nd Year」で、時限ごとに受講する類が
+  // 決まっている。2026-09-06、開発者提案）
+  if (classId === '一類') return cluster === 'I'
+  if (classId === '二類') return cluster === 'II'
+  if (classId === '三類') return cluster === 'III'
 
   const yearOneMatch = classId.match(/^クラス(\d+)$/)
   if (yearOneMatch) return profile.yearOneClass === Number(yearOneMatch[1])
@@ -154,14 +164,19 @@ export function resolveSlotsForProfile(
 ): { day: string; period: number }[] | undefined {
   function offeringMatches(o: OfferingLike, allowCatchAll: boolean): boolean {
     return o.slots.some((slot) => {
-      const entry = assignments.find(
+      // 同じ(科目・学期・曜日・時限)に、クラスごとに教員が違う複数のセクションがあると
+      // (例:MTH205a「離散数学」月1限のAクラス担当とBクラス担当)、class_assignment.jsonには
+      // 別々のエントリとして複数件入っている。findだと最初の1件しか見ずBクラスの学生が
+      // 一致しなくなるバグがあったため、該当する全エントリのclassIdsを対象にする
+      // （2026-09-06、開発者が「Bクラスに設定しても表示されない」と報告して発覚）
+      const entries = assignments.filter(
         (a) => a.code === code && a.term === o.term && a.day === slot.day && a.period === String(slot.period),
       )
-      return (
-        entry?.classIds.some((id) => {
+      return entries.some((entry) =>
+        entry.classIds.some((id) => {
           if (id === '全クラス' && !allowCatchAll) return false
           return classIdMatchesProfile(id, profile, cluster, isRetaking)
-        }) ?? false
+        }),
       )
     })
   }

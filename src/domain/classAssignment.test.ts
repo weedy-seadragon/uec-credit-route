@@ -239,4 +239,25 @@ describe('resolveSlotsForProfile（複数セクションからの解決）', () 
       { day: '金', period: 4 },
     ])
   })
+
+  it('同じ(科目・学期・曜日・時限)に、クラスごとに担当教員が違う複数のセクションが別々のエントリとして入っていても、両方を候補にする（MTH205a「離散数学」で実際に発生したバグ）', () => {
+    // build_class_assignment_json.pyはCSVの行ごとに別々のJSONエントリを作るため、
+    // 同じ日時にAクラス担当・Bクラス担当が別行で記入されていると、class_assignment.jsonには
+    // 同じ(code,term,day,period)のエントリが2つ並ぶ。findだと最初の1件しか見ずBクラスの
+    // 学生が一致しなくなるバグがあった（2026-09-06、開発者が「Bクラスに設定しても
+    // 離散数学の時限が表示されない」と報告して発覚）
+    const mthAssignments: ClassAssignmentEntry[] = [
+      { code: 'MTH205a', term: '後学期', day: '月', period: '1', classIds: ['Aクラス'] },
+      { code: 'MTH205a', term: '後学期', day: '月', period: '1', classIds: ['Bクラス'] },
+    ]
+    const offerings = [{ term: '後学期', slots: [{ day: '月', period: 1 }] }]
+
+    expect(resolveSlotsForProfile('MTH205a', offerings, mthAssignments, { classIABC: 'A' }, 'I')).toEqual([
+      { day: '月', period: 1 },
+    ])
+    expect(resolveSlotsForProfile('MTH205a', offerings, mthAssignments, { classIABC: 'B' }, 'I')).toEqual([
+      { day: '月', period: 1 },
+    ])
+    expect(resolveSlotsForProfile('MTH205a', offerings, mthAssignments, { classIABC: 'C' }, 'I')).toBeUndefined()
+  })
 })
