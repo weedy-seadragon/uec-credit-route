@@ -33,9 +33,13 @@ SCHEDULE_PATH = os.path.join(ROOT, "data", "timetable", "class_schedule.csv")
 OUT_PATH = os.path.join(ROOT, "data", "timetable", "class_assignment.csv")
 FILLED_PATH = os.path.join(ROOT, "data", "timetable", "class_assignment_filled.csv")
 
-# 必修の1・2年次Academic English。英語系は名前に"English"を含むため通常は対象外だが、
-# この6科目だけはクラス別の曜日時限解決の対象にする（2026-09-06、開発者指示）
-ENGLISH_CLASS_ASSIGNMENT_CODES = {"ENG101z", "ENG102z", "ENG201z", "ENG202z", "ENG301z", "ENG401z"}
+# 必修の1・2年次Academic English・Technical English。英語系は名前に"English"を含むため
+# 通常は対象外だが、これらの科目だけはクラス別の曜日時限解決の対象にする
+# （2026-09-06、開発者指示。TEN501z/TEN601zは同日追加）
+ENGLISH_CLASS_ASSIGNMENT_CODES = {
+    "ENG101z", "ENG102z", "ENG201z", "ENG202z", "ENG301z", "ENG401z",
+    "TEN501z", "TEN601z",
+}
 
 
 def norm_name(name: str) -> str:
