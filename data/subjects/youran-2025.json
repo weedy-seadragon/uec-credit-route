@@ -31356,7 +31356,8 @@
           "updatedAt": "2026-09-06"
         }
       ],
-      "prerequisitesText": "特になし。"
+      "prerequisitesText": "特になし。",
+      "note": "夏期集中講義"
     },
     {
       "code": "HSS313z",
@@ -58753,7 +58754,23 @@
       "groups": [
         "special"
       ],
-      "note": "開講年度により扱いが異なる"
+      "note": "開講年度により扱いが異なる",
+      "offerings": [
+        {
+          "timetableCode": "",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 5
+            }
+          ],
+          "instructors": [],
+          "syllabusUrl": "",
+          "updatedAt": "2026-09-06"
+        }
+      ]
     },
     {
       "code": "UEC002z",
@@ -58769,7 +58786,23 @@
       "groups": [
         "special"
       ],
-      "note": "開講年度により扱いが異なる"
+      "note": "開講年度により扱いが異なる",
+      "offerings": [
+        {
+          "timetableCode": "",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 5
+            }
+          ],
+          "instructors": [],
+          "syllabusUrl": "",
+          "updatedAt": "2026-09-06"
+        }
+      ]
     },
     {
       "code": "UEC301s",

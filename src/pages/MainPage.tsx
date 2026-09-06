@@ -489,6 +489,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function standardYearOf(code: string): number | null {
     return subjectsByCode.get(code)?.standardYear ?? null
   }
+  // 「夏期集中」「冬期集中」の科目かどうか（noteフィールドから判定）。人文・社会科学科目のように
+  // termTypeは前学期/後学期のまま登録されているが、実際は特定の集中期間にまとめて開講される
+  // 科目（政治学Ａ等）を、前学期・後学期の折りたたみとは別の入れ子にまとめるために使う
+  // （2026-09-06、開発者提案）
+  function intensiveSeasonOf(code: string): '夏期' | '冬期' | null {
+    const note = subjectsByCode.get(code)?.note
+    if (note?.includes('夏期集中')) return '夏期'
+    if (note?.includes('冬期集中')) return '冬期'
+    return null
+  }
   // 学期別に折りたたんだ後の行では、学期は見出し（前学期/後学期）側で分かるので、
   // 「2年次」のように年次だけを添える（yearTermTagの学期を省いた版）
   function yearOnlyTag(code: string) {
@@ -505,19 +515,46 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // committedが'failed'（不合格）の科目は再履修中とみなし、「再履全員/再履生」向けの
   // セクションから曜日時限を出す（開発者提案、2026-09-06）
   // シラバス上に曜日時限が一切無い（＝offeringsは取れているが全セクションのslotsが空）科目は
-  // 「時間割に入っていない」科目とみなす。学修要覧のnoteに「集中」（集中講義・夏期集中講義・
-  // 冬期集中講義等）とある場合はそのまま何も表示しないが、それ以外（卒業研究・オンデマンド
-  // 授業等）は「オンデマンド」と表示する（開発者指示、2026-09-06）。
+  // 「時間割に入っていない」科目とみなす。学修要覧のnoteが「夏期集中」「冬期集中」の場合は
+  // そのままその文言を表示し、それ以外の「集中」（隔年度開講の集中講義等）は何も表示しない。
+  // どちらでもない（卒業研究・オンデマンド授業等）は「オンデマンド」と表示する
+  // （開発者指示、2026-09-06。当初は集中講義を一律非表示にしていたが、政治学Ａ・
+  // 生涯スポーツ演習Ｃ/Ｄのように「夏期集中」「冬期集中」であることが分かっている科目は
+  // 「オンデマンド」ではなくその文言を出したほうが正確、という指摘を受けて追加）。
   // offeringsが1件も無い（＝シラバスで名前が一致せずデータ自体が無い）科目は、本当に
   // 時間割が無いのか単なるデータ欠落なのか区別できないため、従来通り何も表示しない
   function dayPeriodTag(code: string) {
     const subject = subjectsByCode.get(code)
     const offerings = subject?.offerings
     if (!offerings || offerings.length === 0) return null
+    const note = subject?.note
     const hasAnySlots = offerings.some((o) => o.slots.length > 0)
     if (!hasAnySlots) {
-      if (subject?.note?.includes('集中')) return null
+      if (note?.includes('夏期集中')) return <span style={{ marginLeft: '0.4em' }}>夏期集中</span>
+      if (note?.includes('冬期集中')) return <span style={{ marginLeft: '0.4em' }}>冬期集中</span>
+      if (note?.includes('集中')) return null
       return <span style={{ marginLeft: '0.4em' }}>オンデマンド</span>
+    }
+    // 隔年度開講・開講年度により内容が変わる、といった注記は、実際に何か表示するときは
+    // 併記しておく（2026-09-06。学域特別講義A/Bのような「毎年テーマは変わるが曜日時限は
+    // 固定」という科目で、そのことが伝わるようにするため）
+    const noteSuffix = note ? (
+      <span style={{ marginLeft: '0.3em', color: '#555', fontSize: '0.9em' }}>（{note}）</span>
+    ) : null
+    // クォーター（春/夏/秋/冬ターム）制で、かつ1つの科目コードに単一のタームしか無い科目
+    // （アカデミックスキルズ等）は、曜日時限ではなく「N年◯ターム」と表示する
+    // （2026-09-06。基礎科学実験のように複数タームにまたがる科目は対象外＝下の通常処理に
+    // 進み、複数セクション科目として扱われる）
+    const termSet = new Set(offerings.map((o) => o.term))
+    const soleTerm = termSet.size === 1 ? [...termSet][0] : undefined
+    const quarterLabel = soleTerm ? QUARTER_LABELS[soleTerm] : undefined
+    if (quarterLabel && subject?.standardYear != null) {
+      return (
+        <span style={{ marginLeft: '0.4em' }}>
+          {subject.standardYear}年{quarterLabel}
+          {noteSuffix}
+        </span>
+      )
     }
     const isRetaking = committed.get(code) === 'failed'
     const slots =
@@ -540,7 +577,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           )
     if (!slots || slots.length === 0) return null
     const text = slots.map((s) => `${s.day}・${s.period}限`).join('/')
-    return <span style={{ marginLeft: '0.4em' }}>{text}</span>
+    return (
+      <span style={{ marginLeft: '0.4em' }}>
+        {text}
+        {noteSuffix}
+      </span>
+    )
   }
   // 他プログラムの専門科目かどうか
   function isOtherProgram(code: string): boolean {
@@ -798,6 +840,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 yearTermTag={yearTermTag}
                 termTypeOf={termTypeOf}
                 standardYearOf={standardYearOf}
+                intensiveSeasonOf={intensiveSeasonOf}
                 yearOnlyTag={yearOnlyTag}
                 dayPeriodTag={dayPeriodTag}
                 isOtherProgram={isOtherProgram}
@@ -859,6 +902,15 @@ function requiredShortfall(groups: readonly BoundaryGroup[]): number {
 // （人文・社会科学科目、上級科目。どちらもdata/requirements/2025-day-common.jsonでのid）
 const GROUPS_SPLIT_BY_TERM = new Set(['hss', 'advanced'])
 
+// offerings[].term に入っているクォーター（ターム）表記（半角カナ）を、表示用の全角表記にする
+// （2026-09-06。dayPeriodTagで「N年夏ターム」のように表示するために使う）
+const QUARTER_LABELS: Record<string, string> = {
+  '春ﾀｰﾑ': '春ターム',
+  '夏ﾀｰﾑ': '夏ターム',
+  '秋ﾀｰﾑ': '秋ターム',
+  '冬ﾀｰﾑ': '冬ターム',
+}
+
 // 第二外国語（第一・第二がセットの言語ペア）と生涯スポーツは、元の並び順（言語ごと・科目のまとまり）
 // を崩したくないので、学年学期順への並べ替えの対象から外す
 const GROUPS_KEEP_ORIGINAL_ORDER = new Set(['lang-basic-2', 'health-sel'])
@@ -891,6 +943,7 @@ function GroupProgress({
   yearTermTag,
   termTypeOf,
   standardYearOf,
+  intensiveSeasonOf,
   yearOnlyTag,
   dayPeriodTag,
   isOtherProgram,
@@ -905,6 +958,7 @@ function GroupProgress({
   yearTermTag: (code: string) => ReactNode
   termTypeOf: (code: string) => string | null
   standardYearOf: (code: string) => number | null
+  intensiveSeasonOf: (code: string) => '夏期' | '冬期' | null
   yearOnlyTag: (code: string) => ReactNode
   dayPeriodTag: (code: string) => ReactNode
   isOtherProgram: (code: string) => boolean
@@ -949,14 +1003,25 @@ function GroupProgress({
     </>
   )
   // 人文・社会科学科目・上級科目は科目数が多いので、通常の科目一覧の代わりに前学期・後学期の
-  // 折りたたみに分ける（開講学期が前学期・後学期のどちらでもない科目は、通常通りそのまま出す）
+  // 折りたたみに分ける（開講学期が前学期・後学期のどちらでもない科目は、通常通りそのまま出す）。
+  // 「夏期集中」「冬期集中」の科目（政治学Ａ等）は、termTypeだけを見ると前学期・後学期の
+  // どちらかに入ってしまうが、実際の開講時期が違うので前学期・後学期とは別の入れ子にまとめる
+  // （2026-09-06、開発者提案）
   const splitByTerm = GROUPS_SPLIT_BY_TERM.has(group.id)
-  const springRegular = splitByTerm ? regular.filter((code) => termTypeOf(code) === '前学期') : []
-  const fallRegular = splitByTerm ? regular.filter((code) => termTypeOf(code) === '後学期') : []
+  const springRegular = splitByTerm
+    ? regular.filter((code) => termTypeOf(code) === '前学期' && intensiveSeasonOf(code) === null)
+    : []
+  const fallRegular = splitByTerm
+    ? regular.filter((code) => termTypeOf(code) === '後学期' && intensiveSeasonOf(code) === null)
+    : []
+  const summerIntensive = splitByTerm ? regular.filter((code) => intensiveSeasonOf(code) === '夏期') : []
+  const winterIntensive = splitByTerm ? regular.filter((code) => intensiveSeasonOf(code) === '冬期') : []
   // 前学期・後学期のどちらでもない科目（国際科目など）。上級科目だけ、前学期・後学期と同じ
   // 階層の「その他」折りたたみにまとめる。それ以外（人文・社会科学科目）では、今のところ
   // 該当科目は無いはずだが、念のため通常の一覧にそのまま出して取りこぼさないようにする
-  const noTermItems = splitByTerm ? regular.filter((code) => termTypeOf(code) !== '前学期' && termTypeOf(code) !== '後学期') : []
+  const noTermItems = splitByTerm
+    ? regular.filter((code) => termTypeOf(code) !== '前学期' && termTypeOf(code) !== '後学期' && intensiveSeasonOf(code) === null)
+    : []
   const noTermCollapsed = group.id === 'advanced' ? noTermItems : []
   const topLevelRegular = !splitByTerm ? regular : group.id === 'advanced' ? [] : noTermItems
   return (
@@ -972,7 +1037,13 @@ function GroupProgress({
         {splitByTerm && (
           <>
             <CollapsedSubjectGroup title="前学期" items={springRegular} codeOf={(code) => code} renderRow={rowShort} />
+            {summerIntensive.length > 0 && (
+              <CollapsedSubjectGroup title="夏期集中" items={summerIntensive} codeOf={(code) => code} renderRow={rowShort} />
+            )}
             <CollapsedSubjectGroup title="後学期" items={fallRegular} codeOf={(code) => code} renderRow={rowShort} />
+            {winterIntensive.length > 0 && (
+              <CollapsedSubjectGroup title="冬期集中" items={winterIntensive} codeOf={(code) => code} renderRow={rowShort} />
+            )}
             <CollapsedSubjectGroup title="その他" items={noTermCollapsed} codeOf={(code) => code} renderRow={row} />
           </>
         )}

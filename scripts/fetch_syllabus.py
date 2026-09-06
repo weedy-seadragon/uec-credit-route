@@ -229,6 +229,22 @@ def main():
         if a is not None:
             offerings_by_code[code_b] = a
 
+    # 学域特別講義A/B（UEC001z/UEC002z）は、開講年度ごとに具体的なテーマ・担当教員が
+    # 変わる科目（例:「学域特別講義A(アルゴリズムの基礎)」）で、科目名の完全一致では
+    # 一覧ページの行を拾えない。ただし開講される曜日時限自体は毎年固定（前学期木5/前学期金5）
+    # と開発者から確認済み（2026-09-06）なので、ここで固定値を補う。将来もし名前一致で
+    # 本当に取得できるようになった場合はそちらを優先する（setdefaultなので上書きしない）
+    offerings_by_code.setdefault("UEC001z", [{
+        "timetableCode": "", "faculty": "31", "term": "前学期",
+        "slots": [{"day": "木", "period": 5}], "instructors": [],
+        "syllabusUrl": "", "updatedAt": today,
+    }])
+    offerings_by_code.setdefault("UEC002z", [{
+        "timetableCode": "", "faculty": "31", "term": "前学期",
+        "slots": [{"day": "金", "period": 5}], "instructors": [],
+        "syllabusUrl": "", "updatedAt": today,
+    }])
+
     updated = 0
     prereq_updated = 0
     for s in subjects_data["subjects"]:
