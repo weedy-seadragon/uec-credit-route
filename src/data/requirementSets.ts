@@ -134,7 +134,7 @@ export function getSubjectCredits(): ReadonlyMap<string, number> {
 }
 
 /** シラバスWeb公開システムから取得した、1つの開講セクション（クラス）の情報（docs/SPEC.md §7.1） */
-interface SubjectOffering {
+export interface SubjectOffering {
   timetableCode: string
   faculty: string
   term: string
@@ -144,7 +144,7 @@ interface SubjectOffering {
   updatedAt: string
 }
 
-interface SubjectMasterEntry {
+export interface SubjectMasterEntry {
   code: string
   name: string
   credits: number
@@ -181,4 +181,45 @@ export function getClassAssignments(): ClassAssignmentEntry[] {
 /** プログラムID（例:"media"）から、学修要覧の表記そのままのプログラム名（例:「メディア情報学プログラム」）を引く */
 export function getProgramName(program: string | null): string | null {
   return programOptions.find((p) => p.program === program)?.programName ?? null
+}
+
+/** 科目一覧の詳細ページ（F-5）で「どのプログラムのどの区分に位置づけられているか」を示すための1件ぶん */
+export interface SubjectUsage {
+  programName: string
+  /** 区分の親子関係を「>」でつないだもの（例:「類専門科目 > 必修」） */
+  groupPath: string
+}
+
+// RequirementGroup の木を根からたどり、指定した科目番号が subjects に直接含まれるグループを探す。
+// 見つかった経路（親グループ名の連なり）をそのまま結果に積んでいく再帰関数
+function collectGroupPaths(groups: readonly RequirementGroup[], code: string, ancestors: string[], out: string[]): void {
+  for (const g of groups) {
+    const label = g.label ?? g.name
+    const path = [...ancestors, label]
+    if (g.subjects?.includes(code)) {
+      out.push(path.join(' > '))
+    }
+    if (g.children) {
+      collectGroupPaths(g.children, code, path, out)
+    }
+  }
+}
+
+/**
+ * 指定した科目番号(フルコード)が、どのプログラムのどの区分で採用されているかを全プログラム分探す。
+ * 科目一覧の詳細ページで「要件上の位置づけ」を示すために使う。同じプログラムに複数箇所（他プログラムの
+ * 選択科目としての展開分と本来の区分、など）見つかることもあるので、区分ごとに別の行として返す
+ */
+export function findSubjectUsages(code: string): SubjectUsage[] {
+  const usages: SubjectUsage[] = []
+  for (const p of programOptions) {
+    const set = getRequirementSet(p.entryYear, p.course, p.cluster, p.program)
+    if (!set) continue
+    const paths: string[] = []
+    collectGroupPaths(set.groups, code, [], paths)
+    for (const path of paths) {
+      usages.push({ programName: p.programName, groupPath: path })
+    }
+  }
+  return usages
 }

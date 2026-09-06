@@ -11,4 +11,10 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   base: '/uec-credit-route/',
   plugins: [react()],
+  // ビルド時点の日付を文字列としてコードに埋め込む（トップページの「最終更新日」表示に使う）。
+  // define に書いた値は、ビルド時にコード中の同名の識別子（__BUILD_DATE__）へそのまま置き換えられる。
+  // GitHub Actionsはmainへのpushのたびにビルドし直すので、これがそのままサイトの最終更新日になる
+  define: {
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+  },
 })
