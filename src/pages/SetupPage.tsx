@@ -9,6 +9,12 @@ import { programOptions } from '../data/requirementSets'
 import type { Profile } from '../storage/profile'
 import { loadProfile, saveProfile } from '../storage/profile'
 
+// 入学年度の入力欄を表示するかどうか（2026-09-06、開発者判断で一時的にfalseにしている）。
+// 今のところdata/requirements/以下が全部entryYear:2025のデータしか無く、選ばせても
+// 実質意味が無いため。2024・2026年度分のデータを追加することになったらtrueに戻す
+// （entryYearの状態・ロジック自体はそのまま残してある）
+const SHOW_ENTRY_YEAR_INPUT = false
+
 export default function SetupPage() {
   const navigate = useNavigate()
 
@@ -92,6 +98,7 @@ export default function SetupPage() {
       <p>入学年度・類・プログラムを設定すると、あなたに適用される卒業要件が決まります。</p>
 
       <form onSubmit={handleSubmit}>
+        {SHOW_ENTRY_YEAR_INPUT && (
         <div>
           <label htmlFor="entryYear">入学年度</label>
           <select id="entryYear" value={entryYear} onChange={(e) => setEntryYear(Number(e.target.value))}>
@@ -102,6 +109,7 @@ export default function SetupPage() {
             ))}
           </select>
         </div>
+        )}
 
         <div>
           <label htmlFor="course">コース（昼夜）</label>
