@@ -46133,7 +46133,7 @@
       ],
       "offerings": [
         {
-          "timetableCode": "21322117",
+          "timetableCode": "21222124",
           "faculty": "31",
           "term": "前学期",
           "slots": [
@@ -46143,25 +46143,41 @@
             }
           ],
           "instructors": [
-            "古川　怜"
+            "宮脇　陽一"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322117.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222124.html",
           "updatedAt": "2026-09-06"
         },
         {
-          "timetableCode": "21322118",
+          "timetableCode": "21222122",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
-              "day": "水",
+              "day": "木",
               "period": 3
             }
           ],
           "instructors": [
-            "遠藤　晋平"
+            "鈴木　淳"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322118.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222122.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21222123",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "小木曽　公尚"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222123.html",
           "updatedAt": "2026-09-06"
         }
       ],
@@ -46183,7 +46199,7 @@
       ],
       "offerings": [
         {
-          "timetableCode": "21322117",
+          "timetableCode": "21222124",
           "faculty": "31",
           "term": "前学期",
           "slots": [
@@ -46193,25 +46209,41 @@
             }
           ],
           "instructors": [
-            "古川　怜"
+            "宮脇　陽一"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322117.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222124.html",
           "updatedAt": "2026-09-06"
         },
         {
-          "timetableCode": "21322118",
+          "timetableCode": "21222122",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
-              "day": "水",
+              "day": "木",
               "period": 3
             }
           ],
           "instructors": [
-            "遠藤　晋平"
+            "鈴木　淳"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322118.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222122.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21222123",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "小木曽　公尚"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222123.html",
           "updatedAt": "2026-09-06"
         }
       ],
@@ -47231,35 +47263,35 @@
       ],
       "offerings": [
         {
-          "timetableCode": "21322117",
+          "timetableCode": "21122118",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
-              "day": "水",
-              "period": 3
+              "day": "火",
+              "period": 4
             }
           ],
           "instructors": [
-            "古川　怜"
+            "南　泰浩"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322117.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21122118.html",
           "updatedAt": "2026-09-06"
         },
         {
-          "timetableCode": "21322118",
+          "timetableCode": "21122119",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
               "day": "水",
-              "period": 3
+              "period": 4
             }
           ],
           "instructors": [
-            "遠藤　晋平"
+            "龍野　智哉"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322118.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21122119.html",
           "updatedAt": "2026-09-06"
         }
       ],
@@ -47331,35 +47363,35 @@
       ],
       "offerings": [
         {
-          "timetableCode": "21322117",
+          "timetableCode": "21122118",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
-              "day": "水",
-              "period": 3
+              "day": "火",
+              "period": 4
             }
           ],
           "instructors": [
-            "古川　怜"
+            "南　泰浩"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322117.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21122118.html",
           "updatedAt": "2026-09-06"
         },
         {
-          "timetableCode": "21322118",
+          "timetableCode": "21122119",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
               "day": "水",
-              "period": 3
+              "period": 4
             }
           ],
           "instructors": [
-            "遠藤　晋平"
+            "龍野　智哉"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322118.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21122119.html",
           "updatedAt": "2026-09-06"
         }
       ],
@@ -47381,35 +47413,35 @@
       ],
       "offerings": [
         {
-          "timetableCode": "21322117",
+          "timetableCode": "21122118",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
-              "day": "水",
-              "period": 3
+              "day": "火",
+              "period": 4
             }
           ],
           "instructors": [
-            "古川　怜"
+            "南　泰浩"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322117.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21122118.html",
           "updatedAt": "2026-09-06"
         },
         {
-          "timetableCode": "21322118",
+          "timetableCode": "21122119",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
               "day": "水",
-              "period": 3
+              "period": 4
             }
           ],
           "instructors": [
-            "遠藤　晋平"
+            "龍野　智哉"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322118.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21122119.html",
           "updatedAt": "2026-09-06"
         }
       ],
@@ -47431,35 +47463,35 @@
       ],
       "offerings": [
         {
-          "timetableCode": "21322117",
+          "timetableCode": "21122118",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
-              "day": "水",
-              "period": 3
+              "day": "火",
+              "period": 4
             }
           ],
           "instructors": [
-            "古川　怜"
+            "南　泰浩"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322117.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21122118.html",
           "updatedAt": "2026-09-06"
         },
         {
-          "timetableCode": "21322118",
+          "timetableCode": "21122119",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
               "day": "水",
-              "period": 3
+              "period": 4
             }
           ],
           "instructors": [
-            "遠藤　晋平"
+            "龍野　智哉"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322118.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21122119.html",
           "updatedAt": "2026-09-06"
         }
       ],
@@ -47481,7 +47513,7 @@
       ],
       "offerings": [
         {
-          "timetableCode": "21322117",
+          "timetableCode": "21222124",
           "faculty": "31",
           "term": "前学期",
           "slots": [
@@ -47491,25 +47523,41 @@
             }
           ],
           "instructors": [
-            "古川　怜"
+            "宮脇　陽一"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322117.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222124.html",
           "updatedAt": "2026-09-06"
         },
         {
-          "timetableCode": "21322118",
+          "timetableCode": "21222122",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
-              "day": "水",
+              "day": "木",
               "period": 3
             }
           ],
           "instructors": [
-            "遠藤　晋平"
+            "鈴木　淳"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322118.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222122.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21222123",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "小木曽　公尚"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222123.html",
           "updatedAt": "2026-09-06"
         }
       ],
@@ -47531,7 +47579,7 @@
       ],
       "offerings": [
         {
-          "timetableCode": "21322117",
+          "timetableCode": "21222124",
           "faculty": "31",
           "term": "前学期",
           "slots": [
@@ -47541,25 +47589,41 @@
             }
           ],
           "instructors": [
-            "古川　怜"
+            "宮脇　陽一"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322117.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222124.html",
           "updatedAt": "2026-09-06"
         },
         {
-          "timetableCode": "21322118",
+          "timetableCode": "21222122",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
-              "day": "水",
+              "day": "木",
               "period": 3
             }
           ],
           "instructors": [
-            "遠藤　晋平"
+            "鈴木　淳"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322118.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222122.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21222123",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "小木曽　公尚"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222123.html",
           "updatedAt": "2026-09-06"
         }
       ],
@@ -47581,7 +47645,7 @@
       ],
       "offerings": [
         {
-          "timetableCode": "21322117",
+          "timetableCode": "21222124",
           "faculty": "31",
           "term": "前学期",
           "slots": [
@@ -47591,25 +47655,41 @@
             }
           ],
           "instructors": [
-            "古川　怜"
+            "宮脇　陽一"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322117.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222124.html",
           "updatedAt": "2026-09-06"
         },
         {
-          "timetableCode": "21322118",
+          "timetableCode": "21222122",
           "faculty": "31",
           "term": "前学期",
           "slots": [
             {
-              "day": "水",
+              "day": "木",
               "period": 3
             }
           ],
           "instructors": [
-            "遠藤　晋平"
+            "鈴木　淳"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322118.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222122.html",
+          "updatedAt": "2026-09-06"
+        },
+        {
+          "timetableCode": "21222123",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "小木曽　公尚"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21222123.html",
           "updatedAt": "2026-09-06"
         }
       ],

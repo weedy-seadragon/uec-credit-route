@@ -15500,5 +15500,220 @@
       "クラス9",
       "クラス10"
     ]
+  },
+  {
+    "code": "MTH304a",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "MTH304a",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "MTH304c",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "MTH304c",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "MTH304d",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "MTH304d",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "MTH304e",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "MTH304e",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "MTH302i",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH302i",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH302i",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH302j",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH302j",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH302j",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH304f",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH304f",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH304f",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH304g",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH304g",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH304g",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH304h",
+    "term": "前学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH304h",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
+  },
+  {
+    "code": "MTH304h",
+    "term": "前学期",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "Iエリア"
+    ]
   }
 ]
