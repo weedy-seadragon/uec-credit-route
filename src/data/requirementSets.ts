@@ -11,7 +11,7 @@
 // JavaScriptのオブジェクトとして読み込んでくれる機能（tsconfig.app.json の
 // resolveJsonModule で型チェックも通るようにしている）。
 
-import type { RequirementGroup, RequirementSet, ReviewDef } from '../domain/requirements'
+import type { GroupKind, RequirementGroup, RequirementSet, ReviewDef } from '../domain/requirements'
 import common from '../../data/requirements/2025-day-common.json'
 import media from '../../data/requirements/2025-day-I-media.json'
 import management from '../../data/requirements/2025-day-I-management.json'
@@ -222,6 +222,51 @@ export function findSubjectUsages(code: string): SubjectUsage[] {
     }
   }
   return usages
+}
+
+/** 科目一覧ページ（F-5）で「単位の種類」ごとに見出しを立てて科目を並べるための1区分ぶん */
+export interface CourseListSection {
+  /** 見出し（そのグループのlabel、無ければname。例:「類専門（選択）」） */
+  heading: string
+  kind?: GroupKind
+  codes: string[]
+}
+
+// groups木を根から再帰的にたどり、subjectsを直接持つグループ（＝末端の区分）をそのまま
+// 1セクションとして集める。同じ科目が複数セクションに重複して現れることもある
+// （他プログラムの専門科目としての展開など）が、ここでは弾かず呼び出し側に委ねる
+function collectCourseListSections(groups: readonly RequirementGroup[], out: CourseListSection[]): void {
+  for (const g of groups) {
+    if (g.subjects && g.subjects.length > 0) {
+      out.push({ heading: g.label ?? g.name, kind: g.kind, codes: g.subjects })
+    }
+    if (g.children) collectCourseListSections(g.children, out)
+  }
+}
+
+/**
+ * 科目一覧ページ用に、「単位の種類（必修・選択必修・選択…）」ごとの区分＋科目コード一覧を返す。
+ * プログラムを指定しない場合は、共通ファイル（総合文化・実践教育科目）の区分だけを返す
+ * （理数基礎・類共通基礎・類専門はプログラムが決まらないと存在しない区分のため）。
+ * プログラムを指定した場合は、そのプログラムの要件セット全体（共通ファイル込み）から集める。
+ * 共通ファイルのプログラム別上書き（commonOverrides）はプログラム未指定時には反映できない
+ * （どの類・プログラムか分からないため）。
+ */
+export function getCourseListSections(
+  entryYear: number,
+  course: string,
+  cluster: string | null,
+  program: string | null,
+): CourseListSection[] {
+  const out: CourseListSection[] = []
+  if (!program) {
+    collectCourseListSections(commonDoc.groups, out)
+    return out
+  }
+  const set = getRequirementSet(entryYear, course, cluster, program)
+  if (!set) return out
+  collectCourseListSections(set.groups, out)
+  return out
 }
 
 // グループ木から、kind === 'required'（必修）な科目コードだけを再帰的に集める
