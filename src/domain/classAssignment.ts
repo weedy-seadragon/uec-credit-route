@@ -83,6 +83,20 @@ export function classIdMatchesProfile(
   if (profile.programName && classId === profile.programName) return true
   if (classId === '全クラス') return true
 
+  // 「プログラムA＆プログラムBの学籍番号偶数/奇数」：複数プログラム共通の科目が、
+  // さらに学籍番号の偶奇でも分かれる場合の表記（scripts/build_class_assignment_json.pyの
+  // expand_parity_programs()が、開発者の「プログラムA、プログラムBの学籍番号偶数」という
+  // 書き方をここに変換してから渡してくる。読点は他の表記で「複数候補の一覧」の区切りに
+  // 使っているため、混同しないよう「＆」にしてある。2026-09-07、ELE402g等のデータで発覚）
+  const parityProgramsMatch = classId.match(/^(.+)の学籍番号(偶数|奇数)$/)
+  if (parityProgramsMatch && parityProgramsMatch[1].includes('＆')) {
+    const programs = parityProgramsMatch[1].split('＆')
+    if (!profile.programName || !programs.includes(profile.programName)) return false
+    if (profile.yearOneClass == null) return false
+    const isEven = profile.yearOneClass % 2 === 0
+    return parityProgramsMatch[2] === '偶数' ? isEven : !isEven
+  }
+
   // 「一類」「二類」「三類」：プログラムや1年次クラスに関係なく、その類の学生全員が対象
   // （例:ENG301z/401z「Academic English for the 2nd Year」で、時限ごとに受講する類が
   // 決まっている。2026-09-06、開発者提案）

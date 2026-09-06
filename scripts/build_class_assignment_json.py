@@ -59,6 +59,57 @@ def expand_iarea_shorthand(text: str) -> str:
     return IAREA_SHORTHAND_RE.sub(repl, text)
 
 
+# 「プログラムA、プログラムBの学籍番号偶数/奇数」のような、複数プログラム共通で
+# さらに学籍番号の偶奇でも分かれる科目の書き方に対応する（2026-09-07、ELE402g等のデータで発覚。
+# 開発者確認：「両方のプログラム共通で、学籍番号偶数の人だけ対象」という意味）。
+# 読点はこのスクリプトの他の箇所で「複数候補の一覧（OR）」の区切りに使っているため、
+# そのまま分割すると「プログラムAの一覧」と「プログラムBの学籍番号偶数」という
+# 別々の（しかも後者は意味の通らない）条件に壊れてしまう。それを避けるため、
+# 既知のプログラム名だけを対象に「＆」区切りへ変換してから渡す
+# （src/domain/classAssignment.ts側で「＆」を含む場合だけ複数プログラムの意味として扱う）
+PROGRAM_NAMES = [
+    "メディア情報学プログラム", "経営・社会情報学プログラム", "情報数理工学プログラム",
+    "コンピュータサイエンスプログラム", "デザイン思考・データサイエンスプログラム",
+    "セキュリティ情報学プログラム", "情報通信工学プログラム", "電子情報学プログラム",
+    "計測・制御システムプログラム", "先端ロボティクスプログラム",
+    "機械システムプログラム", "電子工学プログラム", "光工学プログラム",
+    "物理工学プログラム", "化学生命工学プログラム",
+]
+# 開発者の手書きでよくある表記ゆれ（正式名称に寄せる）
+PROGRAM_NAME_TYPOS = {
+    "電気情報プログラム": "電子情報学プログラム",
+    "計測・制御システムプロフラム": "計測・制御システムプログラム",
+}
+
+_PROGRAM_ALTERNATION = "|".join(re.escape(p) for p in PROGRAM_NAMES)
+PARITY_PROGRAMS_RE = re.compile(rf"(?:(?:{_PROGRAM_ALTERNATION})[、,，]?)+の学籍番号[偶奇]数")
+# 「…の学籍番号偶数と<別のプログラム>」のように、学籍番号条件付きの一覧のうしろに
+# 無条件のプログラムがさらに「と」で繋がることがある。「と」を読点と同じ区切りとして
+# 扱えるよう、先にカンマへ変換しておく（この後のPARITY_PROGRAMS_REは「の学籍番号◯数」で
+# 終わるところまでしかマッチしないので、「と」の前後を混同する心配はない）
+PARITY_AND_PROGRAM_RE = re.compile(rf"(偶数|奇数)と(?=(?:{_PROGRAM_ALTERNATION}))")
+
+
+def fix_program_name_typos(text: str) -> str:
+    for typo, correct in PROGRAM_NAME_TYPOS.items():
+        text = text.replace(typo, correct)
+    return text
+
+
+def expand_parity_programs(text: str) -> str:
+    text = fix_program_name_typos(text)
+    text = PARITY_AND_PROGRAM_RE.sub(r"\1,", text)
+
+    def repl(m: re.Match) -> str:
+        s = m.group(0)
+        suffix_m = re.search(r"の学籍番号[偶奇]数$", s)
+        programs_part = s[: suffix_m.start()]
+        programs = [p for p in re.split(r"[、,，]", programs_part) if p]
+        return "＆".join(programs) + suffix_m.group(0)
+
+    return PARITY_PROGRAMS_RE.sub(repl, text)
+
+
 def main():
     with open(SRC, encoding="utf-8-sig") as f:
         rows = list(csv.DictReader(f))
@@ -70,6 +121,7 @@ def main():
             continue
         class_id = expand_class_shorthand(class_id)
         class_id = expand_iarea_shorthand(class_id)
+        class_id = expand_parity_programs(class_id)
         periods = [p.strip() for p in re.split(r"[,，]", r["period"]) if p.strip()]
         for period in periods:
             out.append({

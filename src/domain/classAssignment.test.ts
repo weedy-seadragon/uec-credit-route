@@ -93,6 +93,19 @@ describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () =>
     expect(classIdMatchesProfile('二類学籍番号偶数', {}, 'II')).toBe(false)
   })
 
+  it('「プログラムA＆プログラムBの学籍番号偶数/奇数」は、いずれかのプログラムに所属していて、かつ学籍番号の偶奇が一致するときだけtrue', () => {
+    const netinfoEven: ClassProfile = { yearOneClass: 6, programName: '情報通信工学プログラム' }
+    const netinfoOdd: ClassProfile = { yearOneClass: 7, programName: '情報通信工学プログラム' }
+    const electroinfoEven: ClassProfile = { yearOneClass: 6, programName: '電子情報学プログラム' }
+    const securityEven: ClassProfile = { yearOneClass: 6, programName: 'セキュリティ情報学プログラム' }
+    const classId = '情報通信工学プログラム＆電子情報学プログラムの学籍番号偶数'
+    expect(classIdMatchesProfile(classId, netinfoEven, 'II')).toBe(true)
+    expect(classIdMatchesProfile(classId, electroinfoEven, 'II')).toBe(true)
+    expect(classIdMatchesProfile(classId, netinfoOdd, 'II')).toBe(false) // プログラムは合うが学籍番号の偶奇が違う
+    expect(classIdMatchesProfile(classId, securityEven, 'II')).toBe(false) // 学籍番号は合うがプログラムが違う
+    expect(classIdMatchesProfile(classId, { yearOneClass: 6 }, 'II')).toBe(false) // プログラム未定
+  })
+
   it('未知の表記・未入力のプロフィールに対しては一致させない（誤判定より非表示を優先）', () => {
     expect(classIdMatchesProfile('謎のクラス', {}, 'I')).toBe(false)
     expect(classIdMatchesProfile('クラス3', {}, 'I')).toBe(false)
