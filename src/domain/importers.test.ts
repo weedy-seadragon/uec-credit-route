@@ -42,6 +42,18 @@ describe('parseOwnFormat', () => {
     expect(() => parseOwnFormat('not json')).toThrow()
     expect(() => parseOwnFormat(42)).toThrow()
   })
+
+  it('schemaVersion 2でotherCommonCreditsを読み込める', () => {
+    const json = { schemaVersion: 2, exportedAt: '2026-09-07', records: [], otherCommonCredits: 4 }
+    const result = parseOwnFormat(json)
+    expect(result.otherCommonCredits).toBe(4)
+  })
+
+  it('otherCommonCreditsが無い古い形式（schemaVersion 1）でもundefinedとして読み込める', () => {
+    const json = { schemaVersion: 1, exportedAt: '2026-09-04', records: [] }
+    const result = parseOwnFormat(json)
+    expect(result.otherCommonCredits).toBeUndefined()
+  })
 })
 
 // 既存の記録とファイルから読み込んだ記録を合体させるルール

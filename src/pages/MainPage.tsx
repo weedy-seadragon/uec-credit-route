@@ -20,7 +20,7 @@ import type { SubjectInfo, TermFilter } from '../domain/recommend'
 import { recommend } from '../domain/recommend'
 import { buildNameToCodes, derivePrerequisites } from '../domain/prerequisites'
 import type { ExportedData } from '../domain/importers'
-import { mergeRecords, parseOwnFormat } from '../domain/importers'
+import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
 import { getClassAssignments, getProgramName, getRequirementSet, getSubjectCredits, getSubjectsByCode } from '../data/requirementSets'
 import { resolveSlotsForProfile } from '../domain/classAssignment'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
@@ -373,11 +373,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 「ダウンロード」ボタンを押したとき：今の記録を本サイト形式JSON（§7.4）としてファイルに書き出す
   function handleDownload() {
     const data: ExportedData = {
-      schemaVersion: 1,
+      schemaVersion: CURRENT_SCHEMA_VERSION,
       exportedAt: new Date().toISOString(),
       profile,
       records: [...committed.entries()].map(([code, status]) => ({ code, name: nameOf(code), status })),
       planned: [],
+      otherCommonCredits: otherCommonCommitted,
     }
 
     // ブラウザにファイルをダウンロードさせる標準的な方法：
@@ -406,6 +407,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       setCommitted(merged)
       setDraft(merged) // 編集中の内容も、読み込んだ内容に合わせておく
       saveRecords(merged)
+      // その他単位認定は科目コードを持たない単一の数値なので、records のような
+      // 追加・更新の概念が無い。ファイルに記載があればその値でそのまま置き換える
+      // （古いschemaVersion 1のファイルなど、記載が無ければ今の値を変えない）
+      if (imported.otherCommonCredits !== undefined) {
+        setOtherCommonCommitted(imported.otherCommonCredits)
+        setOtherCommonDraft(imported.otherCommonCredits)
+        saveOtherCommonCredits(imported.otherCommonCredits)
+      }
       setDataMessage(`${added}件追加、${updated}件更新しました。`)
     } catch (err) {
       setDataMessage(`読み込みに失敗しました: ${err instanceof Error ? err.message : String(err)}`)

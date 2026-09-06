@@ -33,16 +33,28 @@ export interface ExportedData {
   profile?: ExportedProfile
   records: ExportedRecord[]
   planned: string[]
+  /** その他単位認定（TOEIC等、特定の科目に紐付かない共通単位）の単位数。schemaVersion 2で追加 */
+  otherCommonCredits?: number
 }
 
 export interface ImportResult {
   profile?: ExportedProfile
   records: ExportedRecord[]
   planned: string[]
+  /** ファイルに記載が無かった場合（schemaVersion 1のファイルなど）は undefined */
+  otherCommonCredits?: number
 }
 
-/** 現時点で読み込める schemaVersion。将来バージョンが上がったら、ここに変換処理を足す */
-const SUPPORTED_SCHEMA_VERSION = 1
+/** 今書き出すファイルにセットするバージョン番号 */
+export const CURRENT_SCHEMA_VERSION = 2
+
+/**
+ * 読み込める schemaVersion の一覧。新しいフィールドを追加しただけで読み込み方が変わらない
+ * バージョン（1→2でotherCommonCreditsを追加）は、古い番号もそのまま読めるようにしておく
+ * （無ければ省略されているだけとみなす）。将来、読み方自体が変わるバージョンを追加したら
+ * ここに番号を足し、必要な変換処理も書く
+ */
+const SUPPORTED_SCHEMA_VERSIONS = [1, 2]
 
 /**
  * 本サイト形式のJSON（§7.4）を読み込む。JSON.parse した結果（型不明の値）を受け取り、
@@ -56,7 +68,7 @@ export function parseOwnFormat(json: unknown): ImportResult {
   }
   const data = json as Partial<ExportedData>
   // バージョンが対応外なら、中身を信用せずに止める（将来ここに変換処理を足す）
-  if (data.schemaVersion !== SUPPORTED_SCHEMA_VERSION) {
+  if (typeof data.schemaVersion !== 'number' || !SUPPORTED_SCHEMA_VERSIONS.includes(data.schemaVersion)) {
     throw new Error(`対応していないファイル形式です（schemaVersion: ${String(data.schemaVersion)}）`)
   }
   // records は必須項目。無ければ壊れたファイルとみなす
@@ -68,6 +80,7 @@ export function parseOwnFormat(json: unknown): ImportResult {
     profile: data.profile,
     records: data.records,
     planned: Array.isArray(data.planned) ? data.planned : [],
+    otherCommonCredits: typeof data.otherCommonCredits === 'number' ? data.otherCommonCredits : undefined,
   }
 }
 
