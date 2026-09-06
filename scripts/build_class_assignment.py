@@ -33,6 +33,10 @@ SCHEDULE_PATH = os.path.join(ROOT, "data", "timetable", "class_schedule.csv")
 OUT_PATH = os.path.join(ROOT, "data", "timetable", "class_assignment.csv")
 FILLED_PATH = os.path.join(ROOT, "data", "timetable", "class_assignment_filled.csv")
 
+# 必修の1・2年次Academic English。英語系は名前に"English"を含むため通常は対象外だが、
+# この6科目だけはクラス別の曜日時限解決の対象にする（2026-09-06、開発者指示）
+ENGLISH_CLASS_ASSIGNMENT_CODES = {"ENG101z", "ENG102z", "ENG201z", "ENG202z", "ENG301z", "ENG401z"}
+
 
 def norm_name(name: str) -> str:
     return re.sub(r"[\s　【】\[\]（）()春夏秋冬]", "", name)
@@ -93,8 +97,12 @@ def main():
         offerings = s.get("offerings") or []
         if len(offerings) <= 1:
             continue  # セクションが1つだけの科目は既にMainPageで表示できているので対象外
-        if "English" in s["name"]:
-            continue  # 英語系は範囲表示にする方針なので対象外（CLAUDE.md参照）
+        # 英語系は当初「クラス分けを聞かずに時限レンジ表示で済ませる」方針で一律対象外にしていたが、
+        # その方針は未実装のままなので、必修の1・2年次Academic English（ENG101z/102z/201z/202z/
+        # 301z/401z）だけは開発者の方針転換でクラス別解決の対象にする（2026-09-06）。
+        # それ以外の英語系（Technical English・ENG501z以降等）は引き続き対象外のまま
+        if "English" in s["name"] and s["code"] not in ENGLISH_CLASS_ASSIGNMENT_CODES:
+            continue
         if all(len(o["slots"]) == 0 for o in offerings):
             continue  # インターンシップ等、そもそも曜日時限が無い科目は解決しようがないので対象外
 
