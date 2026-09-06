@@ -8485,42 +8485,7 @@
       "graduateLinked": false,
       "groups": [
         "cluster-basic-elecreq"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21322216",
-          "faculty": "31",
-          "term": "後学期",
-          "slots": [
-            {
-              "day": "木",
-              "period": 2
-            }
-          ],
-          "instructors": [
-            "結城　宏信"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322216.html",
-          "updatedAt": "2026-09-07"
-        },
-        {
-          "timetableCode": "21322217",
-          "faculty": "31",
-          "term": "後学期",
-          "slots": [
-            {
-              "day": "木",
-              "period": 2
-            }
-          ],
-          "instructors": [
-            "山鹿　汐音"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322217.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "基礎プログラミングおよび演習"
+      ]
     },
     {
       "code": "COM402m",

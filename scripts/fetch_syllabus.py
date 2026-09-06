@@ -159,6 +159,17 @@ def main():
     known_names_normalized = {normalize_for_match(n) for n in known_names}
     known_codes = {s["code"] for s in subjects_data["subjects"]}
 
+    # シラバスWeb公開システム側の科目番号欄に、無関係な科目コードが紛れ込んでいるケース
+    # （2026-09-07に発覚）："プログラミング演習（クラスA）"（timetableCode 21322216、
+    # 木曜2限、結城先生）の科目番号欄に"COM402k"（計算機工学、機械システムプログラム向け）が
+    # 誤って混入していた。実際のCOM402k（計算機工学）は別の独立した講義のはずだが、
+    # 2026年度シラバスにはそれらしいページが見当たらない（大学側の登録漏れの可能性）。
+    # 誤った時限のデータが付くよりは何も付かない方が安全なため、この(ページ, コード)の
+    # 組み合わせだけを機械的に無視する
+    IGNORE_CODE_MATCH = {
+        ("21322216", "COM402k"),
+    }
+
     offerings_by_code: dict[str, list[dict]] = {}
     prereq_text_by_code: dict[str, str] = {}
     today = time.strftime("%Y-%m-%d")
@@ -194,7 +205,10 @@ def main():
                 continue
             m = CODE_CELL_RE.search(detail_html)
             raw_codes = m.group(1).strip().split() if m else []
-            matched_codes = [c for c in raw_codes if c in known_codes]
+            matched_codes = [
+                c for c in raw_codes
+                if c in known_codes and (row["timetableCode"], c) not in IGNORE_CODE_MATCH
+            ]
             instructors = [s.strip() for s in re.split(r"[・,、]", row["instructor"]) if s.strip()]
             prereq_m = PREREQ_RE.search(detail_html)
             prereq_text = clean_text(prereq_m.group(1)) if prereq_m else ""

@@ -46,6 +46,17 @@ def norm_name(name: str) -> str:
     return re.sub(r"[\s　【】\[\]（）()春夏秋冬]", "", name)
 
 
+def split_periods(period: str) -> list[str]:
+    """記入済みCSVのperiod列は「3，4」のように複数時限をまとめて書けるが
+    （基礎科学実験のように担当教員・class_idが同じ2時限を1行にまとめる記法）、
+    offerings側は1スロット1時限で管理しているため、まとめ書きのままではキーが
+    一致せず引き継ぎが効かない（2026-09-07に発覚：シラバス再取得のたびに
+    基礎科学実験のまとめ書き行が引き継がれず消えるバグの原因だった）。
+    ここで個々の時限に展開してキーを作ることで、まとめ書き行も個別時限の
+    lookupで見つけられるようにする。"""
+    return [p for p in re.split(r"[，,]", period) if p]
+
+
 def teacher_tokens(text: str) -> set[str]:
     tokens = re.split(r"[・,、]", text)
     # 姓のみ・フルネームどちらの表記でも比較できるよう、空白（全角・半角）も取り除く
@@ -87,8 +98,9 @@ def main():
     if os.path.exists(existing_source):
         with open(existing_source, encoding="utf-8-sig") as f:
             for r in csv.DictReader(f):
-                key = (r["subject_code"], r["term"], r["day"], r["period"])
-                existing_by_key.setdefault(key, []).append(r)
+                for period in split_periods(r["period"]):
+                    key = (r["subject_code"], r["term"], r["day"], period)
+                    existing_by_key.setdefault(key, []).append(r)
 
     # 突き合わせを速くするため、科目名(正規化)＋曜日＋時限をキーにして時間割データを引けるようにする
     schedule_by_key: dict[tuple[str, str, str], list[dict]] = {}
