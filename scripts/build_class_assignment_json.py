@@ -45,6 +45,20 @@ def expand_class_shorthand(text: str) -> str:
     return CLASS_SHORTHAND_RE.sub(repl, text)
 
 
+# 「I1,I2クラス」「I3，I4クラス」のような、Ⅱ類のI1〜I6エリアを数字だけ区切り文字で
+# まとめて書く省略記法を「I1クラス,I2クラス」のように展開する（クラス7，8と同じ考え方だが、
+# 「クラス」の語がIの数字の後ろに来る書き方。2026-09-07、基礎演習A等のデータで発覚）
+IAREA_SHORTHAND_RE = re.compile(r"I\d(?:[,，、]I?\d)*クラス")
+
+
+def expand_iarea_shorthand(text: str) -> str:
+    def repl(m: re.Match) -> str:
+        nums = re.findall(r"\d", m.group(0))
+        return ",".join(f"I{n}クラス" for n in nums)
+
+    return IAREA_SHORTHAND_RE.sub(repl, text)
+
+
 def main():
     with open(SRC, encoding="utf-8-sig") as f:
         rows = list(csv.DictReader(f))
@@ -55,6 +69,7 @@ def main():
         if not class_id:
             continue
         class_id = expand_class_shorthand(class_id)
+        class_id = expand_iarea_shorthand(class_id)
         periods = [p.strip() for p in re.split(r"[,，]", r["period"]) if p.strip()]
         for period in periods:
             out.append({

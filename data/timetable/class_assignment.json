@@ -15290,5 +15290,293 @@
     "classIds": [
       "再履生"
     ]
+  },
+  {
+    "code": "GSE301f",
+    "term": "前学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "I1クラス",
+      "I2クラス"
+    ]
+  },
+  {
+    "code": "GSE301f",
+    "term": "前学期",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "I3クラス",
+      "I4クラス"
+    ]
+  },
+  {
+    "code": "GSE301f",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "I5クラス",
+      "I6クラス"
+    ]
+  },
+  {
+    "code": "GSE301f",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MCE602i",
+    "term": "後学期",
+    "day": "火",
+    "period": "3、4",
+    "classIds": [
+      "計測・制御システムプログラム"
+    ]
+  },
+  {
+    "code": "MCE602i",
+    "term": "後学期",
+    "day": "水",
+    "period": "3、4",
+    "classIds": [
+      "先端ロボティクスプログラム"
+    ]
+  },
+  {
+    "code": "MCE602j",
+    "term": "後学期",
+    "day": "火",
+    "period": "3、4",
+    "classIds": [
+      "計測・制御システムプログラム"
+    ]
+  },
+  {
+    "code": "MCE602j",
+    "term": "後学期",
+    "day": "水",
+    "period": "3、4",
+    "classIds": [
+      "先端ロボティクスプログラム"
+    ]
+  },
+  {
+    "code": "MCE602k",
+    "term": "後学期",
+    "day": "火",
+    "period": "3、4",
+    "classIds": [
+      "計測・制御システムプログラム"
+    ]
+  },
+  {
+    "code": "MCE602k",
+    "term": "後学期",
+    "day": "水",
+    "period": "3、4",
+    "classIds": [
+      "先端ロボティクスプログラム"
+    ]
+  },
+  {
+    "code": "MTH302f",
+    "term": "前学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "I3クラス",
+      "I4クラス"
+    ]
+  },
+  {
+    "code": "MTH302f",
+    "term": "前学期",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "I1クラス",
+      "I2クラス"
+    ]
+  },
+  {
+    "code": "MTH302f",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH302f",
+    "term": "前学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "I5クラス",
+      "I6クラス"
+    ]
+  },
+  {
+    "code": "MTH302g",
+    "term": "前学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "I3クラス",
+      "I4クラス"
+    ]
+  },
+  {
+    "code": "MTH302g",
+    "term": "前学期",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "I1クラス",
+      "I2クラス"
+    ]
+  },
+  {
+    "code": "MTH302g",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH302g",
+    "term": "前学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "I5クラス",
+      "I6クラス"
+    ]
+  },
+  {
+    "code": "MTH302h",
+    "term": "前学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "I3クラス",
+      "I4クラス"
+    ]
+  },
+  {
+    "code": "MTH302h",
+    "term": "前学期",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "I1クラス",
+      "I2クラス"
+    ]
+  },
+  {
+    "code": "MTH302h",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH302h",
+    "term": "前学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "I5クラス",
+      "I6クラス"
+    ]
+  },
+  {
+    "code": "MTH303i",
+    "term": "前学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "I3クラス",
+      "I4クラス"
+    ]
+  },
+  {
+    "code": "MTH303i",
+    "term": "前学期",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "I1クラス",
+      "I2クラス"
+    ]
+  },
+  {
+    "code": "MTH303i",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH303i",
+    "term": "前学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "I5クラス",
+      "I6クラス"
+    ]
+  },
+  {
+    "code": "MTH303j",
+    "term": "前学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "I3クラス",
+      "I4クラス"
+    ]
+  },
+  {
+    "code": "MTH303j",
+    "term": "前学期",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "I1クラス",
+      "I2クラス"
+    ]
+  },
+  {
+    "code": "MTH303j",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "Mエリア"
+    ]
+  },
+  {
+    "code": "MTH303j",
+    "term": "前学期",
+    "day": "金",
+    "period": "2",
+    "classIds": [
+      "I5クラス",
+      "I6クラス"
+    ]
   }
 ]
