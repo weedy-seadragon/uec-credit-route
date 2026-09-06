@@ -17878,6 +17878,41 @@
       ],
       "offerings": [
         {
+          "timetableCode": "22012102",
+          "faculty": "32",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "○Dusza",
+            "Hauser"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22012102.html",
+          "updatedAt": "2026-09-06"
+        }
+      ],
+      "prerequisitesText": "Nothing."
+    },
+    {
+      "code": "ENG102z",
+      "name": "Academic Spoken EnglishⅠ",
+      "credits": 1,
+      "field": "ENG",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "lang-basic-1"
+      ],
+      "offerings": [
+        {
           "timetableCode": "21012131",
           "faculty": "31",
           "term": "前学期",
@@ -18284,41 +18319,6 @@
       "prerequisitesText": "Nothing."
     },
     {
-      "code": "ENG102z",
-      "name": "Academic Spoken EnglishⅠ",
-      "credits": 1,
-      "field": "ENG",
-      "standardSemester": 1,
-      "standardYear": 1,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "lang-basic-1"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "22012102",
-          "faculty": "32",
-          "term": "前学期",
-          "slots": [
-            {
-              "day": "土",
-              "period": 2
-            }
-          ],
-          "instructors": [
-            "○Dusza",
-            "Hauser"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22012102.html",
-          "updatedAt": "2026-09-06"
-        }
-      ],
-      "prerequisitesText": "Nothing."
-    },
-    {
       "code": "ENG201s",
       "name": "Academic Written English II",
       "credits": 1,
@@ -18331,6 +18331,41 @@
       "graduateLinked": false,
       "groups": [
         "language"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22012201",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "○Dusza",
+            "Jeffreys"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22012201.html",
+          "updatedAt": "2026-09-06"
+        }
+      ],
+      "prerequisitesText": "None"
+    },
+    {
+      "code": "ENG201z",
+      "name": "Academic Written EnglishⅡ",
+      "credits": 1,
+      "field": "ENG",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "lang-basic-1"
       ],
       "offerings": [
         {
@@ -18753,41 +18788,6 @@
       "prerequisitesText": "None"
     },
     {
-      "code": "ENG201z",
-      "name": "Academic Written EnglishⅡ",
-      "credits": 1,
-      "field": "ENG",
-      "standardSemester": 2,
-      "standardYear": 1,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "lang-basic-1"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "22012201",
-          "faculty": "32",
-          "term": "後学期",
-          "slots": [
-            {
-              "day": "土",
-              "period": 3
-            }
-          ],
-          "instructors": [
-            "○Dusza",
-            "Jeffreys"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22012201.html",
-          "updatedAt": "2026-09-06"
-        }
-      ],
-      "prerequisitesText": "None"
-    },
-    {
       "code": "ENG202s",
       "name": "Academic Spoken English II",
       "credits": 1,
@@ -18800,6 +18800,41 @@
       "graduateLinked": false,
       "groups": [
         "language"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "22012202",
+          "faculty": "32",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "土",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "○Dusza",
+            "Hauser"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22012202.html",
+          "updatedAt": "2026-09-06"
+        }
+      ],
+      "prerequisitesText": "Nothing."
+    },
+    {
+      "code": "ENG202z",
+      "name": "Academic Spoken EnglishⅡ",
+      "credits": 1,
+      "field": "ENG",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "lang-basic-1"
       ],
       "offerings": [
         {
@@ -19203,41 +19238,6 @@
             "Roxanne NIVERI"
           ],
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21012255.html",
-          "updatedAt": "2026-09-06"
-        }
-      ],
-      "prerequisitesText": "Nothing."
-    },
-    {
-      "code": "ENG202z",
-      "name": "Academic Spoken EnglishⅡ",
-      "credits": 1,
-      "field": "ENG",
-      "standardSemester": 2,
-      "standardYear": 1,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "lang-basic-1"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "22012202",
-          "faculty": "32",
-          "term": "後学期",
-          "slots": [
-            {
-              "day": "土",
-              "period": 2
-            }
-          ],
-          "instructors": [
-            "○Dusza",
-            "Hauser"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22012202.html",
           "updatedAt": "2026-09-06"
         }
       ],

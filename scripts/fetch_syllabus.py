@@ -201,13 +201,21 @@ def main():
                 print(f"[{faculty}] 進捗: {i}/{len(candidates)}", file=sys.stderr)
             time.sleep(REQUEST_INTERVAL_SEC)
 
-    # シラバスWeb公開システム側の登録ミスと思われる補正（2026-09-05に発覚）：
+    # シラバスWeb公開システム側の登録ミスと思われる補正（2026-09-05に発覚、2026-09-06に対象を拡大）：
     # ENG101s（夜間主・Academic Written English I）とENG101z（昼間・同科目）で、
     # 科目番号欄の記載が入れ替わっている。ENG101sの欄には昼間の金曜多クラス分（26件、
     # 学修要覧の昼間用担当教員陣と一致）が、ENG101zの欄には夜間主の1クラス分（土曜、
-    # Dusza/Jeffreys担当）が、それぞれ逆に登録されていた。他の夜間主科目にはこの現象は
-    # 見られない（この2科目だけの個別の登録ミスと判断）ため、ここで入れ替えて補正する
-    CODE_SWAP_FIXUPS = [("ENG101s", "ENG101z")]
+    # Dusza/Jeffreys担当）が、それぞれ逆に登録されていた。
+    # 同じ入れ替わりがENG102（Academic Spoken English I）・ENG201/ENG202（同II）の
+    # s/zペアにも存在することが2026-09-06に判明（1年次の英語がすべて土曜表示になる不具合として発覚）。
+    # ENG301以降（Academic English for the 2nd Year等）にはこの現象は見られない
+    # （s/z双方とも同じ昼間側データを指しているか、s/zで別の科目名になっている）ため対象外
+    CODE_SWAP_FIXUPS = [
+        ("ENG101s", "ENG101z"),
+        ("ENG102s", "ENG102z"),
+        ("ENG201s", "ENG201z"),
+        ("ENG202s", "ENG202z"),
+    ]
     for code_a, code_b in CODE_SWAP_FIXUPS:
         a = offerings_by_code.pop(code_a, None)
         b = offerings_by_code.pop(code_b, None)
