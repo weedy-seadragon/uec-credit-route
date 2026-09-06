@@ -396,6 +396,34 @@ describe('alwaysCommonSubjects（言語文化応用科目Ⅱなど、超過計�
   })
 })
 
+describe('otherCommonCredits（TOEIC等、科目を介さず認定される共通単位。2026-09-06追加）', () => {
+  it('第4引数で指定した単位数がそのまま共通単位・合計単位に加算される', () => {
+    const requirementSet: RequirementSet = { totalCredits: 100, commonCredits: 10, groups: [] }
+    const result = evaluateRequirements(requirementSet, records({}), new Map(), 3)
+    expect(result.commonCredits.contribution).toBe(3)
+    expect(result.totalCredits.contribution).toBe(3)
+  })
+
+  it('他の共通単位（超過分・alwaysCommonSubjects）と合算され、commonCreditsの上限で頭打ちになる', () => {
+    const requirementSet: RequirementSet = {
+      totalCredits: 100,
+      commonCredits: 5,
+      groups: [],
+      alwaysCommonSubjects: ['GER102'],
+    }
+    const credits = new Map([['GER102', 2]])
+    const result = evaluateRequirements(requirementSet, records({ GER102: 'passed' }), credits, 8)
+    // 2（alwaysCommonSubjects）+ 8（その他単位認定）= 10だが、commonCreditsの上限5で頭打ち
+    expect(result.commonCredits.contribution).toBe(5)
+  })
+
+  it('省略した場合は0（既存の呼び出し側に影響しない）', () => {
+    const requirementSet: RequirementSet = { totalCredits: 0, commonCredits: 10, groups: [] }
+    const result = evaluateRequirements(requirementSet, records({}), new Map())
+    expect(result.commonCredits.contribution).toBe(0)
+  })
+})
+
 // ---------------------------------------------------------------------------
 // 実データでの統合テスト
 // ---------------------------------------------------------------------------

@@ -28,6 +28,7 @@ import type { ReviewCondition } from '../domain/requirements'
 import type { Profile } from '../storage/profile'
 import { loadProfile } from '../storage/profile'
 import { loadRecords, saveRecords } from '../storage/records'
+import { loadOtherCommonCredits, saveOtherCommonCredits } from '../storage/otherCommonCredits'
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
 
 /** プロフィールのうち、要件セットを引くのに必要な項目が揃っている状態（夜間主はcluster: null） */
@@ -277,6 +278,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // （docs/SPEC.md F-4「更新ボタン」参照）。
   const [committed, setCommitted] = useState<ReadonlyMap<string, SubjectStatus>>(() => loadRecords())
   const [draft, setDraft] = useState<ReadonlyMap<string, SubjectStatus>>(committed)
+  // その他単位認定（TOEIC等、科目を介さず共通単位として認定される単位数。0〜8単位、未履修=0）。
+  // 科目の記録と同じくdraft/committedに分け、「更新」ボタンを押すまでは反映しない
+  const [otherCommonCommitted, setOtherCommonCommitted] = useState<number>(() => loadOtherCommonCredits())
+  const [otherCommonDraft, setOtherCommonDraft] = useState<number>(otherCommonCommitted)
   const [termKey, setTermKey] = useState('all')
   // ダウンロード・読み込みの結果を一言表示するためのメッセージ（F-8）
   const [dataMessage, setDataMessage] = useState<string | null>(null)
@@ -297,7 +302,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   }
 
   // 充足状況の本体計算はrequirements.tsに丸ごと任せる。ここから先はその結果を並べるだけ
-  const evaluation = evaluateRequirements(requirementSet, committed, subjectCredits)
+  const evaluation = evaluateRequirements(requirementSet, committed, subjectCredits, otherCommonCommitted)
   const boundaryGroups = collectBoundaryGroups(requirementSet.groups, evaluation.groups)
   // 審査（2年次終了時審査など）。reviewsデータが無いプログラムでは空配列になる（現在は全16課程にreviewsがある）。
   // reviewsを一度ローカル変数に受けておく（入れ子関数の中ではrequirementSetの絞り込みが効かないため）
@@ -319,7 +324,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // （取得単位のカテゴリ見出しと同じ考え方。上限は下の一覧の外の「合計」側で別途わかる）
   const commonOverflowTotal = overflowToCommonGroups.reduce((sum, g) => sum + g.overflowToCommon, 0)
   const commonDirectTotal = directCommonSubjects.reduce((sum, code) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
-  const commonEarnedTotal = commonOverflowTotal + commonDirectTotal
+  const commonEarnedTotal = commonOverflowTotal + commonDirectTotal + otherCommonCommitted
   // 「選択科目」の共通単位の入れ子に出す、まだ修得していない常時共通単位科目
   // （理数基礎（選択）などcountAsCommonの区分の残り科目＋選択第二外国語などalwaysCommonSubjectsの残り）。
   // required=0の区分やalwaysCommonSubjectsはGroupProgressの対象外（required>0で絞っている）なので、
@@ -361,6 +366,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function handleUpdate() {
     setCommitted(draft)
     saveRecords(draft)
+    setOtherCommonCommitted(otherCommonDraft)
+    saveOtherCommonCredits(otherCommonDraft)
   }
 
   // 「ダウンロード」ボタンを押したとき：今の記録を本サイト形式JSON（§7.4）としてファイルに書き出す
@@ -412,6 +419,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     setCommitted(empty)
     setDraft(empty)
     saveRecords(empty)
+    setOtherCommonCommitted(0)
+    setOtherCommonDraft(0)
+    saveOtherCommonCredits(0)
     setDataMessage('すべての記録を未履修に戻しました。')
   }
 
@@ -814,6 +824,22 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <details key="common-credits">
               <summary>共通単位 {commonEarnedTotal}/{requirementSet.commonCredits}単位</summary>
               <ul>
+                <li>
+                  その他単位認定（TOEIC等、科目を介さず認定される単位）
+                  {'  '}
+                  <select
+                    aria-label="その他単位認定の単位数"
+                    value={otherCommonDraft}
+                    onChange={(e) => setOtherCommonDraft(Number(e.target.value))}
+                  >
+                    <option value={0}>未履修</option>
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                      <option key={n} value={n}>
+                        {n}単位
+                      </option>
+                    ))}
+                  </select>
+                </li>
                 {commonOnlyRemaining.map((code) => (
                   <li key={code}>
                     {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}

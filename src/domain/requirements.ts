@@ -522,6 +522,7 @@ export function evaluateRequirements(
   requirementSet: RequirementSet,
   records: ReadonlyMap<string, SubjectStatus>,
   subjectCredits: ReadonlyMap<string, number>,
+  otherCommonCredits = 0,
 ): EvaluationResult {
   // トップレベルのグループを1つずつ（再帰的に）判定する
   const groups = requirementSet.groups.map((group) => evaluateGroup(group, records, subjectCredits, false))
@@ -534,9 +535,12 @@ export function evaluateRequirements(
   const alwaysCommonTaking = sumSubjectsByStatus(alwaysCommonSubjects, 'taking', records, subjectCredits)
 
   // 共通単位の修得見込み = 各グループからの繰入額の合計 + 常に共通単位になる科目の単位数
-  const commonEarned = groups.reduce((sum, g) => sum + g.overflowToCommon, 0) + alwaysCommonPassed
+  // + その他単位認定（TOEIC等、特定の科目を介さずに共通単位として認定される分。2026-09-06追加。
+  // 見込み計算にも同額をそのまま足す。「履修中」のような中間状態が無く、認定は確定してから
+  // 入力するものと想定しているため、確定分と見込み分は常に同じ扱いでよい）
+  const commonEarned = groups.reduce((sum, g) => sum + g.overflowToCommon, 0) + alwaysCommonPassed + otherCommonCredits
   const commonEarnedProjected =
-    groups.reduce((sum, g) => sum + g.projectedOverflowToCommon, 0) + alwaysCommonPassed + alwaysCommonTaking
+    groups.reduce((sum, g) => sum + g.projectedOverflowToCommon, 0) + alwaysCommonPassed + alwaysCommonTaking + otherCommonCredits
 
   // 共通単位も required（commonCredits）で頭打ちにしてから CreditSummary にする
   const commonCredits = summarize(
