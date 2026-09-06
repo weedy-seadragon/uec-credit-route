@@ -14,6 +14,11 @@ periodは通常1つの数字だが、「3限・4限で1つの科目」のよう�
 その場合はperiodごとに別々のJSONエントリ（同じclassIds）に展開する
 （2026-09-06、開発者から「3,4限で一科目の授業をどうにかしたい」との相談を受けて対応）。
 
+class_idも複数書くときは通常半角カンマ区切りだが、「情報数理工学プログラム、
+コンピュータサイエンスプログラム」のように読点（、）で区切って書かれることがあるため、
+カンマ・全角カンマ・読点のどれで区切っても複数のclassIdsに分割する
+（2026-09-06、Technical Englishのプログラム名一覧で発覚）。
+
 実行: python scripts/build_class_assignment_json.py
 """
 import csv, json, os, re
@@ -39,7 +44,7 @@ def main():
                 "term": r["term"],
                 "day": r["day"],
                 "period": period,
-                "classIds": [t.strip() for t in class_id.split(",") if t.strip()],
+                "classIds": [t.strip() for t in re.split(r"[,，、]", class_id) if t.strip()],
             })
 
     with open(OUT, "w", encoding="utf-8") as f:

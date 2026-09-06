@@ -36,6 +36,16 @@ describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () =>
     expect(classIdMatchesProfile('I5クラス', profile, 'III')).toBe(false)
   })
 
+  it('「Ⅲ-N」はⅢ類のときだけ、classIIIYear2Classと一致するかで判定する', () => {
+    // 複素関数論で発覚：Ⅲ類側の「Mエリア(Nクラス)」だと思われていた表記が、実際はエリアに
+    // 関係ない「Ⅲ類の2年前期クラスN」という意味だった（2026-09-06）
+    const profile: ClassProfile = { classIIIYear2Class: '2' }
+    expect(classIdMatchesProfile('Ⅲ-2', profile, 'III')).toBe(true)
+    expect(classIdMatchesProfile('Ⅲ-1', profile, 'III')).toBe(false)
+    // Ⅰ類の「クラス2」（1年次クラス）とは別物なので、類が違えば一致しない
+    expect(classIdMatchesProfile('Ⅲ-2', { yearOneClass: 2 }, 'I')).toBe(false)
+  })
+
   it('「Mエリア」はⅡ類ならclassIIArea、Ⅲ類ならclassIIIYear2Areaと、参照するフィールドが変わる', () => {
     const profileII: ClassProfile = { classIIArea: 'M' }
     expect(classIdMatchesProfile('Mエリア', profileII, 'II')).toBe(true)
@@ -172,6 +182,25 @@ describe('resolveSlotsForProfile（複数セクションからの解決）', () 
     ]
     const profile: ClassProfile = { yearOneClass: 1 }
     expect(resolveSlotsForProfile('GER101z', offerings, conflictingAssignments, profile, 'I')).toBeUndefined()
+  })
+
+  it('同じプログラム名が複数の時限に分かれている場合は、決め打ちせず全部列挙する（Technical Englishのデザイン思考・データサイエンスプログラムで実際に発生）', () => {
+    // 「デザイン思考・データサイエンスプログラム」がI19クラス（木1）・I20クラス（木3）という
+    // プロフィールでは追跡していない粒度でさらに分かれている実例。「クラスN」の食い違いとは違い、
+    // プログラム名そのものが一致しているので、対象学生に複数の枠があると分かる
+    const tenAssignments: ClassAssignmentEntry[] = [
+      { code: 'TEN501z', term: '前学期', day: '木', period: '1', classIds: ['デザイン思考・データサイエンスプログラム'] },
+      { code: 'TEN501z', term: '前学期', day: '木', period: '3', classIds: ['デザイン思考・データサイエンスプログラム'] },
+    ]
+    const offerings = [
+      { term: '前学期', slots: [{ day: '木', period: 1 }] },
+      { term: '前学期', slots: [{ day: '木', period: 3 }] },
+    ]
+    const profile: ClassProfile = { programName: 'デザイン思考・データサイエンスプログラム' }
+    expect(resolveSlotsForProfile('TEN501z', offerings, tenAssignments, profile, 'I')).toEqual([
+      { day: '木', period: 1 },
+      { day: '木', period: 3 },
+    ])
   })
 
   it('isRetaking:trueなら、通常セクションではなく再履セクションの曜日時限を返す（不合格科目の再履修）', () => {

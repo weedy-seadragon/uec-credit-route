@@ -1235,57 +1235,6 @@ COM402m,計算機工学,後学期,金,1,遠藤　幸一,"機械システムプ�
 COM402n,計算機工学,後学期,金,1,遠藤　幸一,"機械システムプログラム,電子工学プログラム,光工学プログラム,物理工学プログラム,化学生命工学プログラム",filled,「計算機工学」は三類全プログラムが対象(指示による)｜2026年度シラバスで木2→金1に変更されていたのを2026-09-06に確認・修正
 COM402p,計算機工学,後学期,金,1,遠藤　幸一,"機械システムプログラム,電子工学プログラム,光工学プログラム,物理工学プログラム,化学生命工学プログラム",filled,「計算機工学」は三類全プログラムが対象(指示による)｜2026年度シラバスで木2→金1に変更されていたのを2026-09-06に確認・修正
 COM402r,計算機工学,後学期,金,1,遠藤　幸一,"機械システムプログラム,電子工学プログラム,光工学プログラム,物理工学プログラム,化学生命工学プログラム",filled,「計算機工学」は三類全プログラムが対象(指示による)｜2026年度シラバスで木2→金1に変更されていたのを2026-09-06に確認・修正
-CHM101z,基礎科学実験B1,春ﾀｰﾑ,月,3，4,加固　昌寛,"A1-6,A1-9",auto,
-CHM101z,基礎科学実験B1,春ﾀｰﾑ,木,3,山北　佳宏,"A1-3,A1-4",auto,
-CHM101z,基礎科学実験B1,春ﾀｰﾑ,木,4,山北　佳宏,,,
-CHM101z,基礎科学実験B1,春ﾀｰﾑ,金,3,三輪　寛子,,,
-CHM101z,基礎科学実験B1,春ﾀｰﾑ,金,4,三輪　寛子,"A1-1,A1-4",auto,
-CHM101z,基礎科学実験B1,夏ﾀｰﾑ,月,3,加固　昌寛,"A1-6,A1-9",auto,
-CHM101z,基礎科学実験B1,夏ﾀｰﾑ,月,4,加固　昌寛,"A1-11,A1-12",auto,
-CHM101z,基礎科学実験B1,夏ﾀｰﾑ,木,3,山北　佳宏,"A1-3,A1-4",auto,
-CHM101z,基礎科学実験B1,夏ﾀｰﾑ,木,4,山北　佳宏,,,
-CHM101z,基礎科学実験B1,夏ﾀｰﾑ,金,3,三輪　寛子,,,
-CHM101z,基礎科学実験B1,夏ﾀｰﾑ,金,4,三輪　寛子,"A1-1,A1-4",auto,
-CHM202z,基礎科学実験B2,秋ﾀｰﾑ,月,3,加固　昌寛,,,
-CHM202z,基礎科学実験B2,秋ﾀｰﾑ,月,4,加固　昌寛,,,
-CHM202z,基礎科学実験B2,秋ﾀｰﾑ,木,3,山北　佳宏,,,
-CHM202z,基礎科学実験B2,秋ﾀｰﾑ,木,4,山北　佳宏,,,
-CHM202z,基礎科学実験B2,秋ﾀｰﾑ,金,3,三輪　寛子,,,
-CHM202z,基礎科学実験B2,秋ﾀｰﾑ,金,4,三輪　寛子,,,
-CHM202z,基礎科学実験B2,冬ﾀｰﾑ,月,3,加固　昌寛,,,
-CHM202z,基礎科学実験B2,冬ﾀｰﾑ,月,4,加固　昌寛,,,
-CHM202z,基礎科学実験B2,冬ﾀｰﾑ,木,3,山北　佳宏,,,
-CHM202z,基礎科学実験B2,冬ﾀｰﾑ,木,4,山北　佳宏,,,
-CHM202z,基礎科学実験B2,冬ﾀｰﾑ,金,3,三輪　寛子,,,
-CHM202z,基礎科学実験B2,冬ﾀｰﾑ,金,4,三輪　寛子,,,
-PHY101z,基礎科学実験A1,春ﾀｰﾑ,月,3,大饗・菊池・村上・饗庭・〇吉村・〇須田・*高田,"A1-11,A1-12,A1-8",auto,
-PHY101z,基礎科学実験A1,春ﾀｰﾑ,月,4,大饗・菊池・村上・饗庭・〇吉村・〇須田・*高田,"A1-7,A1-9",auto,
-PHY101z,基礎科学実験A1,春ﾀｰﾑ,木,3,奥野・木寺・松倉・梶川・〇近藤・〇大石,,,
-PHY101z,基礎科学実験A1,春ﾀｰﾑ,木,4,奥野・木寺・松倉・梶川・〇近藤・〇大石,"A1-3,A1-4,A1-5",auto,
-PHY101z,基礎科学実験A1,春ﾀｰﾑ,木,6,中村（仁）・小久保・佐藤（隆）・○近藤・○大石・○矢野・○篠田・○柏野,,,
-PHY101z,基礎科学実験A1,春ﾀｰﾑ,木,7,中村（仁）・小久保・佐藤（隆）・○近藤・○大石・○矢野・○篠田・○柏野,,,
-PHY101z,基礎科学実験A1,春ﾀｰﾑ,金,3,中村(信)・溝口・李(鯤)細川・永松・〇富田・〇内田,A1-1,auto,
-PHY101z,基礎科学実験A1,春ﾀｰﾑ,金,4,中村(信)・溝口・李(鯤)細川・永松・〇富田・〇内田,,,
-PHY101z,基礎科学実験A1,夏ﾀｰﾑ,月,3,大饗・菊池・村上・饗庭・〇吉村・〇須田・*高田,"A1-11,A1-12,A1-8",auto,
-PHY101z,基礎科学実験A1,夏ﾀｰﾑ,月,4,大饗・菊池・村上・饗庭・〇吉村・〇須田・*高田,"A1-7,A1-9",auto,
-PHY101z,基礎科学実験A1,夏ﾀｰﾑ,木,3,奥野・松倉・津田・梶川・〇近藤・〇大石,,,
-PHY101z,基礎科学実験A1,夏ﾀｰﾑ,木,4,奥野・松倉・津田・梶川・〇近藤・〇大石,"A1-3,A1-4,A1-5",auto,
-PHY101z,基礎科学実験A1,夏ﾀｰﾑ,金,3,中村(信)・萱野・溝口・永松・〇富田・〇未定,A1-1,auto,
-PHY101z,基礎科学実験A1,夏ﾀｰﾑ,金,4,中村(信)・萱野・溝口・永松・〇富田・〇未定,,,
-PHY201z,基礎科学実験A2,夏ﾀｰﾑ,木,6,中村（仁）・小久保・佐藤（隆）・○近藤・○大石・○矢野・○篠田・○柏野,,,
-PHY201z,基礎科学実験A2,夏ﾀｰﾑ,木,7,中村（仁）・小久保・佐藤（隆）・○近藤・○大石・○矢野・○篠田・○柏野,,,
-PHY201z,基礎科学実験A2,秋ﾀｰﾑ,月,3,中村(仁)・板倉・横川・饗庭・〇吉村・〇矢野,,,
-PHY201z,基礎科学実験A2,秋ﾀｰﾑ,月,4,中村(仁)・板倉・横川・饗庭・〇吉村・〇矢野,,,
-PHY201z,基礎科学実験A2,秋ﾀｰﾑ,木,3,臼井・木村・伊藤(毅)・姜・ZHOU JIAYI・○近藤・○大石,,,
-PHY201z,基礎科学実験A2,秋ﾀｰﾑ,木,4,臼井・木村・伊藤(毅)・姜・ZHOU JIAYI・○近藤・○大石,,,
-PHY201z,基礎科学実験A2,秋ﾀｰﾑ,金,3,佐々木(成)・小久保・朱・〇須田・〇未定・○篠田,,,
-PHY201z,基礎科学実験A2,秋ﾀｰﾑ,金,4,佐々木(成)・小久保・朱・〇須田・〇未定・○篠田,,,
-PHY201z,基礎科学実験A2,冬ﾀｰﾑ,月,3,中村(仁)・板倉・横川・饗庭・〇吉村・〇矢野,,,
-PHY201z,基礎科学実験A2,冬ﾀｰﾑ,月,4,中村(仁)・板倉・横川・饗庭・〇吉村・〇矢野,,,
-PHY201z,基礎科学実験A2,冬ﾀｰﾑ,木,3,臼井・木村・伊藤(毅)・姜・ZHOU JIAYI・○近藤・○大石,,,
-PHY201z,基礎科学実験A2,冬ﾀｰﾑ,木,4,臼井・木村・伊藤(毅)・姜・ZHOU JIAYI・○近藤・○大石,,,
-PHY201z,基礎科学実験A2,冬ﾀｰﾑ,金,3,佐々木(成)・小久保・朱・〇須田・〇未定・○篠田,,,
-PHY201z,基礎科学実験A2,冬ﾀｰﾑ,金,4,佐々木(成)・小久保・朱・〇須田・〇未定・○篠田,,,
 COM402k,計算機工学,後学期,木,2,結城　宏信,,,
 COM402k,計算機工学,後学期,木,2,山鹿　汐音,,,
 JPN101z,日本語第一,前学期,月,2,胡・内藤,留学生のみ,,
@@ -1458,33 +1407,93 @@ ENG401z,Academic English for the Second YearⅡ,後学期,火,3,HIGUCHI SONIA,�
 ENG401z,Academic English for the Second YearⅡ,後学期,火,3,BANIANI Mahshid,三類,filled,時限によって受講する類が決まる（1限→Ⅰ類、2限→Ⅱ類、3限→Ⅲ類。指示による）
 ENG401z,Academic English for the Second YearⅡ,後学期,火,3,Roderick Lange,三類,filled,時限によって受講する類が決まる（1限→Ⅰ類、2限→Ⅱ類、3限→Ⅲ類。指示による）
 ENG401z,Academic English for the Second YearⅡ,後学期,火,3,Scott Mclellan,三類,filled,時限によって受講する類が決まる（1限→Ⅰ類、2限→Ⅱ類、3限→Ⅲ類。指示による）
-MTH302i,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH302i,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
-MTH302j,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH302j,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
-MTH302k,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH302k,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
-MTH302m,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH302m,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
-MTH302n,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH302n,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
-MTH302p,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH302p,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
-MTH302r,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH302r,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
-MTH304a,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH304a,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
+MTH302i,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302i,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302j,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302j,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302k,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302k,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302m,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302m,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302n,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302n,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302p,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302p,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302r,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH302r,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304a,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304a,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
 MTH304b,複素関数論,前学期,火,4,南　泰浩,"クラス1,クラス2",filled,指示による
 MTH304b,複素関数論,前学期,水,4,龍野　智哉,"クラス3,クラス4",filled,
-MTH304c,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH304c,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
-MTH304d,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH304d,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
-MTH304e,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH304e,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
-MTH304f,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH304f,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
-MTH304g,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH304g,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
-MTH304h,複素関数論,前学期,水,3,古川　怜,"Mエリア(1クラス),Mエリア(2クラス)",filled,
-MTH304h,複素関数論,前学期,水,3,遠藤　晋平,"Mエリア(3クラス),Mエリア(4クラス)",filled,
+MTH304c,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304c,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304d,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304d,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304e,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304e,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304f,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304f,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304g,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304g,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304h,複素関数論,前学期,水,3,古川　怜,"Ⅲ-1,Ⅲ-2",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+MTH304h,複素関数論,前学期,水,3,遠藤　晋平,"Ⅲ-3,Ⅲ-4",filled,Ⅲ類の2年前期クラスN（エリアに関係ない）。指示による
+TEN501z,Technical English – Basic English for Science(上級),前学期,水,5,Shi Jie,上級者,,英語めっちゃデキる人が対象(多分)、普通は取らなくていい。それを注意として書いといて
+TEN501z,Technical English – Basic English for Science,前学期,木,1,等々力　啓太,情報数理工学プログラム、コンピュータサイエンスプログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,1,Eugene Hayford Addo,情報数理工学プログラム、コンピュータサイエンスプログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,1,Kimi Estela Kobayashi-Cuya,情報数理工学プログラム、コンピュータサイエンスプログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,1,唐　琳,情報数理工学プログラム、コンピュータサイエンスプログラム,,
+TEN501z,Technical English – Basic English for Science(I19クラス),前学期,木,1,大石　由紀子,デザイン思考・データサイエンスプログラム,,(I19クラス)同じプログラムの科目で時限が異なる唯一の例なので例外として2つ表示させる時間割を各自チェックする注意喚起をする。
+TEN501z,Technical English – Basic English for Science,前学期,木,2,Roderick Lange,経営社会情報学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,2,唐　琳,経営社会情報学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,2,等々力　啓太,機械システムプログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,2,Eugene Hayford Addo,機械システムプログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,3,Roderick Lange,情報通信工学プログラム、電気情報学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,3,Dermot　Lonergan,情報通信工学プログラム、電気情報学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,3,Kimi Estela Kobayashi-Cuya,デザイン思考・データサイエンスプログラム,,(I20クラス)同じプログラムの科目で時限が異なる唯一の例なので例外として2つ表示させる時間割を各自チェックする注意喚起をする。
+TEN501z,Technical English – Basic English for Science(I20クラス),前学期,木,3,Richard John Marsh,情報通信工学プログラム、電気情報学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,4,Roderick Lange,計測・制御システムプログラム、先端ロボティクスプログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,4,Richard John Marsh,計測・制御システムプログラム、先端ロボティクスプログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,4,Dermot　Lonergan,計測・制御システムプログラム、先端ロボティクスプログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,木,4,于　燕（Yu Yan）,計測・制御システムプログラム、先端ロボティクスプログラム,,
+TEN501z,Technical English – Basic English for Science(上級),前学期,木,5,○Yu・史,再履生,,
+TEN501z,Technical English – Basic English for Science,前学期,金,2,唐　琳,メディア情報学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,金,2,Eugene Hayford Addo,メディア情報学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,金,2,Roderick Lange,セキュリティ情報学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,金,2,大石　由紀子,セキュリティ情報学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,金,3,唐　琳,物理工学プログラム、化学生命工学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,金,3,Eugene Hayford Addo,物理工学プログラム、化学生命工学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,金,3,Roderick Lange,物理工学プログラム、化学生命工学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,金,4,唐　琳,電子工学プログラム、光工学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,金,4,Eugene Hayford Addo,電子工学プログラム、光工学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,金,4,Roderick Lange,電子工学プログラム、光工学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,金,4,于　燕（Yu Yan）,電子工学プログラム、光工学プログラム,,
+TEN501z,Technical English – Basic English for Science,前学期,金,5,○Yu・史,再履生,,
+TEN601z,Technical English – Intermediate English for Science,後学期,水,5,Shi Jie,上級者,,英語めっちゃデキる人が対象(多分)、普通は取らなくていい。それを注意として書いといて
+TEN601z,Technical English – Intermediate English for Science,後学期,木,1,Eugene Hayford Addo,セキュリティ情報学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,木,1,等々力　啓太,セキュリティ情報学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,木,1,唐　琳,機械システムプログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,木,2,Eugene Hayford Addo,計測・制御システムプログラム、先端ロボティクスプログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,木,2,Roderick Lange,計測・制御システムプログラム、先端ロボティクスプログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,木,2,等々力　啓太,計測・制御システムプログラム、先端ロボティクスプログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,木,2,唐　琳,計測・制御システムプログラム、先端ロボティクスプログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,木,3,Roderick Lange,物理工学プログラム、化学生命工学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,木,3,Richard John Marsh,物理工学プログラム、化学生命工学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,木,4,Roderick Lange,情報通信工学プログラム、電気情報学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,木,4,Richard John Marsh,情報通信工学プログラム、電気情報学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,木,4,于　燕（Yu Yan）,情報通信工学プログラム、電気情報学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,木,5,于・史,再履生,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,2,唐　琳,情報数理工学プログラム、コンピュータサイエンスプログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,2,Roderick Lange,情報数理工学プログラム、コンピュータサイエンスプログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,2,Eugene Hayford Addo,情報数理工学プログラム、コンピュータサイエンスプログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,2,大石　由紀子,情報数理工学プログラム、コンピュータサイエンスプログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,2,Kimi Estela Kobayashi-Cuya,デザイン思考・データサイエンスプログラム,,(I19クラス)同じプログラムの科目で時限が異なる唯一の例なので例外として2つ表示させる時間割を各自チェックする注意喚起をする。
+TEN601z,Technical English – Intermediate English for Science,後学期,金,3,唐　琳,メディア情報学プログラム、経営社会情報学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,3,Dermot Lonergan,メディア情報学プログラム、経営社会情報学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,3,Eugene Hayford Addo,メディア情報学プログラム、経営社会情報学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,3,Kimi Estela Kobayashi-Cuya,メディア情報学プログラム、経営社会情報学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,3,Roderick Lange,デザイン思考・データサイエンスプログラム,,(I20クラス)同じプログラムの科目で時限が異なる唯一の例なので例外として2つ表示させる時間割を各自チェックする注意喚起をする。
+TEN601z,Technical English – Intermediate English for Science,後学期,金,4,Dermot Lonergan,電子工学プログラム、光工学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,4,于　燕（Yu Yan）,電子工学プログラム、光工学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,4,Eugene Hayford Addo,電子工学プログラム、光工学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,4,Roderick Lange,電子工学プログラム、光工学プログラム,,
+TEN601z,Technical English – Intermediate English for Science,後学期,金,5,○Yu・史,再履生,,

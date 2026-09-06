@@ -42,6 +42,9 @@ interface OfferingLike {
  * - 「クラスN」・「A1-N」・「A2-N」：1年次クラス（全類共通、N=1〜12）。「A1-N」「A2-N」は
  *   scripts/build_class_assignment.pyがclass_schedule.csvと自動突き合わせできたときに
  *   生成する「{pdf名}-{class_id}」形式で、意味は「クラスN」と同じ
+ * - 「Ⅲ-N」：Ⅲ類の2年前期クラス（N=1〜4）。「クラスN」（1年次クラス）とは別表記
+ *   （2026-09-06、複素関数論で発覚：Ⅲ類側の「Mエリア(Nクラス)」だと思われていた表記が、
+ *   実際はエリアに関係ない「Ⅲ類の2年前期クラスN」という意味だった）
  * - 「Xクラス」（X=A/B/C）：Ⅰ類の1年後期〜2年後期クラス
  * - 「INクラス」（N=1〜6）：Ⅱ類の2年前期クラス
  * - 「Mエリア」：Ⅱ類の2年前期エリア、またはⅢ類の2年後期エリア（類で意味が変わる）
@@ -89,6 +92,13 @@ export function classIdMatchesProfile(
 
   const yearOneMatch = classId.match(/^クラス(\d+)$/)
   if (yearOneMatch) return profile.yearOneClass === Number(yearOneMatch[1])
+
+  // 「Ⅲ-N」：Ⅲ類の2年前期クラス（N=1〜4）。「クラスN」（1年次クラス）と紛らわしいので
+  // 別表記にした（2026-09-06、複素関数論で発覚：Ⅲ類側の「Mエリア(Nクラス)」だと
+  // 思われていた表記が、実際はエリアに関係ない「Ⅲ類の2年前期クラスN」という意味だった。
+  // 開発者提案で「クラスN」を類によって意味が変わる形にするより明示的な表記にした）
+  const clusterIIIMatch = classId.match(/^Ⅲ-(\d+)$/)
+  if (clusterIIIMatch) return cluster === 'III' && profile.classIIIYear2Class === clusterIIIMatch[1]
 
   // 「A1-7」「A2-3」のような表記：scripts/build_class_assignment.pyがclass_schedule.csv
   // （時間割PDFの書き起こし）と自動突き合わせできたときに生成する「{pdf名}-{class_id}」形式。
@@ -160,9 +170,16 @@ function slotsKey(slots: readonly { day: string; period: number }[]): string {
  * 「全クラス」しか無い科目（英語演習・独語演習などの演習系科目）は、そもそも学生が複数の
  * セクションから自由に選んで受講してよいもの。この場合は一意に決める必要が無いので、
  * 曜日時限が食い違っていてもundefinedにはせず、候補をすべて列挙して返す
- * （2026-09-06、開発者の指摘）。クラス指定で一致した場合（上のクラス優先の分岐）は、
- * 従来通り曜日時限が食い違えばundefinedのまま（本来一意に決まるはずのものが決まらないケース
- * なので、適当に選ぶより非表示を優先する）。
+ * （2026-09-06、開発者の指摘）。
+ *
+ * クラス指定・プログラム名など「全クラス」以外の表記（＝specific match）で一致した場合、
+ * 一致した曜日時限が食い違うと、一致に使ったclassIdが全部同じかどうかで扱いを変える：
+ * - classIdが違う（例:別々の理由でたまたま両方一致した）→ 本当に決められないので、
+ *   適当に選ぶより非表示を優先し、従来通りundefinedのまま
+ * - classIdが同じ（例:「デザイン思考・データサイエンスプログラム」がTechnical Englishで
+ *   木1と木3の2枠に分かれているような、同じ対象者向けに複数の枠が用意されている実際のケース）
+ *   → 対象者側は「時間割を見て自分の枠を確認する」しかないので、決め打ちせず全部列挙する
+ *   （2026-09-06、開発者の指摘。当初は一律undefinedにしていたが例外が見つかった）
  */
 export function resolveSlotsForProfile(
   code: string,
@@ -172,8 +189,12 @@ export function resolveSlotsForProfile(
   cluster: 'I' | 'II' | 'III' | null,
   isRetaking = false,
 ): { day: string; period: number }[] | undefined {
-  function offeringMatches(o: OfferingLike, allowCatchAll: boolean): boolean {
-    return o.slots.some((slot) => {
+  // そのofferingに一致するclassIdのうち、実際に一致した1つを返す（無ければundefined）。
+  // 「どのclassIdで一致したか」を後段で見て、同じclassId（例:同じプログラム名）が
+  // 複数の時限にまたがっているのか、別々のclassIdがたまたま両方一致した本当に
+  // 決められないケースなのかを区別するために使う
+  function matchedClassId(o: OfferingLike, allowCatchAll: boolean): string | undefined {
+    for (const slot of o.slots) {
       // 同じ(科目・学期・曜日・時限)に、クラスごとに教員が違う複数のセクションがあると
       // (例:MTH205a「離散数学」月1限のAクラス担当とBクラス担当)、class_assignment.jsonには
       // 別々のエントリとして複数件入っている。findだと最初の1件しか見ずBクラスの学生が
@@ -182,20 +203,50 @@ export function resolveSlotsForProfile(
       const entries = assignments.filter(
         (a) => a.code === code && a.term === o.term && a.day === slot.day && a.period === String(slot.period),
       )
-      return entries.some((entry) =>
-        entry.classIds.some((id) => {
-          if (id === '全クラス' && !allowCatchAll) return false
-          return classIdMatchesProfile(id, profile, cluster, isRetaking)
-        }),
-      )
-    })
+      for (const entry of entries) {
+        for (const id of entry.classIds) {
+          if (id === '全クラス' && !allowCatchAll) continue
+          if (classIdMatchesProfile(id, profile, cluster, isRetaking)) return id
+        }
+      }
+    }
+    return undefined
   }
 
-  const specificMatches = offerings.filter((o) => offeringMatches(o, false))
-  if (specificMatches.length > 0) {
-    const firstKey = slotsKey(specificMatches[0].slots)
-    if (specificMatches.every((o) => slotsKey(o.slots) === firstKey)) return specificMatches[0].slots
+  const specificWithId = offerings
+    .map((o) => ({ offering: o, matchedId: matchedClassId(o, false) }))
+    .filter((x): x is { offering: OfferingLike; matchedId: string } => x.matchedId !== undefined)
+
+  if (specificWithId.length > 0) {
+    const firstKey = slotsKey(specificWithId[0].offering.slots)
+    if (specificWithId.every((x) => slotsKey(x.offering.slots) === firstKey)) {
+      return specificWithId[0].offering.slots
+    }
+    // 曜日時限は食い違うが、一致したclassIdが全部同じ「プログラム名」（例:「デザイン思考・
+    // データサイエンスプログラム」がTechnical Englishで木1と木3の2枠に分かれているケース）
+    // なら、そのプログラムの中でさらに細かい枠（I19クラス/I20クラスなど、プロフィールでは
+    // 追跡していない粒度）に分かれているということなので、決め打ちせず全部列挙する
+    // （2026-09-06、開発者の指摘。「時間割を各自チェックする」前提の表示）。
+    // 「クラスN」のような個別の番号が食い違う場合（本来は1人の学生に1つの時限しかない
+    // はずなのに複数ある＝データの矛盾の可能性が高い）は、従来通り非表示を優先するため、
+    // この特別扱いは「プログラム名」で一致したときだけに限定する
+    const firstId = specificWithId[0].matchedId
+    if (firstId === profile.programName && specificWithId.every((x) => x.matchedId === firstId)) {
+      const seen = new Set<string>()
+      return specificWithId
+        .flatMap((x) => x.offering.slots)
+        .filter((slot) => {
+          const key = `${slot.day}${slot.period}`
+          if (seen.has(key)) return false
+          seen.add(key)
+          return true
+        })
+    }
     return undefined
+  }
+
+  function offeringMatches(o: OfferingLike, allowCatchAll: boolean): boolean {
+    return matchedClassId(o, allowCatchAll) !== undefined
   }
 
   const catchAllMatches = offerings.filter((o) => offeringMatches(o, true))
