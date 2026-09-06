@@ -19,6 +19,11 @@ class_idも複数書くときは通常半角カンマ区切りだが、「情報
 カンマ・全角カンマ・読点のどれで区切っても複数のclassIdsに分割する
 （2026-09-06、Technical Englishのプログラム名一覧で発覚）。
 
+「クラス7，8」のように「クラス」の後ろに複数の数字をカンマ区切りでまとめて書く省略記法
+にも対応する。「クラス7，8」は「クラス7,クラス8」（両方のクラスが対象）と同じ意味に
+展開してから通常の分割にかける（2026-09-06、基礎科学実験のデータで発覚。展開しないと
+「8」が「クラス」の付かない意味不明な単独トークンになってしまっていた）。
+
 実行: python scripts/build_class_assignment_json.py
 """
 import csv, json, os, re
@@ -26,6 +31,18 @@ import csv, json, os, re
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 SRC = os.path.join(ROOT, "data", "timetable", "class_assignment_filled.csv")
 OUT = os.path.join(ROOT, "data", "timetable", "class_assignment.json")
+
+# 「クラス7，8」「クラス9,10」のような、「クラス」1回＋数字を区切り文字でまとめて
+# 書く省略記法を「クラス7,クラス8」のように展開する
+CLASS_SHORTHAND_RE = re.compile(r"クラス\d+(?:[,，、]\d+)+")
+
+
+def expand_class_shorthand(text: str) -> str:
+    def repl(m: re.Match) -> str:
+        nums = re.findall(r"\d+", m.group(0))
+        return ",".join(f"クラス{n}" for n in nums)
+
+    return CLASS_SHORTHAND_RE.sub(repl, text)
 
 
 def main():
@@ -37,6 +54,7 @@ def main():
         class_id = r.get("class_id", "").strip()
         if not class_id:
             continue
+        class_id = expand_class_shorthand(class_id)
         periods = [p.strip() for p in re.split(r"[,，]", r["period"]) if p.strip()]
         for period in periods:
             out.append({

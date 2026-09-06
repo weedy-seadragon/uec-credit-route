@@ -15164,5 +15164,521 @@
     "classIds": [
       "機械システムプログラム"
     ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "春ﾀｰﾑ",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "クラス11",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "クラス11",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "クラス5",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "CHM101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "CHM202z",
+    "term": "秋ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8"
+    ]
+  },
+  {
+    "code": "CHM202z",
+    "term": "秋ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8"
+    ]
+  },
+  {
+    "code": "CHM202z",
+    "term": "秋ﾀｰﾑ",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "CHM202z",
+    "term": "秋ﾀｰﾑ",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "CHM202z",
+    "term": "秋ﾀｰﾑ",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "CHM202z",
+    "term": "秋ﾀｰﾑ",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "CHM202z",
+    "term": "冬ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "クラス11",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "CHM202z",
+    "term": "冬ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "クラス11",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "CHM202z",
+    "term": "冬ﾀｰﾑ",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "CHM202z",
+    "term": "冬ﾀｰﾑ",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "クラス5",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "CHM202z",
+    "term": "冬ﾀｰﾑ",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "CHM202z",
+    "term": "冬ﾀｰﾑ",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "クラス11",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "クラス11",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "クラス5",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "木",
+    "period": "6",
+    "classIds": [
+      "再履生"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "木",
+    "period": "7",
+    "classIds": [
+      "再履生"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "春ﾀｰﾑ",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "PHY101z",
+    "term": "夏ﾀｰﾑ",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "夏ﾀｰﾑ",
+    "day": "木",
+    "period": "6",
+    "classIds": [
+      "再履生"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "夏ﾀｰﾑ",
+    "day": "木",
+    "period": "7",
+    "classIds": [
+      "再履生"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "秋ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "クラス11",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "秋ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "クラス11",
+      "クラス12"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "秋ﾀｰﾑ",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "クラス5",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "秋ﾀｰﾑ",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "クラス5",
+      "クラス6"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "秋ﾀｰﾑ",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "秋ﾀｰﾑ",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス1",
+      "クラス2"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "冬ﾀｰﾑ",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "クラス7",
+      "クラス8"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "冬ﾀｰﾑ",
+    "day": "月",
+    "period": "4",
+    "classIds": [
+      "クラス7",
+      "クラス8"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "冬ﾀｰﾑ",
+    "day": "木",
+    "period": "3",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "冬ﾀｰﾑ",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "クラス3",
+      "クラス4"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "冬ﾀｰﾑ",
+    "day": "金",
+    "period": "3",
+    "classIds": [
+      "クラス9",
+      "クラス10"
+    ]
+  },
+  {
+    "code": "PHY201z",
+    "term": "冬ﾀｰﾑ",
+    "day": "金",
+    "period": "4",
+    "classIds": [
+      "クラス9",
+      "クラス10"
+    ]
   }
 ]
