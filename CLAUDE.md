@@ -477,3 +477,10 @@
     - `docs/SPEC.md`もあわせて更新：F-6は「→削除」に変更、F-8（データ保存・持ち運び）にダウンロード・読み込み・全消去がMainPageのツールバーに統合され`/data`ページ自体は削除された旨を追記、画面構成の一覧（§6）から`/compare`・`/data`の行を削除、F-6を参照していた2箇所の記述も整合するよう修正
     - `RoutePage.tsx`が使う`PagePlaceholder`コンポーネントは引き続き使われているため削除していない
     - `npx tsc --noEmit`・`npx vitest run`（99件）・`npm run lint`・`npm run build`すべて通過。Playwrightでナビゲーションから「プログラム比較」「データ」のリンクが消えたこと、他のページ（トップ・メイン画面）が引き続き正常に動作しconsoleエラーが出ないことを確認済み
+
+50. **理数基礎(必修)・類共通基礎(必修)等の必修科目がシラバスにリンクできない不具合を修正（2026-09-07、開発者が「回路システム学第一第二、電磁気学第一第二などは飛べるが、理数基礎(必修)類共通基礎（必修）の科目全てが飛べない。英語系は教師を絞り込めないから仕方ない」と報告）**：
+    - `MainPage.tsx`の`nameLink`（40番で追加）は「全offeringsのsyllabusUrlが完全一致する科目しかリンクにしない」という単純な判定だったため、回路システム学第一のように少数セクション（プログラムごとに1人ずつ教員がいる）科目は`resolveOfferingsForProfile`（後述）で正しく絞り込めていたが、微分積分学第一・線形代数学第一のような1年次の理数基礎科目（12クラス分・12人の教員がそれぞれ別のシラバスページを持つ）は絞り込みロジック自体にバグがあり、常にリンクにならなかった
+    - **根本原因**：`class_assignment.json`の1エントリは`(科目・学期・曜日・時限)`をキーに持つが、**担当教員名を持っていなかった**。1年次の理数基礎科目のように「同じ火曜3限に天野先生→クラス1、齋藤先生→クラス5、大野先生→クラス11、という3人の教員が並行開講している」科目では、`resolveOfferingsForProfile`が「このofferingが実際にどの教員のものか」を区別できず、3つのofferingそれぞれが（本来無関係な）クラス1・5・11すべてを「候補」として拾ってしまい、結果としてクラス5の学生に対しても3人分のURLが候補に残ってurls.size!==1でリンクなしになっていた（`resolveSlotsForProfile`の曜日時限だけを知りたい用途ではこの区別が無くても偶然正しい時限が返っていたため、これまで気づかれていなかった）
+    - **修正**：`scripts/build_class_assignment_json.py`が`class_assignment.json`の各エントリに`instructors`（担当教員名の配列）を含めるように変更。`src/domain/classAssignment.ts`の`matchedClassId`に、同じ曜日時限に複数のエントリが並ぶ場合はoffering自身の`instructors`と各エントリの`instructors`が重なるものだけに絞り込む処理を追加（`teacherTokens`/`teacherOverlaps`、`scripts/build_class_assignment.py`の`teacher_tokens`/`teacher_overlaps`と同じ考え方）。offering・entryのどちらかに教員名が無い場合や絞り込んだ結果0件になる場合は、従来通りの（絞り込まない）広い一致に自動的にフォールバックするため、既存の動作（`resolveSlotsForProfile`の全テスト）に影響しないことを確認済み
+    - `nameLink`・`dayPeriodTag`で重複していたクラス判定用プロフィールのオブジェクトリテラルを`classProfile`という1つの変数にまとめ、両方から参照するよう整理
+    - 単体テスト1件追加（微分積分学第一を模した3教員並行開講のケースで、正しい1件だけが絞り込まれることを確認）。`python scripts/validate_data.py`・`npx tsc --noEmit`・`npx vitest run`（102件）・`npm run lint`・`npm run build`すべて通過。Playwrightで回路システム学第一・微分積分学第一・線形代数学第一が正しくシラバスにリンクされること、Academic Written Englishのような英語系科目は引き続きリンクにならない（教師を絞り込めないため安全側に倒す、開発者の想定通り）ことを確認済み

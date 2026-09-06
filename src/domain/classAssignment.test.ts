@@ -1,7 +1,7 @@
 // classAssignment.ts の単体テスト。class_assignment.json の表記パターンごとに、
 // プロフィールとの一致判定・セクション解決が正しく動くことを確認する。
 import { describe, expect, it } from 'vitest'
-import { classIdMatchesProfile, resolveSlotsForProfile } from './classAssignment'
+import { classIdMatchesProfile, resolveOfferingsForProfile, resolveSlotsForProfile } from './classAssignment'
 import type { ClassAssignmentEntry, ClassProfile } from './classAssignment'
 
 describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () => {
@@ -311,5 +311,46 @@ describe('resolveSlotsForProfile（複数セクションからの解決）', () 
       { day: '月', period: 1 },
     ])
     expect(resolveSlotsForProfile('MTH205a', offerings, mthAssignments, { classIABC: 'C' }, 'I')).toBeUndefined()
+  })
+})
+
+describe('resolveOfferingsForProfile（曜日時限以外のフィールドも含めて一致したofferingを返す版）', () => {
+  it('クラスごとにsyllabusUrlが違う複数セクションから、このプロフィールの1件だけを返す（MainPage.tsxのnameLinkがシラバスリンクを絞り込むのに使う）', () => {
+    const offerings = [
+      { term: '前学期', slots: [{ day: '火', period: 2 }], syllabusUrl: 'https://example.com/a' },
+      { term: '前学期', slots: [{ day: '水', period: 4 }], syllabusUrl: 'https://example.com/b' },
+    ]
+    const assignments: ClassAssignmentEntry[] = [
+      { code: 'MTH101z', term: '前学期', day: '火', period: '2', classIds: ['クラス1'] },
+      { code: 'MTH101z', term: '前学期', day: '水', period: '4', classIds: ['クラス2'] },
+    ]
+    const profile: ClassProfile = { yearOneClass: 1 }
+    expect(resolveOfferingsForProfile('MTH101z', offerings, assignments, profile, 'I')).toEqual([offerings[0]])
+  })
+
+  it('一致するセクションが無ければundefined（他のクラス向けのURLを誤って返さない）', () => {
+    const offerings = [{ term: '前学期', slots: [{ day: '火', period: 2 }], syllabusUrl: 'https://example.com/a' }]
+    const assignments: ClassAssignmentEntry[] = [
+      { code: 'MTH101z', term: '前学期', day: '火', period: '2', classIds: ['クラス1'] },
+    ]
+    const profile: ClassProfile = { yearOneClass: 2 }
+    expect(resolveOfferingsForProfile('MTH101z', offerings, assignments, profile, 'I')).toBeUndefined()
+  })
+
+  it('同じ曜日時限に教員違いの並行クラスが何組もある科目（1年次の理数基礎科目等）で、offering自身の担当教員名からentryを絞り込み、無関係な教員のclassIdで誤って一致しない（2026-09-07、微分積分学第一等でシラバスに飛べない不具合の原因）', () => {
+    const offerings = [
+      { term: '前学期', slots: [{ day: '火', period: 3 }], instructors: ['天野　友之'], syllabusUrl: 'https://example.com/amano' },
+      { term: '前学期', slots: [{ day: '火', period: 3 }], instructors: ['齋藤　平和'], syllabusUrl: 'https://example.com/saito' },
+      { term: '前学期', slots: [{ day: '火', period: 3 }], instructors: ['大野　真裕'], syllabusUrl: 'https://example.com/ono' },
+    ]
+    const assignments: ClassAssignmentEntry[] = [
+      { code: 'MTH101z', term: '前学期', day: '火', period: '3', classIds: ['クラス1'], instructors: ['天野　友之'] },
+      { code: 'MTH101z', term: '前学期', day: '火', period: '3', classIds: ['クラス5'], instructors: ['齋藤　平和'] },
+      { code: 'MTH101z', term: '前学期', day: '火', period: '3', classIds: ['クラス11'], instructors: ['大野　真裕'] },
+    ]
+    // クラス5の学生 → 齋藤先生のofferingだけが一致し、天野・大野のURLは混ざらない
+    expect(resolveOfferingsForProfile('MTH101z', offerings, assignments, { yearOneClass: 5 }, 'I')).toEqual([
+      offerings[1],
+    ])
   })
 })

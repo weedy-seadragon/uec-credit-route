@@ -26,12 +26,39 @@ export interface ClassAssignmentEntry {
   day: string
   period: string
   classIds: string[]
+  /** 担当教員名（同じ曜日時限に複数の教員・クラスが並ぶ科目で、どのofferingがどのclassIdに
+   *  対応するかを絞り込むために使う。省略可＝古いテストデータ等では無くても動作する */
+  instructors?: string[]
 }
 
 /** offerings側の型（requirementSets.ts の SubjectOffering と構造的に合っていればよい） */
 interface OfferingLike {
   term: string
   slots: { day: string; period: number }[]
+  instructors?: string[]
+}
+
+/** 教員名を比較用のトークン集合にする（姓のみ・フルネームどちらの表記でも比較できるよう、
+ *  空白・○*〇などの記号を取り除く。scripts/build_class_assignment.pyのteacher_tokens()と同じ考え方） */
+function teacherTokens(names: readonly string[] | undefined): Set<string> {
+  const tokens = new Set<string>()
+  for (const raw of names ?? []) {
+    for (const part of raw.split(/[・,、]/)) {
+      const t = part.replace(/[\s　]/g, '').replace(/^[○*〇]+/, '')
+      if (t) tokens.add(t)
+    }
+  }
+  return tokens
+}
+
+/** 1人でも表記が重なっていればtrue（部分一致：姓のみ表記とフルネーム表記の両対応） */
+function teacherOverlaps(a: Set<string>, b: Set<string>): boolean {
+  for (const x of a) {
+    for (const y of b) {
+      if (x && y && (x.includes(y) || y.includes(x))) return true
+    }
+  }
+  return false
 }
 
 /**
@@ -203,11 +230,41 @@ export function resolveSlotsForProfile(
   cluster: 'I' | 'II' | 'III' | null,
   isRetaking = false,
 ): { day: string; period: number }[] | undefined {
+  const matched = resolveOfferingsForProfile(code, offerings, assignments, profile, cluster, isRetaking)
+  if (!matched) return undefined
+  const seen = new Set<string>()
+  return matched
+    .flatMap((o) => o.slots)
+    .filter((slot) => {
+      const key = `${slot.day}${slot.period}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+}
+
+/**
+ * resolveSlotsForProfileと同じ規則で、一致したoffering自体（syllabusUrlなどslots以外の
+ * フィールドも含む）を返す汎用版。MainPage.tsxのnameLink（科目名からシラバスへのリンク）が、
+ * 複数セクションある科目でも「このプロフィールが受講する1件」を絞り込むために使う
+ * （2026-09-07、開発者が「理数基礎・類共通基礎の必修科目等がシラバスに飛べない」と報告して
+ * 追加。従来は全セクションのURLが完全一致する科目しかリンクにしていなかった）。
+ * ロジックの詳細はresolveSlotsForProfileの元のコメントを参照（同じ規則をofferingの配列に
+ * 適用し、slotsへの変換をしないだけ）。
+ */
+export function resolveOfferingsForProfile<O extends OfferingLike>(
+  code: string,
+  offerings: readonly O[],
+  assignments: readonly ClassAssignmentEntry[],
+  profile: ClassProfile,
+  cluster: 'I' | 'II' | 'III' | null,
+  isRetaking = false,
+): O[] | undefined {
   // そのofferingに一致するclassIdのうち、実際に一致した1つを返す（無ければundefined）。
   // 「どのclassIdで一致したか」を後段で見て、同じclassId（例:同じプログラム名）が
   // 複数の時限にまたがっているのか、別々のclassIdがたまたま両方一致した本当に
   // 決められないケースなのかを区別するために使う
-  function matchedClassId(o: OfferingLike, allowCatchAll: boolean): string | undefined {
+  function matchedClassId(o: O, allowCatchAll: boolean): string | undefined {
     for (const slot of o.slots) {
       // 同じ(科目・学期・曜日・時限)に、クラスごとに教員が違う複数のセクションがあると
       // (例:MTH205a「離散数学」月1限のAクラス担当とBクラス担当)、class_assignment.jsonには
@@ -217,7 +274,22 @@ export function resolveSlotsForProfile(
       const entries = assignments.filter(
         (a) => a.code === code && a.term === o.term && a.day === slot.day && a.period === String(slot.period),
       )
-      for (const entry of entries) {
+      // 1年次の理数基礎・類共通基礎科目のように、同じ曜日時限に教員違いの並行クラスが
+      // 何組もあると、上のentriesには「この曜日時限にある全クラスのclassId」が混ざって
+      // 入ってくる（例:火3限に天野→クラス1、齋藤→クラス5、大野→クラス11の3件）。
+      // resolveSlotsForProfile（曜日時限だけを知りたい）なら、この中のどれか1つがプロフィールに
+      // 一致すればそれで十分（結局同じ時限に決まる）だが、resolveOfferingsForProfile
+      // （offeringそのもの＝シラバスURLを知りたい）ではこのofferingが実際にどの教員のものかを
+      // 区別しないと、無関係な教員のclassIdで誤って一致してしまう。offering自身の担当教員名
+      // （o.instructors）とentryの担当教員名が重なるものだけに絞れる場合はそちらを優先する
+      // （2026-09-07、開発者が「理数基礎・類共通基礎の必修科目がシラバスに飛べない」と報告して発覚）
+      const myTeachers = teacherTokens(o.instructors)
+      let candidateEntries = entries
+      if (entries.length > 1 && myTeachers.size > 0) {
+        const narrowed = entries.filter((e) => teacherOverlaps(myTeachers, teacherTokens(e.instructors)))
+        if (narrowed.length > 0) candidateEntries = narrowed
+      }
+      for (const entry of candidateEntries) {
         for (const id of entry.classIds) {
           if (id === '全クラス' && !allowCatchAll) continue
           if (classIdMatchesProfile(id, profile, cluster, isRetaking)) return id
@@ -229,12 +301,12 @@ export function resolveSlotsForProfile(
 
   const specificWithId = offerings
     .map((o) => ({ offering: o, matchedId: matchedClassId(o, false) }))
-    .filter((x): x is { offering: OfferingLike; matchedId: string } => x.matchedId !== undefined)
+    .filter((x): x is { offering: O; matchedId: string } => x.matchedId !== undefined)
 
   if (specificWithId.length > 0) {
     const firstKey = slotsKey(specificWithId[0].offering.slots)
     if (specificWithId.every((x) => slotsKey(x.offering.slots) === firstKey)) {
-      return specificWithId[0].offering.slots
+      return specificWithId.map((x) => x.offering)
     }
     // 曜日時限は食い違うが、一致したclassIdが全部同じ「プログラム名」（例:「デザイン思考・
     // データサイエンスプログラム」がTechnical Englishで木1と木3の2枠に分かれているケース）
@@ -246,32 +318,16 @@ export function resolveSlotsForProfile(
     // この特別扱いは「プログラム名」で一致したときだけに限定する
     const firstId = specificWithId[0].matchedId
     if (firstId === profile.programName && specificWithId.every((x) => x.matchedId === firstId)) {
-      const seen = new Set<string>()
-      return specificWithId
-        .flatMap((x) => x.offering.slots)
-        .filter((slot) => {
-          const key = `${slot.day}${slot.period}`
-          if (seen.has(key)) return false
-          seen.add(key)
-          return true
-        })
+      return specificWithId.map((x) => x.offering)
     }
     return undefined
   }
 
-  function offeringMatches(o: OfferingLike, allowCatchAll: boolean): boolean {
+  function offeringMatches(o: O, allowCatchAll: boolean): boolean {
     return matchedClassId(o, allowCatchAll) !== undefined
   }
 
   const catchAllMatches = offerings.filter((o) => offeringMatches(o, true))
   if (catchAllMatches.length === 0) return undefined
-  const seen = new Set<string>()
   return catchAllMatches
-    .flatMap((o) => o.slots)
-    .filter((slot) => {
-      const key = `${slot.day}${slot.period}`
-      if (seen.has(key)) return false
-      seen.add(key)
-      return true
-    })
 }

@@ -123,6 +123,12 @@ def main():
         class_id = expand_iarea_shorthand(class_id)
         class_id = expand_parity_programs(class_id)
         periods = [p.strip() for p in re.split(r"[,，]", r["period"]) if p.strip()]
+        # 担当教員名（1年次必修科目のように、同じ曜日時限に複数の教員・クラスが並ぶ科目で、
+        # どのofferingがどのclassIdに対応するかをTypeScript側で絞り込むために使う。
+        # 2026-09-07、開発者が「理数基礎・類共通基礎の必修科目がシラバスに飛べない」と
+        # 報告して発覚：同じ曜日時限に複数の教員がいると、どのclassIdがどの教員のものか
+        # 区別できず、シラバスURLを一意に決められなかった）
+        instructors = [t.strip() for t in re.split(r"[・,、]", r.get("instructors", "")) if t.strip()]
         for period in periods:
             out.append({
                 "code": r["subject_code"],
@@ -130,6 +136,7 @@ def main():
                 "day": r["day"],
                 "period": period,
                 "classIds": [t.strip() for t in re.split(r"[,，、]", class_id) if t.strip()],
+                "instructors": instructors,
             })
 
     with open(OUT, "w", encoding="utf-8") as f:

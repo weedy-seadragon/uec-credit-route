@@ -23,7 +23,7 @@ import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
 import { getClassAssignments, getProgramName, getRequirementSet, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { TransferBucketItem } from '../data/requirementSets'
-import { resolveSlotsForProfile } from '../domain/classAssignment'
+import { resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
 import type { ReviewCondition } from '../domain/requirements'
 import type { Profile } from '../storage/profile'
@@ -256,6 +256,15 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const classAssignments = useMemo(() => getClassAssignments(), [])
   // プログラムが決まっていれば（2年後期以降）、その名前をクラス判定にも使う
   const programName = getProgramName(profile.program)
+  // dayPeriodTag・nameLinkの両方で使う、クラス判定用プロフィール（resolveSlotsForProfile等の引数）
+  const classProfile = {
+    yearOneClass: profile.yearOneClass,
+    classIABC: profile.classIABC,
+    classIIArea: profile.classIIArea,
+    classIIIYear2Class: profile.classIIIYear2Class,
+    classIIIYear2Area: profile.classIIIYear2Area,
+    programName,
+  }
   // recommend.ts が要求する SubjectInfo 型（必要な項目だけ）に、科目マスタの情報を詰め替える。
   // prerequisites（先修科目）は、シラバスの自由記述テキスト（prerequisitesText）から
   // prerequisites.ts が安全に（完全一致するものだけ）抜き出したコード配列を使う
@@ -460,17 +469,30 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function nameOf(code: string): string {
     return subjectsByCode.get(code)?.name ?? code
   }
-  // 科目名をシラバスへのリンクにする（一覧の各行で使う）。offeringsが1件も無い科目や、
-  // 複数セクションでシラバスURLがバラバラな科目（どれが代表か決められない）はリンクにせず、
-  // 名前をそのまま出す
+  // 科目名をシラバスへのリンクにする（一覧の各行で使う）。offeringsが1件も無い科目は
+  // リンクにせず名前をそのまま出す。複数セクションでシラバスURLがバラバラな科目
+  // （理数基礎・類共通基礎の必修科目など、クラスごとに別ページを持つもの）は、
+  // dayPeriodTagと同じクラス解決ロジック（resolveOfferingsForProfile）でこのプロフィールが
+  // 受講するセクションを絞り込み、一意に決まればそちらにリンクする。英語系のように
+  // 教員を絞り込めない（全クラス扱いで複数候補が残る）科目は、従来通りリンクにしない
+  // （2026-09-07、開発者が「理数基礎・類共通基礎の必修や回路システム学第一第二等がシラバスに
+  // 飛べない」と報告して発覚）
   function nameLink(code: string): ReactNode {
     const name = nameOf(code)
     const offerings = subjectsByCode.get(code)?.offerings
     if (!offerings || offerings.length === 0) return name
     const urls = new Set(offerings.map((o) => o.syllabusUrl))
-    if (urls.size !== 1) return name
+    let target = offerings
+    if (urls.size !== 1) {
+      const isRetaking = committed.get(code) === 'failed'
+      const matched = resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, isRetaking)
+      if (!matched || matched.length === 0) return name
+      const matchedUrls = new Set(matched.map((o) => o.syllabusUrl))
+      if (matchedUrls.size !== 1) return name
+      target = matched
+    }
     return (
-      <a href={offerings[0].syllabusUrl} target="_blank" rel="noopener noreferrer">
+      <a href={target[0].syllabusUrl} target="_blank" rel="noopener noreferrer">
         {name}
       </a>
     )
@@ -616,21 +638,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     const slots =
       offerings.length === 1
         ? offerings[0].slots
-        : resolveSlotsForProfile(
-            code,
-            offerings,
-            classAssignments,
-            {
-              yearOneClass: profile.yearOneClass,
-              classIABC: profile.classIABC,
-              classIIArea: profile.classIIArea,
-              classIIIYear2Class: profile.classIIIYear2Class,
-              classIIIYear2Area: profile.classIIIYear2Area,
-              programName,
-            },
-            profile.cluster,
-            isRetaking,
-          )
+        : resolveSlotsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, isRetaking)
     if (!slots || slots.length === 0) return null
     const text = slots.map((s) => `${s.day}・${s.period}限`).join('/')
     return (
