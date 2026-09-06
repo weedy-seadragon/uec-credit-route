@@ -429,6 +429,21 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function nameOf(code: string): string {
     return subjectsByCode.get(code)?.name ?? code
   }
+  // 科目名をシラバスへのリンクにする（一覧の各行で使う）。offeringsが1件も無い科目や、
+  // 複数セクションでシラバスURLがバラバラな科目（どれが代表か決められない）はリンクにせず、
+  // 名前をそのまま出す
+  function nameLink(code: string): ReactNode {
+    const name = nameOf(code)
+    const offerings = subjectsByCode.get(code)?.offerings
+    if (!offerings || offerings.length === 0) return name
+    const urls = new Set(offerings.map((o) => o.syllabusUrl))
+    if (urls.size !== 1) return name
+    return (
+      <a href={offerings[0].syllabusUrl} target="_blank" rel="noopener noreferrer">
+        {name}
+      </a>
+    )
+  }
   function creditsOf(code: string): number | undefined {
     return subjectsByCode.get(code)?.credits
   }
@@ -702,7 +717,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, ([code]) => code)
           const row = (code: string) => (
             <>
-              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+              {nameLink(code)}（{creditsLabel(code)}）{yearTermTag(code)}
       {/* 半角スペース2個ぶん。HTMLは連続する半角スペースを1個にまとめてしまうので、
           折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
       {'\u00A0\u00A0'}
@@ -749,7 +764,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             const { regular, otherProgram, international } = splitSpecialSubjects(failedSubjects, ([code]) => code)
             const row = (code: string) => (
               <>
-                {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+                {nameLink(code)}（{creditsLabel(code)}）{yearTermTag(code)}
       {/* 半角スペース2個ぶん。HTMLは連続する半角スペースを1個にまとめてしまうので、
           折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
       {'\u00A0\u00A0'}
@@ -780,7 +795,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           const { regular, otherProgram, international } = splitSpecialSubjects(items, (r) => r.code)
           const row = (code: string) => (
             <>
-              {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+              {nameLink(code)}（{creditsLabel(code)}）{yearTermTag(code)}
       {/* 半角スペース2個ぶん。HTMLは連続する半角スペースを1個にまとめてしまうので、
           折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
       {'\u00A0\u00A0'}
@@ -842,7 +857,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 </li>
                 {commonOnlyRemaining.map((code) => (
                   <li key={code}>
-                    {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+                    {nameLink(code)}（{creditsLabel(code)}）{yearTermTag(code)}
                     {'  '}
                     <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
               {dayPeriodTag(code)}
@@ -862,6 +877,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 draft={draft}
                 onChange={handleDraftChange}
                 nameOf={nameOf}
+                nameLink={nameLink}
                 creditsLabel={creditsLabel}
                 yearTermTag={yearTermTag}
                 termTypeOf={termTypeOf}
@@ -965,6 +981,7 @@ function GroupProgress({
   draft,
   onChange,
   nameOf,
+  nameLink,
   creditsLabel,
   yearTermTag,
   termTypeOf,
@@ -980,6 +997,7 @@ function GroupProgress({
   draft: ReadonlyMap<string, SubjectStatus>
   onChange: (code: string, status: SubjectStatus | undefined) => void
   nameOf: (code: string) => string
+  nameLink: (code: string) => ReactNode
   creditsLabel: (code: string) => string
   yearTermTag: (code: string) => ReactNode
   termTypeOf: (code: string) => string | null
@@ -1012,7 +1030,7 @@ function GroupProgress({
   const regular = remaining.filter((code) => !isInternational(code) && !isOtherProgram(code))
   const row = (code: string) => (
     <>
-      {nameOf(code)}（{creditsLabel(code)}）{yearTermTag(code)}
+      {nameLink(code)}（{creditsLabel(code)}）{yearTermTag(code)}
       {/* 半角スペース2個ぶん。HTMLは連続する半角スペースを1個にまとめてしまうので、
           折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
       {'\u00A0\u00A0'}
@@ -1023,7 +1041,7 @@ function GroupProgress({
   // 前学期・後学期で折りたたんだ行では、学期は見出し側で分かるので年次だけ添える（yearOnlyTag）
   const rowShort = (code: string) => (
     <>
-      {nameOf(code)}（{creditsLabel(code)}）{yearOnlyTag(code)}
+      {nameLink(code)}（{creditsLabel(code)}）{yearOnlyTag(code)}
       <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
       {dayPeriodTag(code)}
     </>
