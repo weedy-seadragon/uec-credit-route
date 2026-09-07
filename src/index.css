@@ -34,6 +34,14 @@ nav a {
   font-weight: 700;
 }
 
+/* 更新日を見出しの横へ置き、幅が足りない画面では次の行へ折り返せるようにする。 */
+.release-note-date {
+  margin-left: 0.75rem;
+  font-size: 0.8em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 /* 初回リリース日は更新内容と区別し、二重の縁取りで記念プレートのように見せる。 */
 .release-note-initial {
   margin-top: 1.6rem;
