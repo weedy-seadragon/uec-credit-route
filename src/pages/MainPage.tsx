@@ -1169,26 +1169,33 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <section>
           <h2>審査</h2>
           <ul>
-            {reviewStatuses.map((r) => (
-              <li key={r.id}>
-                {r.name}
-                {r.when && <span style={{ marginLeft: '0.4em', color: '#555' }}>（{r.when}）</span>}
-                {r.satisfied ? ' ✔ 合格見込み' : ' ✖ 不足あり'}
-                {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
-                {r.caveat && <p style={{ fontSize: '0.9em', color: '#555', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
-                {!r.satisfied && (
-                  <details>
-                    <summary>詳細</summary>
-                    <ul className="review-conditions">
-                      {r.unsatisfied.map((cond, i) => (
-                        <li key={i}>{describeCondition(cond)}</li>
-                      ))}
-                    </ul>
-                    {r.onFail?.note && <p style={{ fontSize: '0.9em', color: '#555' }}>※ {r.onFail.note}</p>}
-                  </details>
-                )}
-              </li>
-            ))}
+            {reviewStatuses.map((r) => {
+              // 卒業審査の共通単位条件は、画面上部の審査用総単位の説明と重複するため詳細から省く。
+              // 判定自体（r.satisfied）はdomain側で済んでおり、この表示用フィルタでは変わらない。
+              const visibleUnsatisfied = r.id === 'graduation'
+                ? r.unsatisfied.filter((cond) => cond.type !== 'commonCredits')
+                : r.unsatisfied
+              return (
+                <li key={r.id}>
+                  {r.name}
+                  {r.when && <span style={{ marginLeft: '0.4em', color: '#555' }}>（{r.when}）</span>}
+                  {r.satisfied ? ' ✔ 合格見込み' : ' ✖ 不足あり'}
+                  {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
+                  {r.caveat && <p style={{ fontSize: '0.9em', color: '#555', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
+                  {!r.satisfied && visibleUnsatisfied.length > 0 && (
+                    <details>
+                      <summary>詳細</summary>
+                      <ul className="review-conditions">
+                        {visibleUnsatisfied.map((cond, i) => (
+                          <li key={i}>{describeCondition(cond)}</li>
+                        ))}
+                      </ul>
+                      {r.onFail?.note && <p style={{ fontSize: '0.9em', color: '#555' }}>※ {r.onFail.note}</p>}
+                    </details>
+                  )}
+                </li>
+              )
+            })}
           </ul>
         </section>
       )}
