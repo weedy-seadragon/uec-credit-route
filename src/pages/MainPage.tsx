@@ -6,7 +6,7 @@
 //
 // 簡略化している点（将来のフェーズで拡張する）：
 // - 科目ごとの状態変更は、要覧のスケッチにある「履修予定チェック」ではなく、
-//   すべての一覧で共通の「未履修/履修中/修得/不合格」プルダウン1つに統一している
+//   すべての一覧で共通の「未履修/修得/不合格」ラジオボタンに統一している
 //   （取得単位への追加も、この操作を通じて行う。ファイルからの読み込み等はフェーズ2-5で対応）
 // - 履修中というステータス自体が無い（未履修/修得/不合格の3択）ため、busySlots（同時限警告）は
 //   常に空のまま。先修科目（prerequisites）は2026-09-06にprerequisites.ts経由で配線した
@@ -211,6 +211,43 @@ function CollapsedSubjectGroup<T>({
         </ul>
       </details>
     </li>
+  )
+}
+
+/**
+ * 科目一覧の1行を、科目情報と状態操作の2列グリッドで表示する共通部品。
+ *
+ * 一覧ごとに科目名・単位・状態ボタンの並びがずれると、学生が「何を変更するか」を
+ * 見失いやすい。そのため、表示するセクションにかかわらず同じHTML構造を使う。
+ */
+function SubjectRow({
+  name,
+  credits,
+  term,
+  status,
+  schedule,
+  note,
+}: {
+  name: ReactNode
+  credits: string
+  term?: ReactNode
+  status: ReactNode
+  schedule?: ReactNode
+  note?: ReactNode
+}) {
+  return (
+    <div className="subject-row">
+      <div className="subject-row-main">
+        <span className="subject-name">{name}</span>
+        <span className="subject-meta">{credits}</span>
+        {term && <span className="subject-meta">{term}</span>}
+        {note}
+      </div>
+      <div className="subject-row-actions">
+        {status}
+        {schedule && <span className="subject-schedule">{schedule}</span>}
+      </div>
+    </div>
   )
 }
 
@@ -712,43 +749,49 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   return (
     // 下側に余白を持たせる：最後の区分（類専門など）の<summary>がページ最下端にくっついて
     // クリックしづらくならないようにするため
-    <main style={{ paddingBottom: '6rem' }}>
-      <h1>
-        {profile.entryYear}入学 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
-        {profile.program} / {profile.grade}年 <Link to="/setup">[変更]</Link>
-      </h1>
-      <p>
-        合計 {evaluation.totalCredits.contribution} / {evaluation.totalCredits.required}
-        {evaluation.totalCredits.satisfied ? ' ✔' : ''}
-      </p>
+    <main className="main-page" style={{ paddingBottom: '6rem' }}>
+      <header className="main-page-header">
+        <h1>
+          {profile.entryYear}入学 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
+          {profile.program} / {profile.grade}年 <Link to="/setup">[変更]</Link>
+        </h1>
+        <p>
+          合計 {evaluation.totalCredits.contribution} / {evaluation.totalCredits.required}
+          {evaluation.totalCredits.satisfied ? ' ✔' : ''}
+        </p>
+      </header>
 
-      <div>
-        <label htmlFor="termFilter">表示: </label>
-        <select id="termFilter" value={termKey} onChange={(e) => setTermKey(e.target.value)}>
-          {TERM_OPTIONS.map((t) => (
-            <option key={t.key} value={t.key}>
-              {t.label}
-            </option>
-          ))}
-        </select>{' '}
-        <button type="button" onClick={handleUpdate}>
-          更新
-        </button>{' '}
-        <button type="button" onClick={handleReset}>
-          リセット（全ての科目を未履修へ変更）
-        </button>
-        {/* 「更新」「リセット」と、その後のダウンロード等のボタン群を分けて見せるための余白。
-            ボタン1個ぶんくらいの幅をあけたいだけなので、CSSクラスは作らずインラインで済ませる */}
-        <span style={{ display: 'inline-block', width: '4em' }} />
-        <button type="button" onClick={handleDownload}>
-          単位取得状況をダウンロード
-        </button>{' '}
-        {/* ファイル選択は、見えない<input type="file">をrefで持っておき、
-            普通の<button>のクリックでそれを間接的にクリックする形にする。
-            <label>で代用する方法だと<button>と見た目をぴったり揃えられなかったため */}
-        <button type="button" onClick={() => fileInputRef.current?.click()}>
-          単位取得状況をファイルから読み込む
-        </button>
+      {/* 表示範囲・更新・データ入出力を、目的ごとのグループに分けた操作バーにする。 */}
+      <div className="main-toolbar">
+        <div className="toolbar-group">
+          <label className="toolbar-label" htmlFor="termFilter">
+            表示する学年・学期
+            <select id="termFilter" value={termKey} onChange={(e) => setTermKey(e.target.value)}>
+              {TERM_OPTIONS.map((t) => (
+                <option key={t.key} value={t.key}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button className="toolbar-primary" type="button" onClick={handleUpdate}>
+            変更を更新
+          </button>
+          <button type="button" onClick={handleReset}>
+            リセット
+          </button>
+        </div>
+        <div className="toolbar-group">
+          <button type="button" onClick={handleDownload}>
+            単位取得状況をダウンロード
+          </button>
+          {/* ファイル選択は、見えない<input type="file">をrefで持っておき、
+              普通の<button>のクリックでそれを間接的にクリックする形にする。
+              <label>で代用する方法だと<button>と見た目をぴったり揃えられなかったため */}
+          <button type="button" onClick={() => fileInputRef.current?.click()}>
+            単位取得状況をファイルから読み込む
+          </button>
+        </div>
         <input
           ref={fileInputRef}
           type="file"
@@ -759,7 +802,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {dataMessage && <p role="status">{dataMessage}</p>}
       </div>
 
-      <section>
+      <section className="requirement-section">
         <h2>取得単位（{passedCredits}単位）</h2>
         {(() => {
         const commonCreditsElement = (
@@ -787,14 +830,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             : sortByYearTerm(items, ([code]) => code, standardYearOf, termTypeOf)
           const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, ([code]) => code)
           const row = (code: string) => (
-            <>
-              {nameLink(code)}（{creditsLabel(code)}）{yearTermTag(code)}
-      {/* 半角スペース2個ぶん。HTMLは連続する半角スペースを1個にまとめてしまうので、
-          折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
-      {'\u00A0\u00A0'}
-              <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
-              {dayPeriodTag(code)}
-            </>
+            <SubjectRow
+              name={nameLink(code)}
+              credits={creditsLabel(code)}
+              term={yearTermTag(code)}
+              status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
+              schedule={dayPeriodTag(code)}
+            />
           )
           const categoryElement = (
             <div key={label}>
@@ -828,8 +870,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         )}
       </section>
 
-      <section>
-        <h2>不可の単位（{failedSubjects.length}）</h2>
+      <section className="requirement-section failed-section">
+        <h2>不合格になった科目（{failedSubjects.length}）</h2>
+        <p className="section-guidance">
+          必修科目は再履修して単位を修得する必要があります。選択科目は、再履修するか同じ区分から別の科目を選べます。
+        </p>
         <ul>
           {(() => {
             const { regular, otherProgram, international } = splitSpecialSubjects(failedSubjects, ([code]) => code)
@@ -846,25 +891,25 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 ? undefined
                 : resolveSlotsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, true)
               return (
-              <>
-                {nameLink(code)}（{creditsLabel(code)}）{yearTermTag(code)}
-      {/* 半角スペース2個ぶん。HTMLは連続する半角スペースを1個にまとめてしまうので、
-          折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
-      {'\u00A0\u00A0'}
-                <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
-              {singleOffering && dayPeriodTag(code)}
-              {retakeSlots && retakeSlots.length > 0 && (
-                <ul style={{ marginLeft: '1.5em' }}>
-                  <li style={{ fontSize: '0.9em' }}>
-                    <span style={{ color: '#555' }}>※ 再履用の授業があります：</span>
-                    {nameLink(code)}（{creditsLabel(code)}）
-                    {'  '}
-                    <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
-                    <span style={{ marginLeft: '0.4em' }}>{retakeSlots.map((s) => `${s.day}・${s.period}限`).join('/')}</span>
-                  </li>
-                </ul>
-              )}
-              </>
+                <>
+                  <SubjectRow
+                    name={nameLink(code)}
+                    credits={creditsLabel(code)}
+                    term={yearTermTag(code)}
+                    status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
+                    schedule={singleOffering ? dayPeriodTag(code) : undefined}
+                    note={
+                      requiredCodes.has(code) ? (
+                        <span className="requirement-badge required-retake">必修：再履修して単位を修得してください</span>
+                      ) : (
+                        <span className="requirement-badge elective-replacement">選択：再履修するか、同じ区分から別の科目を選べます</span>
+                      )
+                    }
+                  />
+                  {retakeSlots && retakeSlots.length > 0 && (
+                    <p className="group-guidance">再履用の授業があります：{retakeSlots.map((s) => `${s.day}・${s.period}限`).join(' / ')}</p>
+                  )}
+                </>
               )
             }
             return (
@@ -881,22 +926,22 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </ul>
       </section>
 
-      <section>
+      <section className="requirement-section">
         <h2>残りの必修（あと {requiredShortfall(boundaryGroups)} 単位）</h2>
+        <p className="section-guidance">この一覧の科目はすべて必修です。不合格になった必修科目は、上の「不合格になった科目」で再履修を確認してください。</p>
         {remainingRequiredByCategory.map(({ label, items }) => {
           // ()内は単位数だけにする。年次・学期は他の一覧と同じ形の注記で統一する。
           // 再履修かどうかはこの後のプルダウンの選択値で分かる。他プログラム専門科目・留学生のみの
           // 科目は下の折りたたみにまとめる
           const { regular, otherProgram, international } = splitSpecialSubjects(items, (r) => r.code)
           const row = (code: string) => (
-            <>
-              {nameLink(code)}（{creditsLabel(code)}）{yearTermTag(code)}
-      {/* 半角スペース2個ぶん。HTMLは連続する半角スペースを1個にまとめてしまうので、
-          折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
-      {'\u00A0\u00A0'}
-              <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
-              {dayPeriodTag(code)}
-            </>
+            <SubjectRow
+              name={nameLink(code)}
+              credits={creditsLabel(code)}
+              term={yearTermTag(code)}
+              status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
+              schedule={dayPeriodTag(code)}
+            />
           )
           return (
             <div key={label}>
@@ -919,7 +964,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </section>
 
       {(clusterTransferBucket.length > 0 || programTransferBucket.length > 0) && (
-        <section>
+        <section className="requirement-section">
           <h2>その他の科目（転類・転プログラム前に必修だった科目）</h2>
           <p style={{ fontSize: '0.9em', color: '#555' }}>
             元の類・プログラムでは必修だったものの、今の要件には出てこない科目です。修得にすると共通単位に加算されます
@@ -931,9 +976,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               <ul>
                 {clusterTransferBucket.map((item) => (
                   <li key={item.code}>
-                    {item.name}（{item.credits}単位）
-                    {'  '}
-                    <SubjectStatusSelect code={item.code} value={draft.get(item.code)} onChange={handleDraftChange} />
+                    <SubjectRow
+                      name={item.name}
+                      credits={`${item.credits}単位`}
+                      status={<SubjectStatusSelect code={item.code} value={draft.get(item.code)} onChange={handleDraftChange} />}
+                    />
                   </li>
                 ))}
               </ul>
@@ -945,9 +992,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               <ul>
                 {programTransferBucket.map((item) => (
                   <li key={item.code}>
-                    {item.name}（{item.credits}単位）
-                    {'  '}
-                    <SubjectStatusSelect code={item.code} value={draft.get(item.code)} onChange={handleDraftChange} />
+                    <SubjectRow
+                      name={item.name}
+                      credits={`${item.credits}単位`}
+                      status={<SubjectStatusSelect code={item.code} value={draft.get(item.code)} onChange={handleDraftChange} />}
+                    />
                   </li>
                 ))}
               </ul>
@@ -956,10 +1005,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </section>
       )}
 
-      <section>
+      <section className="requirement-section">
         <h2>選択科目</h2>
-        <p style={{ fontSize: '0.9em', color: '#555' }}>
-          ※ 他プログラムの専門科目（各区分の中の「他プログラム専門科目」にまとめているもの）を履修した場合も、専門科目の単位として扱われます（学修要覧より）
+        <p className="section-guidance">
+          区分ごとに表示される不足単位まで、この一覧から科目を選んで修得してください。必修の不合格科目は、この一覧ではなく上の「不合格になった科目」を確認します。
+        </p>
+        <p className="section-guidance">
+          ※ 他プログラムの専門科目（各区分の中の「他プログラム専門科目」にまとめているもの）を履修した場合も、専門科目の単位として扱われます（学修要覧より）。
         </p>
         {/* ここに出すのは「選択」「選択必修」の区分だけ（必修は上の「残りの必修」で扱う。自由・国際は対象外）。
             必要単位が0のグループ（そのプログラムでは使わない区分）も出す意味が無いので除く。
@@ -990,10 +1042,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 </li>
                 {commonOnlyRemaining.filter(isVisibleForTermFilter).map((code) => (
                   <li key={code}>
-                    {nameLink(code)}（{creditsLabel(code)}）{yearTermTag(code)}
-                    {'  '}
-                    <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
-              {dayPeriodTag(code)}
+                    <SubjectRow
+                      name={nameLink(code)}
+                      credits={creditsLabel(code)}
+                      term={yearTermTag(code)}
+                      status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
+                      schedule={dayPeriodTag(code)}
+                    />
                   </li>
                 ))}
                 {commonOnlyRemaining.filter(isVisibleForTermFilter).length === 0 && <li>（この表示範囲では残っていません）</li>}
@@ -1167,22 +1222,23 @@ function GroupProgress({
   const otherProgram = remaining.filter((code) => !isInternational(code) && isOtherProgram(code))
   const regular = remaining.filter((code) => !isInternational(code) && !isOtherProgram(code))
   const row = (code: string) => (
-    <>
-      {nameLink(code)}（{creditsLabel(code)}）{yearTermTag(code)}
-      {/* 半角スペース2個ぶん。HTMLは連続する半角スペースを1個にまとめてしまうので、
-          折り返さない空白U+00A0を2つ使って確実に幅を空ける */}
-      {'\u00A0\u00A0'}
-      <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
-      {dayPeriodTag(code)}
-    </>
+    <SubjectRow
+      name={nameLink(code)}
+      credits={creditsLabel(code)}
+      term={yearTermTag(code)}
+      status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />}
+      schedule={dayPeriodTag(code)}
+    />
   )
   // 前学期・後学期で折りたたんだ行では、学期は見出し側で分かるので年次だけ添える（yearOnlyTag）
   const rowShort = (code: string) => (
-    <>
-      {nameLink(code)}（{creditsLabel(code)}）{yearOnlyTag(code)}
-      <SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />
-      {dayPeriodTag(code)}
-    </>
+    <SubjectRow
+      name={nameLink(code)}
+      credits={creditsLabel(code)}
+      term={yearOnlyTag(code)}
+      status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={onChange} />}
+      schedule={dayPeriodTag(code)}
+    />
   )
   // 人文・社会科学科目・上級科目は科目数が多いので、通常の科目一覧の代わりに前学期・後学期の
   // 折りたたみに分ける（開講学期が前学期・後学期のどちらでもない科目は、通常通りそのまま出す）。
@@ -1206,12 +1262,19 @@ function GroupProgress({
     : []
   const noTermCollapsed = group.id === 'advanced' ? noTermItems : []
   const topLevelRegular = !splitByTerm ? regular : group.id === 'advanced' ? [] : noTermItems
+  // 選択科目の区分は「候補の中から何単位選ぶか」が伝わりにくいため、折りたたみを開かなくても
+  // 残りの必要単位をsummaryに表示し、開いた直後にも同じ内容を文章で補足する。
+  const selectionGuidance = group.shortfall > 0
+    ? `この一覧からあと${group.shortfall}単位を選んで修得してください。`
+    : 'この区分は必要単位を満たしています。'
   return (
     <details>
       <summary>
         {group.label ?? group.name} {group.contribution}/{group.required}単位
         {group.satisfied ? ' ✔' : ''}
+        {!group.satisfied && `（あと${group.shortfall}単位）`}
       </summary>
+      <p className="group-guidance">{selectionGuidance}</p>
       <ul>
         {topLevelRegular.map((code) => (
           <li key={code}>{row(code)}</li>

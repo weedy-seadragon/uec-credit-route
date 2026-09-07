@@ -1,4 +1,4 @@
-/* グローバルスタイルの最小構成。本格的なデザインはフェーズ2以降で追加する */
+/* サイト全体の基本スタイル。メイン画面はスマホで科目を確認・更新する場面を想定している。 */
 :root {
   color-scheme: light dark;
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -17,8 +17,200 @@ nav a {
   padding: 0.3em 0.15em;
 }
 
-/* ボタン・プルダウンは、スマホでも指で押しやすい高さを最低限確保する */
+/* ボタン・プルダウンは、スマホでも指で押しやすい高さと余白を確保する */
 button,
 select {
-  min-height: 2rem;
+  min-height: 2.75rem;
+  padding: 0.35rem 0.65rem;
+  font: inherit;
+}
+
+/* 画面にだけ必要なレイアウトはmain-page配下へ閉じ込め、他ページの表示を不用意に変えない。 */
+.main-page {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+/* プロフィール・合計・更新操作を、狭い画面では自然に折り返す見出し領域にする。 */
+.main-page-header,
+.main-toolbar,
+.toolbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.main-page-header {
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+
+.main-page-header h1,
+.main-page-header p {
+  margin: 0;
+}
+
+.main-toolbar {
+  padding: 0.85rem;
+  margin: 1rem 0;
+  border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  border-radius: 0.75rem;
+}
+
+.toolbar-group {
+  align-items: end;
+}
+
+.toolbar-label {
+  display: grid;
+  gap: 0.2rem;
+  font-weight: 600;
+}
+
+.toolbar-primary {
+  font-weight: 700;
+}
+
+/* 各区分をカード状に分け、見出しの直下に「何をすればよいか」を置けるようにする。 */
+.requirement-section {
+  margin: 1.25rem 0;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  border-radius: 0.75rem;
+}
+
+.requirement-section > h2,
+.requirement-section > h3 {
+  margin-top: 0;
+}
+
+.section-guidance,
+.group-guidance {
+  margin: 0.35rem 0 0.85rem;
+  line-height: 1.6;
+}
+
+.failed-section {
+  border-color: #b54a4a;
+}
+
+/* 科目名・補足情報・操作を一定の列に置く。幅が狭いときは自動で1列へ折り返す。 */
+.subject-row {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1fr) auto;
+  gap: 0.55rem 1rem;
+  align-items: center;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.subject-row-main,
+.subject-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.55rem;
+}
+
+.subject-name {
+  font-weight: 650;
+}
+
+.subject-meta,
+.subject-schedule,
+.requirement-badge {
+  font-size: 0.9em;
+}
+
+.requirement-badge {
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.required-retake {
+  color: #9d2020;
+  background: #ffe4e4;
+}
+
+.elective-replacement {
+  color: #6b4a00;
+  background: #fff3cf;
+}
+
+/* 各科目の3択は、ドロップダウンではなく大きなラジオボタンとして即座に意味を読めるようにする。 */
+.subject-status {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.status-option {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0 0.5rem;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.status-option input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0 0.3rem 0 0;
+}
+
+.status-passed:has(input:checked) {
+  color: #0f5d35;
+  background: #ddf6e7;
+}
+
+.status-failed:has(input:checked) {
+  color: #9d2020;
+  background: #ffe4e4;
+}
+
+.status-none:has(input:checked) {
+  background: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+/* 読み上げ専用のテキストは残しつつ、目には見せない。 */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 42rem) {
+  /* スマホでは操作群を縦に分け、科目行の操作も科目名の真下に置く。 */
+  .main-toolbar,
+  .toolbar-group,
+  .subject-row {
+    align-items: stretch;
+  }
+
+  .toolbar-group,
+  .subject-row {
+    /* ツールバーはボタン群ごと、科目行は情報と操作を1列に並べ直す。 */
+    width: 100%;
+  }
+
+  .subject-row {
+    grid-template-columns: 1fr;
+  }
+
+  .subject-row-actions {
+    justify-content: space-between;
+  }
 }
