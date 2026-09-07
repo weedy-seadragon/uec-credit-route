@@ -49,6 +49,20 @@ describe('parseOwnFormat', () => {
     expect(result.otherCommonCredits).toBe(4)
   })
 
+  it('schemaVersion 3でその他単位認定の科目数を読み込める', () => {
+    // 単位数と科目数は別に記録するため、同じJSONから両方の値を取り出せることを確認する。
+    const json = {
+      schemaVersion: 3,
+      exportedAt: '2026-09-08',
+      records: [],
+      otherCommonCredits: 4,
+      otherCommonSubjectCount: 2,
+    }
+    const result = parseOwnFormat(json)
+    expect(result.otherCommonCredits).toBe(4)
+    expect(result.otherCommonSubjectCount).toBe(2)
+  })
+
   it('otherCommonCreditsが無い古い形式（schemaVersion 1）でもundefinedとして読み込める', () => {
     const json = { schemaVersion: 1, exportedAt: '2026-09-04', records: [] }
     const result = parseOwnFormat(json)

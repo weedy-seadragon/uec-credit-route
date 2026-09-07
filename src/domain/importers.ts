@@ -35,6 +35,8 @@ export interface ExportedData {
   planned: string[]
   /** その他単位認定（TOEIC等、特定の科目に紐付かない共通単位）の単位数。schemaVersion 2で追加 */
   otherCommonCredits?: number
+  /** その他単位認定を、何科目分として数えるか。schemaVersion 3で追加 */
+  otherCommonSubjectCount?: number
 }
 
 export interface ImportResult {
@@ -43,10 +45,12 @@ export interface ImportResult {
   planned: string[]
   /** ファイルに記載が無かった場合（schemaVersion 1のファイルなど）は undefined */
   otherCommonCredits?: number
+  /** ファイルに記載が無かった場合は undefined */
+  otherCommonSubjectCount?: number
 }
 
 /** 今書き出すファイルにセットするバージョン番号 */
-export const CURRENT_SCHEMA_VERSION = 2
+export const CURRENT_SCHEMA_VERSION = 3
 
 /**
  * 読み込める schemaVersion の一覧。新しいフィールドを追加しただけで読み込み方が変わらない
@@ -54,7 +58,7 @@ export const CURRENT_SCHEMA_VERSION = 2
  * （無ければ省略されているだけとみなす）。将来、読み方自体が変わるバージョンを追加したら
  * ここに番号を足し、必要な変換処理も書く
  */
-const SUPPORTED_SCHEMA_VERSIONS = [1, 2]
+const SUPPORTED_SCHEMA_VERSIONS = [1, 2, 3]
 
 /**
  * 本サイト形式のJSON（§7.4）を読み込む。JSON.parse した結果（型不明の値）を受け取り、
@@ -81,6 +85,7 @@ export function parseOwnFormat(json: unknown): ImportResult {
     records: data.records,
     planned: Array.isArray(data.planned) ? data.planned : [],
     otherCommonCredits: typeof data.otherCommonCredits === 'number' ? data.otherCommonCredits : undefined,
+    otherCommonSubjectCount: typeof data.otherCommonSubjectCount === 'number' ? data.otherCommonSubjectCount : undefined,
   }
 }
 

@@ -124,6 +124,13 @@ select {
   line-height: 1.6;
 }
 
+/* 取得単位の前に、修得・不合格・その他認定を合算した登録科目数を表示する。 */
+.registered-subject-count {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
 .failed-section {
   border-color: #b54a4a;
 }
