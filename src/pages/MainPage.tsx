@@ -969,11 +969,15 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <section className="requirement-section">
         <h2>残りの必修（あと {requiredShortfall(boundaryGroups)} 単位）</h2>
         <p className="section-guidance">この一覧の科目はすべて必修です。不合格になった必修科目は、上の「不合格になった科目」で再履修を確認してください。</p>
-        {remainingRequiredByCategory.map(({ label, items }) => {
+        {remainingRequiredByCategory.map(({ label, group, items }) => {
           // ()内は単位数だけにする。年次・学期は他の一覧と同じ形の注記で統一する。
           // 再履修かどうかはこの後のプルダウンの選択値で分かる。他プログラム専門科目・留学生のみの
-          // 科目は下の折りたたみにまとめる
-          const { regular, otherProgram, international } = splitSpecialSubjects(items, (r) => r.code)
+          // 科目は下の折りたたみにまとめる。第二外国語・生涯スポーツを除いて、修得済み一覧と同じく
+          // 標準年次・学期順（早い順）に並べる。
+          const sortedItems = group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
+            ? items
+            : sortByYearTerm(items, (item) => item.code, standardYearOf, termTypeOf)
+          const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, (r) => r.code)
           const row = (code: string) => (
             <SubjectRow
               name={nameLink(code)}
