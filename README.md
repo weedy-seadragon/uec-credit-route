@@ -4,6 +4,7 @@
 
 - 公開サイト: https://weedy-seadragon.github.io/uec-credit-route/
 - 引き継ぎ資料（前提知識が無い人向けの入口）: [docs/HANDOVER.md](docs/HANDOVER.md)
+- Codex向けの作業入口・現状メモ: [CODEX.md](CODEX.md)
 - 仕様書: [docs/SPEC.md](docs/SPEC.md)
 - ディレクトリ構成の説明: [docs/STRUCTURE.md](docs/STRUCTURE.md)
 - Claude Code 向けの作業ルール（現在の状態の要約）: [CLAUDE.md](CLAUDE.md)
@@ -17,7 +18,7 @@
 - [x] UI：プロフィール設定・メイン画面・科目一覧・JSON入出力
 - [x] シラバス連携（曜日時限・担当教員・リンク。クラスごとに複数セクションがある科目もクラス情報から絞り込み）
 - [x] GitHub Pages公開
-- [ ] 一部科目のクラス割り当て・標準年次学期の照合が残タスクとして残っている（[CLAUDE.md](CLAUDE.md)「残タスク一覧」参照）
+- [ ] 類専門科目85件の標準年次・学期を、学修要覧PDF画像で目視照合する作業が残っている（[docs/PENDING_YEAR_SEMESTER_CHECKS.md](docs/PENDING_YEAR_SEMESTER_CHECKS.md)参照）
 
 ## 使い方（開発）
 

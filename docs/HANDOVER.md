@@ -65,6 +65,7 @@
 uec-credit-route/                 ← プロジェクト全体
 ├─ README.md                      ← 最初に読むべき概要（GitHub上でも表示される）
 ├─ CLAUDE.md                      ← 開発ルール＋「今どこまで終わっていて何が残っているか」の最新状況
+├─ CODEX.md                       ← Codex向けの短い作業入口・現状メモ
 ├─ docs/                          ← ドキュメント（説明書）置き場
 │  ├─ SPEC.md                     ← 仕様書。「このサイトは何をするべきか」を全部書いた設計図
 │  ├─ STRUCTURE.md                ← コードの構成をやや技術寄りに説明したもの
@@ -112,6 +113,7 @@ uec-credit-route/                 ← プロジェクト全体
 | サイトの目的や仕様そのものを確認したい | `docs/SPEC.md` |
 | 過去に「なぜこう直したか」の経緯を知りたい | `docs/PROGRESS_LOG.md`（時系列の作業日誌） |
 | 今何が終わっていて何が残っているか知りたい | `CLAUDE.md` の「現在の状態」「残タスク一覧」 |
+| Codexが作業を始めるときの短い入口がほしい | `CODEX.md` |
 
 ---
 
@@ -196,6 +198,7 @@ python scripts/validate_data.py
 | サイトが実現すべき仕様・設計の全体像 | `docs/SPEC.md` |
 | コードの技術的な構成（プログラミングの前提知識がある人向け） | `docs/STRUCTURE.md` |
 | 開発者向けの作業ルールと「今の状態」の要約 | `CLAUDE.md` |
+| Codex向けの短い作業入口・現状メモ | `CODEX.md` |
 | 過去の意思決定・不具合修正の経緯（いつ・なぜ・どう直したか） | `docs/PROGRESS_LOG.md` |
 | 年次・学期の照合がまだ済んでいない科目の一覧 | `docs/PENDING_YEAR_SEMESTER_CHECKS.md` |
 | （AIエージェント向け）学修要覧PDFを実際にどう読むか（ツールのパス・手順） | `docs/PDF_READING_NOTES.md` |

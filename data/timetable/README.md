@@ -87,17 +87,18 @@ CLAUDE.mdの進捗ログ（2026-09-05時点の調査）より。曖昧な場合�
 | `status` | `auto`なら自動で埋まった行（確認だけしてもらえば十分、書き換え不要）。空欄なら未解決 | 触らなくてよい |
 | `note` | 気づいたことがあれば自由記述 | 任意 |
 
-## 埋め終わったら
+## 現在の反映方法
 
-`class_assignment.csv`の`class_id`が埋まったら、それをそのまま`offerings`側に
-（`timetableCode`ごとに）反映するスクリプトを書く（未着手）。それができれば、
-プロフィールで入力したクラス情報から、複数セクションがある科目でも正しい曜日時限を
-一意に表示できるようになる。
+`class_assignment_filled.csv`を`python scripts/build_class_assignment_json.py`で変換し、
+`class_assignment.json`としてアプリに読み込ませる方式を実装済み。アプリはプロフィールの
+クラス情報とこのJSONを照合し、複数セクションがある科目でも曜日時限とシラバスリンクを
+安全に絞り込む。候補を一意に決められないときは、誤った情報を出さず非表示にする。
 
-`class_schedule.csv`に新しいPDF（A2など）のデータを追記したら、
-`python scripts/build_class_assignment.py` を再実行すると、
-`class_assignment.csv`の自動解決行が増えた状態で作り直される
-（それまでに書き込んだ`class_id`は上書きされてしまうので、
-`class_schedule.csv`を追記したらなるべく早めに`class_assignment.csv`への
-手書き分をどこかに控えておくか、`class_schedule.csv`側への追記を先に済ませてから
-`class_assignment.csv`を埋め始めるのがおすすめ）。
+2026-09-08時点で、`class_assignment_filled.csv`の`class_id`未記入行は0件である。ただし、
+マシンデザインBの機械システムプログラムの一部など、時間割上の細かな振り分けが未確定な
+箇所は、該当する学生に曜日時限を表示しない安全側の扱いを維持する。
+
+`class_schedule.csv`に新しいPDF（A2など）のデータを追記した後は、
+`python scripts/build_class_assignment.py` を再実行する。記入済みの`class_id`は
+科目コード・学期・曜日・各時限をキーに引き継ぐ実装になっているが、再生成後は差分を確認し、
+続けて`python scripts/build_class_assignment_json.py`を実行する。
