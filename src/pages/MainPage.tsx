@@ -960,7 +960,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <div className="failed-category" key={group?.id ?? label}>
               <h3>
                 {label}
-                {group && `（現在${group.contribution}/${group.required}単位・あと${group.shortfall}単位）`}
+                {group && `（現在${group.contribution}/${group.required}単位）`}
               </h3>
               <ul>
                 {regular.map(([code]) => (
