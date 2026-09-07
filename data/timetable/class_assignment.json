@@ -5222,6 +5222,30 @@
     ]
   },
   {
+    "code": "ELE403h",
+    "term": "後学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "情報通信工学プログラム＆電子情報学プログラムの学籍番号偶数"
+    ],
+    "instructors": [
+      "藤井　威生"
+    ]
+  },
+  {
+    "code": "ELE403h",
+    "term": "後学期",
+    "day": "水",
+    "period": "3",
+    "classIds": [
+      "情報通信工学プログラム＆電子情報学プログラムの学籍番号奇数"
+    ],
+    "instructors": [
+      "藤井　威生"
+    ]
+  },
+  {
     "code": "ELE404g",
     "term": "後学期",
     "day": "水",
@@ -11401,6 +11425,214 @@
     ]
   },
   {
+    "code": "GSE301g",
+    "term": "前学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "I1クラス",
+      "I2クラス"
+    ],
+    "instructors": [
+      "西　一樹"
+    ]
+  },
+  {
+    "code": "GSE301g",
+    "term": "前学期",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "I3クラス",
+      "I4クラス"
+    ],
+    "instructors": [
+      "西　一樹"
+    ]
+  },
+  {
+    "code": "GSE301g",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "I5クラス",
+      "I6クラス"
+    ],
+    "instructors": [
+      "西　一樹"
+    ]
+  },
+  {
+    "code": "GSE301g",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "Mエリア"
+    ],
+    "instructors": [
+      "内田（雅）",
+      "村松（大）"
+    ]
+  },
+  {
+    "code": "GSE301h",
+    "term": "前学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "I1クラス",
+      "I2クラス"
+    ],
+    "instructors": [
+      "西　一樹"
+    ]
+  },
+  {
+    "code": "GSE301h",
+    "term": "前学期",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "I3クラス",
+      "I4クラス"
+    ],
+    "instructors": [
+      "西　一樹"
+    ]
+  },
+  {
+    "code": "GSE301h",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "I5クラス",
+      "I6クラス"
+    ],
+    "instructors": [
+      "西　一樹"
+    ]
+  },
+  {
+    "code": "GSE301h",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "Mエリア"
+    ],
+    "instructors": [
+      "内田（雅）",
+      "村松（大）"
+    ]
+  },
+  {
+    "code": "GSE301i",
+    "term": "前学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "I1クラス",
+      "I2クラス"
+    ],
+    "instructors": [
+      "西　一樹"
+    ]
+  },
+  {
+    "code": "GSE301i",
+    "term": "前学期",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "I3クラス",
+      "I4クラス"
+    ],
+    "instructors": [
+      "西　一樹"
+    ]
+  },
+  {
+    "code": "GSE301i",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "I5クラス",
+      "I6クラス"
+    ],
+    "instructors": [
+      "西　一樹"
+    ]
+  },
+  {
+    "code": "GSE301i",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "Mエリア"
+    ],
+    "instructors": [
+      "内田（雅）",
+      "村松（大）"
+    ]
+  },
+  {
+    "code": "GSE301j",
+    "term": "前学期",
+    "day": "月",
+    "period": "2",
+    "classIds": [
+      "I1クラス",
+      "I2クラス"
+    ],
+    "instructors": [
+      "西　一樹"
+    ]
+  },
+  {
+    "code": "GSE301j",
+    "term": "前学期",
+    "day": "月",
+    "period": "3",
+    "classIds": [
+      "I3クラス",
+      "I4クラス"
+    ],
+    "instructors": [
+      "西　一樹"
+    ]
+  },
+  {
+    "code": "GSE301j",
+    "term": "前学期",
+    "day": "火",
+    "period": "4",
+    "classIds": [
+      "I5クラス",
+      "I6クラス"
+    ],
+    "instructors": [
+      "西　一樹"
+    ]
+  },
+  {
+    "code": "GSE301j",
+    "term": "前学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "Mエリア"
+    ],
+    "instructors": [
+      "内田（雅）",
+      "村松（大）"
+    ]
+  },
+  {
     "code": "GSE301k",
     "term": "前学期",
     "day": "木",
@@ -15805,6 +16037,60 @@
     ],
     "instructors": [
       "鈴木　淳"
+    ]
+  },
+  {
+    "code": "MTH402i",
+    "term": "後学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "情報通信工学プログラム＆電子情報学プログラムの学籍番号偶数"
+    ],
+    "instructors": [
+      "範",
+      "サントソ"
+    ]
+  },
+  {
+    "code": "MTH402i",
+    "term": "後学期",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "情報通信工学プログラム＆電子情報学プログラムの学籍番号奇数"
+    ],
+    "instructors": [
+      "和田",
+      "鈴木(淳)",
+      "八木"
+    ]
+  },
+  {
+    "code": "MTH402j",
+    "term": "後学期",
+    "day": "水",
+    "period": "4",
+    "classIds": [
+      "情報通信工学プログラム＆電子情報学プログラムの学籍番号偶数"
+    ],
+    "instructors": [
+      "範",
+      "サントソ"
+    ]
+  },
+  {
+    "code": "MTH402j",
+    "term": "後学期",
+    "day": "木",
+    "period": "4",
+    "classIds": [
+      "情報通信工学プログラム＆電子情報学プログラムの学籍番号奇数"
+    ],
+    "instructors": [
+      "和田",
+      "鈴木(淳)",
+      "八木"
     ]
   },
   {
