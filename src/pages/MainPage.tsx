@@ -807,8 +807,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               ))}
             </select>
           </label>
-          <button className="toolbar-primary" type="button" onClick={handleUpdate}>
-            変更を更新
+          {/* 広い画面では操作対象を明記し、狭い画面では短い文言に切り替える。 */}
+          <button className="toolbar-primary" type="button" onClick={handleUpdate} aria-label="単位取得状況を更新">
+            <span className="toolbar-update-full">単位取得状況を更新</span>
+            <span className="toolbar-update-short">更新</span>
           </button>
           <button type="button" onClick={handleReset}>
             リセット

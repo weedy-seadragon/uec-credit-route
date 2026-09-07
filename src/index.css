@@ -143,6 +143,11 @@ select {
   font-weight: 700;
 }
 
+/* 更新ボタンは通常幅では何を更新するかを明記し、スマホだけ短い文言にする。 */
+.toolbar-update-short {
+  display: none;
+}
+
 /* 各区分をカード状に分け、見出しの直下に「何をすればよいか」を置けるようにする。 */
 .requirement-section {
   margin: 1.25rem 0;
@@ -421,6 +426,15 @@ select {
 
   .subject-row-actions {
     justify-content: space-between;
+  }
+
+  /* ツールバーの横幅を守るため、スマホでは更新ボタンを短い文言に切り替える。 */
+  .toolbar-update-full {
+    display: none;
+  }
+
+  .toolbar-update-short {
+    display: inline;
   }
 
   /* 小さい画面では不足単位を次の行へ回し、＋/−のための右側の余白を守る。 */
