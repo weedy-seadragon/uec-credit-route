@@ -139,10 +139,6 @@ select {
   font-weight: 600;
 }
 
-.toolbar-primary {
-  font-weight: 700;
-}
-
 /* 更新ボタンは通常幅では何を更新するかを明記し、スマホだけ短い文言にする。 */
 .toolbar-update-short {
   display: none;
@@ -428,7 +424,7 @@ select {
     justify-content: space-between;
   }
 
-  /* ツールバーの横幅を守るため、スマホでは更新ボタンを短い文言に切り替える。 */
+  /* 横幅を守るため、スマホでは上下の更新ボタンを短い文言に切り替える。 */
   .toolbar-update-full {
     display: none;
   }

@@ -808,7 +808,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             </select>
           </label>
           {/* 広い画面では操作対象を明記し、狭い画面では短い文言に切り替える。 */}
-          <button className="toolbar-primary" type="button" onClick={handleUpdate} aria-label="単位取得状況を更新">
+          <button type="button" onClick={handleUpdate} aria-label="単位取得状況を更新">
             <span className="toolbar-update-full">単位取得状況を更新</span>
             <span className="toolbar-update-short">更新</span>
           </button>
@@ -1179,8 +1179,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       {/* 上のツールバーの「更新」と同じボタン。プルダウンをたくさん触った後、
           いちいちページ上部まで戻らなくて済むように一番下にも置いておく。
           共通単位の入れ子とくっつきすぎないよう少し余白をあける */}
-      <button type="button" onClick={handleUpdate} style={{ marginTop: '1em' }}>
-        更新
+      {/* 下側の更新ボタンも、上側と同じ文言・画面幅ごとの切り替えにそろえる。 */}
+      <button type="button" onClick={handleUpdate} style={{ marginTop: '1em' }} aria-label="単位取得状況を更新">
+        <span className="toolbar-update-full">単位取得状況を更新</span>
+        <span className="toolbar-update-short">更新</span>
       </button>
     </main>
   )
