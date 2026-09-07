@@ -151,7 +151,7 @@ INTL_SKILLS = [("INT001z","UEC Academic Skills Ⅰ (Computer Literacy)",2,"e","1
                ("INT003z","UEC Academic Skills Ⅲ (Publishing and Research)",2,"e","3・4年次のみ。上級科目扱い")]
 INTL_ABROAD = [("INT004z","海外語学研修Ⅰ",1,"e","集中。共通単位"),("INT005z","海外語学研修Ⅱ",2,"e","集中。共通単位")]
 # 学域特別講義の細かなデータ作成事情は利用者には不要なので、画面には年度差だけを注意として出す。
-SPECIAL_NOTE = "開講年度によりテーマ・担当・単位数の扱いが異なる。"
+SPECIAL_NOTE = "開講年度によりテーマ・担当・時限・単位数の扱いが異なる。"
 SPECIAL = [("UEC001z","学域特別講義A(AI時代の著作権ビジネスなど)(1単位修得)",1,"",SPECIAL_NOTE),
            ("UEC003z","学域特別講義A(AI時代の著作権ビジネスなど)(2単位修得)",2,"",SPECIAL_NOTE),
            ("UEC002z","学域特別講義B(自動車の大変革に必要な技術など)(1単位修得)",1,"",SPECIAL_NOTE),
