@@ -1,4 +1,4 @@
-// 科目1件ぶんの履修状態を選ぶ<select>。メイン画面のどの一覧（取得単位・不可の単位・
+// 科目1件ぶんの履修状態を選ぶラジオボタン。メイン画面のどの一覧（取得単位・不合格の科目・
 // 残りの必修・区分別の進捗）でも同じ見た目・同じ動きになるよう、共通の部品にしてある。
 import type { SubjectStatus } from '../domain/requirements'
 
@@ -11,18 +11,29 @@ interface SubjectStatusSelectProps {
 
 export default function SubjectStatusSelect({ code, value, onChange }: SubjectStatusSelectProps) {
   return (
-    <select
-      aria-label={`${code}の履修状態`}
-      value={value ?? 'none'}
-      onChange={(e) => {
-        // <select>の値は文字列しか扱えないので、'none'（未履修）だけ特別扱いしてundefinedに変換する
-        const v = e.target.value
-        onChange(code, v === 'none' ? undefined : (v as SubjectStatus))
-      }}
-    >
-      <option value="none">未履修</option>
-      <option value="passed">修得</option>
-      <option value="failed">不合格</option>
-    </select>
+    // fieldset/legendは、関連するラジオボタンのまとまりを支援技術にも伝えるHTMLの組み合わせ。
+    // legendは見た目には隠し、各科目の行が縦に長くなりすぎないようにする。
+    <fieldset className="subject-status" aria-label={`${code}の履修状態`}>
+      <legend className="visually-hidden">{code}の履修状態</legend>
+      {/* 3つの固定候補を横並びのラベルとして表示する。nameが同じradioだけが排他的に選ばれる。 */}
+      {([
+        ['none', '未履修'],
+        ['passed', '修得'],
+        ['failed', '不合格'],
+      ] as const).map(([status, label]) => (
+        <label key={status} className={`status-option status-${status}`}>
+          <input
+            type="radio"
+            name={`subject-status-${code}`}
+            checked={(value ?? 'none') === status}
+            onChange={() => {
+              // 未履修だけは履修記録を持たないundefinedへ戻し、他の2つはSubjectStatusとして渡す。
+              onChange(code, status === 'none' ? undefined : status)
+            }}
+          />
+          {label}
+        </label>
+      ))}
+    </fieldset>
   )
 }
