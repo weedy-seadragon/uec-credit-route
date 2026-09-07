@@ -84,12 +84,6 @@ export default function SetupPage() {
     [entryYear, previousProgramCluster],
   )
 
-  // 1年生はまだプログラムに配属されていないので、選択欄を無効化して「未定」に固定する。
-  // ここでは program の状態そのものは書き換えず、「実際に使う値」をその場で導出するだけにする
-  // （useEffectでstateを書き換えると再描画が連鎖してしまうため、これは今の描画中に計算できる値として扱う）。
-  const programLocked = grade === 1
-  const effectiveProgram = programLocked ? null : program
-
   // フォーム送信時：ページの再読み込みを止め（preventDefault）、今の入力内容を保存して
   // メイン画面に移動する
   function handleSubmit(e: FormEvent) {
@@ -103,7 +97,7 @@ export default function SetupPage() {
     }
     if (!cluster) return // 昼間コースは類が必須（docs/SPEC.md F-1）
     const profile: Profile = {
-      entryYear, course, cluster, program: effectiveProgram, grade,
+      entryYear, course, cluster, program, grade,
       yearOneClass: effectiveYearOneClass,
       classIABC: cluster === 'I' ? classIABC : null,
       classIIArea: cluster === 'II' ? classIIArea : null,
@@ -203,8 +197,7 @@ export default function SetupPage() {
               <label htmlFor="program">教育プログラム</label>
               <select
                 id="program"
-                value={effectiveProgram ?? ''}
-                disabled={programLocked}
+                value={program ?? ''}
                 onChange={(e) => setProgram(e.target.value === '' ? null : e.target.value)}
               >
                 <option value="">未定</option>
@@ -214,7 +207,6 @@ export default function SetupPage() {
                   </option>
                 ))}
               </select>
-              {programLocked && <p>1年生は2年次後学期にプログラム配属されるまで「未定」になります。</p>}
             </div>
 
             {/* 曜日時限の表示に使うクラス情報（docs/SPEC.md §7.1、CLAUDE.md進捗ログ参照）。
