@@ -244,6 +244,26 @@ export function resolveSlotsForProfile(
 }
 
 /**
+ * 曜日時限（slots）が1件も無い科目（シラバスに時間割情報が載っていない、インターンシップ・
+ * 総合コミュニケーション科学の再履修クラス等）で、開講（offering）が前学期・後学期にちょうど
+ * 1件ずつある場合の絞り込み。slotsが無いとclass_assignment.json側の(曜日・時限)キーで
+ * 突き合わせようが無いため、代わりに「その科目の本来の開講学期(subjectTermType)と同じ学期の
+ * offeringが通常、違う学期のofferingが再履修（isRetaking）」という規則だけで決める
+ * （2026-09-08、開発者確認：UEC301z「総合コミュニケーション科学」がシラバスに飛べないと報告）。
+ * 学期が3件以上重複しているなど、この規則で1件に決まらない場合はundefined（リンクなし）のまま
+ */
+function resolveOfferingsByTermOnly<O extends OfferingLike>(
+  offerings: readonly O[],
+  isRetaking: boolean,
+  subjectTermType?: string | null,
+): O[] | undefined {
+  if (!subjectTermType) return undefined
+  const wanted = offerings.filter((o) => (o.term === subjectTermType) !== isRetaking)
+  if (wanted.length !== 1) return undefined
+  return wanted
+}
+
+/**
  * resolveSlotsForProfileと同じ規則で、一致したoffering自体（syllabusUrlなどslots以外の
  * フィールドも含む）を返す汎用版。MainPage.tsxのnameLink（科目名からシラバスへのリンク）が、
  * 複数セクションある科目でも「このプロフィールが受講する1件」を絞り込むために使う
@@ -251,6 +271,10 @@ export function resolveSlotsForProfile(
  * 追加。従来は全セクションのURLが完全一致する科目しかリンクにしていなかった）。
  * ロジックの詳細はresolveSlotsForProfileの元のコメントを参照（同じ規則をofferingの配列に
  * 適用し、slotsへの変換をしないだけ）。
+ *
+ * 全offeringのslotsが空の科目（曜日時限の情報自体が無い）は、この後の規則（曜日時限で
+ * class_assignment.jsonと突き合わせる）が原理的に機能しないため、resolveOfferingsByTermOnly
+ * （学期だけで判定する別ルール）にそのまま委ねる
  */
 export function resolveOfferingsForProfile<O extends OfferingLike>(
   code: string,
@@ -259,7 +283,11 @@ export function resolveOfferingsForProfile<O extends OfferingLike>(
   profile: ClassProfile,
   cluster: 'I' | 'II' | 'III' | null,
   isRetaking = false,
+  subjectTermType?: string | null,
 ): O[] | undefined {
+  if (offerings.length > 0 && offerings.every((o) => o.slots.length === 0)) {
+    return resolveOfferingsByTermOnly(offerings, isRetaking, subjectTermType)
+  }
   // そのofferingに一致するclassIdのうち、実際に一致した1つを返す（無ければundefined）。
   // 「どのclassIdで一致したか」を後段で見て、同じclassId（例:同じプログラム名）が
   // 複数の時限にまたがっているのか、別々のclassIdがたまたま両方一致した本当に
