@@ -951,7 +951,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                   }
                 />
                 {retakeSlots && retakeSlots.length > 0 && (
-                  <p className="group-guidance">再履用の授業があります：{retakeSlots.map((s) => `${s.day}・${s.period}限`).join(' / ')}</p>
+                  <p className="group-guidance">
+                    再履用の授業があります：{retakeSlots.map((s) => `${s.day}・${s.period}限`).join(' / ')}
+                    {yearTermOf(code) && `（${yearTermOf(code)}開講）`}
+                  </p>
                 )}
               </>
             )
