@@ -122,16 +122,9 @@ select {
   margin: 0;
 }
 
-/* 総取得単位と審査用の総単位を分け、後者だけが卒業所要単位ベースだと伝える。 */
-.credit-summary {
-  display: grid;
-  justify-items: end;
-  gap: 0.25rem;
-  text-align: right;
-}
-
-.review-credit-note {
-  max-width: 30rem;
+/* 審査の合計単位条件にだけ、卒業所要単位ベースであることを補足する。 */
+.review-credit-note-inline {
+  margin-left: 0.45rem;
   color: #555;
   font-size: 0.85em;
   line-height: 1.45;
@@ -448,12 +441,6 @@ select {
 
   .toolbar-update-short {
     display: inline;
-  }
-
-  /* スマホでは合計の説明を左揃えにし、注記を無理なく折り返せるようにする。 */
-  .credit-summary {
-    justify-items: start;
-    text-align: left;
   }
 
   /* 小さい画面では不足単位を次の行へ回し、＋/−のための右側の余白を守る。 */

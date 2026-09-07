@@ -614,8 +614,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     const g = findGroupResult(evaluation.groups, groupId)
     return g ? (g.label ?? g.name) : groupId
   }
-  // 審査の不足条件（ReviewCondition）を、人が読める1文にする
-  function describeCondition(cond: ReviewCondition): string {
+  // 審査の不足条件（ReviewCondition）を、人が読める文章・補足にして表示する。
+  function describeCondition(cond: ReviewCondition): ReactNode {
     switch (cond.type) {
       case 'groupMin': {
         const g = findGroupResult(evaluation.groups, cond.groupId)
@@ -629,7 +629,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         return `${remaining.map((code) => nameOf(code)).join(' ・ ')} を修得`
       }
       case 'totalCredits':
-        return `合計 ${cond.min}単位以上（現在${evaluation.totalCredits.contribution}単位）`
+        return (
+          <>
+            合計 {cond.min}単位以上（現在{evaluation.totalCredits.contribution}単位）
+            <span className="review-credit-note-inline">
+              ※ 共通単位の必要数を超えた分や自由科目など、卒業所要単位に算入されない単位は含みません。
+            </span>
+          </>
+        )
       case 'commonCredits':
         return `共通単位 ${cond.min}単位以上（現在${evaluation.commonCredits.contribution}単位）`
       case 'allGroups':
@@ -794,16 +801,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           {profile.entryYear}入学 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
           {profile.program} / {profile.grade}年 <Link to="/setup">[変更]</Link>
         </h1>
-        <div className="credit-summary">
-          <p>総取得単位 {earnedTotalCredits}単位</p>
-          <p>
-            審査用の総単位 {evaluation.totalCredits.contribution} / {evaluation.totalCredits.required}
-            {evaluation.totalCredits.satisfied ? ' ✔' : ''}
-          </p>
-          <p className="review-credit-note">
-            ※ 共通単位の必要数を超えた分や自由科目など、卒業所要単位に算入されない単位は審査用の総単位に含みません。
-          </p>
-        </div>
+        <p>総取得単位 {earnedTotalCredits}単位</p>
       </header>
 
       {/* 表示範囲・更新・データ入出力を、目的ごとのグループに分けた操作バーにする。 */}
