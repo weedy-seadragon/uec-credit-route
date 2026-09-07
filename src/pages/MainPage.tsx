@@ -503,18 +503,24 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (urls.size !== 1) {
       const isRetaking = committed.get(code) === 'failed'
       const subjectTermType = subjectsByCode.get(code)?.termType
-      const matched = resolveOfferingsForProfile(
-        code,
-        offerings,
-        classAssignments,
-        classProfile,
-        profile.cluster,
-        isRetaking,
-        subjectTermType,
-      )
-      if (!matched || matched.length === 0) return name
-      const matchedUrls = new Set(matched.map((o) => o.syllabusUrl))
-      if (matchedUrls.size !== 1) return name
+      const resolve = (retaking: boolean) =>
+        resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, retaking, subjectTermType)
+      let matched = resolve(isRetaking)
+      let matchedUrls = new Set(matched?.map((o) => o.syllabusUrl))
+      // 不合格（再履修中）の科目で、再履修向けの枠（class_id「再履生」等）が見つからない・
+      // 複数の候補に分かれて一意に決まらない場合でも、シラバス自体は同じ科目のものなので、
+      // 通常セクションでの絞り込みに落として（時限までは保証しないが）リンクだけは出す
+      // （2026-09-08、開発者の指摘：不可にした科目がシラバスに飛べなくなるのは困る。
+      // 曜日時限の表示＝dayPeriodTag側は、誤った時刻を示すと実害があるのでこのフォールバックはしない）
+      if (isRetaking && matchedUrls.size !== 1) {
+        const fallback = resolve(false)
+        const fallbackUrls = new Set(fallback?.map((o) => o.syllabusUrl))
+        if (fallbackUrls.size === 1) {
+          matched = fallback
+          matchedUrls = fallbackUrls
+        }
+      }
+      if (!matched || matched.length === 0 || matchedUrls.size !== 1) return name
       target = matched
     }
     return (
@@ -848,9 +854,15 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
               {singleOffering && dayPeriodTag(code)}
               {retakeSlots && retakeSlots.length > 0 && (
-                <div style={{ marginLeft: '1.5em', fontSize: '0.9em', color: '#555' }}>
-                  ※ 再履用の授業があります：{retakeSlots.map((s) => `${s.day}・${s.period}限`).join('/')}
-                </div>
+                <ul style={{ marginLeft: '1.5em' }}>
+                  <li style={{ fontSize: '0.9em' }}>
+                    <span style={{ color: '#555' }}>※ 再履用の授業があります：</span>
+                    {nameLink(code)}（{creditsLabel(code)}）
+                    {'  '}
+                    <SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />
+                    <span style={{ marginLeft: '0.4em' }}>{retakeSlots.map((s) => `${s.day}・${s.period}限`).join('/')}</span>
+                  </li>
+                </ul>
               )}
               </>
               )
