@@ -232,11 +232,16 @@ select {
   font-size: 0.9em;
 }
 
-/* 取得単位の前に、修得・不合格・その他認定を合算した登録科目数を表示する。 */
+/* 取得単位の枠の外・直前に、修得・不合格・その他認定を合算した登録科目数を表示する。 */
 .registered-subject-count {
-  margin: 0 0 0.35rem;
+  margin: 1.25rem 0 0.35rem;
   font-size: 1.1rem;
   font-weight: 700;
+}
+
+/* 登録科目数の直後だけは、次の取得単位の枠を少し近づけて一組の情報に見せる。 */
+.registered-subject-count + .requirement-section {
+  margin-top: 0;
 }
 
 .failed-section {

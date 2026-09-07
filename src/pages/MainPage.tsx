@@ -830,8 +830,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {dataMessage && <p role="status">{dataMessage}</p>}
       </div>
 
+      {/* 登録科目数は要件区分の一部ではないため、取得単位の枠の外で先に表示する。 */}
+      <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>
       <section className="requirement-section">
-        <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>
         <h2>取得単位（{passedCredits}単位）</h2>
         {(() => {
         const commonCreditsElement = (
