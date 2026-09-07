@@ -123,6 +123,8 @@ select {
 }
 
 .main-toolbar {
+  /* 学期ラベルを持つ左側のグループに合わせ、全グループのボタン下端をそろえる。 */
+  align-items: flex-end;
   padding: 0.85rem;
   margin: 1rem 0;
   border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
