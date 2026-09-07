@@ -42,6 +42,16 @@ nav a {
   white-space: nowrap;
 }
 
+/* 更新内容の各行を少し離し、複数の修正点を追いやすくする。 */
+.release-note-items {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+}
+
+.release-note-items > li + li {
+  margin-top: 0.35rem;
+}
+
 /* 初回リリース日は更新内容と区別し、二重の縁取りで記念プレートのように見せる。 */
 .release-note-initial {
   margin-top: 1.6rem;
