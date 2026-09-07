@@ -552,7 +552,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // （理数基礎・類共通基礎の必修科目など、クラスごとに別ページを持つもの）は、
   // dayPeriodTagと同じクラス解決ロジック（resolveOfferingsForProfile）でこのプロフィールが
   // 受講するセクションを絞り込み、一意に決まればそちらにリンクする。英語系のように
-  // 教員を絞り込めない（全クラス扱いで複数候補が残る）科目は、従来通りリンクにしない
+  // 教員を絞り込めない（全クラス扱いで複数候補が残る）科目は、誤ったシラバスを開く代わりに
+  // 科目一覧から開く詳細ページと同じ場所へ案内する。
   // （2026-09-07、開発者が「理数基礎・類共通基礎の必修や回路システム学第一第二等がシラバスに
   // 飛べない」と報告して発覚）
   function nameLink(code: string): ReactNode {
@@ -585,7 +586,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           matchedUrls = fallbackUrls
         }
       }
-      if (!matched || matched.length === 0 || matchedUrls.size !== 1) return name
+      // シラバスを一意に選べない場合も、科目詳細には全セクションの候補が載っている。
+      // そこで科目名を詳細ページへの内部リンクにし、利用者が教員を選べるようにする。
+      if (!matched || matched.length === 0 || matchedUrls.size !== 1) {
+        return <Link to={`/courses/${code}`}>{name}</Link>
+      }
       target = matched.filter((offering) => offering.syllabusUrl.length > 0)
     }
     return (
