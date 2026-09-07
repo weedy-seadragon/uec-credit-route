@@ -45,7 +45,8 @@ export default function TopPage() {
         {/* 最新の更新区分は少し大きく表示し、本文との区切りをひと目で分かるようにする。 */}
         <p className="release-note-update">・アップデート(β→β2)</p>
         <p>サイトのデザインを一新しました</p>
-        <p>β版リリース 2026/9/7</p>
+        {/* 初回リリース日は更新内容と混ざらないよう、独立した枠で表示する。 */}
+        <p className="release-note-initial">β版リリース 2026/9/7</p>
       </section>
     </main>
   )

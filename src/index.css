@@ -24,6 +24,19 @@ nav a {
   font-weight: 700;
 }
 
+/* 初回リリース日は更新内容と区別し、二重の縁取りで記念プレートのように見せる。 */
+.release-note-initial {
+  margin-top: 1.6rem;
+  padding: 0.65rem 0.85rem;
+  border: 3px double #6079ad;
+  border-radius: 0.35rem;
+  background: linear-gradient(135deg, color-mix(in srgb, #eaf1ff 42%, Canvas), Canvas);
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, Canvas 76%, #7891c5 24%);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
 /* ボタン・プルダウンは、スマホでも指で押しやすい高さと余白を確保する */
 button,
 select {
