@@ -295,6 +295,15 @@ select {
   margin: 0;
 }
 
+/* 審査条件は科目名が長くなりやすいため、行間と条件どうしの余白を少し広げる。 */
+.review-conditions {
+  line-height: 1.7;
+}
+
+.review-conditions > li + li {
+  margin-top: 0.35rem;
+}
+
 /* 科目名・補足情報・操作を一定の列に置く。幅が狭いときは自動で1列へ折り返す。 */
 .subject-row {
   display: grid;

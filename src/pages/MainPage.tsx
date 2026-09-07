@@ -623,7 +623,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       case 'subjects': {
         // 既に修得済みのものは省いて、まだ足りない科目だけ見せる
         const remaining = cond.codes.filter((code) => committed.get(code) !== 'passed')
-        return `${remaining.map((code) => nameOf(code)).join('・')} を修得`
+        return `${remaining.map((code) => nameOf(code)).join(' ・ ')} を修得`
       }
       case 'totalCredits':
         return `合計 ${cond.min}単位以上（現在${evaluation.totalCredits.contribution}単位）`
@@ -637,13 +637,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       }
       case 'subjectsCountMin': {
         const passedCount = cond.codes.filter((code) => committed.get(code) === 'passed').length
-        return `${cond.codes.map((code) => nameOf(code)).join('・')} のうち${cond.min}科目以上（現在${passedCount}科目）`
+        return `${cond.codes.map((code) => nameOf(code)).join(' ・ ')} のうち${cond.min}科目以上（現在${passedCount}科目）`
       }
       case 'subjectsCreditMin': {
         const earned = cond.codes
           .filter((code) => committed.get(code) === 'passed')
           .reduce((sum, code) => sum + (subjectCredits.get(code) ?? 0), 0)
-        return `${cond.codes.map((code) => nameOf(code)).join('・')} のうち${cond.min}単位以上（現在${earned}単位）`
+        return `${cond.codes.map((code) => nameOf(code)).join(' ・ ')} のうち${cond.min}単位以上（現在${earned}単位）`
       }
     }
   }
@@ -1160,7 +1160,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 {!r.satisfied && (
                   <details>
                     <summary>詳細</summary>
-                    <ul>
+                    <ul className="review-conditions">
                       {r.unsatisfied.map((cond, i) => (
                         <li key={i}>{describeCondition(cond)}</li>
                       ))}
