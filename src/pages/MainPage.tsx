@@ -920,7 +920,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </section>
 
       <section className="requirement-section failed-section">
-        <h2>不合格になった科目（{failedSubjects.length}）</h2>
+        <h2>不合格になった科目（{failedSubjects.length}科目）</h2>
         <p className="section-guidance">
           要件区分ごとに表示します。必修科目は再履修して単位を修得する必要があります。選択科目は、再履修するか同じ区分から別の科目を選べます。
         </p>
