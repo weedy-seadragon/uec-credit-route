@@ -852,7 +852,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <section className="requirement-section">
         <h2>取得単位（{passedCredits}単位）</h2>
         {(() => {
-        const commonCreditsElement = (
+        // 共通単位が0のときは空の見出しを出さない。取得科目もない場合は下の「まだありません」だけを表示する。
+        const commonCreditsElement = passedCredits > 0 && commonEarnedTotal > 0 ? (
           <div key="common-credits">
             {/* 「取得した単位」（countAsCommonの区分・alwaysCommonSubjectsの修得済み科目）は、
                 それぞれ自分の区分（理数基礎（選択）など）や「選択科目」の共通単位の入れ子で
@@ -867,7 +868,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               {overflowToCommonGroups.length === 0 && <li>（まだありません）</li>}
             </ul>
           </div>
-        )
+        ) : null
         const hasMajorSel = passedByCategory.some(({ group }) => group?.id === 'major-sel')
         const rendered = passedByCategory.flatMap(({ label, group, items }) => {
           // 選択科目と同じく学年学期順に並べ替える。ただし第二外国語（第一・第二のペア）・
