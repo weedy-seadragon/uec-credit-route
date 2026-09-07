@@ -125,11 +125,11 @@ export default function SetupPage() {
   }
 
   return (
-    <main>
+    <main className="setup-page">
       <h1>プロフィール設定</h1>
       <p>入学年度・類・プログラムを設定すると、あなたに適用される卒業要件が決まります。</p>
 
-      <form onSubmit={handleSubmit}>
+      <form className="setup-form" onSubmit={handleSubmit}>
         {SHOW_ENTRY_YEAR_INPUT && (
         <div>
           <label htmlFor="entryYear">入学年度</label>

@@ -25,6 +25,39 @@ select {
   font: inherit;
 }
 
+/* プロフィール設定は入力項目が続くため、入力欄を大きくし直すのではなく行間を広げて見分けやすくする。 */
+.setup-page {
+  max-width: 44rem;
+  margin: 0 auto;
+}
+
+.setup-form {
+  display: grid;
+  gap: 1.35rem;
+  margin-top: 1.5rem;
+}
+
+/* 転類・転プログラムの追加項目を含め、ラベルと選択欄の対応を縦にそろえる。 */
+.setup-form div {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.setup-form label {
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* 横に長い選択肢でも読みやすくし、狭い画面では親要素の幅を超えないようにする。 */
+.setup-form select {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.setup-form input[type='checkbox'] {
+  margin-right: 0.35rem;
+}
+
 /* 画面にだけ必要なレイアウトはmain-page配下へ閉じ込め、他ページの表示を不用意に変えない。 */
 .main-page {
   max-width: 72rem;
