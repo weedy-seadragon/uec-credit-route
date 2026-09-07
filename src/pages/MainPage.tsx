@@ -190,19 +190,23 @@ function CollapsedSubjectGroup<T>({
   items,
   codeOf,
   renderRow,
+  pageStyle = false,
 }: {
   title: string
   items: readonly T[]
   codeOf: (item: T) => string
   renderRow: (item: T) => ReactNode
+  /** true のときは、選択科目の内訳で使う「本のページ」風の開閉見出しにする */
+  pageStyle?: boolean
 }) {
   if (items.length === 0) return null
   return (
     // 折りたたみ自体の▼と中の科目の・が並ぶと紛らわしいので、この<li>自体には・を付けない
     <li style={{ listStyleType: 'none' }}>
-      <details>
+      <details className={pageStyle ? 'nested-subject-group' : undefined}>
         <summary>
-          {title}（{items.length}）
+          <span>{title}</span>
+          <span className="nested-subject-count">{items.length}科目</span>
         </summary>
         <ul>
           {items.map((item) => (
@@ -548,22 +552,27 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // （理数基礎・類共通基礎の必修科目など、クラスごとに別ページを持つもの）は、
   // dayPeriodTagと同じクラス解決ロジック（resolveOfferingsForProfile）でこのプロフィールが
   // 受講するセクションを絞り込み、一意に決まればそちらにリンクする。英語系のように
-  // 教員を絞り込めない（全クラス扱いで複数候補が残る）科目は、従来通りリンクにしない
+  // 教員を絞り込めない（全クラス扱いで複数候補が残る）科目は、誤ったシラバスを開く代わりに
+  // 科目一覧から開く詳細ページと同じ場所へ案内する。
   // （2026-09-07、開発者が「理数基礎・類共通基礎の必修や回路システム学第一第二等がシラバスに
   // 飛べない」と報告して発覚）
   function nameLink(code: string): ReactNode {
     const name = nameOf(code)
     const offerings = subjectsByCode.get(code)?.offerings
     if (!offerings || offerings.length === 0) return name
-    const urls = new Set(offerings.map((o) => o.syllabusUrl))
-    let target = offerings
-    if (urls.size !== 1) {
+    // 曜日時限だけを補った科目（学域特別講義A/Bなど）は syllabusUrl が空文字になる。
+    // 空のhrefは今見ているサイト自身へのリンクになるため、リンク候補として数えない。
+    const urls = new Set(offerings.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
+    if (urls.size === 0) return name
+    let target = offerings.filter((offering) => offering.syllabusUrl.length > 0)
+    // URLが複数ある場合だけ、プロフィールのクラス情報で受講セクションを絞り込む。
+    if (urls.size !== 1 || target.length !== offerings.length) {
       const isRetaking = committed.get(code) === 'failed'
       const subjectTermType = subjectsByCode.get(code)?.termType
       const resolve = (retaking: boolean) =>
         resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, retaking, subjectTermType)
       let matched = resolve(isRetaking)
-      let matchedUrls = new Set(matched?.map((o) => o.syllabusUrl))
+      let matchedUrls = new Set(matched?.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
       // 不合格（再履修中）の科目で、再履修向けの枠（class_id「再履生」等）が見つからない・
       // 複数の候補に分かれて一意に決まらない場合でも、シラバス自体は同じ科目のものなので、
       // 通常セクションでの絞り込みに落として（時限までは保証しないが）リンクだけは出す
@@ -571,14 +580,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       // 曜日時限の表示＝dayPeriodTag側は、誤った時刻を示すと実害があるのでこのフォールバックはしない）
       if (isRetaking && matchedUrls.size !== 1) {
         const fallback = resolve(false)
-        const fallbackUrls = new Set(fallback?.map((o) => o.syllabusUrl))
+        const fallbackUrls = new Set(fallback?.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
         if (fallbackUrls.size === 1) {
           matched = fallback
           matchedUrls = fallbackUrls
         }
       }
-      if (!matched || matched.length === 0 || matchedUrls.size !== 1) return name
-      target = matched
+      // シラバスを一意に選べない場合も、科目詳細には全セクションの候補が載っている。
+      // そこで科目名を詳細ページへの内部リンクにし、利用者が教員を選べるようにする。
+      if (!matched || matched.length === 0 || matchedUrls.size !== 1) {
+        return <Link to={`/courses/${code}`}>{name}</Link>
+      }
+      target = matched.filter((offering) => offering.syllabusUrl.length > 0)
     }
     return (
       <a href={target[0].syllabusUrl} target="_blank" rel="noopener noreferrer">
@@ -610,7 +623,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       case 'subjects': {
         // 既に修得済みのものは省いて、まだ足りない科目だけ見せる
         const remaining = cond.codes.filter((code) => committed.get(code) !== 'passed')
-        return `${remaining.map((code) => nameOf(code)).join('・')} を修得`
+        return `${remaining.map((code) => nameOf(code)).join(' ・ ')} を修得`
       }
       case 'totalCredits':
         return `合計 ${cond.min}単位以上（現在${evaluation.totalCredits.contribution}単位）`
@@ -624,13 +637,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       }
       case 'subjectsCountMin': {
         const passedCount = cond.codes.filter((code) => committed.get(code) === 'passed').length
-        return `${cond.codes.map((code) => nameOf(code)).join('・')} のうち${cond.min}科目以上（現在${passedCount}科目）`
+        return `${cond.codes.map((code) => nameOf(code)).join(' ・ ')} のうち${cond.min}科目以上（現在${passedCount}科目）`
       }
       case 'subjectsCreditMin': {
         const earned = cond.codes
           .filter((code) => committed.get(code) === 'passed')
           .reduce((sum, code) => sum + (subjectCredits.get(code) ?? 0), 0)
-        return `${cond.codes.map((code) => nameOf(code)).join('・')} のうち${cond.min}単位以上（現在${earned}単位）`
+        return `${cond.codes.map((code) => nameOf(code)).join(' ・ ')} のうち${cond.min}単位以上（現在${earned}単位）`
       }
     }
   }
@@ -694,6 +707,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     const subject = subjectsByCode.get(code)
     const offerings = subject?.offerings
     if (!offerings || offerings.length === 0) return null
+    // 輪講・卒業研究は研究室ごとに実施形態が異なり、時間割として一律に示せない。
+    // slotsが空でも「オンデマンド」と推測せず、曜日時限の注記自体を表示しない。
+    if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return null
     const note = subject?.note
     const hasAnySlots = offerings.some((o) => o.slots.length > 0)
     if (!hasAnySlots) {
@@ -794,8 +810,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               ))}
             </select>
           </label>
-          <button className="toolbar-primary" type="button" onClick={handleUpdate}>
-            変更を更新
+          {/* 広い画面では操作対象を明記し、狭い画面では短い文言に切り替える。 */}
+          <button type="button" onClick={handleUpdate} aria-label="単位取得状況を更新">
+            <span className="toolbar-update-full">単位取得状況を更新</span>
+            <span className="toolbar-update-short">更新</span>
           </button>
           <button type="button" onClick={handleReset}>
             リセット
@@ -822,8 +840,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {dataMessage && <p role="status">{dataMessage}</p>}
       </div>
 
+      {/* 登録科目数は要件区分の一部ではないため、取得単位の枠の外で先に表示する。 */}
+      <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>
       <section className="requirement-section">
-        <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>
         <h2>取得単位（{passedCredits}単位）</h2>
         {(() => {
         const commonCreditsElement = (
@@ -950,11 +969,15 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <section className="requirement-section">
         <h2>残りの必修（あと {requiredShortfall(boundaryGroups)} 単位）</h2>
         <p className="section-guidance">この一覧の科目はすべて必修です。不合格になった必修科目は、上の「不合格になった科目」で再履修を確認してください。</p>
-        {remainingRequiredByCategory.map(({ label, items }) => {
+        {remainingRequiredByCategory.map(({ label, group, items }) => {
           // ()内は単位数だけにする。年次・学期は他の一覧と同じ形の注記で統一する。
           // 再履修かどうかはこの後のプルダウンの選択値で分かる。他プログラム専門科目・留学生のみの
-          // 科目は下の折りたたみにまとめる
-          const { regular, otherProgram, international } = splitSpecialSubjects(items, (r) => r.code)
+          // 科目は下の折りたたみにまとめる。第二外国語・生涯スポーツを除いて、修得済み一覧と同じく
+          // 標準年次・学期順（早い順）に並べる。
+          const sortedItems = group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
+            ? items
+            : sortByYearTerm(items, (item) => item.code, standardYearOf, termTypeOf)
+          const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, (r) => r.code)
           const row = (code: string) => (
             <SubjectRow
               name={nameLink(code)}
@@ -1042,8 +1065,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           // required=0でGroupProgressの対象外だったり、alwaysCommonSubjectsでどの区分にも属さないため、
           // これまで選択状態を変える場所が無かった。類専門（選択）の直後に専用の入れ子を出す
           const commonCreditsElement = (
-            <details key="common-credits">
-              <summary>共通単位 {commonEarnedTotal}/{requirementSet.commonCredits}単位</summary>
+            <details key="common-credits" className="elective-group">
+              <summary>
+                <span className="elective-group-title">共通単位</span>
+                <span className="elective-group-progress">{commonEarnedTotal}/{requirementSet.commonCredits}単位</span>
+                <span className="elective-group-status">
+                  {commonEarnedTotal >= requirementSet.commonCredits ? '充足済み' : `あと${requirementSet.commonCredits - commonEarnedTotal}単位`}
+                </span>
+              </summary>
               <ul>
                 <li>
                   その他単位認定（TOEIC等、科目を介さず認定される単位）
@@ -1140,7 +1169,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 {!r.satisfied && (
                   <details>
                     <summary>詳細</summary>
-                    <ul>
+                    <ul className="review-conditions">
                       {r.unsatisfied.map((cond, i) => (
                         <li key={i}>{describeCondition(cond)}</li>
                       ))}
@@ -1157,8 +1186,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       {/* 上のツールバーの「更新」と同じボタン。プルダウンをたくさん触った後、
           いちいちページ上部まで戻らなくて済むように一番下にも置いておく。
           共通単位の入れ子とくっつきすぎないよう少し余白をあける */}
-      <button type="button" onClick={handleUpdate} style={{ marginTop: '1em' }}>
-        更新
+      {/* 下側の更新ボタンも、上側と同じ文言・画面幅ごとの切り替えにそろえる。 */}
+      <button type="button" onClick={handleUpdate} style={{ marginTop: '1em' }} aria-label="単位取得状況を更新">
+        <span className="toolbar-update-full">単位取得状況を更新</span>
+        <span className="toolbar-update-short">更新</span>
       </button>
     </main>
   )
@@ -1308,11 +1339,13 @@ function GroupProgress({
     ? `この一覧からあと${group.shortfall}単位を選んで修得してください。`
     : 'この区分は必要単位を満たしています。'
   return (
-    <details>
+    <details className="elective-group">
       <summary>
-        {group.label ?? group.name} {group.contribution}/{group.required}単位
-        {group.satisfied ? ' ✔' : ''}
-        {!group.satisfied && `（あと${group.shortfall}単位）`}
+        <span className="elective-group-title">{group.label ?? group.name}</span>
+        <span className="elective-group-progress">{group.contribution}/{group.required}単位</span>
+        <span className="elective-group-status">
+          {group.satisfied ? '充足済み' : `あと${group.shortfall}単位`}
+        </span>
       </summary>
       <p className="group-guidance">{selectionGuidance}</p>
       <ul>
@@ -1321,19 +1354,19 @@ function GroupProgress({
         ))}
         {splitByTerm && (
           <>
-            <CollapsedSubjectGroup title="前学期" items={springRegular} codeOf={(code) => code} renderRow={rowShort} />
+            <CollapsedSubjectGroup title="前学期" items={springRegular} codeOf={(code) => code} renderRow={rowShort} pageStyle />
             {summerIntensive.length > 0 && (
-              <CollapsedSubjectGroup title="夏期集中" items={summerIntensive} codeOf={(code) => code} renderRow={rowShort} />
+              <CollapsedSubjectGroup title="夏期集中" items={summerIntensive} codeOf={(code) => code} renderRow={rowShort} pageStyle />
             )}
-            <CollapsedSubjectGroup title="後学期" items={fallRegular} codeOf={(code) => code} renderRow={rowShort} />
+            <CollapsedSubjectGroup title="後学期" items={fallRegular} codeOf={(code) => code} renderRow={rowShort} pageStyle />
             {winterIntensive.length > 0 && (
-              <CollapsedSubjectGroup title="冬期集中" items={winterIntensive} codeOf={(code) => code} renderRow={rowShort} />
+              <CollapsedSubjectGroup title="冬期集中" items={winterIntensive} codeOf={(code) => code} renderRow={rowShort} pageStyle />
             )}
-            <CollapsedSubjectGroup title="その他" items={noTermCollapsed} codeOf={(code) => code} renderRow={row} />
+            <CollapsedSubjectGroup title="その他" items={noTermCollapsed} codeOf={(code) => code} renderRow={row} pageStyle />
           </>
         )}
-        <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={(code) => code} renderRow={row} />
-        <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} />
+        <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={(code) => code} renderRow={row} pageStyle />
+        <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} pageStyle />
         {remaining.length === 0 && <li>（この表示範囲では残っていません）</li>}
       </ul>
     </details>

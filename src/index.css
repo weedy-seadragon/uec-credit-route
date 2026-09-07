@@ -17,6 +17,44 @@ nav a {
   padding: 0.3em 0.15em;
 }
 
+/* トップページの機能紹介は、各項目を一文ずつ落ち着いて読める行間にする。 */
+.top-feature-list {
+  line-height: 1.6;
+}
+
+/* 箇条書きの黒丸は残したまま、2項目目以降だけに余白を足す。 */
+.top-feature-list > li + li {
+  margin-top: 0.55rem;
+}
+
+/* リリースノートの更新区分は本文より少し大きくし、どの更新の説明かを見分けやすくする。 */
+.release-note-update {
+  margin-bottom: 0.35rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+/* 更新日を見出しの横へ置き、幅が足りない画面では次の行へ折り返せるようにする。 */
+.release-note-date {
+  margin-left: 0.75rem;
+  font-size: 0.8em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* 初回リリース日は更新内容と区別し、二重の縁取りで記念プレートのように見せる。 */
+.release-note-initial {
+  margin-top: 1.6rem;
+  padding: 0.65rem 0.85rem;
+  border: 3px double #6079ad;
+  border-radius: 0.35rem;
+  background: linear-gradient(135deg, color-mix(in srgb, #eaf1ff 42%, Canvas), Canvas);
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, Canvas 76%, #7891c5 24%);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
 /* ボタン・プルダウンは、スマホでも指で押しやすい高さと余白を確保する */
 button,
 select {
@@ -85,6 +123,8 @@ select {
 }
 
 .main-toolbar {
+  /* 学期ラベルを持つ左側のグループに合わせ、全グループのボタン下端をそろえる。 */
+  align-items: flex-end;
   padding: 0.85rem;
   margin: 1rem 0;
   border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
@@ -101,8 +141,9 @@ select {
   font-weight: 600;
 }
 
-.toolbar-primary {
-  font-weight: 700;
+/* 更新ボタンは通常幅では何を更新するかを明記し、スマホだけ短い文言にする。 */
+.toolbar-update-short {
+  display: none;
 }
 
 /* 各区分をカード状に分け、見出しの直下に「何をすればよいか」を置けるようにする。 */
@@ -124,11 +165,124 @@ select {
   line-height: 1.6;
 }
 
-/* 取得単位の前に、修得・不合格・その他認定を合算した登録科目数を表示する。 */
+/* 選択科目の区分は、ただの文章ではなく「ページをめくる」ように開ける見出しにする。
+   右端の丸い＋/−と下側に重なる影で、押せる場所とページらしい厚みを両方伝える。 */
+.elective-group {
+  margin: 0.9rem 0 1.1rem;
+}
+
+.elective-group > summary,
+.nested-subject-group > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.65rem;
+  min-height: 3rem;
+  box-sizing: border-box;
+  padding: 0.55rem 3.25rem 0.55rem 0.85rem;
+  position: relative;
+  list-style: none;
+  border: 1px solid color-mix(in srgb, currentColor 42%, transparent);
+  border-radius: 0.25rem;
+  background: linear-gradient(to bottom, color-mix(in srgb, Canvas 96%, currentColor 4%), Canvas);
+  box-shadow:
+    0 2px 0 color-mix(in srgb, currentColor 34%, transparent),
+    0 4px 0 color-mix(in srgb, Canvas 74%, currentColor 26%);
+  cursor: pointer;
+}
+
+/* ブラウザ標準の小さな三角を隠し、押しやすい丸い＋/−を右端に表示する。 */
+.elective-group > summary::-webkit-details-marker,
+.nested-subject-group > summary::-webkit-details-marker {
+  display: none;
+}
+
+.elective-group > summary::after,
+.nested-subject-group > summary::after {
+  content: '＋';
+  display: grid;
+  place-items: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  position: absolute;
+  right: 0.8rem;
+  border-radius: 999px;
+  color: Canvas;
+  background: #657180;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 開いているときは＋を−に変え、開閉後の状態を文字以外でも分かるようにする。 */
+.elective-group[open] > summary::after,
+.nested-subject-group[open] > summary::after {
+  content: '−';
+}
+
+/* マウス操作とキーボード操作のどちらでも、押せる見出しだと分かる反応を付ける。 */
+.elective-group > summary:hover,
+.nested-subject-group > summary:hover {
+  background: color-mix(in srgb, #e9f1ff 70%, Canvas);
+}
+
+.elective-group > summary:focus-visible,
+.nested-subject-group > summary:focus-visible {
+  outline: 3px solid #2e63d6;
+  outline-offset: 3px;
+}
+
+/* 親の区分名・進捗・不足を分け、閉じたままでも何を開く場所か読めるようにする。 */
+.elective-group-title {
+  font-weight: 750;
+}
+
+.elective-group-progress {
+  font-size: 0.94em;
+}
+
+.elective-group-status {
+  margin-left: auto;
+  color: #355a9f;
+  font-size: 0.94em;
+  font-weight: 700;
+}
+
+/* 前学期などの子グループは、親の中身だと分かるよう少し内側に置く。
+   背景はCanvasにして、ライトモードでは白・ダークモードでは黒のまま見やすくする。 */
+.nested-subject-group {
+  margin: 0.8rem 0 0.85rem 0.5rem;
+  padding-left: 0.7rem;
+  border-left: 3px solid #88a5dc;
+}
+
+.nested-subject-group > summary {
+  min-height: 2.65rem;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+  background: Canvas;
+  box-shadow:
+    0 2px 0 color-mix(in srgb, #70809a 32%, transparent),
+    0 4px 0 color-mix(in srgb, Canvas 74%, #70809a 26%);
+}
+
+.nested-subject-count {
+  margin-left: auto;
+  padding-right: 0.25rem;
+  color: #526276;
+  font-size: 0.9em;
+}
+
+/* 取得単位の枠の外・直前に、修得・不合格・その他認定を合算した登録科目数を表示する。 */
 .registered-subject-count {
-  margin: 0 0 0.35rem;
+  margin: 1.25rem 0 0.35rem;
   font-size: 1.1rem;
   font-weight: 700;
+}
+
+/* 登録科目数の直後だけは、次の取得単位の枠を少し近づけて一組の情報に見せる。 */
+.registered-subject-count + .requirement-section {
+  margin-top: 0;
 }
 
 .failed-section {
@@ -142,6 +296,15 @@ select {
 
 .failed-category > h3 {
   margin: 0;
+}
+
+/* 審査条件は科目名が長くなりやすいため、行間と条件どうしの余白を少し広げる。 */
+.review-conditions {
+  line-height: 1.7;
+}
+
+.review-conditions > li + li {
+  margin-top: 0.35rem;
 }
 
 /* 科目名・補足情報・操作を一定の列に置く。幅が狭いときは自動で1列へ折り返す。 */
@@ -261,5 +424,20 @@ select {
 
   .subject-row-actions {
     justify-content: space-between;
+  }
+
+  /* 横幅を守るため、スマホでは上下の更新ボタンを短い文言に切り替える。 */
+  .toolbar-update-full {
+    display: none;
+  }
+
+  .toolbar-update-short {
+    display: inline;
+  }
+
+  /* 小さい画面では不足単位を次の行へ回し、＋/−のための右側の余白を守る。 */
+  .elective-group-status {
+    width: 100%;
+    margin-left: 0;
   }
 }
