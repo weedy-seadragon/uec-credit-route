@@ -128,6 +128,15 @@ select {
   border-color: #b54a4a;
 }
 
+/* 不合格科目は要件区分ごとに分け、どの不足へ関係するかを見出しで追えるようにする。 */
+.failed-category {
+  margin-top: 1.2rem;
+}
+
+.failed-category > h3 {
+  margin: 0;
+}
+
 /* 科目名・補足情報・操作を一定の列に置く。幅が狭いときは自動で1列へ折り返す。 */
 .subject-row {
   display: grid;
