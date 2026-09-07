@@ -440,6 +440,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const failedSubjects = [...committed.entries()].filter(([, status]) => status === 'failed')
   // 取得単位の見出しに出す合計単位数（科目数ではなく単位数）
   const passedCredits = passedSubjects.reduce((sum, [code]) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
+  // 総取得単位は、科目として修得した単位に、科目番号を持たないその他単位認定も加えた生の合計。
+  // 審査用の総単位（evaluation.totalCredits）は卒業所要単位に算入される分だけなので、別に表示する。
+  const earnedTotalCredits = passedCredits + otherCommonCommitted
   // Mapは科目コードをキーにするため、修得→不合格→再履修のような同一科目の履歴でも1科目として数えられる。
   const registeredSubjectCount = passedSubjects.length + failedSubjects.length + otherCommonSubjectCountCommitted
   // 「取得単位」「残りの必修」は区分ごとの見出しを付けて表示する（例:「理数基礎（必修）」「類専門（必修）」）
@@ -791,10 +794,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           {profile.entryYear}入学 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
           {profile.program} / {profile.grade}年 <Link to="/setup">[変更]</Link>
         </h1>
-        <p>
-          合計 {evaluation.totalCredits.contribution} / {evaluation.totalCredits.required}
-          {evaluation.totalCredits.satisfied ? ' ✔' : ''}
-        </p>
+        <div className="credit-summary">
+          <p>総取得単位 {earnedTotalCredits}単位</p>
+          <p>
+            審査用の総単位 {evaluation.totalCredits.contribution} / {evaluation.totalCredits.required}
+            {evaluation.totalCredits.satisfied ? ' ✔' : ''}
+          </p>
+          <p className="review-credit-note">
+            ※ 共通単位の必要数を超えた分や自由科目など、卒業所要単位に算入されない単位は審査用の総単位に含みません。
+          </p>
+        </div>
       </header>
 
       {/* 表示範囲・更新・データ入出力を、目的ごとのグループに分けた操作バーにする。 */}
