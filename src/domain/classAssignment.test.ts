@@ -353,4 +353,24 @@ describe('resolveOfferingsForProfile（曜日時限以外のフィールドも�
       offerings[1],
     ])
   })
+
+  it('曜日時限の情報が無い科目（UEC301z「総合コミュニケーション科学」等）は、開講学期だけで通常/再履修を振り分ける（2026-09-08、シラバスに飛べない不具合の原因）', () => {
+    const offerings = [
+      { term: '前学期', slots: [], syllabusUrl: 'https://example.com/normal' },
+      { term: '後学期', slots: [], syllabusUrl: 'https://example.com/retake' },
+    ]
+    // 通常（不合格ではない）→ 科目の本来の開講学期（前学期）と同じofferingに一致
+    expect(resolveOfferingsForProfile('UEC301z', offerings, [], {}, 'I', false, '前学期')).toEqual([offerings[0]])
+    // 再履修中 → 逆の学期（後学期）に一致
+    expect(resolveOfferingsForProfile('UEC301z', offerings, [], {}, 'I', true, '前学期')).toEqual([offerings[1]])
+  })
+
+  it('曜日時限が無く、同じ学期に開講が複数ある科目（CAR503z「インターンシップ」等）は、学期だけでは1件に決まらないためundefined', () => {
+    const offerings = [
+      { term: '前学期', slots: [], syllabusUrl: 'https://example.com/a' },
+      { term: '前学期', slots: [], syllabusUrl: 'https://example.com/b' },
+      { term: '前学期', slots: [], syllabusUrl: 'https://example.com/c' },
+    ]
+    expect(resolveOfferingsForProfile('CAR503z', offerings, [], {}, 'I', false, '前学期')).toBeUndefined()
+  })
 })

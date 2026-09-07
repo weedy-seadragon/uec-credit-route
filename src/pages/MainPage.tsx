@@ -485,7 +485,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     let target = offerings
     if (urls.size !== 1) {
       const isRetaking = committed.get(code) === 'failed'
-      const matched = resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, isRetaking)
+      const subjectTermType = subjectsByCode.get(code)?.termType
+      const matched = resolveOfferingsForProfile(
+        code,
+        offerings,
+        classAssignments,
+        classProfile,
+        profile.cluster,
+        isRetaking,
+        subjectTermType,
+      )
       if (!matched || matched.length === 0) return name
       const matchedUrls = new Set(matched.map((o) => o.syllabusUrl))
       if (matchedUrls.size !== 1) return name
