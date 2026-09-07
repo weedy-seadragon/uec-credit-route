@@ -1516,6 +1516,23 @@ EVENING = {
     'reviews': EVENING_REVIEWS,
 }
 
+# 付録CのPDF画像を目視確認した結果、科目コードからの推定値と異なっていた標準年次・学期をここで補正する。
+# 85件の候補を確認したうち、実際に修正が必要だった15件だけを記録している（2026-09-08）。
+STANDARD_TERM_CORRECTIONS = {
+    'FGN301e': (1, 1), 'FGN401e': (1, 2),
+    'PHY502g': (3, 5), 'PHY502h': (3, 5),
+    'MCE502i': (3, 5), 'MCE601i': (3, 6), 'MCE503i': (3, 5), 'MCE602i': (3, 6),
+    'MCE503j': (3, 5), 'MCE601j': (3, 6), 'MCE504j': (3, 5), 'MCE602j': (3, 6),
+    'MCE402k': (2, 4), 'MCE602k': (3, 6), 'MCE609k': (3, 6),
+}
+
+# 補正後の学期に合わせて、画面表示用の前学期・後学期も同時に更新する。
+for code, (year, semester) in STANDARD_TERM_CORRECTIONS.items():
+    subject = SUBJECTS[code]
+    subject['standardYear'] = year
+    subject['standardSemester'] = semester
+    subject['termType'] = '前学期' if semester % 2 == 1 else '後学期'
+
 # ---------------------------------------------------------------- 出力
 os.makedirs(os.path.join(OUT, "requirements"), exist_ok=True)
 os.makedirs(os.path.join(OUT, "subjects"), exist_ok=True)
