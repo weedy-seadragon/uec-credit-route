@@ -17,6 +17,16 @@ nav a {
   padding: 0.3em 0.15em;
 }
 
+/* トップページの機能紹介は、各項目を一文ずつ落ち着いて読める行間にする。 */
+.top-feature-list {
+  line-height: 1.6;
+}
+
+/* 箇条書きの黒丸は残したまま、2項目目以降だけに余白を足す。 */
+.top-feature-list > li + li {
+  margin-top: 0.55rem;
+}
+
 /* リリースノートの更新区分は本文より少し大きくし、どの更新の説明かを見分けやすくする。 */
 .release-note-update {
   margin-bottom: 0.35rem;
