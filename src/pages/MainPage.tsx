@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom'
 import type { GroupKind, RequirementGroup, SubjectStatus } from '../domain/requirements'
 import { evaluateRequirements } from '../domain/requirements'
 import type { GroupResult } from '../domain/requirements'
-import type { SubjectInfo, TermFilter } from '../domain/recommend'
+import type { RecommendedSubject, SubjectInfo, TermFilter } from '../domain/recommend'
 import { recommend } from '../domain/recommend'
 import { buildNameToCodes, derivePrerequisites } from '../domain/prerequisites'
 import type { ExportedData } from '../domain/importers'
@@ -371,8 +371,35 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     requirementSet, evaluation, records: committed, subjects: recommendSubjects,
     currentGrade: profile.grade, termFilter,
   })
-  // 「残りの必修」に出すのは、必修グループに属していて、まだ修得していないものだけ
-  const remainingRequired = recommended.filter((r) => requiredCodes.has(r.code) && committed.get(r.code) !== 'passed')
+
+  // 表示フィルタ（学期）で、この科目を「残りの必修」「選択科目」の一覧に出すかどうか判定する
+  // （2026-09-08、開発者の指摘で追加。従来は「残りの必修」だけrecommend()のisOfferedInで
+  // 絞られていて「選択科目」は絞られておらず、しかも再履修の例外も考慮していなかった）。
+  // あくまで一覧に出す行を絞るだけで、必要単位・取得単位などの集計（evaluationの結果）には
+  // 触れない。通常は科目自身の開講学期(termType)・標準履修年次で判定するが、不合格
+  // （再履修中）の科目は、選んだ学期に実際に開講（offering）があれば例外的に表示する
+  // （開発者確認：前学期を選べば前学期に開講がある再履修枠、後学期なら後学期の再履修枠を表示）
+  function isVisibleForTermFilter(code: string): boolean {
+    if (termFilter === 'all') return true
+    const subject = subjectsByCode.get(code)
+    if (!subject || subject.termType == null) return true // 通年・不定期開講科目は常に表示
+    const normalMatch = subject.termType === termFilter.half && (subject.standardYear == null || subject.standardYear <= termFilter.year)
+    if (normalMatch) return true
+    if (committed.get(code) !== 'failed') return false
+    return (subject.offerings ?? []).some((o) => o.term === termFilter.half)
+  }
+
+  // 「残りの必修」に出すのは、必修グループに属していて、まだ修得していないものだけ。
+  // recommend()自体は再履修の例外を知らないので、term不一致で除外された不合格科目のうち
+  // 選んだ学期に再履修用の開講があるものを別途拾って戻す
+  const recommendedRequiredCodes = new Set(recommended.map((r) => r.code))
+  const retakeExceptionRequired: RecommendedSubject[] = [...requiredCodes]
+    .filter((code) => !recommendedRequiredCodes.has(code) && committed.get(code) !== 'passed' && isVisibleForTermFilter(code))
+    .map((code) => ({ code, score: 0, reason: 'required-not-passed', clash: false }))
+  const remainingRequired = [
+    ...recommended.filter((r) => requiredCodes.has(r.code) && committed.get(r.code) !== 'passed' && isVisibleForTermFilter(r.code)),
+    ...retakeExceptionRequired,
+  ]
 
   // 取得単位・不可の単位のセクションは、committed（確定済み）を状態別に振り分けるだけでよい
   const passedSubjects = [...committed.entries()].filter(([, status]) => status === 'passed')
@@ -941,7 +968,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                     ))}
                   </select>
                 </li>
-                {commonOnlyRemaining.map((code) => (
+                {commonOnlyRemaining.filter(isVisibleForTermFilter).map((code) => (
                   <li key={code}>
                     {nameLink(code)}（{creditsLabel(code)}）{yearTermTag(code)}
                     {'  '}
@@ -949,7 +976,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               {dayPeriodTag(code)}
                   </li>
                 ))}
-                {commonOnlyRemaining.length === 0 && <li>（すべて修得済みです）</li>}
+                {commonOnlyRemaining.filter(isVisibleForTermFilter).length === 0 && <li>（この表示範囲では残っていません）</li>}
               </ul>
             </details>
           )
@@ -973,6 +1000,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 dayPeriodTag={dayPeriodTag}
                 isOtherProgram={isOtherProgram}
                 isInternational={isInternational}
+                isVisibleForTerm={isVisibleForTermFilter}
               />
             )
             return g.id === 'major-sel' ? [groupElement, commonCreditsElement] : [groupElement]
@@ -1077,6 +1105,7 @@ function GroupProgress({
   dayPeriodTag,
   isOtherProgram,
   isInternational,
+  isVisibleForTerm,
 }: {
   group: BoundaryGroup
   committed: ReadonlyMap<string, SubjectStatus>
@@ -1093,11 +1122,13 @@ function GroupProgress({
   dayPeriodTag: (code: string) => ReactNode
   isOtherProgram: (code: string) => boolean
   isInternational: (code: string) => boolean
+  /** 表示フィルタ（学期）で、この科目を一覧に出すかどうか（MainPage.tsxのisVisibleForTermFilter） */
+  isVisibleForTerm: (code: string) => boolean
 }) {
   // 一覧に出す／消すのは committed（確定済み）で判断する。draft はプルダウンの表示値にだけ使う。
   // こうしないと、「更新」を押す前にプルダウンを触っただけで行が消えてしまい、
   // 「残りの必修」など他のセクションと表示の整合性が取れなくなる。
-  const remainingAll = group.subjects.filter((code) => committed.get(code) !== 'passed')
+  const remainingAll = group.subjects.filter((code) => committed.get(code) !== 'passed' && isVisibleForTerm(code))
   // 「幾何学概論」のように、実質同じ科目が他プログラムの科目コードとして重複して選択肢に
   // 入ってしまうことがあるので、科目名が同じものは1つにまとめる（自分のプログラムの科目が
   // あればそちらを優先し、他プログラム専門科目としては出さない）
@@ -1179,7 +1210,7 @@ function GroupProgress({
         )}
         <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={(code) => code} renderRow={row} />
         <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} />
-        {remaining.length === 0 && <li>（すべて修得済みです）</li>}
+        {remaining.length === 0 && <li>（この表示範囲では残っていません）</li>}
       </ul>
     </details>
   )
