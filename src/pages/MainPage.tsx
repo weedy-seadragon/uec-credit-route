@@ -864,9 +864,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         const hasMajorSel = passedByCategory.some(({ group }) => group?.id === 'major-sel')
         const rendered = passedByCategory.flatMap(({ label, group, items }) => {
           // 選択科目と同じく学年学期順に並べ替える。ただし第二外国語（第一・第二のペア）・
-          // 生涯スポーツは元の並び順（言語ごと・科目のまとまり）を崩したくないので対象外
+          // 生涯スポーツは学修要覧の元の並び順（言語ごと・科目のまとまり）を崩したくないので、
+          // 履修記録を付けた順ではなく、その区分の科目定義順に並べる。
           const sortedItems = group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
-            ? items
+            ? sortByGroupSubjectOrder(items, ([code]) => code, group.subjects)
             : sortByYearTerm(items, ([code]) => code, standardYearOf, termTypeOf)
           const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, ([code]) => code)
           const row = (code: string) => (
@@ -975,7 +976,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           // 科目は下の折りたたみにまとめる。第二外国語・生涯スポーツを除いて、修得済み一覧と同じく
           // 標準年次・学期順（早い順）に並べる。
           const sortedItems = group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
-            ? items
+            ? sortByGroupSubjectOrder(items, (item) => item.code, group.subjects)
             : sortByYearTerm(items, (item) => item.code, standardYearOf, termTypeOf)
           const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, (r) => r.code)
           const row = (code: string) => (
@@ -1232,6 +1233,19 @@ function sortByYearTerm<T>(items: readonly T[], codeOf: (item: T) => string, sta
     if (yearB === null) return -1
     if (yearA !== yearB) return yearA - yearB
     return termRank(termTypeOf(codeOf(a))) - termRank(termTypeOf(codeOf(b)))
+  })
+}
+
+/**
+ * 第二外国語など、年次・学期順ではなく要件データに書かれた順を保ちたい科目を並べる。
+ * 修得記録を付けた順ではなく、例えば「ドイツ語第一→ドイツ語第二」の順に表示するために使う。
+ */
+function sortByGroupSubjectOrder<T>(items: readonly T[], codeOf: (item: T) => string, subjectOrder: readonly string[]): T[] {
+  const rankByCode = new Map(subjectOrder.map((code, index) => [code, index]))
+  return [...items].sort((a, b) => {
+    const rankA = rankByCode.get(codeOf(a)) ?? Number.MAX_SAFE_INTEGER
+    const rankB = rankByCode.get(codeOf(b)) ?? Number.MAX_SAFE_INTEGER
+    return rankA - rankB
   })
 }
 
