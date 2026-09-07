@@ -198,3 +198,4 @@ python scripts/validate_data.py
 | 開発者向けの作業ルールと「今の状態」の要約 | `CLAUDE.md` |
 | 過去の意思決定・不具合修正の経緯（いつ・なぜ・どう直したか） | `docs/PROGRESS_LOG.md` |
 | 年次・学期の照合がまだ済んでいない科目の一覧 | `docs/PENDING_YEAR_SEMESTER_CHECKS.md` |
+| （AIエージェント向け）学修要覧PDFを実際にどう読むか（ツールのパス・手順） | `docs/PDF_READING_NOTES.md` |
