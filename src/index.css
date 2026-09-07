@@ -42,6 +42,16 @@ nav a {
   white-space: nowrap;
 }
 
+/* 更新内容の各行を少し離し、複数の修正点を追いやすくする。 */
+.release-note-items {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+}
+
+.release-note-items > li + li {
+  margin-top: 0.35rem;
+}
+
 /* 初回リリース日は更新内容と区別し、二重の縁取りで記念プレートのように見せる。 */
 .release-note-initial {
   margin-top: 1.6rem;
@@ -120,6 +130,14 @@ select {
 .main-page-header h1,
 .main-page-header p {
   margin: 0;
+}
+
+/* 審査の合計単位条件にだけ、卒業所要単位ベースであることを補足する。 */
+.review-credit-note-inline {
+  margin-left: 0.45rem;
+  color: #555;
+  font-size: 0.85em;
+  line-height: 1.45;
 }
 
 .main-toolbar {
@@ -248,6 +266,13 @@ select {
   font-weight: 700;
 }
 
+/* その他単位認定の項目名とプルダウンを離し、どちらを操作するか分かりやすくする。 */
+.other-common-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 /* 前学期などの子グループは、親の中身だと分かるよう少し内側に置く。
    背景はCanvasにして、ライトモードでは白・ダークモードでは黒のまま見やすくする。 */
 .nested-subject-group {
@@ -276,7 +301,8 @@ select {
 /* 取得単位の枠の外・直前に、修得・不合格・その他認定を合算した登録科目数を表示する。 */
 .registered-subject-count {
   margin: 1.25rem 0 0.35rem;
-  font-size: 1.1rem;
+  /* 取得単位の見出し（h2）と同じ大きさにして、主要な集計値として目に入りやすくする。 */
+  font-size: 1.5em;
   font-weight: 700;
 }
 

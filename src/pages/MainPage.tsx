@@ -440,6 +440,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const failedSubjects = [...committed.entries()].filter(([, status]) => status === 'failed')
   // 取得単位の見出しに出す合計単位数（科目数ではなく単位数）
   const passedCredits = passedSubjects.reduce((sum, [code]) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
+  // 総取得単位は、科目として修得した単位に、科目番号を持たないその他単位認定も加えた生の合計。
+  // 審査用の総単位（evaluation.totalCredits）は卒業所要単位に算入される分だけなので、別に表示する。
+  const earnedTotalCredits = passedCredits + otherCommonCommitted
   // Mapは科目コードをキーにするため、修得→不合格→再履修のような同一科目の履歴でも1科目として数えられる。
   const registeredSubjectCount = passedSubjects.length + failedSubjects.length + otherCommonSubjectCountCommitted
   // 「取得単位」「残りの必修」は区分ごとの見出しを付けて表示する（例:「理数基礎（必修）」「類専門（必修）」）
@@ -611,8 +614,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     const g = findGroupResult(evaluation.groups, groupId)
     return g ? (g.label ?? g.name) : groupId
   }
-  // 審査の不足条件（ReviewCondition）を、人が読める1文にする
-  function describeCondition(cond: ReviewCondition): string {
+  // 審査の不足条件（ReviewCondition）を、人が読める文章・補足にして表示する。
+  function describeCondition(cond: ReviewCondition): ReactNode {
     switch (cond.type) {
       case 'groupMin': {
         const g = findGroupResult(evaluation.groups, cond.groupId)
@@ -626,7 +629,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         return `${remaining.map((code) => nameOf(code)).join(' ・ ')} を修得`
       }
       case 'totalCredits':
-        return `合計 ${cond.min}単位以上（現在${evaluation.totalCredits.contribution}単位）`
+        return (
+          <>
+            合計 {cond.min}単位以上（現在{evaluation.totalCredits.contribution}単位）
+            <span className="review-credit-note-inline">
+              ※ 共通単位の必要数を超えた分や自由科目など、卒業所要単位に算入されない単位は含みません。
+            </span>
+          </>
+        )
       case 'commonCredits':
         return `共通単位 ${cond.min}単位以上（現在${evaluation.commonCredits.contribution}単位）`
       case 'allGroups':
@@ -791,10 +801,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           {profile.entryYear}入学 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
           {profile.program} / {profile.grade}年 <Link to="/setup">[変更]</Link>
         </h1>
-        <p>
-          合計 {evaluation.totalCredits.contribution} / {evaluation.totalCredits.required}
-          {evaluation.totalCredits.satisfied ? ' ✔' : ''}
-        </p>
+        <p>総取得単位 {earnedTotalCredits}単位</p>
       </header>
 
       {/* 表示範囲・更新・データ入出力を、目的ごとのグループに分けた操作バーにする。 */}
@@ -845,7 +852,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <section className="requirement-section">
         <h2>取得単位（{passedCredits}単位）</h2>
         {(() => {
-        const commonCreditsElement = (
+        // 共通単位が0のときは空の見出しを出さない。取得科目もない場合は下の「まだありません」だけを表示する。
+        const commonCreditsElement = passedCredits > 0 && commonEarnedTotal > 0 ? (
           <div key="common-credits">
             {/* 「取得した単位」（countAsCommonの区分・alwaysCommonSubjectsの修得済み科目）は、
                 それぞれ自分の区分（理数基礎（選択）など）や「選択科目」の共通単位の入れ子で
@@ -860,7 +868,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               {overflowToCommonGroups.length === 0 && <li>（まだありません）</li>}
             </ul>
           </div>
-        )
+        ) : null
         const hasMajorSel = passedByCategory.some(({ group }) => group?.id === 'major-sel')
         const rendered = passedByCategory.flatMap(({ label, group, items }) => {
           // 選択科目と同じく学年学期順に並べ替える。ただし第二外国語（第一・第二のペア）・
@@ -912,7 +920,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </section>
 
       <section className="requirement-section failed-section">
-        <h2>不合格になった科目（{failedSubjects.length}）</h2>
+        <h2>不合格になった科目（{failedSubjects.length}科目）</h2>
         <p className="section-guidance">
           要件区分ごとに表示します。必修科目は再履修して単位を修得する必要があります。選択科目は、再履修するか同じ区分から別の科目を選べます。
         </p>
@@ -952,7 +960,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <div className="failed-category" key={group?.id ?? label}>
               <h3>
                 {label}
-                {group && `（現在${group.contribution}/${group.required}単位・あと${group.shortfall}単位）`}
+                {group && `（現在${group.contribution}/${group.required}単位）`}
               </h3>
               <ul>
                 {regular.map(([code]) => (
@@ -1078,7 +1086,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 <li>
                   その他単位認定（TOEIC等、科目を介さず認定される単位）
                   {' '}
-                  <label>
+                  <label className="other-common-select">
                     単位数
                     <select
                       aria-label="その他単位認定の単位数"
@@ -1094,7 +1102,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                     </select>
                   </label>
                   {' '}
-                  <label>
+                  <label className="other-common-select">
                     科目数
                     <select
                       aria-label="その他単位認定の科目数"
@@ -1160,26 +1168,33 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <section>
           <h2>審査</h2>
           <ul>
-            {reviewStatuses.map((r) => (
-              <li key={r.id}>
-                {r.name}
-                {r.when && <span style={{ marginLeft: '0.4em', color: '#555' }}>（{r.when}）</span>}
-                {r.satisfied ? ' ✔ 合格見込み' : ' ✖ 不足あり'}
-                {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
-                {r.caveat && <p style={{ fontSize: '0.9em', color: '#555', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
-                {!r.satisfied && (
-                  <details>
-                    <summary>詳細</summary>
-                    <ul className="review-conditions">
-                      {r.unsatisfied.map((cond, i) => (
-                        <li key={i}>{describeCondition(cond)}</li>
-                      ))}
-                    </ul>
-                    {r.onFail?.note && <p style={{ fontSize: '0.9em', color: '#555' }}>※ {r.onFail.note}</p>}
-                  </details>
-                )}
-              </li>
-            ))}
+            {reviewStatuses.map((r) => {
+              // 卒業審査の共通単位条件は、画面上部の審査用総単位の説明と重複するため詳細から省く。
+              // 判定自体（r.satisfied）はdomain側で済んでおり、この表示用フィルタでは変わらない。
+              const visibleUnsatisfied = r.id === 'graduation'
+                ? r.unsatisfied.filter((cond) => cond.type !== 'commonCredits')
+                : r.unsatisfied
+              return (
+                <li key={r.id}>
+                  {r.name}
+                  {r.when && <span style={{ marginLeft: '0.4em', color: '#555' }}>（{r.when}）</span>}
+                  {r.satisfied ? ' ✔ 合格見込み' : ' ✖ 不足あり'}
+                  {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
+                  {r.caveat && <p style={{ fontSize: '0.9em', color: '#555', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
+                  {!r.satisfied && visibleUnsatisfied.length > 0 && (
+                    <details>
+                      <summary>詳細</summary>
+                      <ul className="review-conditions">
+                        {visibleUnsatisfied.map((cond, i) => (
+                          <li key={i}>{describeCondition(cond)}</li>
+                        ))}
+                      </ul>
+                      {r.onFail?.note && <p style={{ fontSize: '0.9em', color: '#555' }}>※ {r.onFail.note}</p>}
+                    </details>
+                  )}
+                </li>
+              )
+            })}
           </ul>
         </section>
       )}

@@ -45,6 +45,19 @@ export default function TopPage() {
         <h2>リリースノート</h2>
         {/* 最新の更新区分は少し大きく表示し、本文との区切りをひと目で分かるようにする。 */}
         <p className="release-note-update">
+          <span>・アップデート(β2→β2.1)</span>
+          <span className="release-note-date">アップデート日 2026/9/8</span>
+        </p>
+        {/* 同じ意味の「不要な記述」の報告は一つにまとめ、今回の更新内容を読みやすく列挙する。 */}
+        <ul className="release-note-items">
+          <li>取得単位数にその他認定単位が含まれない不具合を修正しました</li>
+          <li>レイアウトの調整を行いました</li>
+          <li>不要な記述を削除しました</li>
+          <li>英語科目のリンク先を調整しました</li>
+          <li>卒業研究・輪講がオンデマンドと表示される問題を修正しました</li>
+          <li>その他細かな修正を行いました</li>
+        </ul>
+        <p className="release-note-update">
           <span>・アップデート(β→β2)</span>
           <span className="release-note-date">アップデート日 2026/9/7</span>
         </p>
