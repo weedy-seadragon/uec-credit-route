@@ -251,21 +251,24 @@ def main():
         if a is not None:
             offerings_by_code[code_b] = a
 
-    # 学域特別講義A/B（UEC001z/UEC002z）は、開講年度ごとに具体的なテーマ・担当教員が
-    # 変わる科目（例:「学域特別講義A(アルゴリズムの基礎)」）で、科目名の完全一致では
+    # 学域特別講義A/B（2026-09-07にUEC001z/UEC003z=A、UEC002z/UEC004z=Bの単位数違いで分割）は、
+    # 開講年度ごとに具体的なテーマ・担当教員が変わる科目（例:「学域特別講義A(アルゴリズムの基礎)」）で、
+    # 科目マスタの名前には単位数の注記まで含めているため、科目名の完全一致では
     # 一覧ページの行を拾えない。ただし開講される曜日時限自体は毎年固定（前学期木5/前学期金5）
     # と開発者から確認済み（2026-09-06）なので、ここで固定値を補う。将来もし名前一致で
     # 本当に取得できるようになった場合はそちらを優先する（setdefaultなので上書きしない）
-    offerings_by_code.setdefault("UEC001z", [{
-        "timetableCode": "", "faculty": "31", "term": "前学期",
-        "slots": [{"day": "木", "period": 5}], "instructors": [],
-        "syllabusUrl": "", "updatedAt": today,
-    }])
-    offerings_by_code.setdefault("UEC002z", [{
-        "timetableCode": "", "faculty": "31", "term": "前学期",
-        "slots": [{"day": "金", "period": 5}], "instructors": [],
-        "syllabusUrl": "", "updatedAt": today,
-    }])
+    for code in ("UEC001z", "UEC003z"):
+        offerings_by_code.setdefault(code, [{
+            "timetableCode": "", "faculty": "31", "term": "前学期",
+            "slots": [{"day": "木", "period": 5}], "instructors": [],
+            "syllabusUrl": "", "updatedAt": today,
+        }])
+    for code in ("UEC002z", "UEC004z"):
+        offerings_by_code.setdefault(code, [{
+            "timetableCode": "", "faculty": "31", "term": "前学期",
+            "slots": [{"day": "金", "period": 5}], "instructors": [],
+            "syllabusUrl": "", "updatedAt": today,
+        }])
 
     # 昼間の「知的財産権」(CAR603z)・「技術者倫理」(CAR604z)の登録漏れ補正（2026-09-06発覚）：
     # シラバスWeb公開システム側で、夜間主の個別ページ（22018104・22018205）の科目番号欄に
