@@ -17,6 +17,13 @@ nav a {
   padding: 0.3em 0.15em;
 }
 
+/* リリースノートの更新区分は本文より少し大きくし、どの更新の説明かを見分けやすくする。 */
+.release-note-update {
+  margin-bottom: 0.35rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
 /* ボタン・プルダウンは、スマホでも指で押しやすい高さと余白を確保する */
 button,
 select {
