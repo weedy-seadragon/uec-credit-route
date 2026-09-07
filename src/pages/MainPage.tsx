@@ -559,15 +559,19 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     const name = nameOf(code)
     const offerings = subjectsByCode.get(code)?.offerings
     if (!offerings || offerings.length === 0) return name
-    const urls = new Set(offerings.map((o) => o.syllabusUrl))
-    let target = offerings
-    if (urls.size !== 1) {
+    // 曜日時限だけを補った科目（学域特別講義A/Bなど）は syllabusUrl が空文字になる。
+    // 空のhrefは今見ているサイト自身へのリンクになるため、リンク候補として数えない。
+    const urls = new Set(offerings.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
+    if (urls.size === 0) return name
+    let target = offerings.filter((offering) => offering.syllabusUrl.length > 0)
+    // URLが複数ある場合だけ、プロフィールのクラス情報で受講セクションを絞り込む。
+    if (urls.size !== 1 || target.length !== offerings.length) {
       const isRetaking = committed.get(code) === 'failed'
       const subjectTermType = subjectsByCode.get(code)?.termType
       const resolve = (retaking: boolean) =>
         resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, retaking, subjectTermType)
       let matched = resolve(isRetaking)
-      let matchedUrls = new Set(matched?.map((o) => o.syllabusUrl))
+      let matchedUrls = new Set(matched?.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
       // 不合格（再履修中）の科目で、再履修向けの枠（class_id「再履生」等）が見つからない・
       // 複数の候補に分かれて一意に決まらない場合でも、シラバス自体は同じ科目のものなので、
       // 通常セクションでの絞り込みに落として（時限までは保証しないが）リンクだけは出す
@@ -575,14 +579,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       // 曜日時限の表示＝dayPeriodTag側は、誤った時刻を示すと実害があるのでこのフォールバックはしない）
       if (isRetaking && matchedUrls.size !== 1) {
         const fallback = resolve(false)
-        const fallbackUrls = new Set(fallback?.map((o) => o.syllabusUrl))
+        const fallbackUrls = new Set(fallback?.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
         if (fallbackUrls.size === 1) {
           matched = fallback
           matchedUrls = fallbackUrls
         }
       }
       if (!matched || matched.length === 0 || matchedUrls.size !== 1) return name
-      target = matched
+      target = matched.filter((offering) => offering.syllabusUrl.length > 0)
     }
     return (
       <a href={target[0].syllabusUrl} target="_blank" rel="noopener noreferrer">
