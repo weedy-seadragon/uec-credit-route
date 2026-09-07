@@ -579,18 +579,22 @@
 
 ```jsonc
 {
-  "schemaVersion": 1,
+  "schemaVersion": 3,
   "exportedAt": "2026-09-03T12:00:00+09:00",
   "profile": { "entryYear": 2025, "course": "day", "cluster": "I", "program": "media", "grade": 2 },
   "records": [
     { "code": "COM405", "name": "メディア情報学プログラミング演習", "status": "passed", "year": 2026, "term": "後学期" },
     { "code": "MTH201", "name": "微分積分学第二", "status": "taking", "year": 2026, "term": "後学期", "timetableCode": "21122101" }
   ],
-  "planned": ["COM501"]
+  "planned": ["COM501"],
+  "otherCommonCredits": 2,
+  "otherCommonSubjectCount": 1
 }
 ```
 
 `records` は `code`（科目番号、末尾記号あり／なしどちらでも可）か `timetableCode`（シラバスの8桁）か `name` のいずれかがあれば解決できる設計にする（友人アプリは番号を持たない可能性があるため）。優先順位は code → timetableCode → name。
+
+`otherCommonCredits`は、TOEIC等の特定科目に紐付かない認定単位数である。`otherCommonSubjectCount`は同じ認定を登録科目数へ何科目分として加えるかを表す。両方とも省略可能で、古いファイルを読み込んだ場合は現在の入力値を維持する。
 
 ### 7.5 取り込み共通形式（友人アプリ向け提案）
 

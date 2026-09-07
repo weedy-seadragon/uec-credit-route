@@ -29,7 +29,7 @@ import type { ReviewCondition } from '../domain/requirements'
 import type { Profile } from '../storage/profile'
 import { loadProfile } from '../storage/profile'
 import { loadRecords, saveRecords } from '../storage/records'
-import { loadOtherCommonCredits, saveOtherCommonCredits } from '../storage/otherCommonCredits'
+import { loadOtherCommonCredits, loadOtherCommonSubjectCount, saveOtherCommonCredits, saveOtherCommonSubjectCount } from '../storage/otherCommonCredits'
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
 
 /** プロフィールのうち、要件セットを引くのに必要な項目が揃っている状態（夜間主はcluster: null） */
@@ -329,6 +329,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 科目の記録と同じくdraft/committedに分け、「更新」ボタンを押すまでは反映しない
   const [otherCommonCommitted, setOtherCommonCommitted] = useState<number>(() => loadOtherCommonCredits())
   const [otherCommonDraft, setOtherCommonDraft] = useState<number>(otherCommonCommitted)
+  // その他単位認定は科目コードを持たないため、登録科目数に加える件数を単位数と別に持つ。
+  const [otherCommonSubjectCountCommitted, setOtherCommonSubjectCountCommitted] = useState<number>(() => loadOtherCommonSubjectCount())
+  const [otherCommonSubjectCountDraft, setOtherCommonSubjectCountDraft] = useState<number>(otherCommonSubjectCountCommitted)
   const [termKey, setTermKey] = useState('all')
   // ダウンロード・読み込みの結果を一言表示するためのメッセージ（F-8）
   const [dataMessage, setDataMessage] = useState<string | null>(null)
@@ -433,6 +436,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const failedSubjects = [...committed.entries()].filter(([, status]) => status === 'failed')
   // 取得単位の見出しに出す合計単位数（科目数ではなく単位数）
   const passedCredits = passedSubjects.reduce((sum, [code]) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
+  // Mapは科目コードをキーにするため、修得→不合格→再履修のような同一科目の履歴でも1科目として数えられる。
+  const registeredSubjectCount = passedSubjects.length + failedSubjects.length + otherCommonSubjectCountCommitted
   // 「取得単位」「残りの必修」は区分ごとの見出しを付けて表示する（例:「理数基礎（必修）」「類専門（必修）」）
   const passedByCategory = groupByCategory(passedSubjects, ([code]) => code, categoryLookup, boundaryGroups)
   const remainingRequiredByCategory = groupByCategory(remainingRequired, (r) => r.code, categoryLookup, boundaryGroups)
@@ -456,6 +461,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     saveRecords(draft)
     setOtherCommonCommitted(otherCommonDraft)
     saveOtherCommonCredits(otherCommonDraft)
+    setOtherCommonSubjectCountCommitted(otherCommonSubjectCountDraft)
+    saveOtherCommonSubjectCount(otherCommonSubjectCountDraft)
   }
 
   // 「ダウンロード」ボタンを押したとき：今の記録を本サイト形式JSON（§7.4）としてファイルに書き出す
@@ -467,6 +474,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       records: [...committed.entries()].map(([code, status]) => ({ code, name: nameOf(code), status })),
       planned: [],
       otherCommonCredits: otherCommonCommitted,
+      otherCommonSubjectCount: otherCommonSubjectCountCommitted,
     }
 
     // ブラウザにファイルをダウンロードさせる標準的な方法：
@@ -503,6 +511,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         setOtherCommonDraft(imported.otherCommonCredits)
         saveOtherCommonCredits(imported.otherCommonCredits)
       }
+      // 科目数もファイルに記載されていれば同時に復元し、古いファイルなら今の値を保つ。
+      if (imported.otherCommonSubjectCount !== undefined) {
+        setOtherCommonSubjectCountCommitted(imported.otherCommonSubjectCount)
+        setOtherCommonSubjectCountDraft(imported.otherCommonSubjectCount)
+        saveOtherCommonSubjectCount(imported.otherCommonSubjectCount)
+      }
       setDataMessage(`${added}件追加、${updated}件更新しました。`)
     } catch (err) {
       setDataMessage(`読み込みに失敗しました: ${err instanceof Error ? err.message : String(err)}`)
@@ -519,6 +533,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     setOtherCommonCommitted(0)
     setOtherCommonDraft(0)
     saveOtherCommonCredits(0)
+    setOtherCommonSubjectCountCommitted(0)
+    setOtherCommonSubjectCountDraft(0)
+    saveOtherCommonSubjectCount(0)
     setDataMessage('すべての記録を未履修に戻しました。')
   }
 
@@ -806,6 +823,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </div>
 
       <section className="requirement-section">
+        <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>
         <h2>取得単位（{passedCredits}単位）</h2>
         {(() => {
         const commonCreditsElement = (
@@ -1029,19 +1047,38 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               <ul>
                 <li>
                   その他単位認定（TOEIC等、科目を介さず認定される単位）
-                  {'  '}
-                  <select
-                    aria-label="その他単位認定の単位数"
-                    value={otherCommonDraft}
-                    onChange={(e) => setOtherCommonDraft(Number(e.target.value))}
-                  >
-                    <option value={0}>未履修</option>
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-                      <option key={n} value={n}>
-                        {n}単位
-                      </option>
-                    ))}
-                  </select>
+                  {' '}
+                  <label>
+                    単位数
+                    <select
+                      aria-label="その他単位認定の単位数"
+                      value={otherCommonDraft}
+                      onChange={(e) => setOtherCommonDraft(Number(e.target.value))}
+                    >
+                      <option value={0}>0単位</option>
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                        <option key={n} value={n}>
+                          {n}単位
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  {' '}
+                  <label>
+                    科目数
+                    <select
+                      aria-label="その他単位認定の科目数"
+                      value={otherCommonSubjectCountDraft}
+                      onChange={(e) => setOtherCommonSubjectCountDraft(Number(e.target.value))}
+                    >
+                      <option value={0}>0科目</option>
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                        <option key={n} value={n}>
+                          {n}科目
+                        </option>
+                      ))}
+                    </select>
+                  </label>
                 </li>
                 {commonOnlyRemaining.filter(isVisibleForTermFilter).map((code) => (
                   <li key={code}>
