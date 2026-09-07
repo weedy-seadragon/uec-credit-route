@@ -3,7 +3,7 @@
 ## 背景
 
 開発者が「コンピューターネットワーク、データベース論など学年学期が違う」と報告したのをきっかけに、
-`PDF/tanni_extract_final.pdf`（学修要覧2025、付録C）の毎週授業時間数の表を`pdftotext -layout`で機械的に
+`PDF/yoran_2025.pdf`（学修要覧2025、付録C）の毎週授業時間数の表を`pdftotext -layout`で機械的に
 読み取り、`data/subjects/youran-2025.json`の`standardYear`/`standardSemester`と全16課程・全科目を
 突き合わせるスクリプトを書いた（39番までの「offeringsとstandardSemesterの食い違い」を見る方法では、
 学期の偶奇（前学期/後学期）が偶然一致してしまうケース＝年次だけがズレているケースを検出できなかった。
@@ -32,7 +32,7 @@
 
 ## 確認方法
 
-1. `PDF/tanni_extract_final.pdf`を対象プログラムのページで`pdftoppm`により画像化する
+1. `PDF/yoran_2025.pdf`を対象プログラムのページで`pdftoppm`により画像化する
    （物理ページの目安：Ⅰ類=22-31、Ⅱ類=32-41、Ⅲ類=42-51。詳細はメモリ`uec_youran_pdf_references`参照）
 2. ヘッダー行（「一年次 二年次 三年次 四年次」「1 2 3 4 5 6 7 8」）と対象科目の行を、Python/PILで
    同じx座標のまま縦に結合した画像を作ると、どの列に印が付いているか正確に読み取れる
