@@ -1,6 +1,6 @@
 // プロフィール設定ページ（"/setup"）。F-1に対応。
 //
-// 入学年度・コース・類・プログラム・現在の学年・推薦入学かどうかを入力してもらい、
+// 入学年度・コース・類・プログラム・現在の学年を入力してもらい、
 // localStorageに保存する。保存した内容から、メイン画面（/main）で使う卒業要件セットが決まる。
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
@@ -31,7 +31,6 @@ export default function SetupPage() {
   const [cluster, setCluster] = useState<Profile['cluster']>(saved?.cluster ?? 'I')
   const [program, setProgram] = useState<string | null>(saved?.program ?? null)
   const [grade, setGrade] = useState(saved?.grade ?? 1)
-  const [recommended, setRecommended] = useState(saved?.recommended ?? false)
   // 曜日時限表示用のクラス情報（docs/SPEC.md §7.1、CLAUDE.md進捗ログ参照）。昼間コースのみ使う
   const [yearOneClass, setYearOneClass] = useState(saved?.yearOneClass ?? 1)
   const [classIABC, setClassIABC] = useState<Profile['classIABC']>(saved?.classIABC ?? null)
@@ -49,7 +48,7 @@ export default function SetupPage() {
   const [previousClassIABC, setPreviousClassIABC] = useState<Profile['previousClassIABC']>(saved?.previousClassIABC ?? null)
   const [previousClassIIArea, setPreviousClassIIArea] = useState<Profile['previousClassIIArea']>(saved?.previousClassIIArea ?? null)
   const [previousClassIIIYear2Class, setPreviousClassIIIYear2Class] = useState<Profile['previousClassIIIYear2Class']>(saved?.previousClassIIIYear2Class ?? null)
-  // 夜間主コース用の学年（昼間コースの grade とは別に持つ。プログラム配属の概念が無いので推薦入学欄も出さない）
+  // 夜間主コース用の学年（昼間コースの grade とは別に持つ。プログラム配属の概念が無い）
   const [eveningGrade, setEveningGrade] = useState(saved?.course === 'evening' ? (saved?.grade ?? 1) : 1)
 
   // 今持っているデータの中から、選んだ年度・コースに対応する「類」の一覧を作る（重複は除く）。
@@ -85,10 +84,10 @@ export default function SetupPage() {
     [entryYear, previousProgramCluster],
   )
 
-  // 1年生（推薦入学でない場合）はまだプログラムに配属されていないので、選択欄を無効化して「未定」に固定する。
+  // 1年生はまだプログラムに配属されていないので、選択欄を無効化して「未定」に固定する。
   // ここでは program の状態そのものは書き換えず、「実際に使う値」をその場で導出するだけにする
   // （useEffectでstateを書き換えると再描画が連鎖してしまうため、これは今の描画中に計算できる値として扱う）。
-  const programLocked = grade === 1 && !recommended
+  const programLocked = grade === 1
   const effectiveProgram = programLocked ? null : program
 
   // フォーム送信時：ページの再読み込みを止め（preventDefault）、今の入力内容を保存して
@@ -98,13 +97,13 @@ export default function SetupPage() {
     // 夜間主コースは類・プログラムの区分が無い単一課程（docs/SPEC.md §3）なので、
     // cluster: null・program: 'evening' 固定で保存する
     if (course === 'evening') {
-      saveProfile({ entryYear, course, cluster: null, program: 'evening', grade: eveningGrade, recommended: false })
+      saveProfile({ entryYear, course, cluster: null, program: 'evening', grade: eveningGrade })
       navigate('/main')
       return
     }
     if (!cluster) return // 昼間コースは類が必須（docs/SPEC.md F-1）
     const profile: Profile = {
-      entryYear, course, cluster, program: effectiveProgram, grade, recommended,
+      entryYear, course, cluster, program: effectiveProgram, grade,
       yearOneClass: effectiveYearOneClass,
       classIABC: cluster === 'I' ? classIABC : null,
       classIIArea: cluster === 'II' ? classIIArea : null,
@@ -198,13 +197,6 @@ export default function SetupPage() {
                   </option>
                 ))}
               </select>
-            </div>
-
-            <div>
-              <label>
-                <input type="checkbox" checked={recommended} onChange={(e) => setRecommended(e.target.checked)} />
-                推薦入学（入学時からプログラムが確定している）
-              </label>
             </div>
 
             <div>
