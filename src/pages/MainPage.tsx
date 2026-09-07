@@ -1086,7 +1086,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 <li>
                   その他単位認定（TOEIC等、科目を介さず認定される単位）
                   {' '}
-                  <label>
+                  <label className="other-common-select">
                     単位数
                     <select
                       aria-label="その他単位認定の単位数"
@@ -1102,7 +1102,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                     </select>
                   </label>
                   {' '}
-                  <label>
+                  <label className="other-common-select">
                     科目数
                     <select
                       aria-label="その他単位認定の科目数"

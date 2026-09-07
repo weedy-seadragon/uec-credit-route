@@ -256,6 +256,13 @@ select {
   font-weight: 700;
 }
 
+/* その他単位認定の項目名とプルダウンを離し、どちらを操作するか分かりやすくする。 */
+.other-common-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 /* 前学期などの子グループは、親の中身だと分かるよう少し内側に置く。
    背景はCanvasにして、ライトモードでは白・ダークモードでは黒のまま見やすくする。 */
 .nested-subject-group {
