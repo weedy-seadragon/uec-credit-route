@@ -207,7 +207,8 @@ select {
   font-weight: 700;
 }
 
-/* 前学期などの子グループは、親の中身だと分かるよう少し内側・薄い紙色にする。 */
+/* 前学期などの子グループは、親の中身だと分かるよう少し内側に置く。
+   背景はCanvasにして、ライトモードでは白・ダークモードでは黒のまま見やすくする。 */
 .nested-subject-group {
   margin: 0.8rem 0 0.85rem 0.5rem;
   padding-left: 0.7rem;
@@ -218,7 +219,7 @@ select {
   min-height: 2.65rem;
   padding-top: 0.45rem;
   padding-bottom: 0.45rem;
-  background: color-mix(in srgb, #edf3ff 56%, Canvas);
+  background: Canvas;
   box-shadow:
     0 2px 0 color-mix(in srgb, #70809a 32%, transparent),
     0 4px 0 color-mix(in srgb, Canvas 74%, #70809a 26%);
