@@ -190,19 +190,23 @@ function CollapsedSubjectGroup<T>({
   items,
   codeOf,
   renderRow,
+  pageStyle = false,
 }: {
   title: string
   items: readonly T[]
   codeOf: (item: T) => string
   renderRow: (item: T) => ReactNode
+  /** true のときは、選択科目の内訳で使う「本のページ」風の開閉見出しにする */
+  pageStyle?: boolean
 }) {
   if (items.length === 0) return null
   return (
     // 折りたたみ自体の▼と中の科目の・が並ぶと紛らわしいので、この<li>自体には・を付けない
     <li style={{ listStyleType: 'none' }}>
-      <details>
+      <details className={pageStyle ? 'nested-subject-group' : undefined}>
         <summary>
-          {title}（{items.length}）
+          <span>{title}</span>
+          <span className="nested-subject-count">{items.length}科目</span>
         </summary>
         <ul>
           {items.map((item) => (
@@ -1042,8 +1046,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           // required=0でGroupProgressの対象外だったり、alwaysCommonSubjectsでどの区分にも属さないため、
           // これまで選択状態を変える場所が無かった。類専門（選択）の直後に専用の入れ子を出す
           const commonCreditsElement = (
-            <details key="common-credits">
-              <summary>共通単位 {commonEarnedTotal}/{requirementSet.commonCredits}単位</summary>
+            <details key="common-credits" className="elective-group">
+              <summary>
+                <span className="elective-group-title">共通単位</span>
+                <span className="elective-group-progress">{commonEarnedTotal}/{requirementSet.commonCredits}単位</span>
+                <span className="elective-group-status">
+                  {commonEarnedTotal >= requirementSet.commonCredits ? '充足済み' : `あと${requirementSet.commonCredits - commonEarnedTotal}単位`}
+                </span>
+              </summary>
               <ul>
                 <li>
                   その他単位認定（TOEIC等、科目を介さず認定される単位）
@@ -1308,11 +1318,13 @@ function GroupProgress({
     ? `この一覧からあと${group.shortfall}単位を選んで修得してください。`
     : 'この区分は必要単位を満たしています。'
   return (
-    <details>
+    <details className="elective-group">
       <summary>
-        {group.label ?? group.name} {group.contribution}/{group.required}単位
-        {group.satisfied ? ' ✔' : ''}
-        {!group.satisfied && `（あと${group.shortfall}単位）`}
+        <span className="elective-group-title">{group.label ?? group.name}</span>
+        <span className="elective-group-progress">{group.contribution}/{group.required}単位</span>
+        <span className="elective-group-status">
+          {group.satisfied ? '充足済み' : `あと${group.shortfall}単位`}
+        </span>
       </summary>
       <p className="group-guidance">{selectionGuidance}</p>
       <ul>
@@ -1321,19 +1333,19 @@ function GroupProgress({
         ))}
         {splitByTerm && (
           <>
-            <CollapsedSubjectGroup title="前学期" items={springRegular} codeOf={(code) => code} renderRow={rowShort} />
+            <CollapsedSubjectGroup title="前学期" items={springRegular} codeOf={(code) => code} renderRow={rowShort} pageStyle />
             {summerIntensive.length > 0 && (
-              <CollapsedSubjectGroup title="夏期集中" items={summerIntensive} codeOf={(code) => code} renderRow={rowShort} />
+              <CollapsedSubjectGroup title="夏期集中" items={summerIntensive} codeOf={(code) => code} renderRow={rowShort} pageStyle />
             )}
-            <CollapsedSubjectGroup title="後学期" items={fallRegular} codeOf={(code) => code} renderRow={rowShort} />
+            <CollapsedSubjectGroup title="後学期" items={fallRegular} codeOf={(code) => code} renderRow={rowShort} pageStyle />
             {winterIntensive.length > 0 && (
-              <CollapsedSubjectGroup title="冬期集中" items={winterIntensive} codeOf={(code) => code} renderRow={rowShort} />
+              <CollapsedSubjectGroup title="冬期集中" items={winterIntensive} codeOf={(code) => code} renderRow={rowShort} pageStyle />
             )}
-            <CollapsedSubjectGroup title="その他" items={noTermCollapsed} codeOf={(code) => code} renderRow={row} />
+            <CollapsedSubjectGroup title="その他" items={noTermCollapsed} codeOf={(code) => code} renderRow={row} pageStyle />
           </>
         )}
-        <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={(code) => code} renderRow={row} />
-        <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} />
+        <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={(code) => code} renderRow={row} pageStyle />
+        <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} pageStyle />
         {remaining.length === 0 && <li>（この表示範囲では残っていません）</li>}
       </ul>
     </details>

@@ -124,6 +124,113 @@ select {
   line-height: 1.6;
 }
 
+/* 選択科目の区分は、ただの文章ではなく「ページをめくる」ように開ける見出しにする。
+   右端の丸い＋/−と下側に重なる影で、押せる場所とページらしい厚みを両方伝える。 */
+.elective-group {
+  margin: 0.9rem 0 1.1rem;
+}
+
+.elective-group > summary,
+.nested-subject-group > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.65rem;
+  min-height: 3rem;
+  box-sizing: border-box;
+  padding: 0.55rem 3.25rem 0.55rem 0.85rem;
+  position: relative;
+  list-style: none;
+  border: 1px solid color-mix(in srgb, currentColor 42%, transparent);
+  border-radius: 0.25rem;
+  background: linear-gradient(to bottom, color-mix(in srgb, Canvas 96%, currentColor 4%), Canvas);
+  box-shadow:
+    0 2px 0 color-mix(in srgb, currentColor 34%, transparent),
+    0 4px 0 color-mix(in srgb, Canvas 74%, currentColor 26%);
+  cursor: pointer;
+}
+
+/* ブラウザ標準の小さな三角を隠し、押しやすい丸い＋/−を右端に表示する。 */
+.elective-group > summary::-webkit-details-marker,
+.nested-subject-group > summary::-webkit-details-marker {
+  display: none;
+}
+
+.elective-group > summary::after,
+.nested-subject-group > summary::after {
+  content: '＋';
+  display: grid;
+  place-items: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  position: absolute;
+  right: 0.8rem;
+  border-radius: 999px;
+  color: Canvas;
+  background: #657180;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* 開いているときは＋を−に変え、開閉後の状態を文字以外でも分かるようにする。 */
+.elective-group[open] > summary::after,
+.nested-subject-group[open] > summary::after {
+  content: '−';
+}
+
+/* マウス操作とキーボード操作のどちらでも、押せる見出しだと分かる反応を付ける。 */
+.elective-group > summary:hover,
+.nested-subject-group > summary:hover {
+  background: color-mix(in srgb, #e9f1ff 70%, Canvas);
+}
+
+.elective-group > summary:focus-visible,
+.nested-subject-group > summary:focus-visible {
+  outline: 3px solid #2e63d6;
+  outline-offset: 3px;
+}
+
+/* 親の区分名・進捗・不足を分け、閉じたままでも何を開く場所か読めるようにする。 */
+.elective-group-title {
+  font-weight: 750;
+}
+
+.elective-group-progress {
+  font-size: 0.94em;
+}
+
+.elective-group-status {
+  margin-left: auto;
+  color: #355a9f;
+  font-size: 0.94em;
+  font-weight: 700;
+}
+
+/* 前学期などの子グループは、親の中身だと分かるよう少し内側・薄い紙色にする。 */
+.nested-subject-group {
+  margin: 0.8rem 0 0.85rem 0.5rem;
+  padding-left: 0.7rem;
+  border-left: 3px solid #88a5dc;
+}
+
+.nested-subject-group > summary {
+  min-height: 2.65rem;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+  background: color-mix(in srgb, #edf3ff 56%, Canvas);
+  box-shadow:
+    0 2px 0 color-mix(in srgb, #70809a 32%, transparent),
+    0 4px 0 color-mix(in srgb, Canvas 74%, #70809a 26%);
+}
+
+.nested-subject-count {
+  margin-left: auto;
+  padding-right: 0.25rem;
+  color: #526276;
+  font-size: 0.9em;
+}
+
 /* 取得単位の前に、修得・不合格・その他認定を合算した登録科目数を表示する。 */
 .registered-subject-count {
   margin: 0 0 0.35rem;
@@ -261,5 +368,11 @@ select {
 
   .subject-row-actions {
     justify-content: space-between;
+  }
+
+  /* 小さい画面では不足単位を次の行へ回し、＋/−のための右側の余白を守る。 */
+  .elective-group-status {
+    width: 100%;
+    margin-left: 0;
   }
 }
