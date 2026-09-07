@@ -2,18 +2,21 @@
 
 電気通信大学 情報理工学域の学生向けに、「あと何を取れば卒業できるか」を一目で示す非公式サイト。
 
+- 公開サイト: https://weedy-seadragon.github.io/uec-credit-route/
 - 仕様書: [docs/SPEC.md](docs/SPEC.md)
 - ディレクトリ構成の説明: [docs/STRUCTURE.md](docs/STRUCTURE.md)
-- Claude Code 向けの作業ルール（進捗ログ含む）: [CLAUDE.md](CLAUDE.md)
+- Claude Code 向けの作業ルール（現在の状態の要約）: [CLAUDE.md](CLAUDE.md)
+- 詳しい進捗の経緯（いつ・なぜ・どう直したか）: [docs/PROGRESS_LOG.md](docs/PROGRESS_LOG.md)
 
 ## 状態
 
 - [x] 仕様書 v0.1
-- [x] Ⅰ類5プログラム（2025年度入学）の要件データ
-- [x] 充足判定ロジック（フェーズ1）
-- [x] 最小UI：プロフィール設定・メイン画面・JSON入出力（フェーズ2）
-- [ ] GitHub Pages公開（ワークフローは用意済み。リポジトリ設定でSourceをGitHub Actionsにする作業待ち）
-- [ ] Ⅱ類・Ⅲ類・夜間主のデータ（フェーズ3、継続中）
+- [x] 昼間コース Ⅰ類5・Ⅱ類5・Ⅲ類5プログラム＋夜間主課程、計16課程分の要件データ
+- [x] 充足判定・推奨・審査判定ロジック（`src/domain/`、単体テスト付き）
+- [x] UI：プロフィール設定・メイン画面・科目一覧・JSON入出力
+- [x] シラバス連携（曜日時限・担当教員・リンク。クラスごとに複数セクションがある科目もクラス情報から絞り込み）
+- [x] GitHub Pages公開
+- [ ] 一部科目のクラス割り当て・標準年次学期の照合が残タスクとして残っている（[CLAUDE.md](CLAUDE.md)「残タスク一覧」参照）
 
 ## 使い方（開発）
 
