@@ -74,6 +74,7 @@ function teacherOverlaps(a: Set<string>, b: Set<string>): boolean {
  *   実際はエリアに関係ない「Ⅲ類の2年前期クラスN」という意味だった）
  * - 「Xクラス」（X=A/B/C）：Ⅰ類の1年後期〜2年後期クラス
  * - 「INクラス」（N=1〜6）：Ⅱ類の2年前期クラス
+ * - 「Ⅱ-Mエリア」：Ⅱ類の2年前期Mエリア（Ⅲ類のMエリアと区別が必要な科目用）
  * - 「Mエリア」：Ⅱ類の2年前期エリア、またはⅢ類の2年後期エリア（類で意味が変わる）
  * - 「Mエリア(Nクラス)」：Ⅲ類の2年後期エリアMのうち、2年前期クラスNに対応する学生向け
  * - 「Iエリア」：Ⅱ類の2年前期エリアのうち、I1〜I6のどれか（Mエリアの逆）
@@ -169,6 +170,10 @@ export function classIdMatchesProfile(
   if (mAreaSubMatch) {
     return cluster === 'III' && profile.classIIIYear2Area === 'M' && profile.classIIIYear2Class === mAreaSubMatch[1]
   }
+
+  // 生涯スポーツ演習Ａのように、同じ科目内でⅡ類・Ⅲ類のMエリアが別時限になる場合がある。
+  // Ⅱ類側だけを明記した表記にして、Ⅲ類のMエリアと同時に一致して時限が曖昧になるのを防ぐ。
+  if (classId === 'Ⅱ-Mエリア') return cluster === 'II' && profile.classIIArea === 'M'
 
   if (classId === 'Mエリア') {
     if (cluster === 'II') return profile.classIIArea === 'M'

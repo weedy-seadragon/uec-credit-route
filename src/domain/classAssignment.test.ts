@@ -245,13 +245,15 @@ describe('resolveSlotsForProfile（複数セクションからの解決）', () 
     // 「全クラス」は3年次までに未修得の学生向けの補講枠
     const hspAssignments: ClassAssignmentEntry[] = [
       { code: 'HSP301z', term: '前学期', day: '火', period: '2', classIds: ['Aクラス', 'Bクラス', 'Cクラス'] },
-      { code: 'HSP301z', term: '前学期', day: '火', period: '3', classIds: ['I1クラス', 'I2クラス', 'I3クラス', 'I4クラス', 'I5クラス', 'I6クラス', 'Mエリア'] },
+      { code: 'HSP301z', term: '前学期', day: '火', period: '3', classIds: ['I1クラス', 'I2クラス', 'I3クラス', 'I4クラス', 'I5クラス', 'I6クラス', 'Ⅱ-Mエリア'] },
+      { code: 'HSP301z', term: '前学期', day: '火', period: '4', classIds: ['Mエリア(1クラス)', 'Mエリア(2クラス)', 'Mエリア(3クラス)', 'Mエリア(4クラス)'] },
       { code: 'HSP301z', term: '前学期', day: '水', period: '1', classIds: ['全クラス'] },
       { code: 'HSP301z', term: '前学期', day: '水', period: '2', classIds: ['全クラス'] },
     ]
     const offerings = [
       { term: '前学期', slots: [{ day: '火', period: 2 }] },
       { term: '前学期', slots: [{ day: '火', period: 3 }] },
+      { term: '前学期', slots: [{ day: '火', period: 4 }] },
       { term: '前学期', slots: [{ day: '水', period: 1 }] },
       { term: '前学期', slots: [{ day: '水', period: 2 }] },
     ]
@@ -262,6 +264,10 @@ describe('resolveSlotsForProfile（複数セクションからの解決）', () 
     // Ⅱ類でI3エリアの学生も同様
     const profileII: ClassProfile = { classIIArea: 'I3' }
     expect(resolveSlotsForProfile('HSP301z', offerings, hspAssignments, profileII, 'II')).toEqual([{ day: '火', period: 3 }])
+
+    // Ⅲ類でMエリア・2年前期クラス1の学生は、Ⅱ類のMエリア枠ではなく火4限に決まる。
+    const profileIII: ClassProfile = { classIIIYear2Area: 'M', classIIIYear2Class: '1' }
+    expect(resolveSlotsForProfile('HSP301z', offerings, hspAssignments, profileIII, 'III')).toEqual([{ day: '火', period: 4 }])
 
     // どの具体的なクラスにも属さない（＝該当する専用セクションが無い）学生は、
     // 「全クラス」の補講枠が候補になる。誰でも受けられる枠なので、複数あっても
