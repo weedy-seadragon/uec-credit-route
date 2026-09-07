@@ -707,6 +707,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     const subject = subjectsByCode.get(code)
     const offerings = subject?.offerings
     if (!offerings || offerings.length === 0) return null
+    // 輪講・卒業研究は研究室ごとに実施形態が異なり、時間割として一律に示せない。
+    // slotsが空でも「オンデマンド」と推測せず、曜日時限の注記自体を表示しない。
+    if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return null
     const note = subject?.note
     const hasAnySlots = offerings.some((o) => o.slots.length > 0)
     if (!hasAnySlots) {
