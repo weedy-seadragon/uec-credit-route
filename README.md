@@ -3,6 +3,7 @@
 電気通信大学 情報理工学域の学生向けに、「あと何を取れば卒業できるか」を一目で示す非公式サイト。
 
 - 公開サイト: https://weedy-seadragon.github.io/uec-credit-route/
+- 引き継ぎ資料（前提知識が無い人向けの入口）: [docs/HANDOVER.md](docs/HANDOVER.md)
 - 仕様書: [docs/SPEC.md](docs/SPEC.md)
 - ディレクトリ構成の説明: [docs/STRUCTURE.md](docs/STRUCTURE.md)
 - Claude Code 向けの作業ルール（現在の状態の要約）: [CLAUDE.md](CLAUDE.md)

@@ -1532,8 +1532,7 @@
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21018234.html",
           "updatedAt": "2026-09-07"
         }
-      ],
-      "prerequisitesText": "特にありません。"
+      ]
     },
     {
       "code": "CAR701s",
@@ -1602,8 +1601,7 @@
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22018205.html",
           "updatedAt": "2026-09-07"
         }
-      ],
-      "prerequisitesText": "特にありません。"
+      ]
     },
     {
       "code": "CHI101z",
@@ -8485,7 +8483,26 @@
       "graduateLinked": false,
       "groups": [
         "cluster-basic-elecreq"
-      ]
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21322217",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "山鹿　汐音"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21322217.html",
+          "updatedAt": "2026-09-07"
+        }
+      ],
+      "prerequisitesText": "基礎プログラミングおよび演習"
     },
     {
       "code": "COM402m",
@@ -31929,8 +31946,7 @@
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21011109.html",
           "updatedAt": "2026-09-07"
         }
-      ],
-      "prerequisitesText": "特になし。"
+      ]
     },
     {
       "code": "HSS310z",
@@ -31963,8 +31979,7 @@
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21011110.html",
           "updatedAt": "2026-09-07"
         }
-      ],
-      "prerequisitesText": "特になし"
+      ]
     },
     {
       "code": "HSS311z",
@@ -32014,6 +32029,7 @@
       "groups": [
         "hss"
       ],
+      "note": "夏期集中講義",
       "offerings": [
         {
           "timetableCode": "21011112",
@@ -32027,8 +32043,7 @@
           "updatedAt": "2026-09-07"
         }
       ],
-      "prerequisitesText": "特になし。",
-      "note": "夏期集中講義"
+      "prerequisitesText": "特になし。"
     },
     {
       "code": "HSS313z",
@@ -32300,6 +32315,40 @@
         }
       ],
       "prerequisitesText": "特になし"
+    },
+    {
+      "code": "HSS321z",
+      "name": "論理学",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 3,
+      "standardYear": 2,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21011220",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "秋吉　亮太"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21011220.html",
+          "updatedAt": "2026-09-07"
+        }
+      ],
+      "prerequisitesText": "特になし。"
     },
     {
       "code": "HSS401z",
@@ -32601,8 +32650,7 @@
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21011209.html",
           "updatedAt": "2026-09-07"
         }
-      ],
-      "prerequisitesText": "特になし。授業は対面GoogleClassroomを併用"
+      ]
     },
     {
       "code": "HSS410z",
@@ -32635,8 +32683,7 @@
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21011210.html",
           "updatedAt": "2026-09-07"
         }
-      ],
-      "prerequisitesText": "特になし"
+      ]
     },
     {
       "code": "HSS411z",
@@ -35206,42 +35253,7 @@
       "groups": [
         "advanced"
       ],
-      "note": "1・2年次修得分は言語文化演習科目、3・4年次修得分は上級科目",
-      "offerings": [
-        {
-          "timetableCode": "21017105",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [
-            {
-              "day": "火",
-              "period": 1
-            }
-          ],
-          "instructors": [
-            "Choo　Cheow　Keong"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017105.html",
-          "updatedAt": "2026-09-05"
-        },
-        {
-          "timetableCode": "21017205",
-          "faculty": "31",
-          "term": "後学期",
-          "slots": [
-            {
-              "day": "火",
-              "period": 1
-            }
-          ],
-          "instructors": [
-            "Choo　Cheow　Keong"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017205.html",
-          "updatedAt": "2026-09-05"
-        }
-      ],
-      "prerequisitesText": "NIL"
+      "note": "1・2年次修得分は言語文化演習科目、3・4年次修得分は上級科目"
     },
     {
       "code": "INT002a",
@@ -47801,8 +47813,7 @@
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21015104.html",
           "updatedAt": "2026-09-07"
         }
-      ],
-      "prerequisitesText": "線形代数学第一，線形代数学第二"
+      ]
     },
     {
       "code": "MTH303a",
@@ -60498,7 +60509,7 @@
     },
     {
       "code": "UEC001z",
-      "name": "学域特別講義A",
+      "name": "学域特別講義A(AI時代の著作権ビジネスなど)(1単位修得)",
       "credits": 1,
       "field": "UEC",
       "standardSemester": null,
@@ -60510,7 +60521,7 @@
       "groups": [
         "special"
       ],
-      "note": "開講年度により扱いが異なる",
+      "note": "開講年度によりテーマ・担当・単位数の扱いが異なる。テーマは年度により変わる（2026年度版に合わせて記載）。1単位のみ修得する年度と2単位修得する年度があるため、単位数ごとに別コードとして持つ（開発者指摘、2026-09-07）",
       "offerings": [
         {
           "timetableCode": "",
@@ -60530,7 +60541,39 @@
     },
     {
       "code": "UEC002z",
-      "name": "学域特別講義B",
+      "name": "学域特別講義B(自動車の大変革に必要な技術など)(1単位修得)",
+      "credits": 1,
+      "field": "UEC",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "special"
+      ],
+      "note": "開講年度によりテーマ・担当・単位数の扱いが異なる。テーマは年度により変わる（2026年度版に合わせて記載）。1単位のみ修得する年度と2単位修得する年度があるため、単位数ごとに別コードとして持つ（開発者指摘、2026-09-07）",
+      "offerings": [
+        {
+          "timetableCode": "",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 5
+            }
+          ],
+          "instructors": [],
+          "syllabusUrl": "",
+          "updatedAt": "2026-09-07"
+        }
+      ]
+    },
+    {
+      "code": "UEC003z",
+      "name": "学域特別講義A(AI時代の著作権ビジネスなど)(2単位修得)",
       "credits": 2,
       "field": "UEC",
       "standardSemester": null,
@@ -60542,7 +60585,39 @@
       "groups": [
         "special"
       ],
-      "note": "開講年度により扱いが異なる",
+      "note": "開講年度によりテーマ・担当・単位数の扱いが異なる。テーマは年度により変わる（2026年度版に合わせて記載）。1単位のみ修得する年度と2単位修得する年度があるため、単位数ごとに別コードとして持つ（開発者指摘、2026-09-07）",
+      "offerings": [
+        {
+          "timetableCode": "",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 5
+            }
+          ],
+          "instructors": [],
+          "syllabusUrl": "",
+          "updatedAt": "2026-09-07"
+        }
+      ]
+    },
+    {
+      "code": "UEC004z",
+      "name": "学域特別講義B(自動車の大変革に必要な技術など)(2単位修得)",
+      "credits": 2,
+      "field": "UEC",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "special"
+      ],
+      "note": "開講年度によりテーマ・担当・単位数の扱いが異なる。テーマは年度により変わる（2026年度版に合わせて記載）。1単位のみ修得する年度と2単位修得する年度があるため、単位数ごとに別コードとして持つ（開発者指摘、2026-09-07）",
       "offerings": [
         {
           "timetableCode": "",
