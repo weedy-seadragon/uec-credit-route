@@ -284,7 +284,8 @@ select {
 /* 取得単位の枠の外・直前に、修得・不合格・その他認定を合算した登録科目数を表示する。 */
 .registered-subject-count {
   margin: 1.25rem 0 0.35rem;
-  font-size: 1.1rem;
+  /* 取得単位の見出し（h2）と同じ大きさにして、主要な集計値として目に入りやすくする。 */
+  font-size: 1.5em;
   font-weight: 700;
 }
 
