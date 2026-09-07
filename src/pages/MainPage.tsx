@@ -436,6 +436,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 「取得単位」「残りの必修」は区分ごとの見出しを付けて表示する（例:「理数基礎（必修）」「類専門（必修）」）
   const passedByCategory = groupByCategory(passedSubjects, ([code]) => code, categoryLookup, boundaryGroups)
   const remainingRequiredByCategory = groupByCategory(remainingRequired, (r) => r.code, categoryLookup, boundaryGroups)
+  // 不合格科目も、修得済み・残りの必修と同じ要件区分でまとめる。
+  // どの区分の不足に関係する科目かを、不合格一覧だけで追えるようにするための対応表である。
+  const failedByCategory = groupByCategory(failedSubjects, ([code]) => code, categoryLookup, boundaryGroups)
 
   // プルダウンで状態を変えたとき：draftだけを更新する（committedはまだ変えない）
   function handleDraftChange(code: string, status: SubjectStatus | undefined) {
@@ -873,57 +876,57 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <section className="requirement-section failed-section">
         <h2>不合格になった科目（{failedSubjects.length}）</h2>
         <p className="section-guidance">
-          必修科目は再履修して単位を修得する必要があります。選択科目は、再履修するか同じ区分から別の科目を選べます。
+          要件区分ごとに表示します。必修科目は再履修して単位を修得する必要があります。選択科目は、再履修するか同じ区分から別の科目を選べます。
         </p>
-        <ul>
-          {(() => {
-            const { regular, otherProgram, international } = splitSpecialSubjects(failedSubjects, ([code]) => code)
-            // 不合格科目の曜日時限表示。offeringsが1件だけの科目は全員同じ枠なので
-            // dayPeriodTagのまま出す。複数offeringがある科目（物理学概論第一等）は、
-            // 不合格になった時点で通常枠はもう案内する意味が無いので出さず、代わりに
-            // 再履修向けの枠（class_id「再履生」「再履全員」等）が解決できれば、
-            // その科目の真下にインデントした注記として曜日時限を出す
-            // （2026-09-08、開発者の指摘：再履用の授業の有無・時限が分かりにくかった）
-            const row = (code: string) => {
-              const offerings = subjectsByCode.get(code)?.offerings
-              const singleOffering = !offerings || offerings.length <= 1
-              const retakeSlots = singleOffering
-                ? undefined
-                : resolveSlotsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, true)
-              return (
-                <>
-                  <SubjectRow
-                    name={nameLink(code)}
-                    credits={creditsLabel(code)}
-                    term={yearTermTag(code)}
-                    status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
-                    schedule={singleOffering ? dayPeriodTag(code) : undefined}
-                    note={
-                      requiredCodes.has(code) ? (
-                        <span className="requirement-badge required-retake">必修：再履修して単位を修得してください</span>
-                      ) : (
-                        <span className="requirement-badge elective-replacement">選択：再履修するか、同じ区分から別の科目を選べます</span>
-                      )
-                    }
-                  />
-                  {retakeSlots && retakeSlots.length > 0 && (
-                    <p className="group-guidance">再履用の授業があります：{retakeSlots.map((s) => `${s.day}・${s.period}限`).join(' / ')}</p>
-                  )}
-                </>
-              )
-            }
+        {/* 不合格科目を要件区分ごとに置くことで、「理数基礎（必修）」等の不足と結び付けて確認できる。 */}
+        {failedByCategory.map(({ label, group, items }) => {
+          const { regular, otherProgram, international } = splitSpecialSubjects(items, ([code]) => code)
+          // 不合格科目の曜日時限表示。複数offeringなら再履修向けの枠だけを調べ、誤った通常枠は出さない。
+          const row = (code: string) => {
+            const offerings = subjectsByCode.get(code)?.offerings
+            const singleOffering = !offerings || offerings.length <= 1
+            const retakeSlots = singleOffering
+              ? undefined
+              : resolveSlotsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, true)
             return (
               <>
+                <SubjectRow
+                  name={nameLink(code)}
+                  credits={creditsLabel(code)}
+                  term={yearTermTag(code)}
+                  status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
+                  schedule={singleOffering ? dayPeriodTag(code) : undefined}
+                  note={
+                    requiredCodes.has(code) ? (
+                      <span className="requirement-badge required-retake">必修：再履修して単位を修得してください</span>
+                    ) : (
+                      <span className="requirement-badge elective-replacement">選択：再履修するか、同じ区分から別の科目を選べます</span>
+                    )
+                  }
+                />
+                {retakeSlots && retakeSlots.length > 0 && (
+                  <p className="group-guidance">再履用の授業があります：{retakeSlots.map((s) => `${s.day}・${s.period}限`).join(' / ')}</p>
+                )}
+              </>
+            )
+          }
+          return (
+            <div className="failed-category" key={group?.id ?? label}>
+              <h3>
+                {label}
+                {group && `（現在${group.contribution}/${group.required}単位・あと${group.shortfall}単位）`}
+              </h3>
+              <ul>
                 {regular.map(([code]) => (
                   <li key={code}>{row(code)}</li>
                 ))}
                 <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={([code]) => code} renderRow={([code]) => row(code)} />
                 <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={([code]) => code} renderRow={([code]) => row(code)} />
-              </>
-            )
-          })()}
-          {failedSubjects.length === 0 && <li>（ありません）</li>}
-        </ul>
+              </ul>
+            </div>
+          )
+        })}
+        {failedSubjects.length === 0 && <p>（ありません）</p>}
       </section>
 
       <section className="requirement-section">
