@@ -8,8 +8,8 @@
 // - 科目ごとの状態変更は、要覧のスケッチにある「履修予定チェック」ではなく、
 //   すべての一覧で共通の「未履修/修得/修得予定/不合格」ラジオボタンに統一している
 //   （取得単位への追加も、この操作を通じて行う。ファイルからの読み込み等はフェーズ2-5で対応）
-// - 修得予定は将来の単位見込みを表すだけで、実際に履修中かを管理する状態ではないため、busySlots（同時限警告）は
-//   常に空のまま。先修科目（prerequisites）は2026-09-06にprerequisites.ts経由で配線した
+// - 修得予定は将来の単位見込みを表す状態で、更新時には確定できる曜日時限の重複だけを注意表示する。
+//   先修科目（prerequisites）は2026-09-06にprerequisites.ts経由で配線した
 import { useMemo, useRef, useState } from 'react'
 import type { ChangeEvent, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
@@ -24,11 +24,14 @@ import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/
 import { getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { TransferBucketItem } from '../data/requirementSets'
 import { resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
+import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
+import type { PlannedCourseSchedule } from '../domain/scheduleConflicts'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
 import type { ReviewCondition } from '../domain/requirements'
 import type { Profile } from '../storage/profile'
 import { loadProfile } from '../storage/profile'
 import { loadRecords, saveRecords } from '../storage/records'
+import { loadRetakingPlanCodes, saveRetakingPlanCodes } from '../storage/retakingPlans'
 import { loadOtherCommonCredits, loadOtherCommonSubjectCount, saveOtherCommonCredits, saveOtherCommonSubjectCount } from '../storage/otherCommonCredits'
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
 
@@ -338,9 +341,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // その他単位認定は科目コードを持たないため、登録科目数に加える件数を単位数と別に持つ。
   const [otherCommonSubjectCountCommitted, setOtherCommonSubjectCountCommitted] = useState<number>(() => loadOtherCommonSubjectCount())
   const [otherCommonSubjectCountDraft, setOtherCommonSubjectCountDraft] = useState<number>(otherCommonSubjectCountCommitted)
+  // 不合格から修得予定へ変えた科目だけを覚え、再履用の曜日時限があれば重複判定に使う。
+  const [retakingPlanCodes, setRetakingPlanCodes] = useState<ReadonlySet<string>>(() => loadRetakingPlanCodes())
   const [termKey, setTermKey] = useState('all')
   // ダウンロード・読み込みの結果を一言表示するためのメッセージ（F-8）
   const [dataMessage, setDataMessage] = useState<string | null>(null)
+  // 更新時に見つかった時限重複は、保存完了後も見落とさないよう操作バー直下に残す。
+  const [scheduleWarning, setScheduleWarning] = useState<string | null>(null)
   // 「単位取得状況をファイルから読み込む」ボタンから、見えない<input type="file">を操作するための参照
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -468,18 +475,67 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
   // プルダウンで状態を変えたとき：draftだけを更新する（committedはまだ変えない）
   function handleDraftChange(code: string, status: SubjectStatus | undefined) {
+    const previousStatus = draft.get(code)
     setDraft((prev) => {
       const next = new Map(prev)
       if (status === undefined) next.delete(code) // 「未履修」に戻す＝記録を消す
       else next.set(code, status)
       return next
     })
+    // 不合格から修得予定へ直接変えたときだけ、再履修予定として記録する。
+    // 修得・未履修・不合格へ変えた場合は、予定ではなくなるため記録を外す。
+    setRetakingPlanCodes((prev) => {
+      const next = new Set(prev)
+      if (status === 'taking' && previousStatus === 'failed') next.add(code)
+      else if (status !== 'taking') next.delete(code)
+      return next
+    })
+  }
+
+  /** 修得予定の中から、プロフィールに基づいて曜日時限を比較できる開講候補だけを組み立てる。 */
+  function plannedCourseSchedules(
+    records: ReadonlyMap<string, SubjectStatus>,
+    plannedRetakingCodes: ReadonlySet<string>,
+  ): PlannedCourseSchedule[] {
+    const schedules: PlannedCourseSchedule[] = []
+    // 修得予定の各科目について、通常履修または再履修用として選べる開講セクションを解決する。
+    for (const [code, status] of records) {
+      if (status !== 'taking') continue
+      const subject = subjectsByCode.get(code)
+      const offerings = subject?.offerings
+      if (!offerings || offerings.length === 0) continue
+      const isRetaking = plannedRetakingCodes.has(code)
+      // 再履修予定は、再履用のセクションが見つかる場合だけその時限を使う。
+      // 見つからない再履修は自由な時間に取れる前提として、警告対象から外す。
+      const candidates = isRetaking
+        ? resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, true, subject.termType)
+        : offerings.length === 1
+          ? offerings
+          : resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, false, subject.termType)
+      // クラスを絞れない・オンデマンドでslotsが無い科目は、誤警告を避けるため比較しない。
+      const options = (candidates ?? [])
+        .filter((offering) => offering.slots.length > 0)
+        .map((offering) => ({ term: offering.term, slots: offering.slots }))
+      if (options.length > 0) schedules.push({ code, options })
+    }
+    return schedules
   }
 
   // 「更新」ボタンを押したとき：draftの内容をcommittedへ反映し、localStorageにも保存する
   function handleUpdate() {
+    const nextRetakingPlanCodes = new Set([...retakingPlanCodes].filter((code) => draft.get(code) === 'taking'))
+    const conflicts = findUnavoidableScheduleConflicts(plannedCourseSchedules(draft, nextRetakingPlanCodes))
+    // 重複が確定した科目名の組を利用者へ示す。候補が1つでも空いている科目はここに含まれない。
+    if (conflicts.length > 0) {
+      const pairs = conflicts.map(({ firstCode, secondCode }) => `${nameOf(firstCode)}・${nameOf(secondCode)}`)
+      setScheduleWarning(`時限が重複している修得予定の科目があります：${pairs.join('／')}`)
+    } else {
+      setScheduleWarning(null)
+    }
     setCommitted(draft)
     saveRecords(draft)
+    setRetakingPlanCodes(nextRetakingPlanCodes)
+    saveRetakingPlanCodes(nextRetakingPlanCodes)
     setOtherCommonCommitted(otherCommonDraft)
     saveOtherCommonCredits(otherCommonDraft)
     setOtherCommonSubjectCountCommitted(otherCommonSubjectCountDraft)
@@ -494,6 +550,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       profile,
       records: [...committed.entries()].map(([code, status]) => ({ code, name: nameOf(code), status })),
       planned: [],
+      retakingPlanCodes: [...retakingPlanCodes],
       otherCommonCredits: otherCommonCommitted,
       otherCommonSubjectCount: otherCommonSubjectCountCommitted,
     }
@@ -521,9 +578,17 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       const json: unknown = JSON.parse(await file.text())
       const imported = parseOwnFormat(json)
       const { merged, added, updated } = mergeRecords(committed, imported.records)
+      // ファイル側の再履修予定を優先しつつ、今回の読み込みで不合格→修得予定になった科目も再履修予定にする。
+      const nextRetakingPlanCodes = new Set(retakingPlanCodes)
+      for (const record of imported.records) {
+        if (record.status !== 'taking') nextRetakingPlanCodes.delete(record.code)
+        else if (imported.retakingPlanCodes?.includes(record.code) || committed.get(record.code) === 'failed') nextRetakingPlanCodes.add(record.code)
+      }
       setCommitted(merged)
       setDraft(merged) // 編集中の内容も、読み込んだ内容に合わせておく
       saveRecords(merged)
+      setRetakingPlanCodes(nextRetakingPlanCodes)
+      saveRetakingPlanCodes(nextRetakingPlanCodes)
       // その他単位認定は科目コードを持たない単一の数値なので、records のような
       // 追加・更新の概念が無い。ファイルに記載があればその値でそのまま置き換える
       // （古いschemaVersion 1のファイルなど、記載が無ければ今の値を変えない）
@@ -551,6 +616,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     setCommitted(empty)
     setDraft(empty)
     saveRecords(empty)
+    const noRetakingPlans = new Set<string>()
+    setRetakingPlanCodes(noRetakingPlans)
+    saveRetakingPlanCodes(noRetakingPlans)
     setOtherCommonCommitted(0)
     setOtherCommonDraft(0)
     saveOtherCommonCredits(0)
@@ -917,6 +985,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         />
         {dataMessage && <p role="status">{dataMessage}</p>}
       </div>
+      {/* 更新時に確定した時限重複だけを、次の操作前に見直せる注意として表示する。 */}
+      {scheduleWarning && <p className="schedule-conflict-warning" role="alert">{scheduleWarning}</p>}
 
       {/* 登録科目数は要件区分の一部ではないため、取得単位の枠の外で先に表示する。 */}
       <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>

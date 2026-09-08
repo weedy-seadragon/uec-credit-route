@@ -214,6 +214,17 @@ select {
   display: none;
 }
 
+/* 修得予定の時限重複は、更新後すぐに見落とさず確認できるよう黄色系の注意枠で示す。 */
+.schedule-conflict-warning {
+  margin: -0.35rem 0 1rem;
+  padding: 0.7rem 0.85rem;
+  border-left: 4px solid #c98a00;
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, #ffe49a 45%, Canvas);
+  font-weight: 650;
+  line-height: 1.55;
+}
+
 /* 各区分をカード状に分け、見出しの直下に「何をすればよいか」を置けるようにする。 */
 .requirement-section {
   margin: 1.25rem 0;
