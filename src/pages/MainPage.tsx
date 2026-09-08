@@ -1500,7 +1500,7 @@ function GroupProgress({
         <span className="elective-group-progress">
           {group.contribution}/{group.required}単位
           {group.projectedContribution > group.contribution && (
-            <span className="planned-credit"> → {group.projectedContribution}/{group.required}単位（予定）</span>
+            <span className="planned-credit"> → {group.projectedContribution}/{group.required}単位（修得予定）</span>
           )}
         </span>
         <span className="elective-group-status">
