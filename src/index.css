@@ -353,16 +353,17 @@ select {
   font-weight: 700;
 }
 
-/* 長い選択科目では見出しが画面外へ出たときだけ、現在読んでいる区分を閉じる操作を画面上端に固定する。 */
+/* 長い選択科目では見出しが画面外へ出たときだけ、現在読んでいる区分を閉じる操作を画面上部いっぱいに固定する。 */
 .sticky-group-close {
   position: fixed;
   z-index: 10;
   top: max(0.5rem, env(safe-area-inset-top));
   right: 0.75rem;
+  left: 0.75rem;
   min-height: 2.4rem;
   padding: 0.35rem 0.8rem;
   border: 2px solid #6079ad;
-  border-radius: 999px;
+  border-radius: 0.35rem;
   background: Canvas;
   box-shadow: 0 2px 8px color-mix(in srgb, CanvasText 22%, transparent);
   color: inherit;
