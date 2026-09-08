@@ -328,6 +328,16 @@ describe('resolveSlotsForProfile（複数セクションからの解決）', () 
     ])
     expect(resolveSlotsForProfile('MTH205a', offerings, mthAssignments, { classIABC: 'C' }, 'I')).toBeUndefined()
   })
+
+  it('クラス対応表が無くても全候補の曜日時限が同じ国際科目は、その共通の曜日時限を表示する', () => {
+    // UEC Academic Skillsのように、履修区分ごとの複数シラバスが同じ曜日時限を持つ場合は、
+    // クラス情報からURLを1件へ絞れなくても曜日時限自体は安全に案内できる。
+    const offerings = [
+      { term: '前学期', slots: [{ day: '火', period: 1 }] },
+      { term: '後学期', slots: [{ day: '火', period: 1 }] },
+    ]
+    expect(resolveSlotsForProfile('INT001z', offerings, [], {}, 'I')).toEqual([{ day: '火', period: 1 }])
+  })
 })
 
 describe('resolveOfferingsForProfile（曜日時限以外のフィールドも含めて一致したofferingを返す版）', () => {

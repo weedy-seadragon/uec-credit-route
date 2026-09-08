@@ -22241,7 +22241,18 @@
       "groups": [
         "advanced"
       ],
-      "note": "偶数年度開講"
+      "note": "偶数年度開講",
+      "offerings": [
+        {
+          "timetableCode": "21016236",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [{ "day": "月", "period": 5 }],
+          "instructors": ["Shi", "上原"],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016236.html",
+          "updatedAt": "2026-09-08"
+        }
+      ]
     },
     {
       "code": "ENG604z",
@@ -35358,7 +35369,13 @@
       "groups": [
         "advanced"
       ],
-      "note": "1・2年次修得分は言語文化演習科目、3・4年次修得分は上級科目"
+      "note": "1・2年次修得分は言語文化演習科目、3・4年次修得分は上級科目",
+      "offerings": [
+        { "timetableCode": "21017101", "faculty": "31", "term": "前学期", "slots": [{ "day": "火", "period": 1 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017101.html", "updatedAt": "2026-09-08" },
+        { "timetableCode": "21017105", "faculty": "31", "term": "前学期", "slots": [{ "day": "火", "period": 1 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017105.html", "updatedAt": "2026-09-08" },
+        { "timetableCode": "21017201", "faculty": "31", "term": "後学期", "slots": [{ "day": "火", "period": 1 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017201.html", "updatedAt": "2026-09-08" },
+        { "timetableCode": "21017205", "faculty": "31", "term": "後学期", "slots": [{ "day": "火", "period": 1 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017205.html", "updatedAt": "2026-09-08" }
+      ]
     },
     {
       "code": "INT002a",
@@ -35807,7 +35824,13 @@
       "groups": [
         "advanced"
       ],
-      "note": "1・2年次修得分は言語文化演習科目、3・4年次修得分は上級科目"
+      "note": "1・2年次修得分は言語文化演習科目、3・4年次修得分は上級科目",
+      "offerings": [
+        { "timetableCode": "21017102", "faculty": "31", "term": "前学期", "slots": [{ "day": "火", "period": 2 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017102.html", "updatedAt": "2026-09-08" },
+        { "timetableCode": "21017106", "faculty": "31", "term": "前学期", "slots": [{ "day": "火", "period": 2 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017106.html", "updatedAt": "2026-09-08" },
+        { "timetableCode": "21017202", "faculty": "31", "term": "後学期", "slots": [{ "day": "火", "period": 2 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017202.html", "updatedAt": "2026-09-08" },
+        { "timetableCode": "21017206", "faculty": "31", "term": "後学期", "slots": [{ "day": "火", "period": 2 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017206.html", "updatedAt": "2026-09-08" }
+      ]
     },
     {
       "code": "INT003a",
@@ -36079,7 +36102,11 @@
       "groups": [
         "advanced"
       ],
-      "note": "3・4年次のみ。上級科目扱い"
+      "note": "3・4年次のみ。上級科目扱い",
+      "offerings": [
+        { "timetableCode": "21017107", "faculty": "31", "term": "前学期", "slots": [{ "day": "木", "period": 1 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017107.html", "updatedAt": "2026-09-08" },
+        { "timetableCode": "21017207", "faculty": "31", "term": "後学期", "slots": [{ "day": "木", "period": 1 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017207.html", "updatedAt": "2026-09-08" }
+      ]
     },
     {
       "code": "INT004c",
@@ -36469,7 +36496,18 @@
       "groups": [
         "advanced"
       ],
-      "note": "偶数年度開講・上級科目扱い"
+      "note": "偶数年度開講・上級科目扱い",
+      "offerings": [
+        {
+          "timetableCode": "21016236",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [{ "day": "月", "period": 5 }],
+          "instructors": ["Shi", "上原"],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016236.html",
+          "updatedAt": "2026-09-08"
+        }
+      ]
     },
     {
       "code": "INT502z",
@@ -36603,7 +36641,18 @@
       "groups": [
         "advanced"
       ],
-      "note": "偶数年度開講・上級科目扱い"
+      "note": "偶数年度開講・上級科目扱い",
+      "offerings": [
+        {
+          "timetableCode": "21016236",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [{ "day": "月", "period": 5 }],
+          "instructors": ["Shi", "上原"],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016236.html",
+          "updatedAt": "2026-09-08"
+        }
+      ]
     },
     {
       "code": "INT603z",
