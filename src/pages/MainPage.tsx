@@ -802,7 +802,6 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           {profile.entryYear}入学 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
           {profile.program} / {profile.grade}年 <Link to="/setup">[変更]</Link>
         </h1>
-        <p>総取得単位 {earnedTotalCredits}単位</p>
       </header>
 
       {/* 表示範囲・更新・データ入出力を、目的ごとのグループに分けた操作バーにする。 */}
