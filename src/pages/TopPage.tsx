@@ -10,7 +10,7 @@ export default function TopPage() {
   return (
     <main>
       <h1>
-        電通大 単位取得ルートナビ(ver.β2.4.1) <small>最終更新日: {__BUILD_DATE__}</small>
+        電通大 単位取得ルートナビ(ver.β2.4.2) <small>最終更新日: {__BUILD_DATE__}</small>
       </h1>
       <p>
         電気通信大学 情報理工学域の学生向けに、「学年・類・プログラム・取得済み科目」を入力するだけで、
@@ -43,6 +43,23 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section>
         <h2>リリースノート</h2>
+        {/* β2.4.2では、長い選択科目を閉じる操作と初回表示の読み込み方を改善した。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(ver.β2.4.1→β2.4.2)</span>
+            <span className="release-note-date">アップデート日 2026/9/9</span>
+          </p>
+          <h3 className="release-note-category">機能変更</h3>
+          <ul className="release-note-items">
+            <li>長い選択科目の一覧で、見出しが画面外にあるときも画面上部から区分を閉じられるようにしました</li>
+            <li>前学期・後学期・集中講義などの入れ子も、それぞれを閉じられるようにしました</li>
+            <li>画面ごとのコードを必要なときに読み込むようにし、初回表示を軽くしました</li>
+          </ul>
+          <h3 className="release-note-category">見た目の変更</h3>
+          <ul className="release-note-items">
+            <li>長い一覧を読んでいる間の「閉じる」操作を、画面上部の見やすいバーとして表示するようにしました</li>
+          </ul>
+        </div>
         {/* β2.4.1では、単位区分の表示と時限情報を中心に、入力内容をより正確に確認できるようにした。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
