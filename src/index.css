@@ -463,12 +463,6 @@ select {
   font-weight: 700;
 }
 
-/* 修得予定は確定済みの修得とは違う黄色系にして、予定分だとすぐ分かるようにする。 */
-.status-taking:has(input:checked) {
-  color: #858500;
-  background: #ffffc8;
-}
-
 .status-failed:has(input:checked) {
   color: #9d2020;
   background: #ffe4e4;

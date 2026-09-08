@@ -1057,8 +1057,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       <section className="requirement-section">
         <h2>
-          残りの必修（あと {requiredShortfall(boundaryGroups)} 単位
-          {requiredPlannedCredits(boundaryGroups) > 0 && <span className="planned-credit"> - 修得予定{requiredPlannedCredits(boundaryGroups)}単位</span>}）
+          残りの必修（あと {requiredShortfall(boundaryGroups)}
+          {requiredPlannedCredits(boundaryGroups) > 0 && <span className="planned-credit"> - {requiredPlannedCredits(boundaryGroups)}</span>} 単位）
         </h2>
         {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、一部の科目が表示されていません。</p>}
         <p className="section-guidance">この一覧の科目はすべて必修です。不合格になった必修科目は、上の「不合格になった科目」で再履修を確認してください。</p>
