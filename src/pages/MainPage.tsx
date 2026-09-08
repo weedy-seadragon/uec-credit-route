@@ -23,7 +23,7 @@ import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
 import { getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { TransferBucketItem } from '../data/requirementSets'
-import { resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
+import { hasDedicatedRetakeClass, resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
 import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
 import type { PlannedCourseSchedule } from '../domain/scheduleConflicts'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
@@ -530,6 +530,27 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const remainingRequired = recommended.filter(
     (r) => requiredCodes.has(r.code) && committed.get(r.code) == null && isVisibleForTermFilter(r.code),
   )
+
+  // 「この学期の修得推奨科目」では、必修・再履修・不足している選択区分を分けて案内する。
+  // recommendedは既に学年・学期で絞り、優先順に並んでいるため、この後の候補にもその順を保つ。
+  const termRequiredRecommendations = recommended.filter(
+    (r) => requiredCodes.has(r.code) && committed.get(r.code) == null,
+  )
+  // 再履修専用のクラスがある科目は、不合格一覧の再履用案内で時限まで確認できるため、ここへ重複して出さない。
+  const termRetakeRecommendations = recommended.filter(
+    (r) => committed.get(r.code) === 'failed' && !hasDedicatedRetakeClass(r.code, classAssignments),
+  )
+  // 選択区分は「今学期に候補があるか」も含めてすべて出す。候補の中身は画面で折りたたんで確認する。
+  const termElectiveRecommendations = boundaryGroups
+    .filter((group) => group.kind === 'elective' && group.shortfall > 0)
+    .map((group) => ({
+      group,
+      candidates: recommended.filter((r) => committed.get(r.code) == null && group.subjects.includes(r.code)),
+    }))
+  // 共通単位は通常の選択区分と別計算なので、共通単位として直接算入される科目だけを専用の候補にする。
+  const termCommonRecommendations = evaluation.commonCredits.shortfall > 0
+    ? recommended.filter((r) => committed.get(r.code) == null && commonOnlyRemaining.includes(r.code))
+    : []
 
   // 取得単位・不可の単位のセクションは、committed（確定済み）を状態別に振り分けるだけでよい
   const passedSubjects = [...committed.entries()].filter(([, status]) => status === 'passed')
@@ -1517,6 +1538,92 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           </ul>
         </section>
       )}
+
+      {/* 学期を選んだときだけ、必修・再履修・不足区分ごとに今学期の候補を示す。 */}
+      <section className="term-recommendation-section">
+        <h2>この学期の修得推奨科目</h2>
+        {termFilter === 'all' ? (
+          <p className="section-guidance">学年・学期を選ぶと、この学期の修得推奨科目を表示します。</p>
+        ) : (
+          <>
+            {/* 必修は学生が選び替えられないため、入れ子にせず最優先としてそのまま並べる。 */}
+            <h3>今学期に優先する必修</h3>
+            {termRequiredRecommendations.length > 0 ? (
+              <ul className="term-recommendation-list">
+                {termRequiredRecommendations.map(({ code }) => (
+                  <li key={code}>
+                    {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>今学期に優先して修得する必修科目はありません。</p>
+            )}
+
+            {/* 再履修専用のクラスが無い不合格科目だけ、通常開講と同じ学期に取り直す候補として示す。 */}
+            {termRetakeRecommendations.length > 0 && (
+              <>
+                <h3>今学期に再履修できる科目</h3>
+                <ul className="term-recommendation-list">
+                  {termRetakeRecommendations.map(({ code }) => (
+                    <li key={code}>
+                      {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* 選択科目は区分ごとに全候補を入れ子へ収め、閉じた状態でも不足と候補数を確認できるようにする。 */}
+            <h3>不足区分ごとの今学期の候補</h3>
+            <ul className="term-recommendation-groups">
+              {termElectiveRecommendations.map(({ group, candidates }) => (
+                <li key={group.id} style={{ listStyleType: 'none' }}>
+                  <details className="nested-subject-group">
+                    <summary>
+                      <span>{group.label ?? group.name}（あと{group.shortfall}単位）</span>
+                      <span className="nested-subject-count">今学期{candidates.length}科目</span>
+                    </summary>
+                    {candidates.length > 0 ? (
+                      <ul>
+                        {candidates.map(({ code }) => (
+                          <li key={code}>
+                            {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="term-recommendation-note">今学期に表示できる候補はありません。以降の学期も含めて履修計画を立ててください。</p>
+                    )}
+                  </details>
+                </li>
+              ))}
+              {evaluation.commonCredits.shortfall > 0 && (
+                <li style={{ listStyleType: 'none' }}>
+                  <details className="nested-subject-group">
+                    <summary>
+                      <span>共通単位（あと{evaluation.commonCredits.shortfall}単位）</span>
+                      <span className="nested-subject-count">今学期{termCommonRecommendations.length}科目</span>
+                    </summary>
+                    <p className="term-recommendation-note">区分の超過分やその他単位認定も共通単位に算入されるため、取得状況も確認してください。</p>
+                    {termCommonRecommendations.length > 0 ? (
+                      <ul>
+                        {termCommonRecommendations.map(({ code }) => (
+                          <li key={code}>
+                            {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="term-recommendation-note">今学期に表示できる共通単位の候補はありません。</p>
+                    )}
+                  </details>
+                </li>
+              )}
+            </ul>
+          </>
+        )}
+      </section>
 
       {/* 上のツールバーの「更新」と同じボタン。プルダウンをたくさん触った後、
           いちいちページ上部まで戻らなくて済むように一番下にも置いておく。
