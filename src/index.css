@@ -238,6 +238,12 @@ select {
   margin-top: 0;
 }
 
+/* 修得済みの単位は、予定・不合格と見分けやすい緑の枠で強調する。 */
+.earned-section {
+  border: 2px solid #429b62;
+  background: color-mix(in srgb, #429b62 4%, Canvas);
+}
+
 /* 修得予定は確定済みの取得単位と区別するため、指定された黄色の枠で囲む。 */
 .planned-section {
   border: 2px solid #d9d900;
@@ -493,6 +499,12 @@ select {
 .status-passed:has(input:checked) {
   color: #0f5d35;
   background: #ddf6e7;
+}
+
+/* 修得予定を選んだラジオボタンも、予定単位と同じ黄色系で示す。 */
+.status-taking:has(input:checked) {
+  color: #6b4a00;
+  background: #fff3cf;
 }
 
 /* 修得予定による増減・見込み達成は、確定済みの数値と混ざらない黄色系で表示する。 */

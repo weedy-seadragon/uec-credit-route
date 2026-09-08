@@ -1028,10 +1028,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       {/* 登録科目数は要件区分の一部ではないため、取得単位の枠の外で先に表示する。 */}
       <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>
-      <section className="requirement-section">
+      <section className="requirement-section earned-section">
         {/* 科目として修得した分だけでなく、科目番号を持たない認定分も取得単位に含める。 */}
         <h2>
-          修得単位数 {earnedTotalCredits}
+          修得した単位 {earnedTotalCredits}
           {plannedCredits > 0 && <span className="planned-credit"> + {plannedCredits}</span>} 単位
         </h2>
         {(() => {
@@ -1112,6 +1112,31 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         )}
       </section>
 
+      {/* 修得予定は確定済みの修得単位と不合格科目の間に置き、現在地と見込みを続けて確認できるようにする。 */}
+      <section className="requirement-section planned-section">
+        <h2>修得予定の単位（{plannedCredits}単位）</h2>
+        <p className="section-guidance">修得予定の科目をすべて修得できた場合、黄色で示した予定単位が各区分・審査の計算に反映されます。</p>
+        {plannedByCategory.map(({ label, group, items }) => (
+          <div key={group?.id ?? label}>
+            <h3>{label}</h3>
+            <ul>
+              {items.map(([code]) => (
+                <li key={code}>
+                  <SubjectRow
+                    name={nameLink(code)}
+                    credits={creditsLabel(code)}
+                    term={yearTermTag(code)}
+                    status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
+                    schedule={dayPeriodTag(code)}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        {plannedSubjects.length === 0 && <p>・（ありません）</p>}
+      </section>
+
       <section className="requirement-section failed-section">
         <h2>不合格になった科目（{failedSubjects.length}科目）</h2>
         <p className="section-guidance">
@@ -1169,31 +1194,6 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           )
         })}
         {failedSubjects.length === 0 && <p>・（ありません）</p>}
-      </section>
-
-      {/* 修得予定は取得済み・未履修と混ぜず、予定の単位と科目をまとめて確認できる黄色枠に置く。 */}
-      <section className="requirement-section planned-section">
-        <h2>修得予定の単位（{plannedCredits}単位）</h2>
-        <p className="section-guidance">修得予定の科目をすべて修得できた場合、黄色で示した予定単位が各区分・審査の計算に反映されます。</p>
-        {plannedByCategory.map(({ label, group, items }) => (
-          <div key={group?.id ?? label}>
-            <h3>{label}</h3>
-            <ul>
-              {items.map(([code]) => (
-                <li key={code}>
-                  <SubjectRow
-                    name={nameLink(code)}
-                    credits={creditsLabel(code)}
-                    term={yearTermTag(code)}
-                    status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
-                    schedule={dayPeriodTag(code)}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-        {plannedSubjects.length === 0 && <p>・（ありません）</p>}
       </section>
 
       <section className="requirement-section">
