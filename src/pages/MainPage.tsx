@@ -1076,6 +1076,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (isBeforeRecommendationTerm(code)) return null
     return dayPeriodTag(code)
   }
+  // 過年度の未修得科目には、曜日時限の代わりに標準開講年次を注記して位置づけを分かりやすくする。
+  function recommendationPastCourseNote(code: string) {
+    if (!isBeforeRecommendationTerm(code)) return null
+    const standardYear = subjectsByCode.get(code)?.standardYear
+    if (standardYear == null) return null
+    return <span style={{ marginLeft: '0.4em', fontSize: '0.9em' }}>※{standardYear}年次開講科目</span>
+  }
   // 同じ類に属する他プログラムの専門科目かどうか（他類の科目は原則自由科目）
   function isOtherProgram(code: string): boolean {
     return isSameClusterOtherProgramSubject(code, requirementSet?.programSuffix, profile.cluster)
@@ -1599,7 +1606,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 <ul className="term-recommendation-list">
                   {termRequiredRecommendations.map(({ code }) => (
                     <li key={code}>
-                      {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}
+                      {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
                     </li>
                   ))}
                 </ul>
@@ -1613,7 +1620,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 <ul className="term-recommendation-list">
                   {termRetakeRecommendations.map(({ code }) => (
                     <li key={code}>
-                      {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}
+                      {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
                     </li>
                   ))}
                 </ul>
@@ -1636,7 +1643,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                           <ul>
                             {candidates.map(({ code }) => (
                               <li key={code}>
-                                {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}
+                                {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
                               </li>
                             ))}
                           </ul>
@@ -1658,7 +1665,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                           <ul>
                             {termCommonRecommendations.map(({ code }) => (
                               <li key={code}>
-                                {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}
+                                {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
                               </li>
                             ))}
                           </ul>
