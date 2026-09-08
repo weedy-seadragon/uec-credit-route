@@ -834,6 +834,25 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </a>
     )
   }
+  // 修得推奨で選んだ学期より前に標準開講された科目かを判定する。
+  // 過年度の未修得科目は、当時のクラス・時限が現在の履修条件とは限らないため、表示を分ける。
+  function isBeforeRecommendationTerm(code: string): boolean {
+    if (recommendationTermFilter === 'all') return false
+    const subject = subjectsByCode.get(code)
+    if (subject?.standardYear == null) return false
+    const selectedTermOrder = recommendationTermFilter.year * 2
+      + (recommendationTermFilter.half === '前学期' ? 0 : 1)
+    const subjectTermOrder = subject.standardYear * 2
+      + (subject.termType === '後学期' ? 1 : 0)
+    return subjectTermOrder < selectedTermOrder
+  }
+  // 過年度の未修得科目は、現在のシラバスを直接開かず、要件と開講候補を確認できる科目説明へ案内する。
+  function recommendationNameLink(code: string): ReactNode {
+    if (isBeforeRecommendationTerm(code)) {
+      return <Link to={`/courses/${code}?year=${profile.entryYear}`}>{nameOf(code)}</Link>
+    }
+    return nameLink(code)
+  }
   function creditsOf(code: string): number | undefined {
     return subjectsByCode.get(code)?.credits
   }
@@ -1050,6 +1069,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {noteSuffix}
       </span>
     )
+  }
+  // 修得推奨では、選択した学期より前の標準開講科目は曜日時限に縛られないため、時限を添えない。
+  // 同じ年の前学期から後学期へ進んだ場合も、既に終わった前学期として扱う。
+  function recommendationDayPeriodTag(code: string) {
+    if (isBeforeRecommendationTerm(code)) return null
+    return dayPeriodTag(code)
   }
   // 同じ類に属する他プログラムの専門科目かどうか（他類の科目は原則自由科目）
   function isOtherProgram(code: string): boolean {
@@ -1574,7 +1599,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 <ul className="term-recommendation-list">
                   {termRequiredRecommendations.map(({ code }) => (
                     <li key={code}>
-                      {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
+                      {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}
                     </li>
                   ))}
                 </ul>
@@ -1588,7 +1613,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 <ul className="term-recommendation-list">
                   {termRetakeRecommendations.map(({ code }) => (
                     <li key={code}>
-                      {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
+                      {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}
                     </li>
                   ))}
                 </ul>
@@ -1611,7 +1636,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                           <ul>
                             {candidates.map(({ code }) => (
                               <li key={code}>
-                                {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
+                                {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}
                               </li>
                             ))}
                           </ul>
@@ -1633,7 +1658,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                           <ul>
                             {termCommonRecommendations.map(({ code }) => (
                               <li key={code}>
-                                {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
+                                {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}
                               </li>
                             ))}
                           </ul>
