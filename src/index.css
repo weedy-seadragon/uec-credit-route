@@ -42,6 +42,12 @@ nav a {
   white-space: nowrap;
 }
 
+/* 機能変更と見た目の変更を、各バージョンの中でも見分けられる小見出しにする。 */
+.release-note-category {
+  margin: 0.9rem 0 0.25rem;
+  font-size: 1rem;
+}
+
 /* 更新内容の各行を少し離し、複数の修正点を追いやすくする。 */
 .release-note-items {
   margin-top: 0;
