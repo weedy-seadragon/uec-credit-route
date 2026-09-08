@@ -507,7 +507,8 @@ select {
 /* 詳細を開かず表示する審査条件は、審査名の直下で少しだけ下げて読み分けられるようにする。 */
 .review-conditions-inline {
   margin: 0.35rem 0 0.25rem 1.25rem;
-  padding-left: 1.1rem;
+  padding-left: 0.8rem;
+  border-left: 3px solid #88a5dc;
 }
 
 /* 審査条件の補足は、折りたたみ内外で同じ小さめの見た目にそろえる。 */
