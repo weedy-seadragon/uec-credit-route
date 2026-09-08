@@ -851,10 +851,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       {/* 登録科目数は要件区分の一部ではないため、取得単位の枠の外で先に表示する。 */}
       <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>
       <section className="requirement-section">
-        <h2>取得単位（{passedCredits}単位）</h2>
+        {/* 科目として修得した分だけでなく、科目番号を持たない認定分も取得単位に含める。 */}
+        <h2>取得単位（{earnedTotalCredits}単位）</h2>
         {(() => {
-        // 共通単位が0のときは空の見出しを出さない。取得科目もない場合は下の「まだありません」だけを表示する。
-        const commonCreditsElement = passedCredits > 0 && commonEarnedTotal > 0 ? (
+        // 共通単位が0のときは空の見出しを出さない。その他単位認定だけを取得した場合も内訳を表示する。
+        const commonCreditsElement = (passedCredits > 0 || otherCommonCommitted > 0) && commonEarnedTotal > 0 ? (
           <div key="common-credits">
             {/* 「取得した単位」（countAsCommonの区分・alwaysCommonSubjectsの修得済み科目）は、
                 それぞれ自分の区分（理数基礎（選択）など）や「選択科目」の共通単位の入れ子で
@@ -866,7 +867,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                   {g.label ?? g.name}から{g.overflowToCommon}単位
                 </li>
               ))}
-              {overflowToCommonGroups.length === 0 && <li>（まだありません）</li>}
+              {/* 科目に紐付かない認定分は他の一覧に現れないため、共通単位の内訳としてここに明示する。 */}
+              {otherCommonCommitted > 0 && <li>その他単位認定として{otherCommonCommitted}単位</li>}
+              {overflowToCommonGroups.length === 0 && otherCommonCommitted === 0 && <li>（まだありません）</li>}
             </ul>
           </div>
         ) : null
@@ -913,7 +916,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         })
         return hasMajorSel ? rendered : [...rendered, commonCreditsElement]
         })()}
-        {passedSubjects.length === 0 && (
+        {/* その他単位認定だけを登録したときは、上の共通単位の内訳を「まだありません」で打ち消さない。 */}
+        {passedSubjects.length === 0 && otherCommonCommitted === 0 && (
           <ul>
             <li>（まだありません）</li>
           </ul>
