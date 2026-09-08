@@ -8,8 +8,8 @@
 // - 科目ごとの状態変更は、要覧のスケッチにある「履修予定チェック」ではなく、
 //   すべての一覧で共通の「未履修/修得/修得予定/不合格」ラジオボタンに統一している
 //   （取得単位への追加も、この操作を通じて行う。ファイルからの読み込み等はフェーズ2-5で対応）
-// - 修得予定は将来の単位見込みを表すだけで、実際に履修中かを管理する状態ではないため、busySlots（同時限警告）は
-//   常に空のまま。先修科目（prerequisites）は2026-09-06にprerequisites.ts経由で配線した
+// - 修得予定は将来の単位見込みを表す状態で、更新時には確定できる曜日時限の重複だけを注意表示する。
+//   先修科目（prerequisites）は2026-09-06にprerequisites.ts経由で配線した
 import { useMemo, useRef, useState } from 'react'
 import type { ChangeEvent, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
@@ -24,12 +24,22 @@ import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/
 import { getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { TransferBucketItem } from '../data/requirementSets'
 import { resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
+import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
+import type { PlannedCourseSchedule } from '../domain/scheduleConflicts'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
 import type { ReviewCondition } from '../domain/requirements'
 import type { Profile } from '../storage/profile'
 import { loadProfile } from '../storage/profile'
 import { loadRecords, saveRecords } from '../storage/records'
+import { loadRetakingPlanCodes, saveRetakingPlanCodes } from '../storage/retakingPlans'
 import { loadOtherCommonCredits, loadOtherCommonSubjectCount, saveOtherCommonCredits, saveOtherCommonSubjectCount } from '../storage/otherCommonCredits'
+import {
+  loadOtherClusterMajorCredits,
+  loadOtherClusterMajorSubjectCount,
+  saveOtherClusterMajorCredits,
+  saveOtherClusterMajorSubjectCount,
+} from '../storage/otherClusterMajorCredits'
+import { isSameClusterOtherProgramSubject } from '../domain/programSuffix'
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
 
 /** プロフィールのうち、要件セットを引くのに必要な項目が揃っている状態（夜間主はcluster: null） */
@@ -48,18 +58,6 @@ const TERM_OPTIONS: { key: string; label: string; filter: TermFilter }[] = [
     })),
   ),
 ]
-
-/**
- * 科目コードが「自分のプログラムではなく、他プログラムの専門科目」かどうかを判定する。
- * 学修要覧 付録C 注1「他プログラムの専門科目も選択として履修できる」に対応する表示のために使う。
- * 末尾が英字a〜（プログラムごとの記号）で、かつ自分のプログラムの記号と違う場合だけ該当とする。
- * 末尾が"z"（共通科目扱い）や、programSuffixが無い（末尾記号を持たないプログラム）場合は該当しない。
- */
-function isOtherProgramSubject(code: string, ownSuffix: string | undefined): boolean {
-  if (!ownSuffix) return false
-  const lastChar = code.slice(-1)
-  return /^[a-y]$/.test(lastChar) && lastChar !== ownSuffix
-}
 
 /** 判定境界になっているグループ（＝required/contribution/shortfallを持つグループ）だけを木から集める */
 interface BoundaryGroup {
@@ -198,20 +196,21 @@ function CollapsedSubjectGroup<T>({
   items,
   codeOf,
   renderRow,
-  pageStyle = false,
+  footer,
 }: {
   title: string
   items: readonly T[]
   codeOf: (item: T) => string
   renderRow: (item: T) => ReactNode
-  /** true のときは、選択科目の内訳で使う「本のページ」風の開閉見出しにする */
-  pageStyle?: boolean
+  /** 科目一覧の下に置く補足操作。認定単位のように科目が無くても見せる内容に使う。 */
+  footer?: ReactNode
 }) {
-  if (items.length === 0) return null
+  // 科目が無くても、認定単位の入力欄のような補足があれば入れ子自体は表示する。
+  if (items.length === 0 && !footer) return null
   return (
     // 折りたたみ自体の▼と中の科目の・が並ぶと紛らわしいので、この<li>自体には・を付けない
     <li style={{ listStyleType: 'none' }}>
-      <details className={pageStyle ? 'nested-subject-group' : undefined}>
+      <details className="nested-subject-group">
         <summary>
           <span>{title}</span>
           <span className="nested-subject-count">{items.length}科目</span>
@@ -220,6 +219,7 @@ function CollapsedSubjectGroup<T>({
           {items.map((item) => (
             <li key={codeOf(item)}>{renderRow(item)}</li>
           ))}
+          {footer}
         </ul>
       </details>
     </li>
@@ -338,9 +338,19 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // その他単位認定は科目コードを持たないため、登録科目数に加える件数を単位数と別に持つ。
   const [otherCommonSubjectCountCommitted, setOtherCommonSubjectCountCommitted] = useState<number>(() => loadOtherCommonSubjectCount())
   const [otherCommonSubjectCountDraft, setOtherCommonSubjectCountDraft] = useState<number>(otherCommonSubjectCountCommitted)
+  // 他類専門科目は原則自由科目だが、学務に認定された分だけは類専門（選択）へ算入できる。
+  // この認定は履修予定ではなく確定した扱いだけを持つため、他の単位入力と同様に更新時に反映する。
+  const [otherClusterMajorCreditsCommitted, setOtherClusterMajorCreditsCommitted] = useState<number>(() => loadOtherClusterMajorCredits())
+  const [otherClusterMajorCreditsDraft, setOtherClusterMajorCreditsDraft] = useState<number>(otherClusterMajorCreditsCommitted)
+  const [otherClusterMajorSubjectCountCommitted, setOtherClusterMajorSubjectCountCommitted] = useState<number>(() => loadOtherClusterMajorSubjectCount())
+  const [otherClusterMajorSubjectCountDraft, setOtherClusterMajorSubjectCountDraft] = useState<number>(otherClusterMajorSubjectCountCommitted)
+  // 不合格から修得予定へ変えた科目だけを覚え、再履用の曜日時限があれば重複判定に使う。
+  const [retakingPlanCodes, setRetakingPlanCodes] = useState<ReadonlySet<string>>(() => loadRetakingPlanCodes())
   const [termKey, setTermKey] = useState('all')
   // ダウンロード・読み込みの結果を一言表示するためのメッセージ（F-8）
   const [dataMessage, setDataMessage] = useState<string | null>(null)
+  // 更新時に見つかった時限重複は、保存完了後も見落とさないよう操作バー直下に残す。
+  const [scheduleWarning, setScheduleWarning] = useState<string | null>(null)
   // 「単位取得状況をファイルから読み込む」ボタンから、見えない<input type="file">を操作するための参照
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -384,7 +394,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
   // 充足状況の本体計算はrequirements.tsに丸ごと任せる。ここから先はその結果を並べるだけ
   const evaluation = evaluateRequirements(
-    requirementSet, committed, subjectCredits, commonCreditsWithTransferBucket, transferBucketPlannedCreditsSum,
+    requirementSet,
+    committed,
+    subjectCredits,
+    commonCreditsWithTransferBucket,
+    transferBucketPlannedCreditsSum,
+    new Map([['major-sel', otherClusterMajorCreditsCommitted]]),
   )
   const boundaryGroups = collectBoundaryGroups(requirementSet.groups, evaluation.groups)
   // 審査（2年次終了時審査など）。reviewsデータが無いプログラムでは空配列になる（現在は全16課程にreviewsがある）。
@@ -403,6 +418,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const commonOnlySubjects = commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) === 'passed'))
   const alwaysCommonPassed = (requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) === 'passed')
   const directCommonSubjects = [...commonOnlySubjects, ...alwaysCommonPassed]
+  const directCommonCodes = new Set(directCommonSubjects)
   // 見出しの「n/N単位」は、必要単位で頭打ちにせず実際に発生している共通単位候補の合計を出す
   // （取得単位のカテゴリ見出しと同じ考え方。上限は下の一覧の外の「合計」側で別途わかる）
   const commonOverflowTotal = overflowToCommonGroups.reduce((sum, g) => sum + g.overflowToCommon, 0)
@@ -457,9 +473,15 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 審査用の総単位（evaluation.totalCredits）は卒業所要単位に算入される分だけなので、別に表示する。
   const earnedTotalCredits = passedCredits + otherCommonCommitted
   // Mapは科目コードをキーにするため、修得→不合格→再履修のような同一科目の履歴でも1科目として数えられる。
-  const registeredSubjectCount = passedSubjects.length + failedSubjects.length + otherCommonSubjectCountCommitted
+  const registeredSubjectCount = passedSubjects.length + failedSubjects.length + otherCommonSubjectCountCommitted + otherClusterMajorSubjectCountCommitted
   // 「取得単位」「残りの必修」は区分ごとの見出しを付けて表示する（例:「理数基礎（必修）」「類専門（必修）」）
-  const passedByCategory = groupByCategory(passedSubjects, ([code]) => code, categoryLookup, boundaryGroups)
+  // countAs: common の科目は「理数基礎」ではなく共通単位の内訳へ出すため、通常区分には混ぜない。
+  const passedByCategory = groupByCategory(
+    passedSubjects.filter(([code]) => !directCommonCodes.has(code)),
+    ([code]) => code,
+    categoryLookup,
+    boundaryGroups,
+  )
   const plannedByCategory = groupByCategory(plannedSubjects, ([code]) => code, categoryLookup, boundaryGroups)
   const remainingRequiredByCategory = groupByCategory(remainingRequired, (r) => r.code, categoryLookup, boundaryGroups)
   // 不合格科目も、修得済み・残りの必修と同じ要件区分でまとめる。
@@ -468,22 +490,75 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
   // プルダウンで状態を変えたとき：draftだけを更新する（committedはまだ変えない）
   function handleDraftChange(code: string, status: SubjectStatus | undefined) {
+    const previousStatus = draft.get(code)
     setDraft((prev) => {
       const next = new Map(prev)
       if (status === undefined) next.delete(code) // 「未履修」に戻す＝記録を消す
       else next.set(code, status)
       return next
     })
+    // 不合格から修得予定へ直接変えたときだけ、再履修予定として記録する。
+    // 修得・未履修・不合格へ変えた場合は、予定ではなくなるため記録を外す。
+    setRetakingPlanCodes((prev) => {
+      const next = new Set(prev)
+      if (status === 'taking' && previousStatus === 'failed') next.add(code)
+      else if (status !== 'taking') next.delete(code)
+      return next
+    })
+  }
+
+  /** 修得予定の中から、プロフィールに基づいて曜日時限を比較できる開講候補だけを組み立てる。 */
+  function plannedCourseSchedules(
+    records: ReadonlyMap<string, SubjectStatus>,
+    plannedRetakingCodes: ReadonlySet<string>,
+  ): PlannedCourseSchedule[] {
+    const schedules: PlannedCourseSchedule[] = []
+    // 修得予定の各科目について、通常履修または再履修用として選べる開講セクションを解決する。
+    for (const [code, status] of records) {
+      if (status !== 'taking') continue
+      const subject = subjectsByCode.get(code)
+      const offerings = subject?.offerings
+      if (!offerings || offerings.length === 0) continue
+      const isRetaking = plannedRetakingCodes.has(code)
+      // 再履修予定は、再履用のセクションが見つかる場合だけその時限を使う。
+      // 見つからない再履修は自由な時間に取れる前提として、警告対象から外す。
+      const candidates = isRetaking
+        ? resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, true, subject.termType)
+        : offerings.length === 1
+          ? offerings
+          : resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, false, subject.termType)
+      // クラスを絞れない・オンデマンドでslotsが無い科目は、誤警告を避けるため比較しない。
+      const options = (candidates ?? [])
+        .filter((offering) => offering.slots.length > 0)
+        .map((offering) => ({ term: offering.term, slots: offering.slots }))
+      if (options.length > 0) schedules.push({ code, options })
+    }
+    return schedules
   }
 
   // 「更新」ボタンを押したとき：draftの内容をcommittedへ反映し、localStorageにも保存する
   function handleUpdate() {
+    const nextRetakingPlanCodes = new Set([...retakingPlanCodes].filter((code) => draft.get(code) === 'taking'))
+    const conflicts = findUnavoidableScheduleConflicts(plannedCourseSchedules(draft, nextRetakingPlanCodes))
+    // 重複が確定した科目名の組を利用者へ示す。候補が1つでも空いている科目はここに含まれない。
+    if (conflicts.length > 0) {
+      const pairs = conflicts.map(({ firstCode, secondCode }) => `${nameOf(firstCode)}・${nameOf(secondCode)}`)
+      setScheduleWarning(`時限が重複している修得予定の科目があります：${pairs.join('／')}`)
+    } else {
+      setScheduleWarning(null)
+    }
     setCommitted(draft)
     saveRecords(draft)
+    setRetakingPlanCodes(nextRetakingPlanCodes)
+    saveRetakingPlanCodes(nextRetakingPlanCodes)
     setOtherCommonCommitted(otherCommonDraft)
     saveOtherCommonCredits(otherCommonDraft)
     setOtherCommonSubjectCountCommitted(otherCommonSubjectCountDraft)
     saveOtherCommonSubjectCount(otherCommonSubjectCountDraft)
+    setOtherClusterMajorCreditsCommitted(otherClusterMajorCreditsDraft)
+    saveOtherClusterMajorCredits(otherClusterMajorCreditsDraft)
+    setOtherClusterMajorSubjectCountCommitted(otherClusterMajorSubjectCountDraft)
+    saveOtherClusterMajorSubjectCount(otherClusterMajorSubjectCountDraft)
   }
 
   // 「ダウンロード」ボタンを押したとき：今の記録を本サイト形式JSON（§7.4）としてファイルに書き出す
@@ -494,8 +569,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       profile,
       records: [...committed.entries()].map(([code, status]) => ({ code, name: nameOf(code), status })),
       planned: [],
+      retakingPlanCodes: [...retakingPlanCodes],
       otherCommonCredits: otherCommonCommitted,
       otherCommonSubjectCount: otherCommonSubjectCountCommitted,
+      otherClusterMajorCredits: otherClusterMajorCreditsCommitted,
+      otherClusterMajorSubjectCount: otherClusterMajorSubjectCountCommitted,
     }
 
     // ブラウザにファイルをダウンロードさせる標準的な方法：
@@ -521,9 +599,17 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       const json: unknown = JSON.parse(await file.text())
       const imported = parseOwnFormat(json)
       const { merged, added, updated } = mergeRecords(committed, imported.records)
+      // ファイル側の再履修予定を優先しつつ、今回の読み込みで不合格→修得予定になった科目も再履修予定にする。
+      const nextRetakingPlanCodes = new Set(retakingPlanCodes)
+      for (const record of imported.records) {
+        if (record.status !== 'taking') nextRetakingPlanCodes.delete(record.code)
+        else if (imported.retakingPlanCodes?.includes(record.code) || committed.get(record.code) === 'failed') nextRetakingPlanCodes.add(record.code)
+      }
       setCommitted(merged)
       setDraft(merged) // 編集中の内容も、読み込んだ内容に合わせておく
       saveRecords(merged)
+      setRetakingPlanCodes(nextRetakingPlanCodes)
+      saveRetakingPlanCodes(nextRetakingPlanCodes)
       // その他単位認定は科目コードを持たない単一の数値なので、records のような
       // 追加・更新の概念が無い。ファイルに記載があればその値でそのまま置き換える
       // （古いschemaVersion 1のファイルなど、記載が無ければ今の値を変えない）
@@ -538,6 +624,17 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         setOtherCommonSubjectCountDraft(imported.otherCommonSubjectCount)
         saveOtherCommonSubjectCount(imported.otherCommonSubjectCount)
       }
+      // 他類専門科目の認定単位も、ファイルにあれば現在の値をそのまま復元する。
+      if (imported.otherClusterMajorCredits !== undefined) {
+        setOtherClusterMajorCreditsCommitted(imported.otherClusterMajorCredits)
+        setOtherClusterMajorCreditsDraft(imported.otherClusterMajorCredits)
+        saveOtherClusterMajorCredits(imported.otherClusterMajorCredits)
+      }
+      if (imported.otherClusterMajorSubjectCount !== undefined) {
+        setOtherClusterMajorSubjectCountCommitted(imported.otherClusterMajorSubjectCount)
+        setOtherClusterMajorSubjectCountDraft(imported.otherClusterMajorSubjectCount)
+        saveOtherClusterMajorSubjectCount(imported.otherClusterMajorSubjectCount)
+      }
       setDataMessage(`${added}件追加、${updated}件更新しました。`)
     } catch (err) {
       setDataMessage(`読み込みに失敗しました: ${err instanceof Error ? err.message : String(err)}`)
@@ -551,12 +648,21 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     setCommitted(empty)
     setDraft(empty)
     saveRecords(empty)
+    const noRetakingPlans = new Set<string>()
+    setRetakingPlanCodes(noRetakingPlans)
+    saveRetakingPlanCodes(noRetakingPlans)
     setOtherCommonCommitted(0)
     setOtherCommonDraft(0)
     saveOtherCommonCredits(0)
     setOtherCommonSubjectCountCommitted(0)
     setOtherCommonSubjectCountDraft(0)
     saveOtherCommonSubjectCount(0)
+    setOtherClusterMajorCreditsCommitted(0)
+    setOtherClusterMajorCreditsDraft(0)
+    saveOtherClusterMajorCredits(0)
+    setOtherClusterMajorSubjectCountCommitted(0)
+    setOtherClusterMajorSubjectCountDraft(0)
+    saveOtherClusterMajorSubjectCount(0)
     setDataMessage('すべての記録を未履修に戻しました。')
   }
 
@@ -766,8 +872,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // （開発者指示、2026-09-06。当初は集中講義を一律非表示にしていたが、政治学Ａ・
   // 生涯スポーツ演習Ｃ/Ｄのように「夏期集中」「冬期集中」であることが分かっている科目は
   // 「オンデマンド」ではなくその文言を出したほうが正確、という指摘を受けて追加）。
-  // offeringsが1件も無い（＝シラバスで名前が一致せずデータ自体が無い）科目は、本当に
-  // 時間割が無いのか単なるデータ欠落なのか区別できないため、従来通り何も表示しない
+  // offeringsが1件も無い科目は、今年度に開講が無い場合と取得漏れを画面上で区別できない。
+  // 「未登録」という表示は利用者の操作に役立たないため、確定した開講なし注記以外は何も出さない。
   function dayPeriodTag(code: string) {
     const subject = subjectsByCode.get(code)
     const offerings = subject?.offerings
@@ -782,7 +888,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       if (profile.cluster === 'III') return profile.classIIIYear2Class == null || profile.classIIIYear2Area == null
       return false
     }
-    if (!offerings || offerings.length === 0) return unavailable('開講情報が未登録です')
+    if (!offerings || offerings.length === 0) {
+      // 公式一覧で当年度の不開講が確認できた科目だけは、履修予定に入れないよう理由を明記する。
+      if (subject?.note?.includes('2026年度開講なし')) {
+        return <span className="schedule-unavailable">（2026年度開講なし）</span>
+      }
+      return null
+    }
     // 輪講・卒業研究は研究室ごとに実施形態が異なり、時間割として一律に示せない。
     // slotsが空でも「オンデマンド」と推測せず、曜日時限の注記自体を表示しない。
     if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return unavailable('研究室ごとに実施形態が異なります')
@@ -835,16 +947,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </span>
     )
   }
-  // 他プログラムの専門科目かどうか
+  // 同じ類に属する他プログラムの専門科目かどうか（他類の科目は原則自由科目）
   function isOtherProgram(code: string): boolean {
-    return isOtherProgramSubject(code, requirementSet?.programSuffix)
+    return isSameClusterOtherProgramSubject(code, requirementSet?.programSuffix, profile.cluster)
   }
   // 外国人留学生しか履修できない科目かどうか
   function isInternational(code: string): boolean {
     return subjectsByCode.get(code)?.forInternational ?? false
   }
   /**
-   * 一覧の項目を、①通常の科目・②他プログラムの専門科目・③留学生のみ履修できる科目、の3つに分ける。
+   * 一覧の項目を、①通常の科目・②同じ類の他プログラム専門科目・③留学生のみ履修できる科目、の3つに分ける。
    * ②③は「留学生のみ履修可」と同じ形の折りたたみにまとめて出す（普通の科目一覧を長くしすぎないため）。
    * 両方に該当する科目は、より限定的な③（留学生のみ）の方にまとめる。
    */
@@ -917,24 +1029,30 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         />
         {dataMessage && <p role="status">{dataMessage}</p>}
       </div>
+      {/* 更新時に確定した時限重複だけを、次の操作前に見直せる注意として表示する。 */}
+      {scheduleWarning && <p className="schedule-conflict-warning" role="alert">{scheduleWarning}</p>}
 
       {/* 登録科目数は要件区分の一部ではないため、取得単位の枠の外で先に表示する。 */}
       <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>
-      <section className="requirement-section">
+      <section className="requirement-section earned-section">
         {/* 科目として修得した分だけでなく、科目番号を持たない認定分も取得単位に含める。 */}
         <h2>
-          修得単位数 {earnedTotalCredits}
+          修得した単位 {earnedTotalCredits}
           {plannedCredits > 0 && <span className="planned-credit"> + {plannedCredits}</span>} 単位
         </h2>
         {(() => {
         // 共通単位が0のときは空の見出しを出さない。その他単位認定だけを取得した場合も内訳を表示する。
         const commonCreditsElement = (passedCredits > 0 || otherCommonCommitted > 0) && commonEarnedTotal > 0 ? (
           <div key="common-credits">
-            {/* 「取得した単位」（countAsCommonの区分・alwaysCommonSubjectsの修得済み科目）は、
-                それぞれ自分の区分（理数基礎（選択）など）や「選択科目」の共通単位の入れ子で
-                既に一覧できるので、ここでは二重に出さない。あぶれ分（他区分の超過分）だけを出す */}
+            {/* 共通単位になった根拠をすべて出す。理数基礎（選択）のように最初から共通単位になる
+                科目もここに並べることで、「なぜ共通単位なのか」を科目名まで追えるようにする。 */}
             <h3>共通単位（{commonEarnedTotal}/{requirementSet.commonCredits}単位）</h3>
             <ul>
+              {directCommonSubjects.map((code) => (
+                <li key={code}>
+                  {nameOf(code)}として{subjectsByCode.get(code)?.credits ?? 0}単位
+                </li>
+              ))}
               {overflowToCommonGroups.map((g) => (
                 <li key={g.id}>
                   {g.label ?? g.name}から{g.overflowToCommon}単位
@@ -942,7 +1060,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               ))}
               {/* 科目に紐付かない認定分は他の一覧に現れないため、共通単位の内訳としてここに明示する。 */}
               {otherCommonCommitted > 0 && <li>その他単位認定として{otherCommonCommitted}単位</li>}
-              {overflowToCommonGroups.length === 0 && otherCommonCommitted === 0 && <li>（まだありません）</li>}
+              {[...clusterTransferBucket, ...programTransferBucket].filter((item) => committed.get(item.code) === 'passed').map((item) => (
+                <li key={item.code}>{item.name}として{item.credits}単位</li>
+              ))}
+              {directCommonSubjects.length === 0 && overflowToCommonGroups.length === 0 && otherCommonCommitted === 0 && transferBucketCreditsSum === 0 && <li>（まだありません）</li>}
             </ul>
           </div>
         ) : null
@@ -953,7 +1074,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           // 履修記録を付けた順ではなく、その区分の科目定義順に並べる。
           const sortedItems = group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
             ? sortByGroupSubjectOrder(items, ([code]) => code, group.subjects)
-            : sortByYearTerm(items, ([code]) => code, standardYearOf, termTypeOf)
+            : sortByYearTermWithJapaneseCultureOrder(items, ([code]) => code, standardYearOf, termTypeOf, nameOf)
           const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, ([code]) => code)
           const row = (code: string) => (
             <SubjectRow
@@ -995,6 +1116,31 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <li>（まだありません）</li>
           </ul>
         )}
+      </section>
+
+      {/* 修得予定は確定済みの修得単位と不合格科目の間に置き、現在地と見込みを続けて確認できるようにする。 */}
+      <section className="requirement-section planned-section">
+        <h2>修得予定の単位（{plannedCredits}単位）</h2>
+        <p className="section-guidance">修得予定の科目をすべて修得できた場合、黄色で示した予定単位が各区分・審査の計算に反映されます。</p>
+        {plannedByCategory.map(({ label, group, items }) => (
+          <div key={group?.id ?? label}>
+            <h3>{label}</h3>
+            <ul>
+              {items.map(([code]) => (
+                <li key={code}>
+                  <SubjectRow
+                    name={nameLink(code)}
+                    credits={creditsLabel(code)}
+                    term={yearTermTag(code)}
+                    status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
+                    schedule={dayPeriodTag(code)}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        {plannedSubjects.length === 0 && <p>・（ありません）</p>}
       </section>
 
       <section className="requirement-section failed-section">
@@ -1056,31 +1202,6 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {failedSubjects.length === 0 && <p>・（ありません）</p>}
       </section>
 
-      {/* 修得予定は取得済み・未履修と混ぜず、予定の単位と科目をまとめて確認できる黄色枠に置く。 */}
-      <section className="requirement-section planned-section">
-        <h2>修得予定の単位（{plannedCredits}単位）</h2>
-        <p className="section-guidance">修得予定の科目をすべて修得できた場合、黄色で示した予定単位が各区分・審査の計算に反映されます。</p>
-        {plannedByCategory.map(({ label, group, items }) => (
-          <div key={group?.id ?? label}>
-            <h3>{label}</h3>
-            <ul>
-              {items.map(([code]) => (
-                <li key={code}>
-                  <SubjectRow
-                    name={nameLink(code)}
-                    credits={creditsLabel(code)}
-                    term={yearTermTag(code)}
-                    status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
-                    schedule={dayPeriodTag(code)}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-        {plannedSubjects.length === 0 && <p>・（ありません）</p>}
-      </section>
-
       <section className="requirement-section">
         <h2>
           残りの必修（あと {requiredShortfall(boundaryGroups)}
@@ -1095,7 +1216,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           // 標準年次・学期順（早い順）に並べる。
           const sortedItems = group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
             ? sortByGroupSubjectOrder(items, (item) => item.code, group.subjects)
-            : sortByYearTerm(items, (item) => item.code, standardYearOf, termTypeOf)
+            : sortByYearTermWithJapaneseCultureOrder(items, (item) => item.code, standardYearOf, termTypeOf, nameOf)
           const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, (r) => r.code)
           const row = (code: string) => (
             <SubjectRow
@@ -1175,7 +1296,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           区分ごとに表示される不足単位まで、この一覧から科目を選んで修得してください。必修の不合格科目は、この一覧ではなく上の「不合格になった科目」を確認します。
         </p>
         <p className="section-guidance">
-          ※ 他プログラムの専門科目（各区分の中の「他プログラム専門科目」にまとめているもの）を履修した場合も、専門科目の単位として扱われます（学修要覧より）。
+          ※ 同じ類の他プログラム専門科目（各区分の中の「他プログラム専門科目」にまとめているもの）は、専門科目の単位として扱われます。他類の専門科目は原則自由科目で、個別認定がある場合だけ「他類専門科目の専門科目認定」で入力してください。
         </p>
         {/* ここに出すのは「選択」「選択必修」の区分だけ（必修は上の「残りの必修」で扱う。自由・国際は対象外）。
             必要単位が0のグループ（そのプログラムでは使わない区分）も出す意味が無いので除く。
@@ -1268,6 +1389,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 isOtherProgram={isOtherProgram}
                 isInternational={isInternational}
                 isVisibleForTerm={isVisibleForTermFilter}
+                otherClusterMajorCredits={otherClusterMajorCreditsDraft}
+                onOtherClusterMajorCreditsChange={setOtherClusterMajorCreditsDraft}
+                otherClusterMajorSubjectCount={otherClusterMajorSubjectCountDraft}
+                onOtherClusterMajorSubjectCountChange={setOtherClusterMajorSubjectCountDraft}
               />
             )
             return g.id === 'major-sel' ? [groupElement, commonCreditsElement] : [groupElement]
@@ -1378,6 +1503,27 @@ function sortByYearTerm<T>(items: readonly T[], codeOf: (item: T) => string, sta
 }
 
 /**
+ * 基本は標準年次・学期順のままにし、日本文化Ａ〜Ｅだけは科目名末尾の英字順に並べる。
+ * 日本文化は開講学期が入り混じるため、Ａ・Ｂ・Ｃ・Ｄ・Ｅの系列として続けて読める方が分かりやすい。
+ */
+function sortByYearTermWithJapaneseCultureOrder<T>(items: readonly T[], codeOf: (item: T) => string, standardYearOf: (code: string) => number | null, termTypeOf: (code: string) => string | null, nameOf: (code: string) => string): T[] {
+  // 先に通常の学年学期順へ並べ、日本文化の位置だけをＡ〜Ｅに入れ替える。
+  // こうすると、同じ区分にある他の科目の位置は変えずに済む。
+  const yearTermSorted = sortByYearTerm(items, codeOf, standardYearOf, termTypeOf)
+  const japaneseCultureSorted = yearTermSorted
+    .filter((item) => /^日本文化[Ａ-Ｅ]$/.test(nameOf(codeOf(item))))
+    .sort((a, b) => nameOf(codeOf(a)).localeCompare(nameOf(codeOf(b)), 'ja'))
+  let japaneseCultureIndex = 0
+  // 日本文化以外は元の項目を返し、日本文化だけを文字列順の次の項目へ差し替える。
+  return yearTermSorted.map((item) => {
+    if (!/^日本文化[Ａ-Ｅ]$/.test(nameOf(codeOf(item)))) return item
+    const sortedItem = japaneseCultureSorted[japaneseCultureIndex]
+    japaneseCultureIndex += 1
+    return sortedItem
+  })
+}
+
+/**
  * 第二外国語など、年次・学期順ではなく要件データに書かれた順を保ちたい科目を並べる。
  * 修得記録を付けた順ではなく、例えば「ドイツ語第一→ドイツ語第二」の順に表示するために使う。
  */
@@ -1407,6 +1553,10 @@ function GroupProgress({
   isOtherProgram,
   isInternational,
   isVisibleForTerm,
+  otherClusterMajorCredits,
+  onOtherClusterMajorCreditsChange,
+  otherClusterMajorSubjectCount,
+  onOtherClusterMajorSubjectCountChange,
 }: {
   group: BoundaryGroup
   committed: ReadonlyMap<string, SubjectStatus>
@@ -1425,6 +1575,14 @@ function GroupProgress({
   isInternational: (code: string) => boolean
   /** 表示フィルタ（学期）で、この科目を一覧に出すかどうか（MainPage.tsxのisVisibleForTermFilter） */
   isVisibleForTerm: (code: string) => boolean
+  /** 学務に認定された他類専門科目の単位数（類専門（選択）にだけ算入する） */
+  otherClusterMajorCredits: number
+  /** 他類専門科目の認定単位を下書き状態へ反映する */
+  onOtherClusterMajorCreditsChange: (value: number) => void
+  /** 他類専門科目認定として登録する科目数 */
+  otherClusterMajorSubjectCount: number
+  /** 他類専門科目の認定科目数を下書き状態へ反映する */
+  onOtherClusterMajorSubjectCountChange: (value: number) => void
 }) {
   // 一覧に出す／消すのは committed（確定済み）で判断する。draft はプルダウンの表示値にだけ使う。
   // こうしないと、「更新」を押す前にプルダウンを触っただけで行が消えてしまい、
@@ -1436,12 +1594,13 @@ function GroupProgress({
   // あればそちらを優先し、他プログラム専門科目としては出さない）
   const dedupedRemaining = dedupeByName(remainingAll, nameOf, isOtherProgram)
   // 第二外国語・生涯スポーツは、第一・第二のペアや科目のまとまりを崩したくないので元の並び順のまま。
-  // それ以外は「1年前期→1年後期→2年前期→…」の学年学期順に並べ替える
+  // それ以外は「1年前期→1年後期→2年前期→…」の学年学期順に並べ替える。
+  // ただし日本文化Ａ〜Ｅだけは、同じ系列としてＡ〜Ｅ順に揃える。
   // （このあとの重複除去・他プログラム専門科目/留学生のみ/前学期後学期への振り分けは全部フィルタで
   // 元の順番を保つので、ここで並べ替えておけば下流にもそのまま反映される）
   const remaining = GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
     ? dedupedRemaining
-    : sortByYearTerm(dedupedRemaining, (code) => code, standardYearOf, termTypeOf)
+    : sortByYearTermWithJapaneseCultureOrder(dedupedRemaining, (code) => code, standardYearOf, termTypeOf, nameOf)
   // 他プログラム専門科目・留学生のみ履修できる科目は、下の折りたたみにまとめる（他の一覧と同じ扱い）。
   // 両方に該当する科目は留学生のみの方に入れる
   const international = remaining.filter((code) => isInternational(code))
@@ -1514,19 +1673,54 @@ function GroupProgress({
         ))}
         {splitByTerm && (
           <>
-            <CollapsedSubjectGroup title="前学期" items={springRegular} codeOf={(code) => code} renderRow={rowShort} pageStyle />
+            <CollapsedSubjectGroup title="前学期" items={springRegular} codeOf={(code) => code} renderRow={rowShort} />
             {summerIntensive.length > 0 && (
-              <CollapsedSubjectGroup title="夏期集中" items={summerIntensive} codeOf={(code) => code} renderRow={rowShort} pageStyle />
+              <CollapsedSubjectGroup title="夏期集中" items={summerIntensive} codeOf={(code) => code} renderRow={rowShort} />
             )}
-            <CollapsedSubjectGroup title="後学期" items={fallRegular} codeOf={(code) => code} renderRow={rowShort} pageStyle />
+            <CollapsedSubjectGroup title="後学期" items={fallRegular} codeOf={(code) => code} renderRow={rowShort} />
             {winterIntensive.length > 0 && (
-              <CollapsedSubjectGroup title="冬期集中" items={winterIntensive} codeOf={(code) => code} renderRow={rowShort} pageStyle />
+              <CollapsedSubjectGroup title="冬期集中" items={winterIntensive} codeOf={(code) => code} renderRow={rowShort} />
             )}
-            <CollapsedSubjectGroup title="その他" items={noTermCollapsed} codeOf={(code) => code} renderRow={row} pageStyle />
+            <CollapsedSubjectGroup title="その他" items={noTermCollapsed} codeOf={(code) => code} renderRow={row} />
           </>
         )}
-        <CollapsedSubjectGroup title="他プログラム専門科目" items={otherProgram} codeOf={(code) => code} renderRow={row} pageStyle />
-        <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} pageStyle />
+        <CollapsedSubjectGroup
+          title="他プログラム専門科目"
+          items={otherProgram}
+          codeOf={(code) => code}
+          renderRow={row}
+          footer={group.id === 'major-sel' ? (
+            <li className="recognized-major-credit">
+              <label className="other-common-select">
+                他類専門科目の専門科目認定
+                <select
+                  aria-label="他類専門科目の専門科目認定"
+                  value={otherClusterMajorCredits}
+                  onChange={(e) => onOtherClusterMajorCreditsChange(Number(e.target.value))}
+                >
+                  {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                    <option key={n} value={n}>{n}単位</option>
+                  ))}
+                </select>
+              </label>
+              {' '}
+              <label className="other-common-select">
+                科目数
+                <select
+                  aria-label="他類専門科目の専門科目認定の科目数"
+                  value={otherClusterMajorSubjectCount}
+                  onChange={(e) => onOtherClusterMajorSubjectCountChange(Number(e.target.value))}
+                >
+                  {[0, 1, 2, 3, 4].map((n) => (
+                    <option key={n} value={n}>{n}科目</option>
+                  ))}
+                </select>
+              </label>
+              <span className="recognized-major-credit-note">学務による個別認定がある場合のみ選択してください。</span>
+            </li>
+          ) : undefined}
+        />
+        <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} />
         {remaining.length === 0 && <li>（この表示範囲では残っていません）</li>}
       </ul>
     </details>

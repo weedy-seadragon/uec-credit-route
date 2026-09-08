@@ -214,6 +214,17 @@ select {
   display: none;
 }
 
+/* 修得予定の時限重複は、更新後すぐに見落とさず確認できるよう黄色系の注意枠で示す。 */
+.schedule-conflict-warning {
+  margin: -0.35rem 0 1rem;
+  padding: 0.7rem 0.85rem;
+  border-left: 4px solid #c98a00;
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, #ffe49a 45%, Canvas);
+  font-weight: 650;
+  line-height: 1.55;
+}
+
 /* 各区分をカード状に分け、見出しの直下に「何をすればよいか」を置けるようにする。 */
 .requirement-section {
   margin: 1.25rem 0;
@@ -225,6 +236,12 @@ select {
 .requirement-section > h2,
 .requirement-section > h3 {
   margin-top: 0;
+}
+
+/* 修得済みの単位は、予定・不合格と見分けやすい緑の枠で強調する。 */
+.earned-section {
+  border: 2px solid #429b62;
+  background: color-mix(in srgb, #429b62 4%, Canvas);
 }
 
 /* 修得予定は確定済みの取得単位と区別するため、指定された黄色の枠で囲む。 */
@@ -327,6 +344,20 @@ select {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+}
+
+/* 他類専門科目の認定は、通常の他プログラム科目と区別できるよう説明を次行に置く。 */
+.recognized-major-credit {
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px dashed #9aa9bf;
+}
+
+.recognized-major-credit-note {
+  display: block;
+  margin-top: 0.35rem;
+  color: #536173;
+  font-size: 0.88rem;
 }
 
 /* 前学期などの子グループは、親の中身だと分かるよう少し内側に置く。
@@ -468,6 +499,12 @@ select {
 .status-passed:has(input:checked) {
   color: #0f5d35;
   background: #ddf6e7;
+}
+
+/* 修得予定を選んだラジオボタンも、予定単位と同じ黄色系で示す。 */
+.status-taking:has(input:checked) {
+  color: #6b4a00;
+  background: #fff3cf;
 }
 
 /* 修得予定による増減・見込み達成は、確定済みの数値と混ざらない黄色系で表示する。 */

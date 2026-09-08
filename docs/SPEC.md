@@ -316,6 +316,7 @@
 - 「残りの必修」の各科目には理由ラベルを付ける。値は **「必修・未修得」「必修・再履修」の2種類のみ**（実験必修などの細分はしない）。それ以外の補足（「2年前期科目」、同時限警告）は理由ラベルとは別の欄に出す
 - 「区分別の進捗」を展開した科目一覧には理由ラベルを付けない（区分名と n/m 表示で十分）
 - 科目を「履修予定」にチェックすると F-3 の見込み計算と区分別進捗に反映される
+- **時限重複の注意**：更新時に、同じ学期でどの受講候補を選んでも曜日・時限が重なる修得予定科目の組を表示する。オンデマンド・時限不明・候補の一部でも重複を避けられる科目は警告しない。不合格から修得予定へ変えた再履修予定は、再履用の時限が解決できる場合だけ判定対象にする
 - **更新ボタン**：チェック状態を確定し、localStorage に保存して全セクションを再計算する（自動保存でも良いが、明示的なボタンをスケッチ通り置く）
 
 ### F-5 科目一覧・詳細 [Must]
@@ -584,7 +585,7 @@
 
 ```jsonc
 {
-  "schemaVersion": 3,
+  "schemaVersion": 5,
   "exportedAt": "2026-09-03T12:00:00+09:00",
   "profile": { "entryYear": 2025, "course": "day", "cluster": "I", "program": "media", "grade": 2 },
   "records": [
@@ -593,13 +594,16 @@
   ],
   "planned": ["COM501"],
   "otherCommonCredits": 2,
-  "otherCommonSubjectCount": 1
+  "otherCommonSubjectCount": 1,
+  "retakingPlanCodes": ["COM401a"],
+  "otherClusterMajorCredits": 2,
+  "otherClusterMajorSubjectCount": 1
 }
 ```
 
 `records` は `code`（科目番号、末尾記号あり／なしどちらでも可）か `timetableCode`（シラバスの8桁）か `name` のいずれかがあれば解決できる設計にする（友人アプリは番号を持たない可能性があるため）。優先順位は code → timetableCode → name。
 
-`otherCommonCredits`は、TOEIC等の特定科目に紐付かない認定単位数である。`otherCommonSubjectCount`は同じ認定を登録科目数へ何科目分として加えるかを表す。両方とも省略可能で、古いファイルを読み込んだ場合は現在の入力値を維持する。
+`otherCommonCredits`は、TOEIC等の特定科目に紐付かない認定単位数である。`otherCommonSubjectCount`は同じ認定を登録科目数へ何科目分として加えるかを表す。`otherClusterMajorCredits`と`otherClusterMajorSubjectCount`は、原則自由科目である他類専門科目を学務の個別認定で類専門（選択）へ算入する単位数・科目数である。`retakingPlanCodes`は不合格から修得予定へ変更した再履修予定科目の一覧で、再履用の時限重複判定に使う。いずれも省略可能で、古いファイルを読み込んだ場合は現在の入力値を維持する。
 
 ### 7.5 取り込み共通形式（友人アプリ向け提案）
 

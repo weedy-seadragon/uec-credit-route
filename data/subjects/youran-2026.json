@@ -17010,6 +17010,17 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21224235",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [{ "day": "月", "period": 4 }],
+          "instructors": ["八木　秀樹"],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224235.html",
+          "updatedAt": "2026-09-08"
+        }
       ]
     },
     {
@@ -17093,6 +17104,17 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21224236",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [{ "day": "火", "period": 2 }],
+          "instructors": ["和田　光司"],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224236.html",
+          "updatedAt": "2026-09-08"
+        }
       ]
     },
     {
@@ -17192,6 +17214,17 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21224237",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [{ "day": "月", "period": 3 }],
+          "instructors": ["安藤　芳晃"],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224237.html",
+          "updatedAt": "2026-09-08"
+        }
       ]
     },
     {
@@ -17241,6 +17274,17 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21224239",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [{ "day": "木", "period": 3 }],
+          "instructors": ["石橋　功至"],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224239.html",
+          "updatedAt": "2026-09-08"
+        }
       ]
     },
     {
@@ -26654,6 +26698,7 @@
       "eveningAllowed": false,
       "forInternational": true,
       "graduateLinked": false,
+      "note": "2026年度開講なし",
       "groups": [
         "hss"
       ]
@@ -52145,6 +52190,17 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21224238",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [{ "day": "木", "period": 1 }],
+          "instructors": ["松浦　基晴"],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224238.html",
+          "updatedAt": "2026-09-08"
+        }
       ]
     },
     {

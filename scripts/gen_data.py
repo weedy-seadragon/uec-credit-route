@@ -98,7 +98,7 @@ HSS = [
     # 暫定的に"e"を付けている。開発者に確認が取れ次第見直すこと
     ("HSS321z","論理学",2,"e"),
     # 日本文化科目（留学生）は人文・社会科学科目の単位に含む
-    ("FGN101z","日本文化Ａ",2,"i"),("FGN201z","日本文化Ｂ",2,"i"),("FGN301z","日本文化Ｃ",2,"i"),("FGN401z","日本文化Ｄ",2,"i"),("FGN302z","日本文化Ｅ",2,"i"),
+    ("FGN101z","日本文化Ａ",2,"i"),("FGN201z","日本文化Ｂ",2,"i"),("FGN301z","日本文化Ｃ",2,"i"),("FGN401z","日本文化Ｄ",2,"i"),("FGN302z","日本文化Ｅ",2,"i","2026年度開講なし"),
 ]
 LANG_BASIC_1 = [("ENG101z","Academic Written EnglishⅠ",1),("ENG102z","Academic Spoken EnglishⅠ",1),
                 ("ENG201z","Academic Written EnglishⅡ",1),("ENG202z","Academic Spoken EnglishⅡ",1)]
