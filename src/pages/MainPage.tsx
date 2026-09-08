@@ -922,8 +922,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <section className="requirement-section">
         {/* 科目として修得した分だけでなく、科目番号を持たない認定分も取得単位に含める。 */}
         <h2>
-          修得単位数（{earnedTotalCredits}単位
-          {plannedCredits > 0 && <span className="planned-credit"> + 修得予定{plannedCredits}単位</span>}）
+          修得単位数 {earnedTotalCredits}
+          {plannedCredits > 0 && <span className="planned-credit"> + {plannedCredits}</span>} 単位
         </h2>
         {(() => {
         // 共通単位が0のときは空の見出しを出さない。その他単位認定だけを取得した場合も内訳を表示する。
