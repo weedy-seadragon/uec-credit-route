@@ -366,6 +366,16 @@ select {
   border-left: 4px solid #88a5dc;
 }
 
+/* 推奨対象の学期はこの枠だけで選べるよう、見出しの直下に余白つきで置く。 */
+.term-recommendation-filter {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.7rem;
+  margin: 0.2rem 0 0.8rem;
+  font-weight: 700;
+}
+
 /* 必修・再履修の候補は、通常の箇条書きより少し行間を空けて科目名を追いやすくする。 */
 .term-recommendation-list > li + li {
   margin-top: 0.4rem;

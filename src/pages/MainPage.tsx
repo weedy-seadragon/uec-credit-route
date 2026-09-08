@@ -416,6 +416,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const [otherClusterMajorSubjectCountDraft, setOtherClusterMajorSubjectCountDraft] = useState<number>(otherClusterMajorSubjectCountCommitted)
   // 不合格から修得予定へ変えた科目だけを覚え、再履用の曜日時限があれば重複判定に使う。
   const [retakingPlanCodes, setRetakingPlanCodes] = useState<ReadonlySet<string>>(() => loadRetakingPlanCodes())
+  // 一覧全体の表示範囲とは別に、修得推奨だけで対象の学年・学期を選べるようにする。
+  const [recommendationTermKey, setRecommendationTermKey] = useState('all')
   const [termKey, setTermKey] = useState('all')
   // ダウンロード・読み込みの結果を一言表示するためのメッセージ（F-8）
   const [dataMessage, setDataMessage] = useState<string | null>(null)
@@ -531,13 +533,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     (r) => requiredCodes.has(r.code) && committed.get(r.code) == null && isVisibleForTermFilter(r.code),
   )
 
-  // 「この学期の修得推奨科目」では、必修・再履修・不足している選択区分を分けて案内する。
-  // recommendedは既に学年・学期で絞り、優先順に並んでいるため、この後の候補にもその順を保つ。
-  const termRequiredRecommendations = recommended.filter(
+  // 修得推奨は一覧全体の表示範囲と独立した学年・学期で絞り、必修・再履修・不足選択区分を分けて案内する。
+  const recommendationTermFilter = TERM_OPTIONS.find((t) => t.key === recommendationTermKey)?.filter ?? 'all'
+  const recommendationCandidates = recommend({
+    requirementSet, evaluation, records: committed, subjects: recommendSubjects,
+    currentGrade: profile.grade, termFilter: recommendationTermFilter,
+  })
+  // recommendationCandidatesは既に対象学期で絞り、優先順に並んでいるため、この後の候補にもその順を保つ。
+  const termRequiredRecommendations = recommendationCandidates.filter(
     (r) => requiredCodes.has(r.code) && committed.get(r.code) == null,
   )
   // 再履修専用のクラスがある科目は、不合格一覧の再履用案内で時限まで確認できるため、ここへ重複して出さない。
-  const termRetakeRecommendations = recommended.filter(
+  const termRetakeRecommendations = recommendationCandidates.filter(
     (r) => committed.get(r.code) === 'failed' && !hasDedicatedRetakeClass(r.code, classAssignments),
   )
   // 選択区分は「今学期に候補があるか」も含めてすべて出す。候補の中身は画面で折りたたんで確認する。
@@ -545,11 +552,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     .filter((group) => group.kind === 'elective' && group.shortfall > 0)
     .map((group) => ({
       group,
-      candidates: recommended.filter((r) => committed.get(r.code) == null && group.subjects.includes(r.code)),
+      candidates: recommendationCandidates.filter((r) => committed.get(r.code) == null && group.subjects.includes(r.code)),
     }))
   // 共通単位は通常の選択区分と別計算なので、共通単位として直接算入される科目だけを専用の候補にする。
   const termCommonRecommendations = evaluation.commonCredits.shortfall > 0
-    ? recommended.filter((r) => committed.get(r.code) == null && commonOnlyRemaining.includes(r.code))
+    ? recommendationCandidates.filter((r) => committed.get(r.code) == null && commonOnlyRemaining.includes(r.code))
     : []
 
   // 取得単位・不可の単位のセクションは、committed（確定済み）を状態別に振り分けるだけでよい
@@ -1539,15 +1546,23 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </section>
       )}
 
-      {/* 学期を選んだときだけ、必修・再履修・不足区分ごとに今学期の候補を示す。 */}
+      {/* 一覧全体の表示範囲とは別に、ここで選んだ学年・学期ごとの候補を示す。 */}
       <section className="term-recommendation-section">
-        <h2>この学期の修得推奨科目</h2>
-        {termFilter === 'all' ? (
-          <p className="section-guidance">学年・学期を選ぶと、この学期の修得推奨科目を表示します。</p>
+        <h2>学期別の修得推奨科目</h2>
+        <label className="term-recommendation-filter" htmlFor="recommendationTermFilter">
+          対象とする学年・学期
+          <select id="recommendationTermFilter" value={recommendationTermKey} onChange={(e) => setRecommendationTermKey(e.target.value)}>
+            {TERM_OPTIONS.map((term) => (
+              <option key={term.key} value={term.key}>{term.label}</option>
+            ))}
+          </select>
+        </label>
+        {recommendationTermFilter === 'all' ? (
+          <p className="section-guidance">学年・学期を選ぶと、選択した学期の修得推奨科目を表示します。</p>
         ) : (
           <>
             {/* 必修は学生が選び替えられないため、入れ子にせず最優先としてそのまま並べる。 */}
-            <h3>今学期に優先する必修</h3>
+            <h3>優先する必修</h3>
             {termRequiredRecommendations.length > 0 ? (
               <ul className="term-recommendation-list">
                 {termRequiredRecommendations.map(({ code }) => (
@@ -1557,13 +1572,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 ))}
               </ul>
             ) : (
-              <p>今学期に優先して修得する必修科目はありません。</p>
+              <p>選択した学期に優先して修得する必修科目はありません。</p>
             )}
 
             {/* 再履修専用のクラスが無い不合格科目だけ、通常開講と同じ学期に取り直す候補として示す。 */}
             {termRetakeRecommendations.length > 0 && (
               <>
-                <h3>今学期に再履修できる科目</h3>
+                <h3>再履修候補</h3>
                 <ul className="term-recommendation-list">
                   {termRetakeRecommendations.map(({ code }) => (
                     <li key={code}>
@@ -1575,14 +1590,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             )}
 
             {/* 選択科目は区分ごとに全候補を入れ子へ収め、閉じた状態でも不足と候補数を確認できるようにする。 */}
-            <h3>不足区分ごとの今学期の候補</h3>
+            <h3>不足区分ごとの候補</h3>
             <ul className="term-recommendation-groups">
               {termElectiveRecommendations.map(({ group, candidates }) => (
                 <li key={group.id} style={{ listStyleType: 'none' }}>
                   <details className="nested-subject-group">
                     <summary>
                       <span>{group.label ?? group.name}（あと{group.shortfall}単位）</span>
-                      <span className="nested-subject-count">今学期{candidates.length}科目</span>
+                      <span className="nested-subject-count">選択した学期{candidates.length}科目</span>
                     </summary>
                     {candidates.length > 0 ? (
                       <ul>
@@ -1593,7 +1608,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                         ))}
                       </ul>
                     ) : (
-                      <p className="term-recommendation-note">今学期に表示できる候補はありません。以降の学期も含めて履修計画を立ててください。</p>
+                      <p className="term-recommendation-note">選択した学期に表示できる候補はありません。以降の学期も含めて履修計画を立ててください。</p>
                     )}
                   </details>
                 </li>
@@ -1603,7 +1618,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                   <details className="nested-subject-group">
                     <summary>
                       <span>共通単位（あと{evaluation.commonCredits.shortfall}単位）</span>
-                      <span className="nested-subject-count">今学期{termCommonRecommendations.length}科目</span>
+                      <span className="nested-subject-count">選択した学期{termCommonRecommendations.length}科目</span>
                     </summary>
                     <p className="term-recommendation-note">区分の超過分やその他単位認定も共通単位に算入されるため、取得状況も確認してください。</p>
                     {termCommonRecommendations.length > 0 ? (
@@ -1615,7 +1630,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                         ))}
                       </ul>
                     ) : (
-                      <p className="term-recommendation-note">今学期に表示できる共通単位の候補はありません。</p>
+                      <p className="term-recommendation-note">選択した学期に表示できる共通単位の候補はありません。</p>
                     )}
                   </details>
                 </li>
