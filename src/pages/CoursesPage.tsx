@@ -150,7 +150,7 @@ export default function CoursesPage() {
             </optgroup>
           ))}
         </select>
-        <span style={{ marginLeft: '0.5em', color: '#555', fontSize: '0.9em' }}>
+        <span className="course-program-note">
           ※プログラムを選択しないと、理数基礎・類共通基礎・類専門科目は表示されません
         </span>
       </div>

@@ -86,6 +86,14 @@ select {
   font: inherit;
 }
 
+/* プログラム未選択時の表示範囲は見落とすと混乱しやすいため、補足文に穏やかな注意色を付ける。 */
+.course-program-note {
+  margin-left: 0.5em;
+  color: color-mix(in srgb, #c77700 78%, currentColor);
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
 /* プロフィール設定は入力項目が続くため、入力欄を大きくし直すのではなく行間を広げて見分けやすくする。 */
 .setup-page {
   max-width: 44rem;
