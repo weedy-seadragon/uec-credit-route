@@ -10,7 +10,7 @@ export default function TopPage() {
   return (
     <main>
       <h1>
-        電通大 単位取得ルートナビ(ver.β2.21) <small>最終更新日: {__BUILD_DATE__}</small>
+        電通大 単位取得ルートナビ(ver.β2.3) <small>最終更新日: {__BUILD_DATE__}</small>
       </h1>
       <p>
         電気通信大学 情報理工学域の学生向けに、「学年・類・プログラム・取得済み科目」を入力するだけで、
@@ -43,6 +43,17 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section>
         <h2>リリースノート</h2>
+        {/* β2.3では、プログラム未定のままでも共通科目と進級審査を確認できるようにした。 */}
+        <p className="release-note-update">
+          <span>・アップデート(ver.β2.21→β2.3)</span>
+          <span className="release-note-date">アップデート日 2026/9/8</span>
+        </p>
+        <ul className="release-note-items">
+          <li>プログラムが未定でも、共通科目・類共通基礎・2年次終了時審査を確認できるようになりました</li>
+          <li>プログラムを選択すると表示される科目・審査を、画面上で分かりやすく案内するようにしました</li>
+          <li>プロフィール、科目一覧、審査詳細の表示を見やすく調整しました</li>
+          <li>コースを切り替えたときに科目が表示されなくなる不具合を修正しました</li>
+        </ul>
         {/* β2.21は取得単位の集計に影響するため、利用者がすぐ確認できるよう最新の先頭に置く。 */}
         <p className="release-note-update">
           <span>・アップデート(ver.β2.2→β2.21)</span>
