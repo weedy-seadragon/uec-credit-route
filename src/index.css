@@ -84,6 +84,11 @@ select {
   margin-top: 1.1rem;
 }
 
+/* 科目一覧の最後の表が画面下端にくっつかないよう、ページ下部に余白を置く。 */
+.courses-page {
+  padding-bottom: 4rem;
+}
+
 /* キーワード欄も選択欄と同じ高さにそろえ、入力場所を押しやすく見つけやすくする。 */
 .course-filter-row input[type='text'] {
   box-sizing: border-box;
