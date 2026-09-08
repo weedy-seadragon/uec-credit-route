@@ -387,9 +387,10 @@ select {
   padding: 0;
 }
 
-/* 共通単位の計算方法や候補なしの案内は、科目名より控えめに表示する。 */
+/* 入れ子内の共通単位の説明や候補なしの案内は、科目リストと区別できるよう一段下げて表示する。 */
 .term-recommendation-note {
   margin: 0.55rem 0;
+  padding-left: 1em;
   font-size: 0.94em;
 }
 
