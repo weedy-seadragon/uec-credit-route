@@ -103,6 +103,8 @@ select {
 .setup-page {
   max-width: 44rem;
   margin: 0 auto;
+  /* 最後の保存ボタンが画面下端にくっつかないよう、プロフィール設定ページの下に余白を置く。 */
+  padding-bottom: 4rem;
 }
 
 .setup-form {
