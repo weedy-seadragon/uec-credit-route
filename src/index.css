@@ -340,6 +340,20 @@ select {
   gap: 0.4rem;
 }
 
+/* 他類専門科目の認定は、通常の他プログラム科目と区別できるよう説明を次行に置く。 */
+.recognized-major-credit {
+  margin-top: 0.8rem;
+  padding-top: 0.8rem;
+  border-top: 1px dashed #9aa9bf;
+}
+
+.recognized-major-credit-note {
+  display: block;
+  margin-top: 0.35rem;
+  color: #536173;
+  font-size: 0.88rem;
+}
+
 /* 前学期などの子グループは、親の中身だと分かるよう少し内側に置く。
    背景はCanvasにして、ライトモードでは白・ダークモードでは黒のまま見やすくする。 */
 .nested-subject-group {

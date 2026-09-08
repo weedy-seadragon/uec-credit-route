@@ -39,6 +39,10 @@ export interface ExportedData {
   otherCommonSubjectCount?: number
   /** 不合格から修得予定へ変更した再履修予定科目。schemaVersion 4で追加 */
   retakingPlanCodes?: string[]
+  /** 他類専門科目を専門科目として認定された単位数。schemaVersion 5で追加 */
+  otherClusterMajorCredits?: number
+  /** 他類専門科目を専門科目として認定された科目数。schemaVersion 5で追加 */
+  otherClusterMajorSubjectCount?: number
 }
 
 export interface ImportResult {
@@ -51,10 +55,14 @@ export interface ImportResult {
   otherCommonSubjectCount?: number
   /** ファイルに記載が無かった場合は undefined */
   retakingPlanCodes?: string[]
+  /** ファイルに記載が無かった場合は undefined */
+  otherClusterMajorCredits?: number
+  /** ファイルに記載が無かった場合は undefined */
+  otherClusterMajorSubjectCount?: number
 }
 
 /** 今書き出すファイルにセットするバージョン番号 */
-export const CURRENT_SCHEMA_VERSION = 4
+export const CURRENT_SCHEMA_VERSION = 5
 
 /**
  * 読み込める schemaVersion の一覧。新しいフィールドを追加しただけで読み込み方が変わらない
@@ -62,7 +70,7 @@ export const CURRENT_SCHEMA_VERSION = 4
  * （無ければ省略されているだけとみなす）。将来、読み方自体が変わるバージョンを追加したら
  * ここに番号を足し、必要な変換処理も書く
  */
-const SUPPORTED_SCHEMA_VERSIONS = [1, 2, 3, 4]
+const SUPPORTED_SCHEMA_VERSIONS = [1, 2, 3, 4, 5]
 
 /**
  * 本サイト形式のJSON（§7.4）を読み込む。JSON.parse した結果（型不明の値）を受け取り、
@@ -95,6 +103,8 @@ export function parseOwnFormat(json: unknown): ImportResult {
     otherCommonCredits: typeof data.otherCommonCredits === 'number' ? data.otherCommonCredits : undefined,
     otherCommonSubjectCount: typeof data.otherCommonSubjectCount === 'number' ? data.otherCommonSubjectCount : undefined,
     retakingPlanCodes,
+    otherClusterMajorCredits: Number.isInteger(data.otherClusterMajorCredits) && (data.otherClusterMajorCredits ?? -1) >= 0 && (data.otherClusterMajorCredits ?? 9) <= 8 ? data.otherClusterMajorCredits : undefined,
+    otherClusterMajorSubjectCount: Number.isInteger(data.otherClusterMajorSubjectCount) && (data.otherClusterMajorSubjectCount ?? -1) >= 0 && (data.otherClusterMajorSubjectCount ?? 5) <= 4 ? data.otherClusterMajorSubjectCount : undefined,
   }
 }
 

@@ -70,6 +70,20 @@ describe('parseOwnFormat', () => {
     expect(result.retakingPlanCodes).toEqual(['COM401f'])
   })
 
+  it('schemaVersion 5で他類専門科目の認定単位数・科目数を読み込める', () => {
+    // 他類専門科目の認定は、共通単位認定と同じく単位数と科目数を独立して保存する。
+    const json = {
+      schemaVersion: 5,
+      exportedAt: '2026-09-08',
+      records: [],
+      otherClusterMajorCredits: 6,
+      otherClusterMajorSubjectCount: 3,
+    }
+    const result = parseOwnFormat(json)
+    expect(result.otherClusterMajorCredits).toBe(6)
+    expect(result.otherClusterMajorSubjectCount).toBe(3)
+  })
+
   it('otherCommonCreditsが無い古い形式（schemaVersion 1）でもundefinedとして読み込める', () => {
     const json = { schemaVersion: 1, exportedAt: '2026-09-04', records: [] }
     const result = parseOwnFormat(json)

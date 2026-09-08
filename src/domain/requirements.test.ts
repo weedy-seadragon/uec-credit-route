@@ -424,6 +424,20 @@ describe('otherCommonCredits（TOEIC等、科目を介さず認定される共�
   })
 })
 
+describe('個別認定で専門科目へ算入する単位', () => {
+  it('指定した区分だけに認定済み単位を加え、合計単位にも反映する', () => {
+    // 他類専門科目の認定2単位は、対象の選択区分を満たすための確定単位として扱う。
+    const group: RequirementGroup = { id: 'major-sel', name: '類専門（選択）', required: 4, subjects: ['S1'], kind: 'elective' }
+    const requirementSet = singleGroupRequirementSet(group, 0)
+    const credits = new Map([['S1', 2]])
+    const result = evaluateRequirements(requirementSet, records({ S1: 'passed' }), credits, 0, 0, new Map([['major-sel', 2]]))
+
+    expect(result.groups[0].contribution).toBe(4)
+    expect(result.groups[0].satisfied).toBe(true)
+    expect(result.totalCredits.contribution).toBe(4)
+  })
+})
+
 // ---------------------------------------------------------------------------
 // 実データでの統合テスト
 // ---------------------------------------------------------------------------

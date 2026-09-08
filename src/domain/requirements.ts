@@ -364,6 +364,7 @@ function evaluateGroup(
   records: ReadonlyMap<string, SubjectStatus>,
   subjectCredits: ReadonlyMap<string, number>,
   insideBoundary: boolean,
+  recognizedGroupCredits: ReadonlyMap<string, number>,
 ): GroupResult {
   // このグループ自身が判定境界かどうかを先に決める（考え方は上のコメント参照）
   const isLeaf = !group.children || group.children.length === 0
@@ -371,14 +372,17 @@ function evaluateGroup(
 
   // 子グループがあれば先に再帰的に評価しておく（無ければ空配列のまま）
   const children = (group.children ?? []).map((child) =>
-    evaluateGroup(child, records, subjectCredits, insideBoundary || isBoundary),
+    evaluateGroup(child, records, subjectCredits, insideBoundary || isBoundary, recognizedGroupCredits),
   )
 
   // 修得済み（passed）・履修中（taking）の単位を、自分の科目リスト＋子グループぶんすべて合算する
   const ownSubjects = group.subjects ?? []
   const ownPassed = sumSubjectsByStatus(ownSubjects, 'passed', records, subjectCredits)
   const ownTaking = sumSubjectsByStatus(ownSubjects, 'taking', records, subjectCredits)
-  const earnedPassed = ownPassed + children.reduce((sum, child) => sum + child.earnedPassed, 0)
+  // 他類専門科目のように、個別の学務認定で特定区分へ算入される単位をここで加える。
+  // 「修得予定」ではなく認定済みの単位だけを受け取るため、見込み（earnedTaking）には足さない。
+  const recognizedPassed = recognizedGroupCredits.get(group.id) ?? 0
+  const earnedPassed = ownPassed + children.reduce((sum, child) => sum + child.earnedPassed, 0) + recognizedPassed
   const earnedTaking = ownTaking + children.reduce((sum, child) => sum + child.earnedTaking, 0)
 
   let kind: GroupKind | undefined
@@ -524,9 +528,10 @@ export function evaluateRequirements(
   subjectCredits: ReadonlyMap<string, number>,
   otherCommonCredits = 0,
   otherCommonPlannedCredits = 0,
+  recognizedGroupCredits: ReadonlyMap<string, number> = new Map(),
 ): EvaluationResult {
   // トップレベルのグループを1つずつ（再帰的に）判定する
-  const groups = requirementSet.groups.map((group) => evaluateGroup(group, records, subjectCredits, false))
+  const groups = requirementSet.groups.map((group) => evaluateGroup(group, records, subjectCredits, false, recognizedGroupCredits))
 
   // 各グループの overflowToCommon は、判定境界の時点ですでに配下全体の超過分を
   // 集約し終えている（積み上げ役のグループはそれをそのまま合計しているだけ）ので、

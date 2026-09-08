@@ -585,7 +585,7 @@
 
 ```jsonc
 {
-  "schemaVersion": 4,
+  "schemaVersion": 5,
   "exportedAt": "2026-09-03T12:00:00+09:00",
   "profile": { "entryYear": 2025, "course": "day", "cluster": "I", "program": "media", "grade": 2 },
   "records": [
@@ -595,13 +595,15 @@
   "planned": ["COM501"],
   "otherCommonCredits": 2,
   "otherCommonSubjectCount": 1,
-  "retakingPlanCodes": ["COM401a"]
+  "retakingPlanCodes": ["COM401a"],
+  "otherClusterMajorCredits": 2,
+  "otherClusterMajorSubjectCount": 1
 }
 ```
 
 `records` は `code`（科目番号、末尾記号あり／なしどちらでも可）か `timetableCode`（シラバスの8桁）か `name` のいずれかがあれば解決できる設計にする（友人アプリは番号を持たない可能性があるため）。優先順位は code → timetableCode → name。
 
-`otherCommonCredits`は、TOEIC等の特定科目に紐付かない認定単位数である。`otherCommonSubjectCount`は同じ認定を登録科目数へ何科目分として加えるかを表す。`retakingPlanCodes`は不合格から修得予定へ変更した再履修予定科目の一覧で、再履用の時限重複判定に使う。いずれも省略可能で、古いファイルを読み込んだ場合は現在の入力値を維持する。
+`otherCommonCredits`は、TOEIC等の特定科目に紐付かない認定単位数である。`otherCommonSubjectCount`は同じ認定を登録科目数へ何科目分として加えるかを表す。`otherClusterMajorCredits`と`otherClusterMajorSubjectCount`は、原則自由科目である他類専門科目を学務の個別認定で類専門（選択）へ算入する単位数・科目数である。`retakingPlanCodes`は不合格から修得予定へ変更した再履修予定科目の一覧で、再履用の時限重複判定に使う。いずれも省略可能で、古いファイルを読み込んだ場合は現在の入力値を維持する。
 
 ### 7.5 取り込み共通形式（友人アプリ向け提案）
 
