@@ -10,7 +10,7 @@ export default function TopPage() {
   return (
     <main>
       <h1>
-        電通大 単位取得ルートナビ(ver.β2.3) <small>最終更新日: {__BUILD_DATE__}</small>
+        電通大 単位取得ルートナビ(ver.β2.4) <small>最終更新日: {__BUILD_DATE__}</small>
       </h1>
       <p>
         電気通信大学 情報理工学域の学生向けに、「学年・類・プログラム・取得済み科目」を入力するだけで、
@@ -43,6 +43,22 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section>
         <h2>リリースノート</h2>
+        {/* β2.4では、修得予定を実績と分けて記録・見込み計算できるようにした。 */}
+        <p className="release-note-update">
+          <span>・アップデート(ver.β2.3→β2.4)</span>
+          <span className="release-note-date">アップデート日 2026/9/8</span>
+        </p>
+        <h3 className="release-note-category">機能変更</h3>
+        <ul className="release-note-items">
+          <li>科目の状態に「修得予定」を追加しました</li>
+          <li>修得予定の単位を、取得単位・残りの必修・選択科目・審査の見込み計算に反映するようにしました</li>
+          <li>修得予定の科目を一覧でまとめて確認・変更できるようにしました</li>
+        </ul>
+        <h3 className="release-note-category">見た目の変更</h3>
+        <ul className="release-note-items">
+          <li>修得予定による単位の増減や達成予定を、黄色で見分けやすく表示するようにしました</li>
+          <li>不合格・修得予定・残りの必修の一覧を整理しました</li>
+        </ul>
         {/* β2.3では、プログラム未定のままでも共通科目と進級審査を確認できるようにした。 */}
         <p className="release-note-update">
           <span>・アップデート(ver.β2.21→β2.3)</span>

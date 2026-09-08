@@ -124,6 +124,26 @@ describe('evaluateReviews（allOf/anyOfの組み合わせ）', () => {
   })
 })
 
+// 修得予定は現在の合否には含めない一方、すべて修得できた場合の見込み合否には含める。
+describe('evaluateReviews（修得予定を含めた見込み判定）', () => {
+  it('現在は不合格でも、修得予定の科目だけで条件を満たせる場合はprojectedSatisfiedをtrueにする', () => {
+    // 必修R1と選択S1の両方を予定にすると、科目・区分・合計単位の条件をすべて満たせる。
+    const review: ReviewDef = {
+      id: 'r',
+      name: 'テスト審査',
+      allOf: [
+        { type: 'subjects', codes: ['R1'] },
+        { type: 'groupMin', groupId: 'g3', min: 2 },
+        { type: 'totalCredits', min: 4 },
+      ],
+    }
+    const plannedRecords = records({ R1: 'taking', S1: 'taking' })
+    const result = evaluateReviews([review], evaluate({ R1: 'taking', S1: 'taking' }), plannedRecords, subjectCredits).at(0)
+    expect(result?.satisfied).toBe(false)
+    expect(result?.projectedSatisfied).toBe(true)
+  })
+})
+
 describe('evaluateReviews（審査どうしの参照）', () => {
   it('review条件は、参照先の審査の合否をそのまま使う', () => {
     const y2: ReviewDef = { id: 'y2', name: '2年次終了時審査', allOf: [{ type: 'allPassed', groupId: 'g1' }] }
