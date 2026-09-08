@@ -1190,7 +1190,6 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                   {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
                   {r.caveat && <p style={{ fontSize: '0.9em', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
                   {!r.satisfied && visibleUnsatisfied.length > 0 && (
-                    {/* 不足条件は選択科目の入れ子と同じ開閉カードにし、普段は審査の一覧を短く保つ。 */}
                     <details className="nested-subject-group review-details">
                       <summary><span>詳細</span></summary>
                       <ul className="review-conditions">
