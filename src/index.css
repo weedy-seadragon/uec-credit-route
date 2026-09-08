@@ -42,6 +42,12 @@ nav a {
   white-space: nowrap;
 }
 
+/* 機能変更と見た目の変更を、各バージョンの中でも見分けられる小見出しにする。 */
+.release-note-category {
+  margin: 0.9rem 0 0.25rem;
+  font-size: 1rem;
+}
+
 /* 更新内容の各行を少し離し、複数の修正点を追いやすくする。 */
 .release-note-items {
   margin-top: 0;
@@ -86,6 +92,13 @@ select {
   font: inherit;
 }
 
+/* プログラム未選択時の補足文は、本文と同じ色のまま少し小さく表示する。 */
+.course-program-note {
+  margin-left: 0.5em;
+  color: inherit;
+  font-size: 0.9em;
+}
+
 /* プロフィール設定は入力項目が続くため、入力欄を大きくし直すのではなく行間を広げて見分けやすくする。 */
 .setup-page {
   max-width: 44rem;
@@ -107,6 +120,24 @@ select {
 .setup-form label {
   font-weight: 600;
   line-height: 1.5;
+}
+
+/* クラス情報が曜日時限の絞り込みに必要な理由を、入力欄の直前でまとめて説明する。 */
+.setup-class-guidance {
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  border-left: 3px solid #88a5dc;
+  background: color-mix(in srgb, #eaf1ff 30%, Canvas);
+  line-height: 1.6;
+}
+
+/* プログラム未選択時に確認できる範囲を、選択欄の直後で説明する。 */
+.setup-program-guidance {
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  border-left: 3px solid #88a5dc;
+  background: color-mix(in srgb, #eaf1ff 30%, Canvas);
+  line-height: 1.6;
 }
 
 /* 横に長い選択肢でも読みやすくし、狭い画面では親要素の幅を超えないようにする。 */
@@ -148,7 +179,6 @@ select {
 /* 審査の合計単位条件にだけ、卒業所要単位ベースであることを補足する。 */
 .review-credit-note-inline {
   margin-left: 0.45rem;
-  color: #555;
   font-size: 0.85em;
   line-height: 1.45;
 }
@@ -371,6 +401,12 @@ select {
 .subject-meta,
 .subject-schedule,
 .requirement-badge {
+  font-size: 0.9em;
+}
+
+/* 曜日時限を安全に1つへ絞れないときは、空欄ではなく理由を表示してプロフィール見直しにつなげる。 */
+.schedule-unavailable {
+  margin-left: 0.4em;
   font-size: 0.9em;
 }
 

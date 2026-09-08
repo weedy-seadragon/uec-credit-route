@@ -21,7 +21,7 @@ import { recommend } from '../domain/recommend'
 import { buildNameToCodes, derivePrerequisites } from '../domain/prerequisites'
 import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
-import { getClassAssignments, getProgramName, getRequirementSet, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
+import { getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { TransferBucketItem } from '../data/requirementSets'
 import { resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
@@ -34,7 +34,7 @@ import SubjectStatusSelect from '../components/SubjectStatusSelect'
 
 /** プロフィールのうち、要件セットを引くのに必要な項目が揃っている状態（夜間主はcluster: null） */
 interface LoadedProfile extends Omit<Profile, 'program'> {
-  program: string
+  program: string | null
 }
 
 /** 表示フィルタ（画面右上）の選択肢。値はそのままrecommend.tsのTermFilterに変換できる形にしておく */
@@ -245,11 +245,12 @@ function SubjectRow({
         <span className="subject-name">{name}</span>
         <span className="subject-meta">{credits}</span>
         {term && <span className="subject-meta">{term}</span>}
+        {/* 曜日時限は履修状態の操作ではなく科目の属性なので、学年学期の右に並べる。 */}
+        {schedule && <span className="subject-schedule">{schedule}</span>}
         {note}
       </div>
       <div className="subject-row-actions">
         {status}
-        {schedule && <span className="subject-schedule">{schedule}</span>}
       </div>
     </div>
   )
@@ -271,33 +272,25 @@ export default function MainPage() {
       </main>
     )
   }
-  // プログラム未定のときは、専門科目を含む判定ができない（docs/SPEC.md F-1）
-  if (!profile.program) {
-    return (
-      <main>
-        <h1>メイン画面</h1>
-        <p>プログラムが未定のため、専門科目を含めた判定はまだ表示できません（プログラム比較機能は今後実装予定）。</p>
-        <p>
-          <Link to="/setup">プロフィール設定</Link>でプログラムを選ぶか、配属を待ってください。
-        </p>
-      </main>
-    )
-  }
-
   return <MainPageContent profile={{ ...profile, cluster: profile.cluster, program: profile.program }} />
 }
 
 function MainPageContent({ profile }: { profile: LoadedProfile }) {
+  // 保存済みプロフィールに古い/不正なプログラム値があっても、未選択として共通要件を表示する。
+  const programName = getProgramName(profile.entryYear, profile.program)
+  const isProgramUndecided = programName == null
   const requirementSet = useMemo(
-    () => getRequirementSet(profile.entryYear, profile.course, profile.cluster, profile.program),
-    [profile],
+    () => !isProgramUndecided && profile.program
+      ? getRequirementSet(profile.entryYear, profile.course, profile.cluster, profile.program)
+      // 夜間主はプロフィール保存時にprogram: 'evening'となるため、ここは昼間コースだけに到達する。
+      : getRequirementSetWithoutProgram(profile.entryYear, profile.cluster as 'I' | 'II' | 'III'),
+    [profile, isProgramUndecided],
   )
   // 科目番号は年度をまたぐと別科目を指す場合があるため、プロフィールの入学年度でマスタを切り替える。
   const subjectsByCode = useMemo(() => getSubjectsByCode(profile.entryYear), [profile.entryYear])
   const subjectCredits = useMemo(() => getSubjectCredits(profile.entryYear), [profile.entryYear])
   const classAssignments = useMemo(() => getClassAssignments(), [])
   // プログラムが決まっていれば（2年後期以降）、その名前をクラス判定にも使う
-  const programName = getProgramName(profile.entryYear, profile.program)
   // dayPeriodTag・nameLinkの両方で使う、クラス判定用プロフィール（resolveSlotsForProfile等の引数）
   const classProfile = {
     yearOneClass: profile.yearOneClass,
@@ -551,6 +544,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function nameOf(code: string): string {
     return subjectsByCode.get(code)?.name ?? code
   }
+
+  // 審査の注意書きに含まれる履修不可科目は、科目コードではなく利用者が読みやすい科目名で表示する。
+  // blockedSubjectsに列挙されたコードだけを置き換えるため、文章中の数字などを誤って変えることはない。
+  function onFailNoteWithSubjectNames(note: string, blockedSubjects: readonly string[]): string {
+    let displayNote = note
+    for (const code of blockedSubjects) displayNote = displayNote.replaceAll(code, nameOf(code))
+    return displayNote
+  }
   // 科目名をシラバスへのリンクにする（一覧の各行で使う）。offeringsが1件も無い科目は
   // リンクにせず名前をそのまま出す。複数セクションでシラバスURLがバラバラな科目
   // （理数基礎・類共通基礎の必修科目など、クラスごとに別ページを持つもの）は、
@@ -717,23 +718,34 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function dayPeriodTag(code: string) {
     const subject = subjectsByCode.get(code)
     const offerings = subject?.offerings
-    if (!offerings || offerings.length === 0) return null
+    // 曜日時限が出せないときも空欄にせず、利用者が次に確認すべき理由を添える。
+    function unavailable(reason: string) {
+      return <span className="schedule-unavailable">（曜日時限：{reason}）</span>
+    }
+    // Ⅰ〜Ⅲ類の追加クラス情報が未設定なら、複数セクションを絞れない主な原因として案内する。
+    function hasIncompleteClassInfo(): boolean {
+      if (profile.cluster === 'I') return profile.classIABC == null
+      if (profile.cluster === 'II') return profile.classIIArea == null
+      if (profile.cluster === 'III') return profile.classIIIYear2Class == null || profile.classIIIYear2Area == null
+      return false
+    }
+    if (!offerings || offerings.length === 0) return unavailable('開講情報が未登録です')
     // 輪講・卒業研究は研究室ごとに実施形態が異なり、時間割として一律に示せない。
     // slotsが空でも「オンデマンド」と推測せず、曜日時限の注記自体を表示しない。
-    if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return null
+    if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return unavailable('研究室ごとに実施形態が異なります')
     const note = subject?.note
     const hasAnySlots = offerings.some((o) => o.slots.length > 0)
     if (!hasAnySlots) {
       if (note?.includes('夏期集中')) return <span style={{ marginLeft: '0.4em' }}>夏期集中</span>
       if (note?.includes('冬期集中')) return <span style={{ marginLeft: '0.4em' }}>冬期集中</span>
-      if (note?.includes('集中')) return null
+      if (note?.includes('集中')) return unavailable('集中講義です')
       return <span style={{ marginLeft: '0.4em' }}>オンデマンド</span>
     }
     // 隔年度開講・開講年度により内容が変わる、といった注記は、実際に何か表示するときは
     // 併記しておく（2026-09-06。学域特別講義A/Bのような「毎年テーマは変わるが曜日時限は
     // 固定」という科目で、そのことが伝わるようにするため）
     const noteSuffix = note ? (
-      <span style={{ marginLeft: '0.3em', color: '#555', fontSize: '0.9em' }}>（{note}）</span>
+      <span style={{ marginLeft: '0.3em', fontSize: '0.9em' }}>（{note}）</span>
     ) : null
     // クォーター（春/夏/秋/冬ターム）制で、かつ1つの科目コードに単一のタームしか無い科目
     // （アカデミックスキルズ等）は、曜日時限ではなく「N年◯ターム」と表示する
@@ -755,7 +767,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       offerings.length === 1
         ? offerings[0].slots
         : resolveSlotsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, isRetaking)
-    if (!slots || slots.length === 0) return null
+    if (!slots || slots.length === 0) {
+      return unavailable(
+        hasIncompleteClassInfo()
+          ? 'クラス情報が未設定です'
+          : '候補を1つに絞り込めません',
+      )
+    }
     const text = slots.map((s) => `${s.day}・${s.period}限`).join('/')
     return (
       <span style={{ marginLeft: '0.4em' }}>
@@ -799,10 +817,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     <main className="main-page" style={{ paddingBottom: '6rem' }}>
       <header className="main-page-header">
         <h1>
-          {profile.entryYear}入学 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
-          {profile.program} / {profile.grade}年 <Link to="/setup">[変更]</Link>
+          {profile.entryYear}入学 / {profile.grade}年 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
+          {profile.program ?? '未定'} <Link to="/setup">[変更]</Link>
         </h1>
-        <p>総取得単位 {earnedTotalCredits}単位</p>
       </header>
 
       {/* 表示範囲・更新・データ入出力を、目的ごとのグループに分けた操作バーにする。 */}
@@ -985,6 +1002,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       <section className="requirement-section">
         <h2>残りの必修（あと {requiredShortfall(boundaryGroups)} 単位）</h2>
+        {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、一部の科目が表示されていません。</p>}
         <p className="section-guidance">この一覧の科目はすべて必修です。不合格になった必修科目は、上の「不合格になった科目」で再履修を確認してください。</p>
         {remainingRequiredByCategory.map(({ label, group, items }) => {
           // ()内は単位数だけにする。年次・学期は他の一覧と同じ形の注記で統一する。
@@ -1027,7 +1045,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       {(clusterTransferBucket.length > 0 || programTransferBucket.length > 0) && (
         <section className="requirement-section">
           <h2>その他の科目（転類・転プログラム前に必修だった科目）</h2>
-          <p style={{ fontSize: '0.9em', color: '#555' }}>
+          <p style={{ fontSize: '0.9em' }}>
             元の類・プログラムでは必修だったものの、今の要件には出てこない科目です。修得にすると共通単位に加算されます
             （同名の科目は他の一覧の必修・選択にそのまま出てくるので、ここには出しません）。
           </p>
@@ -1068,6 +1086,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       <section className="requirement-section">
         <h2>選択科目</h2>
+        {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、一部の科目が表示されていません。</p>}
         <p className="section-guidance">
           区分ごとに表示される不足単位まで、この一覧から科目を選んで修得してください。必修の不合格科目は、この一覧ではなく上の「不合格になった科目」を確認します。
         </p>
@@ -1175,6 +1194,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       {reviewStatuses.length > 0 && (
         <section>
           <h2>審査</h2>
+          {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、卒業研究着手審査や卒業審査が表示されていません。</p>}
           <ul>
             {reviewStatuses.map((r) => {
               // 卒業審査の共通単位条件は、画面上部の審査用総単位の説明と重複するため詳細から省く。
@@ -1185,19 +1205,19 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               return (
                 <li key={r.id}>
                   {r.name}
-                  {r.when && <span style={{ marginLeft: '0.4em', color: '#555' }}>（{r.when}）</span>}
+                  {r.when && <span style={{ marginLeft: '0.4em' }}>（{r.when}）</span>}
                   {r.satisfied ? ' ✔ 合格見込み' : ' ✖ 不足あり'}
                   {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
-                  {r.caveat && <p style={{ fontSize: '0.9em', color: '#555', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
+                  {r.caveat && <p style={{ fontSize: '0.9em', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
                   {!r.satisfied && visibleUnsatisfied.length > 0 && (
-                    <details>
-                      <summary>詳細</summary>
+                    <details className="nested-subject-group review-details">
+                      <summary><span>詳細</span></summary>
                       <ul className="review-conditions">
                         {visibleUnsatisfied.map((cond, i) => (
                           <li key={i}>{describeCondition(cond)}</li>
                         ))}
                       </ul>
-                      {r.onFail?.note && <p style={{ fontSize: '0.9em', color: '#555' }}>※ {r.onFail.note}</p>}
+                      {r.onFail?.note && <p style={{ fontSize: '0.9em' }}>※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
                     </details>
                   )}
                 </li>

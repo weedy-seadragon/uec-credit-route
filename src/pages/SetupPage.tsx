@@ -88,6 +88,14 @@ export default function SetupPage() {
     setPreviousProgram(null)
   }
 
+  // 昼間・夜間主では選べるプログラムの集合が別なので、切替時に前の値を持ち越さない。
+  function handleCourseChange(nextCourse: Profile['course']) {
+    setCourse(nextCourse)
+    setProgram(null)
+    // 夜間主では類が無く、昼間へ戻ったときは最初の類を選んだ状態から設定し直してもらう。
+    setCluster(nextCourse === 'day' ? 'I' : null)
+  }
+
   // フォーム送信時：ページの再読み込みを止め（preventDefault）、今の入力内容を保存して
   // メイン画面に移動する
   function handleSubmit(e: FormEvent) {
@@ -145,7 +153,7 @@ export default function SetupPage() {
           <select
             id="course"
             value={course}
-            onChange={(e) => setCourse(e.target.value as Profile['course'])}
+            onChange={(e) => handleCourseChange(e.target.value as Profile['course'])}
           >
             <option value="day">昼間コース</option>
             <option value="evening">夜間主コース</option>
@@ -171,6 +179,17 @@ export default function SetupPage() {
         ) : (
           <>
             <div>
+              <label htmlFor="grade">現在の学年</label>
+              <select id="grade" value={grade} onChange={(e) => setGrade(Number(e.target.value))}>
+                {[1, 2, 3, 4].map((g) => (
+                  <option key={g} value={g}>
+                    {g}年生
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
               <label htmlFor="cluster">類</label>
               <select
                 id="cluster"
@@ -186,16 +205,10 @@ export default function SetupPage() {
               </select>
             </div>
 
-            <div>
-              <label htmlFor="grade">現在の学年</label>
-              <select id="grade" value={grade} onChange={(e) => setGrade(Number(e.target.value))}>
-                {[1, 2, 3, 4].map((g) => (
-                  <option key={g} value={g}>
-                    {g}年生
-                  </option>
-                ))}
-              </select>
-            </div>
+            <p className="setup-program-guidance">
+              プログラムを未定のまま保存すると、総合文化・実践教育・理数基礎・類共通基礎と2年次終了時審査だけを表示します。
+              類専門科目、卒業研究着手審査、卒業審査を確認するにはプログラムを選択してください。
+            </p>
 
             <div>
               <label htmlFor="program">教育プログラム</label>
@@ -217,6 +230,10 @@ export default function SetupPage() {
                 1年次クラスは学籍番号による機械的な割り当てで、本人には選べないが他から逆算する
                 方法も無いので、必ず本人に直接答えてもらう。2番目以降は類によって聞く内容が変わる
                 （該当しない類の分は聞かず、nullのまま保存する） */}
+            <p className="setup-class-guidance">
+              クラス情報は、クラスごとに異なる曜日時限・シラバスリンクを、あなたの受講する授業に正しく絞り込むために使います。
+              未定の項目があっても卒業要件の計算には影響しませんが、一部の曜日時限は表示できなくなります。
+            </p>
             <div>
               <label htmlFor="yearOneClass">1年次クラス</label>
               <select
