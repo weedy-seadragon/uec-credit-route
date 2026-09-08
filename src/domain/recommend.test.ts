@@ -118,6 +118,27 @@ describe('学期フィルタでの絞り込み', () => {
   })
 })
 
+// allowedYears を持つ抽選科目は、標準年次を過ぎても再度履修できる通常科目とは区別する。
+describe('履修可能学年が限定された科目', () => {
+  const requirementSet: RequirementSet = {
+    totalCredits: 2, commonCredits: 0,
+    groups: [{ id: 'sel', name: '抽選科目サンプル', required: 2, kind: 'elective', subjects: ['LOTTERY1'] }],
+  }
+  const subjects: SubjectInfo[] = [
+    { code: 'LOTTERY1', credits: 2, standardYear: 1, termType: '前学期', allowedYears: [1] },
+  ]
+
+  it('1年次限定科目は2年前期の候補から除外される', () => {
+    // standardYear が1でも allowedYears が[1]なら、2年次には履修できないため候補に出さない。
+    const { requirementSet: rs, evaluation, subjects: subj } = setup(requirementSet, subjects)
+    const result = recommend({
+      requirementSet: rs, evaluation, records: records(), subjects: subj, currentGrade: 2,
+      termFilter: { year: 2, half: '前学期' },
+    })
+    expect(result.map((r) => r.code)).not.toContain('LOTTERY1')
+  })
+})
+
 // w3（不足比率が高いほど加点）とw7（区分が既に満たされていると大きく減点）の
 // 両方が効いて、優先すべき科目が上位・不要な科目が下位に来ることを確認する
 describe('区分の不足比率（w3）と充足済み区分の減点（w7）', () => {

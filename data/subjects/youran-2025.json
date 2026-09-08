@@ -1029,6 +1029,9 @@
       "standardSemester": 1,
       "standardYear": 1,
       "termType": "前学期",
+      "allowedYears": [
+        1
+      ],
       "eveningAllowed": false,
       "forInternational": false,
       "graduateLinked": false,
@@ -52932,6 +52935,9 @@
       "standardSemester": 1,
       "standardYear": 1,
       "termType": "前学期",
+      "allowedYears": [
+        1
+      ],
       "eveningAllowed": false,
       "forInternational": false,
       "graduateLinked": false,
@@ -53504,6 +53510,9 @@
       "standardSemester": 2,
       "standardYear": 1,
       "termType": "後学期",
+      "allowedYears": [
+        1
+      ],
       "eveningAllowed": false,
       "forInternational": false,
       "graduateLinked": false,

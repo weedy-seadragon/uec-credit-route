@@ -147,10 +147,9 @@ function isOfferedIn(subject: SubjectInfo, termFilter: TermFilter, currentGrade:
   // termType が無い科目（通年・不定期開講など）は、どの学期フィルタでも履修候補に出す
   if (subject.termType != null && subject.termType !== termFilter.half) return false
 
-  // 履修できる学年（allowedYears。無ければ標準履修年次のみ）のどれかが、
-  // フィルタで選ばれた学年以下（＝もう到達している）でなければ候補にしない
-  const allowedYears = subject.allowedYears ?? (subject.standardYear != null ? [subject.standardYear] : undefined)
-  if (allowedYears && !allowedYears.some((y) => y <= termFilter.year)) return false
+  // 履修できる学年が明記された科目（1年次限定の抽選科目など）は、選択学年そのものが
+  // allowedYears に含まれるときだけ候補にする。未指定の通常科目は次の標準年次判定へ進む。
+  if (subject.allowedYears && !subject.allowedYears.includes(termFilter.year)) return false
   if (subject.standardYear != null && subject.standardYear > termFilter.year) return false
 
   void currentGrade // 学年そのものはフィルタの year を使うので、ここでは判定に使わない

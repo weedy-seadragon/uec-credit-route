@@ -1540,6 +1540,12 @@ for code, (year, semester) in STANDARD_TERM_CORRECTIONS.items():
     subject['standardSemester'] = semester
     subject['termType'] = '前学期' if semester % 2 == 1 else '後学期'
 
+# 抽選科目であり、1年次以外は履修できない3科目を明示する。
+# 通常の標準年次科目は後年次でも候補として案内するが、この3科目だけは例外にする。
+YEAR_ONE_ONLY_CODES = ['CAR101z', 'PHY103z', 'PHY203z']
+for code in YEAR_ONE_ONLY_CODES:
+    SUBJECTS[code]['allowedYears'] = [1]
+
 # 情報通信工学プログラムの選択科目5件は、Ⅱ類の全プログラムで他プログラム科目として
 # 選べるため、各要件ファイルへ同じ科目番号を展開する。
 NETINFO_OMITTED_ELECTIVES = ['ELE604g', 'ELE605g', 'ELE606g', 'PHO601g', 'ELE607g']

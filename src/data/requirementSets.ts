@@ -220,6 +220,8 @@ export interface SubjectMasterEntry {
   standardYear: number | null
   standardSemester: number | null
   termType: '前学期' | '後学期' | null
+  /** 履修できる学年を限定する科目だけ持つ（例：1年次限定の抽選科目） */
+  allowedYears?: number[]
   forInternational: boolean
   eveningAllowed: boolean
   graduateLinked: boolean

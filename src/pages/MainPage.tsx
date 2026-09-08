@@ -390,6 +390,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         credits: s.credits,
         standardYear: s.standardYear,
         termType: s.termType,
+        allowedYears: s.allowedYears,
         prerequisites: derivePrerequisites(s.prerequisitesText, s.code, nameToCodes),
       })
     }
@@ -522,7 +523,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function isVisibleForTermFilter(code: string): boolean {
     if (termFilter === 'all') return true
     const subject = subjectsByCode.get(code)
-    if (!subject || subject.termType == null) return true // 通年・不定期開講科目は常に表示
+    if (!subject) return true
+    // 履修可能学年が明記された抽選科目などは、選択した学年だけに表示を限る。
+    if (subject.allowedYears && !subject.allowedYears.includes(termFilter.year)) return false
+    if (subject.termType == null) return true // 通年・不定期開講科目は常に表示
     return subject.termType === termFilter.half && (subject.standardYear == null || subject.standardYear <= termFilter.year)
   }
 
