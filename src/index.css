@@ -426,7 +426,7 @@ select {
   background: #fff3cf;
 }
 
-/* 各科目の3択は、ドロップダウンではなく大きなラジオボタンとして即座に意味を読めるようにする。 */
+/* 各科目の4択は、ドロップダウンではなく大きなラジオボタンとして即座に意味を読めるようにする。 */
 .subject-status {
   display: inline-flex;
   flex-wrap: wrap;
@@ -455,6 +455,18 @@ select {
 .status-passed:has(input:checked) {
   color: #0f5d35;
   background: #ddf6e7;
+}
+
+/* 修得予定による増減・見込み達成は、確定済みの数値と混ざらない青で表示する。 */
+.planned-credit {
+  color: #1a5882;
+  font-weight: 700;
+}
+
+/* 修得予定は確定済みの修得とは違う色にして、予定分だとすぐ分かるようにする。 */
+.status-taking:has(input:checked) {
+  color: #1a5882;
+  background: #dcefff;
 }
 
 .status-failed:has(input:checked) {

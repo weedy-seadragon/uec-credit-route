@@ -6,9 +6,9 @@
 //
 // 簡略化している点（将来のフェーズで拡張する）：
 // - 科目ごとの状態変更は、要覧のスケッチにある「履修予定チェック」ではなく、
-//   すべての一覧で共通の「未履修/修得/不合格」ラジオボタンに統一している
+//   すべての一覧で共通の「未履修/修得/修得予定/不合格」ラジオボタンに統一している
 //   （取得単位への追加も、この操作を通じて行う。ファイルからの読み込み等はフェーズ2-5で対応）
-// - 履修中というステータス自体が無い（未履修/修得/不合格の3択）ため、busySlots（同時限警告）は
+// - 修得予定は将来の単位見込みを表すだけで、実際に履修中かを管理する状態ではないため、busySlots（同時限警告）は
 //   常に空のまま。先修科目（prerequisites）は2026-09-06にprerequisites.ts経由で配線した
 import { useMemo, useRef, useState } from 'react'
 import type { ChangeEvent, ReactNode } from 'react'
@@ -77,6 +77,12 @@ interface BoundaryGroup {
   countAsCommon: boolean
   shortfall: number
   satisfied: boolean
+  /** 修得予定の科目もすべて修得できた場合の区分内算入単位数 */
+  projectedContribution: number
+  /** 修得予定を反映した場合の不足単位数 */
+  projectedShortfall: number
+  /** 修得予定を反映した場合に区分を満たすか */
+  projectedSatisfied: boolean
   subjects: string[]
 }
 
@@ -125,6 +131,8 @@ function collectBoundaryGroups(reqGroups: readonly RequirementGroup[], evalGroup
           required: eg.required, contribution: eg.contribution, overflow: eg.overflow,
           overflowToCommon: eg.overflowToCommon, countAsCommon: rg.countAs === 'common',
           shortfall: eg.shortfall, satisfied: eg.satisfied,
+          projectedContribution: eg.projected.contribution, projectedShortfall: eg.projected.shortfall,
+          projectedSatisfied: eg.projected.satisfied,
           subjects: flattenLeafSubjects(rg),
         })
       }
@@ -368,10 +376,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const transferBucketCreditsSum = [...clusterTransferBucket, ...programTransferBucket]
     .filter((item) => committed.get(item.code) === 'passed')
     .reduce((sum, item) => sum + item.credits, 0)
+  // 転類・転プログラム前の科目も、修得予定なら共通単位としての見込み計算にだけ加える。
+  const transferBucketPlannedCreditsSum = [...clusterTransferBucket, ...programTransferBucket]
+    .filter((item) => committed.get(item.code) === 'taking')
+    .reduce((sum, item) => sum + item.credits, 0)
   const commonCreditsWithTransferBucket = otherCommonCommitted + transferBucketCreditsSum
 
   // 充足状況の本体計算はrequirements.tsに丸ごと任せる。ここから先はその結果を並べるだけ
-  const evaluation = evaluateRequirements(requirementSet, committed, subjectCredits, commonCreditsWithTransferBucket)
+  const evaluation = evaluateRequirements(
+    requirementSet, committed, subjectCredits, commonCreditsWithTransferBucket, transferBucketPlannedCreditsSum,
+  )
   const boundaryGroups = collectBoundaryGroups(requirementSet.groups, evaluation.groups)
   // 審査（2年次終了時審査など）。reviewsデータが無いプログラムでは空配列になる（現在は全16課程にreviewsがある）。
   // reviewsを一度ローカル変数に受けておく（入れ子関数の中ではrequirementSetの絞り込みが効かないため）
@@ -394,14 +408,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const commonOverflowTotal = overflowToCommonGroups.reduce((sum, g) => sum + g.overflowToCommon, 0)
   const commonDirectTotal = directCommonSubjects.reduce((sum, code) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
   const commonEarnedTotal = commonOverflowTotal + commonDirectTotal + commonCreditsWithTransferBucket
+  // 共通単位のうち、修得予定がすべて修得できたときに新たに算入される分。
+  const commonPlannedCredits = Math.max(0, evaluation.commonCredits.projected.contribution - evaluation.commonCredits.contribution)
   // 「選択科目」の共通単位の入れ子に出す、まだ修得していない常時共通単位科目
   // （理数基礎（選択）などcountAsCommonの区分の残り科目＋選択第二外国語などalwaysCommonSubjectsの残り）。
   // required=0の区分やalwaysCommonSubjectsはGroupProgressの対象外（required>0で絞っている）なので、
   // ここで拾わないとどこにも選択状態を変えるプルダウンが出ない
-  // 不合格の科目は「不可の単位」に既に出るので、ここでは重複して出さない（committed.get(code) == nullで判定）
+  // 不合格の科目は「不可の単位」に既に出るので、ここでは重複して出さない。修得予定は状態を変更できるよう残す。
   const commonOnlyRemaining = [
-    ...commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) == null)),
-    ...(requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) == null),
+    ...commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed')),
+    ...(requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed'),
   ]
 
   // 表示フィルタ（学期）に応じて、履修できる科目だけをスコア順に並べたものを取得する
@@ -422,18 +438,21 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     return subject.termType === termFilter.half && (subject.standardYear == null || subject.standardYear <= termFilter.year)
   }
 
-  // 「残りの必修」に出すのは、必修グループに属していて、まだ修得していない（かつ不合格でもない）ものだけ。
+  // 「残りの必修」には、未履修と修得予定の科目を出す。不合格の科目は専用一覧で再履修を確認してもらう。
   // 不合格の科目は「不可の単位」に既に出るので、ここでは重複して出さない
   // （2026-09-08、開発者の指摘：不可の単位に移動するのでそちらで分かる）
   const remainingRequired = recommended.filter(
-    (r) => requiredCodes.has(r.code) && committed.get(r.code) == null && isVisibleForTermFilter(r.code),
+    (r) => requiredCodes.has(r.code) && committed.get(r.code) !== 'passed' && committed.get(r.code) !== 'failed' && isVisibleForTermFilter(r.code),
   )
 
   // 取得単位・不可の単位のセクションは、committed（確定済み）を状態別に振り分けるだけでよい
   const passedSubjects = [...committed.entries()].filter(([, status]) => status === 'passed')
+  const plannedSubjects = [...committed.entries()].filter(([, status]) => status === 'taking')
   const failedSubjects = [...committed.entries()].filter(([, status]) => status === 'failed')
   // 取得単位の見出しに出す合計単位数（科目数ではなく単位数）
   const passedCredits = passedSubjects.reduce((sum, [code]) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
+  // 修得予定は取得単位には加算せず、見込みとして分けて表示する。
+  const plannedCredits = plannedSubjects.reduce((sum, [code]) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
   // 総取得単位は、科目として修得した単位に、科目番号を持たないその他単位認定も加えた生の合計。
   // 審査用の総単位（evaluation.totalCredits）は卒業所要単位に算入される分だけなので、別に表示する。
   const earnedTotalCredits = passedCredits + otherCommonCommitted
@@ -618,34 +637,67 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   }
   // 審査の不足条件（ReviewCondition）を、人が読める文章・補足にして表示する。
   function describeCondition(cond: ReviewCondition): ReactNode {
+    // 条件ごとに、修得予定をすべて修得できた場合に達成できるかを調べる。
+    function canBeSatisfiedWithPlans(): boolean {
+      switch (cond.type) {
+        case 'groupMin':
+          return (findGroupResult(evaluation.groups, cond.groupId)?.projected.contribution ?? 0) >= cond.min
+        case 'allPassed':
+          return findGroupResult(evaluation.groups, cond.groupId)?.projected.satisfied ?? false
+        case 'subjects':
+          return cond.codes.every((code) => ['passed', 'taking'].includes(committed.get(code) ?? ''))
+        case 'totalCredits':
+          return evaluation.totalCredits.projected.contribution >= cond.min
+        case 'commonCredits':
+          return evaluation.commonCredits.projected.contribution >= cond.min
+        case 'allGroups':
+          return boundaryGroups.every((g) => g.projectedSatisfied)
+        case 'review':
+          return reviewStatuses.find((status) => status.id === cond.id)?.projectedSatisfied ?? false
+        case 'subjectsCountMin':
+          return cond.codes.filter((code) => ['passed', 'taking'].includes(committed.get(code) ?? '')).length >= cond.min
+        case 'subjectsCreditMin':
+          return cond.codes
+            .filter((code) => ['passed', 'taking'].includes(committed.get(code) ?? ''))
+            .reduce((sum, code) => sum + (subjectCredits.get(code) ?? 0), 0) >= cond.min
+      }
+    }
     switch (cond.type) {
       case 'groupMin': {
         const g = findGroupResult(evaluation.groups, cond.groupId)
-        return `${groupLabelOf(cond.groupId)} を${cond.min}単位以上（現在${g?.contribution ?? 0}単位）`
+        const current = g?.contribution ?? 0
+        const planned = Math.max(0, (g?.projected.contribution ?? 0) - current)
+        return <>{groupLabelOf(cond.groupId)} を{cond.min}単位以上（現在{current}単位{planned > 0 && <span className="planned-credit"> + 修得予定{planned}単位</span>}）</>
       }
       case 'allPassed':
-        return `${groupLabelOf(cond.groupId)} をすべて修得`
+        return <>{groupLabelOf(cond.groupId)} をすべて修得{canBeSatisfiedWithPlans() && <span className="planned-credit">（達成予定）</span>}</>
       case 'subjects': {
         // 既に修得済みのものは省いて、まだ足りない科目だけ見せる
         const remaining = cond.codes.filter((code) => committed.get(code) !== 'passed')
-        return `${remaining.map((code) => nameOf(code)).join(' ・ ')} を修得`
+        return <>{remaining.map((code) => nameOf(code)).join(' ・ ')} を修得{canBeSatisfiedWithPlans() && <span className="planned-credit">（達成予定）</span>}</>
       }
       case 'totalCredits':
+        {
+        const planned = Math.max(0, evaluation.totalCredits.projected.contribution - evaluation.totalCredits.contribution)
         return (
           <>
-            合計 {cond.min}単位以上（現在{evaluation.totalCredits.contribution}単位）
+            合計 {cond.min}単位以上（現在{evaluation.totalCredits.contribution}単位{planned > 0 && <span className="planned-credit"> + 修得予定{planned}単位</span>}）
             <span className="review-credit-note-inline">
               ※ 共通単位の必要数を超えた分や自由科目など、卒業所要単位に算入されない単位は含みません。
             </span>
           </>
         )
+        }
       case 'commonCredits':
-        return `共通単位 ${cond.min}単位以上（現在${evaluation.commonCredits.contribution}単位）`
+        {
+        const planned = Math.max(0, evaluation.commonCredits.projected.contribution - evaluation.commonCredits.contribution)
+        return <>共通単位 {cond.min}単位以上（現在{evaluation.commonCredits.contribution}単位{planned > 0 && <span className="planned-credit"> + 修得予定{planned}単位</span>}）</>
+        }
       case 'allGroups':
-        return 'すべての区分の必要単位を満たす'
+        return <>すべての区分の必要単位を満たす{canBeSatisfiedWithPlans() && <span className="planned-credit">（達成予定）</span>}</>
       case 'review': {
         const target = reviews?.find((r) => r.id === cond.id)
-        return `「${target?.name ?? cond.id}」に合格`
+        return <>「{target?.name ?? cond.id}」に合格{canBeSatisfiedWithPlans() && <span className="planned-credit">（達成予定）</span>}</>
       }
       case 'subjectsCountMin': {
         const passedCount = cond.codes.filter((code) => committed.get(code) === 'passed').length
@@ -869,7 +921,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>
       <section className="requirement-section">
         {/* 科目として修得した分だけでなく、科目番号を持たない認定分も取得単位に含める。 */}
-        <h2>取得単位（{earnedTotalCredits}単位）</h2>
+        <h2>
+          修得単位数（{earnedTotalCredits}単位
+          {plannedCredits > 0 && <span className="planned-credit"> + 修得予定{plannedCredits}単位</span>}）
+        </h2>
         {(() => {
         // 共通単位が0のときは空の見出しを出さない。その他単位認定だけを取得した場合も内訳を表示する。
         const commonCreditsElement = (passedCredits > 0 || otherCommonCommitted > 0) && commonEarnedTotal > 0 ? (
@@ -1001,7 +1056,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </section>
 
       <section className="requirement-section">
-        <h2>残りの必修（あと {requiredShortfall(boundaryGroups)} 単位）</h2>
+        <h2>
+          残りの必修（あと {requiredShortfall(boundaryGroups)} 単位
+          {requiredPlannedCredits(boundaryGroups) > 0 && <span className="planned-credit"> - 修得予定{requiredPlannedCredits(boundaryGroups)}単位</span>}）
+        </h2>
         {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、一部の科目が表示されていません。</p>}
         <p className="section-guidance">この一覧の科目はすべて必修です。不合格になった必修科目は、上の「不合格になった科目」で再履修を確認してください。</p>
         {remainingRequiredByCategory.map(({ label, group, items }) => {
@@ -1104,7 +1162,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <details key="common-credits" className="elective-group">
               <summary>
                 <span className="elective-group-title">共通単位</span>
-                <span className="elective-group-progress">{commonEarnedTotal}/{requirementSet.commonCredits}単位</span>
+                <span className="elective-group-progress">
+                  {commonEarnedTotal}/{requirementSet.commonCredits}単位
+                  {commonPlannedCredits > 0 && <span className="planned-credit"> → {evaluation.commonCredits.projected.contribution}/{requirementSet.commonCredits}単位（予定）</span>}
+                </span>
                 <span className="elective-group-status">
                   {commonEarnedTotal >= requirementSet.commonCredits ? '充足済み' : `あと${requirementSet.commonCredits - commonEarnedTotal}単位`}
                 </span>
@@ -1206,7 +1267,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 <li key={r.id}>
                   {r.name}
                   {r.when && <span style={{ marginLeft: '0.4em' }}>（{r.when}）</span>}
-                  {r.satisfied ? ' ✔ 合格見込み' : ' ✖ 不足あり'}
+                  {r.satisfied
+                    ? ' ✔ 合格見込み'
+                    : r.projectedSatisfied
+                      ? ' △ 修得予定のものをすべて修得したら合格'
+                      : ' ✖ 不足あり'}
                   {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
                   {r.caveat && <p style={{ fontSize: '0.9em', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
                   {!r.satisfied && visibleUnsatisfied.length > 0 && (
@@ -1242,6 +1307,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 /** 見出しの「あと○単位」用に、必修グループぶんの不足単位数だけを合計する */
 function requiredShortfall(groups: readonly BoundaryGroup[]): number {
   return groups.filter((g) => g.kind === 'required').reduce((sum, g) => sum + g.shortfall, 0)
+}
+
+/** 必修の現在の不足のうち、修得予定がすべて修得できれば埋まる単位数を合計する。 */
+function requiredPlannedCredits(groups: readonly BoundaryGroup[]): number {
+  return groups
+    .filter((g) => g.kind === 'required')
+    .reduce((sum, g) => sum + Math.max(0, g.shortfall - g.projectedShortfall), 0)
 }
 
 // 科目数が多く一覧が長くなりすぎる区分は、前学期・後学期でさらに折りたたむ
@@ -1332,7 +1404,9 @@ function GroupProgress({
   // こうしないと、「更新」を押す前にプルダウンを触っただけで行が消えてしまい、
   // 「残りの必修」など他のセクションと表示の整合性が取れなくなる。
   // 不合格の科目は「不可の単位」に既に出るので、ここでは重複して出さない（2026-09-08、開発者の指摘）
-  const remainingAll = group.subjects.filter((code) => committed.get(code) == null && isVisibleForTerm(code))
+  const remainingAll = group.subjects.filter(
+    (code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed' && isVisibleForTerm(code),
+  )
   // 「幾何学概論」のように、実質同じ科目が他プログラムの科目コードとして重複して選択肢に
   // 入ってしまうことがあるので、科目名が同じものは1つにまとめる（自分のプログラムの科目が
   // あればそちらを優先し、他プログラム専門科目としては出さない）
@@ -1399,7 +1473,12 @@ function GroupProgress({
     <details className="elective-group">
       <summary>
         <span className="elective-group-title">{group.label ?? group.name}</span>
-        <span className="elective-group-progress">{group.contribution}/{group.required}単位</span>
+        <span className="elective-group-progress">
+          {group.contribution}/{group.required}単位
+          {group.projectedContribution > group.contribution && (
+            <span className="planned-credit"> → {group.projectedContribution}/{group.required}単位（予定）</span>
+          )}
+        </span>
         <span className="elective-group-status">
           {group.satisfied ? '充足済み' : `あと${group.shortfall}単位`}
         </span>

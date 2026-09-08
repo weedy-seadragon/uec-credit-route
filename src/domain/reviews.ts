@@ -15,6 +15,8 @@ export interface ReviewStatus {
   name: string
   when?: string
   satisfied: boolean
+  /** 修得予定の科目もすべて修得できたと仮定した場合の合否 */
+  projectedSatisfied: boolean
   /**
    * 不合格のとき、原因になっている条件の一覧（表示用に生データのまま返す。
    * 科目名・区分名への変換はUI側の役目）。合格していれば空配列
@@ -36,8 +38,10 @@ export function findGroupResult(groups: readonly GroupResult[], id: string): Gro
 }
 
 /** 判定境界（kindを持つ）グループがすべて木全体で満たされているか（卒業審査のallGroups用） */
-function allBoundaryGroupsSatisfied(groups: readonly GroupResult[]): boolean {
-  return groups.every((g) => (g.kind === undefined || g.satisfied) && allBoundaryGroupsSatisfied(g.children))
+function allBoundaryGroupsSatisfied(groups: readonly GroupResult[], projected: boolean): boolean {
+  return groups.every(
+    (g) => (g.kind === undefined || (projected ? g.projected.satisfied : g.satisfied)) && allBoundaryGroupsSatisfied(g.children, projected),
+  )
 }
 
 interface Context {
@@ -49,27 +53,39 @@ interface Context {
   visiting: Set<string>
   /** 一度判定した審査は使い回す */
   cache: Map<string, boolean>
+  /** trueなら、taking（修得予定）を修得済みとして見込み判定する */
+  projected: boolean
+}
+
+/** 現在の修得だけで見るか、修得予定も含めるかに応じて科目の達成状態を判定する。 */
+function isSubjectPassed(code: string, ctx: Context): boolean {
+  const status = ctx.records.get(code)
+  return status === 'passed' || (ctx.projected && status === 'taking')
 }
 
 function isConditionSatisfied(cond: ReviewCondition, ctx: Context): boolean {
   switch (cond.type) {
     case 'groupMin':
-      return (findGroupResult(ctx.evaluation.groups, cond.groupId)?.contribution ?? 0) >= cond.min
+      return ((ctx.projected
+        ? findGroupResult(ctx.evaluation.groups, cond.groupId)?.projected.contribution
+        : findGroupResult(ctx.evaluation.groups, cond.groupId)?.contribution) ?? 0) >= cond.min
     case 'allPassed':
-      return findGroupResult(ctx.evaluation.groups, cond.groupId)?.satisfied ?? false
+      return ctx.projected
+        ? findGroupResult(ctx.evaluation.groups, cond.groupId)?.projected.satisfied ?? false
+        : findGroupResult(ctx.evaluation.groups, cond.groupId)?.satisfied ?? false
     case 'subjects':
-      return cond.codes.every((code) => ctx.records.get(code) === 'passed')
+      return cond.codes.every((code) => isSubjectPassed(code, ctx))
     case 'totalCredits':
-      return ctx.evaluation.totalCredits.contribution >= cond.min
+      return (ctx.projected ? ctx.evaluation.totalCredits.projected.contribution : ctx.evaluation.totalCredits.contribution) >= cond.min
     case 'commonCredits':
-      return ctx.evaluation.commonCredits.contribution >= cond.min
+      return (ctx.projected ? ctx.evaluation.commonCredits.projected.contribution : ctx.evaluation.commonCredits.contribution) >= cond.min
     case 'allGroups':
-      return allBoundaryGroupsSatisfied(ctx.evaluation.groups)
+      return allBoundaryGroupsSatisfied(ctx.evaluation.groups, ctx.projected)
     case 'review':
       return evaluateReviewSatisfied(cond.id, ctx)
     case 'subjectsCountMin':
       // 単位数ではなく「何科目修得したか」を数える（別表4の「◯科目のうち◯科目以上」用）
-      return cond.codes.filter((code) => ctx.records.get(code) === 'passed').length >= cond.min
+      return cond.codes.filter((code) => isSubjectPassed(code, ctx)).length >= cond.min
     case 'subjectsCreditMin':
       // 複数グループにまたがる科目をまとめて単位数で数える（別表4の複数区分合算の条件用）
       return sumCreditsOfPassed(cond.codes, ctx) >= cond.min
@@ -80,7 +96,7 @@ function isConditionSatisfied(cond: ReviewCondition, ctx: Context): boolean {
 function sumCreditsOfPassed(codes: readonly string[], ctx: Context): number {
   let total = 0
   for (const code of codes) {
-    if (ctx.records.get(code) !== 'passed') continue
+    if (!isSubjectPassed(code, ctx)) continue
     const credits = ctx.subjectCredits.get(code)
     if (credits === undefined) {
       // data/ の整合性は scripts/validate_data.py で保証している前提なので、
@@ -140,16 +156,22 @@ export function evaluateReviews(
   records: ReadonlyMap<string, SubjectStatus>,
   subjectCredits: ReadonlyMap<string, number>,
 ): ReviewStatus[] {
-  const ctx: Context = { evaluation, records, subjectCredits, reviews, visiting: new Set(), cache: new Map() }
+  const ctx: Context = { evaluation, records, subjectCredits, reviews, visiting: new Set(), cache: new Map(), projected: false }
+  // 現在の合否と同じ条件木を、修得予定を含めた見込み用にも独立して評価する。
+  // cache/visitingを共有すると片方の判定が混ざるため、見込み用には別のContextを作る。
+  const projectedCtx: Context = { evaluation, records, subjectCredits, reviews, visiting: new Set(), cache: new Map(), projected: true }
   return reviews.map((review) => {
     const nodes = reviewNodes(review)
     const satisfied = nodes.every((n) => isNodeSatisfied(n, ctx))
+    const projectedSatisfied = nodes.every((n) => isNodeSatisfied(n, projectedCtx))
     ctx.cache.set(review.id, satisfied)
+    projectedCtx.cache.set(review.id, projectedSatisfied)
     return {
       id: review.id,
       name: review.name,
       when: review.when,
       satisfied,
+      projectedSatisfied,
       unsatisfied: satisfied ? [] : nodes.flatMap((n) => collectUnsatisfied(n, ctx)),
       onFail: review.onFail,
       caveat: review.caveat,

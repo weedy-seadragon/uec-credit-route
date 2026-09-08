@@ -15,10 +15,11 @@ export default function SubjectStatusSelect({ code, value, onChange }: SubjectSt
     // legendは見た目には隠し、各科目の行が縦に長くなりすぎないようにする。
     <fieldset className="subject-status" aria-label={`${code}の履修状態`}>
       <legend className="visually-hidden">{code}の履修状態</legend>
-      {/* 3つの固定候補を横並びのラベルとして表示する。nameが同じradioだけが排他的に選ばれる。 */}
+      {/* 4つの固定候補を横並びのラベルとして表示する。nameが同じradioだけが排他的に選ばれる。 */}
       {([
         ['none', '未履修'],
         ['passed', '修得'],
+        ['taking', '修得予定'],
         ['failed', '不合格'],
       ] as const).map(([status, label]) => (
         <label key={status} className={`status-option status-${status}`}>
@@ -27,7 +28,7 @@ export default function SubjectStatusSelect({ code, value, onChange }: SubjectSt
             name={`subject-status-${code}`}
             checked={(value ?? 'none') === status}
             onChange={() => {
-              // 未履修だけは履修記録を持たないundefinedへ戻し、他の2つはSubjectStatusとして渡す。
+              // 未履修だけは履修記録を持たないundefinedへ戻し、他の3つはSubjectStatusとして渡す。
               onChange(code, status === 'none' ? undefined : status)
             }}
           />
