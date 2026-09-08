@@ -414,10 +414,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // （理数基礎（選択）などcountAsCommonの区分の残り科目＋選択第二外国語などalwaysCommonSubjectsの残り）。
   // required=0の区分やalwaysCommonSubjectsはGroupProgressの対象外（required>0で絞っている）なので、
   // ここで拾わないとどこにも選択状態を変えるプルダウンが出ない
-  // 不合格の科目は「不可の単位」に既に出るので、ここでは重複して出さない。修得予定は状態を変更できるよう残す。
+  // 不合格の科目は「不可の単位」に既に出るので、ここでは重複して出さない。修得予定は専用の一覧で変更できる。
   const commonOnlyRemaining = [
-    ...commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed')),
-    ...(requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed'),
+    ...commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) == null)),
+    ...(requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) == null),
   ]
 
   // 表示フィルタ（学期）に応じて、履修できる科目だけをスコア順に並べたものを取得する
@@ -438,11 +438,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     return subject.termType === termFilter.half && (subject.standardYear == null || subject.standardYear <= termFilter.year)
   }
 
-  // 「残りの必修」には、未履修と修得予定の科目を出す。不合格の科目は専用一覧で再履修を確認してもらう。
+  // 「残りの必修」には未履修の科目だけを出す。修得予定は専用の黄色枠で確認・変更できる。
   // 不合格の科目は「不可の単位」に既に出るので、ここでは重複して出さない
   // （2026-09-08、開発者の指摘：不可の単位に移動するのでそちらで分かる）
   const remainingRequired = recommended.filter(
-    (r) => requiredCodes.has(r.code) && committed.get(r.code) !== 'passed' && committed.get(r.code) !== 'failed' && isVisibleForTermFilter(r.code),
+    (r) => requiredCodes.has(r.code) && committed.get(r.code) == null && isVisibleForTermFilter(r.code),
   )
 
   // 取得単位・不可の単位のセクションは、committed（確定済み）を状態別に振り分けるだけでよい
@@ -460,6 +460,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const registeredSubjectCount = passedSubjects.length + failedSubjects.length + otherCommonSubjectCountCommitted
   // 「取得単位」「残りの必修」は区分ごとの見出しを付けて表示する（例:「理数基礎（必修）」「類専門（必修）」）
   const passedByCategory = groupByCategory(passedSubjects, ([code]) => code, categoryLookup, boundaryGroups)
+  const plannedByCategory = groupByCategory(plannedSubjects, ([code]) => code, categoryLookup, boundaryGroups)
   const remainingRequiredByCategory = groupByCategory(remainingRequired, (r) => r.code, categoryLookup, boundaryGroups)
   // 不合格科目も、修得済み・残りの必修と同じ要件区分でまとめる。
   // どの区分の不足に関係する科目かを、不合格一覧だけで追えるようにするための対応表である。
@@ -1052,7 +1053,32 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             </div>
           )
         })}
-        {failedSubjects.length === 0 && <p>（ありません）</p>}
+        {failedSubjects.length === 0 && <p>・（ありません）</p>}
+      </section>
+
+      {/* 修得予定は取得済み・未履修と混ぜず、予定の単位と科目をまとめて確認できる黄色枠に置く。 */}
+      <section className="requirement-section planned-section">
+        <h2>修得予定の単位（{plannedCredits}単位）</h2>
+        <p className="section-guidance">修得予定の科目をすべて修得できた場合、黄色で示した予定単位が各区分・審査の計算に反映されます。</p>
+        {plannedByCategory.map(({ label, group, items }) => (
+          <div key={group?.id ?? label}>
+            <h3>{label}</h3>
+            <ul>
+              {items.map(([code]) => (
+                <li key={code}>
+                  <SubjectRow
+                    name={nameLink(code)}
+                    credits={creditsLabel(code)}
+                    term={yearTermTag(code)}
+                    status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
+                    schedule={dayPeriodTag(code)}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        {plannedSubjects.length === 0 && <p>・（ありません）</p>}
       </section>
 
       <section className="requirement-section">
@@ -1404,9 +1430,7 @@ function GroupProgress({
   // こうしないと、「更新」を押す前にプルダウンを触っただけで行が消えてしまい、
   // 「残りの必修」など他のセクションと表示の整合性が取れなくなる。
   // 不合格の科目は「不可の単位」に既に出るので、ここでは重複して出さない（2026-09-08、開発者の指摘）
-  const remainingAll = group.subjects.filter(
-    (code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed' && isVisibleForTerm(code),
-  )
+  const remainingAll = group.subjects.filter((code) => committed.get(code) == null && isVisibleForTerm(code))
   // 「幾何学概論」のように、実質同じ科目が他プログラムの科目コードとして重複して選択肢に
   // 入ってしまうことがあるので、科目名が同じものは1つにまとめる（自分のプログラムの科目が
   // あればそちらを優先し、他プログラム専門科目としては出さない）
