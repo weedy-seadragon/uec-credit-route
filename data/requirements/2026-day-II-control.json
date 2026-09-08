@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "entryYear": 2025,
+  "entryYear": 2026,
   "course": "day",
   "cluster": "II",
   "program": "control",
   "programName": "計測・制御システムプログラム",
   "programSuffix": "i",
-  "source": "学修要覧2025（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.2④",
-  "extends": "2025-day-common.json",
+  "source": "学修要覧2026（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.2④",
+  "extends": "2026-day-common.json",
   "totalCredits": 133,
   "commonCredits": 4,
   "subtotals": {

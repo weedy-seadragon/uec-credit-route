@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "source": "学修要覧2025（情報理工学域）付録C。昼間コース共通科目＋Ⅰ・Ⅱ・Ⅲ類15プログラム＋夜間主収録",
-  "note": "曜日時限・担当・シラバスURLはシラバスから別途取得して offerings に入れる（scripts/fetch_syllabus.py 予定）。主キーは末尾記号を含むフルコード（例 COM405a）。同じ番号でもプログラムが違えば別科目のことがあるため、名寄せはしない",
+  "source": "学修要覧2026（情報理工学域）付録C。昼間コース共通科目＋Ⅰ・Ⅱ・Ⅲ類15プログラム＋夜間主収録",
+  "note": "2025年度版を土台に学修要覧2026との差分を反映。変更のない科目のofferingsは、2026年度シラバスから取得済みの情報を引き継ぐ。新設・番号変更科目は誤リンク防止のため未設定",
   "subjects": [
     {
       "code": "BCH501r",
@@ -207,18 +207,35 @@
     },
     {
       "code": "BCHa03r",
-      "name": "化学生命工学特論",
-      "credits": 2,
+      "name": "化学生命工学特論A",
+      "credits": 1,
       "field": "BCH",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
       "eveningAllowed": false,
       "forInternational": false,
       "graduateLinked": true,
       "groups": [
         "major-free"
-      ]
+      ],
+      "note": "集中"
+    },
+    {
+      "code": "BCHa04r",
+      "name": "化学生命工学特論B",
+      "credits": 1,
+      "field": "BCH",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ],
+      "note": "集中"
     },
     {
       "code": "BIO201i",
@@ -994,21 +1011,6 @@
     {
       "code": "BIOb01r",
       "name": "生体機能システム学基礎",
-      "credits": 2,
-      "field": "BIO",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "BIOb02r",
-      "name": "ゲノム生物学特論",
       "credits": 2,
       "field": "BIO",
       "standardSemester": 8,
@@ -12981,21 +12983,6 @@
       ]
     },
     {
-      "code": "COMb02k",
-      "name": "機械情報学特論",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
       "code": "ELE001g",
       "name": "電子工学工房",
       "credits": 2,
@@ -16180,6 +16167,36 @@
         }
       ],
       "prerequisitesText": "物理学概論第一・第二，波動と光"
+    },
+    {
+      "code": "ELE506g",
+      "name": "マルチメディア処理",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ELE506h",
+      "name": "マルチメディア処理",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
     },
     {
       "code": "ELE601a",
@@ -28960,6 +28977,134 @@
       "prerequisitesText": "特になし"
     },
     {
+      "code": "GSE101m",
+      "name": "サイエンス工房A",
+      "credits": 1,
+      "field": "GSE",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ],
+      "note": "複数学年で履修可"
+    },
+    {
+      "code": "GSE101n",
+      "name": "サイエンス工房A",
+      "credits": 1,
+      "field": "GSE",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ],
+      "note": "複数学年で履修可"
+    },
+    {
+      "code": "GSE101p",
+      "name": "サイエンス工房A",
+      "credits": 1,
+      "field": "GSE",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ],
+      "note": "複数学年で履修可"
+    },
+    {
+      "code": "GSE101r",
+      "name": "サイエンス工房A",
+      "credits": 1,
+      "field": "GSE",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ],
+      "note": "複数学年で履修可"
+    },
+    {
+      "code": "GSE201m",
+      "name": "サイエンス工房B",
+      "credits": 1,
+      "field": "GSE",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ],
+      "note": "複数学年で履修可"
+    },
+    {
+      "code": "GSE201n",
+      "name": "サイエンス工房B",
+      "credits": 1,
+      "field": "GSE",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ],
+      "note": "複数学年で履修可"
+    },
+    {
+      "code": "GSE201p",
+      "name": "サイエンス工房B",
+      "credits": 1,
+      "field": "GSE",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ],
+      "note": "複数学年で履修可"
+    },
+    {
+      "code": "GSE201r",
+      "name": "サイエンス工房B",
+      "credits": 1,
+      "field": "GSE",
+      "standardSemester": 2,
+      "standardYear": 1,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ],
+      "note": "複数学年で履修可"
+    },
+    {
       "code": "GSE301f",
       "name": "基礎演習A",
       "credits": 1,
@@ -36255,6 +36400,38 @@
       "prerequisitesText": "特になし"
     },
     {
+      "code": "INT006z",
+      "name": "海外研修Ⅰ",
+      "credits": 1,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "intl-abroad"
+      ],
+      "note": "集中。共通単位。1～8学期で履修可"
+    },
+    {
+      "code": "INT007z",
+      "name": "海外研修Ⅱ",
+      "credits": 2,
+      "field": "INT",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "intl-abroad"
+      ],
+      "note": "集中。共通単位。1～8学期で履修可"
+    },
+    {
       "code": "INT401m",
       "name": "Experimental Electronics Laboratory",
       "credits": 2,
@@ -42890,7 +43067,7 @@
     },
     {
       "code": "MCEb03k",
-      "name": "組込み制御システム学特論",
+      "name": "メカトロニクス特論",
       "credits": 2,
       "field": "MCE",
       "standardSemester": 8,
@@ -42935,7 +43112,7 @@
     },
     {
       "code": "MCEb04k",
-      "name": "メカトロニクス特論",
+      "name": "ロボット応用工学特論",
       "credits": 2,
       "field": "MCE",
       "standardSemester": 8,
@@ -42980,7 +43157,7 @@
     },
     {
       "code": "MCEb05k",
-      "name": "ロボット応用工学特論",
+      "name": "ロボット機構制御特論",
       "credits": 2,
       "field": "MCE",
       "standardSemester": 8,
@@ -43025,7 +43202,7 @@
     },
     {
       "code": "MCEb06k",
-      "name": "ロボット機構制御特論",
+      "name": "運動計測学特論",
       "credits": 2,
       "field": "MCE",
       "standardSemester": 8,
@@ -43070,7 +43247,7 @@
     },
     {
       "code": "MCEb07k",
-      "name": "運動計測学特論",
+      "name": "バーチャルリアリティ特論",
       "credits": 2,
       "field": "MCE",
       "standardSemester": 8,
@@ -43115,7 +43292,7 @@
     },
     {
       "code": "MCEb08k",
-      "name": "バーチャルリアリティ特論",
+      "name": "ロボット情報工学特論",
       "credits": 2,
       "field": "MCE",
       "standardSemester": 8,
@@ -43160,7 +43337,7 @@
     },
     {
       "code": "MCEb09k",
-      "name": "ロボット情報工学特論",
+      "name": "設計システム工学特論",
       "credits": 2,
       "field": "MCE",
       "standardSemester": 8,
@@ -43205,7 +43382,7 @@
     },
     {
       "code": "MCEb10k",
-      "name": "設計システム工学特論",
+      "name": "知的生産システム特論",
       "credits": 2,
       "field": "MCE",
       "standardSemester": 8,
@@ -43250,7 +43427,7 @@
     },
     {
       "code": "MCEb11k",
-      "name": "知的生産システム特論",
+      "name": "計算力学特論",
       "credits": 2,
       "field": "MCE",
       "standardSemester": 8,
@@ -43295,12 +43472,12 @@
     },
     {
       "code": "MCEb12k",
-      "name": "計算力学特論",
+      "name": "Advanced Robotics and Mechatronics Engineering",
       "credits": 2,
       "field": "MCE",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
       "eveningAllowed": false,
       "forInternational": false,
       "graduateLinked": true,
@@ -43325,21 +43502,6 @@
     },
     {
       "code": "MCEb13j",
-      "name": "Advanced Robotics and Mechatronics Engineering",
-      "credits": 2,
-      "field": "MCE",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": null,
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "MCEb13k",
       "name": "Advanced Robotics and Mechatronics Engineering",
       "credits": 2,
       "field": "MCE",
@@ -51589,6 +51751,21 @@
       ]
     },
     {
+      "code": "MTHa02c",
+      "name": "プログラム言語基礎論",
+      "credits": 2,
+      "field": "MTH",
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
       "code": "MTHb01a",
       "name": "数理統計学基礎",
       "credits": 2,
@@ -51620,12 +51797,12 @@
     },
     {
       "code": "MTHb01c",
-      "name": "ハイパフォーマンスコンピューティング基礎論",
+      "name": "シミュレーション理工学基礎論",
       "credits": 2,
       "field": "MTH",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": null,
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
       "eveningAllowed": true,
       "forInternational": false,
       "graduateLinked": true,
@@ -51712,12 +51889,12 @@
     },
     {
       "code": "MTHb02c",
-      "name": "シミュレーション理工学基礎論",
+      "name": "離散最適化基礎論",
       "credits": 2,
       "field": "MTH",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": null,
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
       "eveningAllowed": true,
       "forInternational": false,
       "graduateLinked": true,
@@ -51805,12 +51982,12 @@
     },
     {
       "code": "MTHb03c",
-      "name": "離散最適化基礎論",
+      "name": "連続最適化基礎論",
       "credits": 2,
       "field": "MTH",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": null,
+      "standardSemester": 8,
+      "standardYear": 4,
+      "termType": "後学期",
       "eveningAllowed": true,
       "forInternational": false,
       "graduateLinked": true,
@@ -51858,21 +52035,6 @@
       "standardYear": null,
       "termType": null,
       "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "MTHb04c",
-      "name": "連続最適化基礎論",
-      "credits": 2,
-      "field": "MTH",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": null,
-      "eveningAllowed": true,
       "forInternational": false,
       "graduateLinked": true,
       "groups": [
@@ -60779,126 +60941,6 @@
       "prerequisitesText": "なしNone"
     },
     {
-      "code": "UEC302m",
-      "name": "UECパスポートプログラムA",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "UEC302n",
-      "name": "UECパスポートプログラムA",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "UEC302p",
-      "name": "UECパスポートプログラムA",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "UEC302r",
-      "name": "UECパスポートプログラムA",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "UEC501m",
-      "name": "UECパスポートプログラムB",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "UEC501n",
-      "name": "UECパスポートプログラムB",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "UEC501p",
-      "name": "UECパスポートプログラムB",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "UEC501r",
-      "name": "UECパスポートプログラムB",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
       "code": "UEC501s",
       "name": "データサイエンス演習",
       "credits": 1,
@@ -60956,66 +60998,6 @@
         }
       ],
       "prerequisitesText": "総合コミュニケーション科学"
-    },
-    {
-      "code": "UEC701m",
-      "name": "UECパスポートプログラムC",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "UEC701n",
-      "name": "UECパスポートプログラムC",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "UEC701p",
-      "name": "UECパスポートプログラムC",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "UEC701r",
-      "name": "UECパスポートプログラムC",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ]
     }
   ]
 }

@@ -1,20 +1,20 @@
 {
   "schemaVersion": 1,
-  "entryYear": 2025,
+  "entryYear": 2026,
   "course": "day",
   "cluster": "II",
-  "program": "control",
-  "programName": "計測・制御システムプログラム",
-  "programSuffix": "i",
-  "source": "学修要覧2025（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.2④",
-  "extends": "2025-day-common.json",
+  "program": "robotics",
+  "programName": "先端ロボティクスプログラム",
+  "programSuffix": "j",
+  "source": "学修要覧2026（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.2⑤",
+  "extends": "2026-day-common.json",
   "totalCredits": 133,
-  "commonCredits": 4,
+  "commonCredits": 5,
   "subtotals": {
     "general": 27,
     "practical": 16,
-    "specialized": 86,
-    "common": 4
+    "specialized": 85,
+    "common": 5
   },
   "commonOverrides": {
     "datasci-ex": {
@@ -28,7 +28,7 @@
       "id": "specialized",
       "name": "専門科目",
       "label": "専門",
-      "required": 86,
+      "required": 85,
       "children": [
         {
           "id": "math-basic",
@@ -83,12 +83,12 @@
               "required": 11,
               "kind": "required",
               "subjects": [
-                "MTH301i",
-                "PHY204i",
-                "ELE301i",
-                "PHY301i",
-                "PHY302i",
-                "GSE301i"
+                "MTH301j",
+                "PHY204j",
+                "ELE301j",
+                "PHY301j",
+                "PHY302j",
+                "GSE301j"
               ],
               "note": "基礎演習Aの履修方法は注2参照"
             },
@@ -99,12 +99,12 @@
               "required": 4,
               "kind": "elective-required",
               "subjects": [
-                "MTH302i",
-                "COM301i",
-                "MTH303i",
-                "MTH401i",
-                "MTH304i",
-                "PHY303i"
+                "MTH302j",
+                "COM301j",
+                "MTH303j",
+                "MTH401j",
+                "MTH304j",
+                "PHY303j"
               ]
             },
             {
@@ -115,8 +115,8 @@
               "kind": "free",
               "countsTowardGraduation": false,
               "subjects": [
-                "COM401i",
-                "MTH402i"
+                "COM401j",
+                "MTH402j"
               ]
             }
           ]
@@ -124,29 +124,29 @@
         {
           "id": "major",
           "name": "類専門科目",
-          "required": 51,
+          "required": 50,
           "children": [
             {
               "id": "major-req",
               "name": "必修",
               "label": "類専門（必修）",
-              "required": 31,
+              "required": 30,
               "kind": "required",
               "subjects": [
-                "MCE401i",
-                "MCE402i",
-                "MCE403i",
-                "MCE501i",
-                "MCE502i",
-                "MCE601i",
-                "MCE503i",
-                "MCE602i",
-                "MCE603i",
-                "GSE601i",
-                "LAB701i",
-                "LAB801i",
-                "LAB702i",
-                "LAB802i"
+                "MCE401j",
+                "MCE402j",
+                "MCE403j",
+                "MCE501j",
+                "MCE502j",
+                "MCE503j",
+                "MCE601j",
+                "MCE504j",
+                "MCE602j",
+                "MCE603j",
+                "LAB701j",
+                "LAB801j",
+                "LAB702j",
+                "LAB802j"
               ]
             },
             {
@@ -157,17 +157,16 @@
               "kind": "elective-required",
               "note": "計算機アーキテクチャーは計算機工学と重複履修不可（注3）",
               "subjects": [
-                "COM402i",
-                "COM403i",
-                "COM404i",
-                "GSE401i",
-                "GSE501i",
-                "MCE504i",
-                "MCE505i",
-                "MCE604i",
-                "ELE601i",
-                "MCE605i",
-                "MCE606i"
+                "COM402j",
+                "COM403j",
+                "COM404j",
+                "MCE505j",
+                "MCE506j",
+                "MCE507j",
+                "MCE604j",
+                "ELE601j",
+                "MCE605j",
+                "MCE606j"
               ]
             },
             {
@@ -178,23 +177,24 @@
               "kind": "elective",
               "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み",
               "subjects": [
-                "MTH403i",
-                "COM405i",
-                "MCE506i",
-                "MCE507i",
-                "MCE508i",
-                "MCE509i",
-                "MCE607i",
-                "MCE608i",
-                "MCE609i",
-                "MCE701i",
-                "MCE702i",
-                "FGN101i",
-                "FGN201i",
-                "FGN102i",
-                "FGN202i",
-                "FGN301i",
-                "FGN401i",
+                "MTH403j",
+                "COM405j",
+                "GSE401j",
+                "MCE508j",
+                "MCE509j",
+                "GSE501j",
+                "MCE607j",
+                "GSE601j",
+                "MCE608j",
+                "MCE609j",
+                "MCE701j",
+                "MCE702j",
+                "FGN101j",
+                "FGN201j",
+                "FGN102j",
+                "FGN202j",
+                "FGN301j",
+                "FGN401j",
                 "MTH402f",
                 "COM402f",
                 "ELE501f",
@@ -253,24 +253,23 @@
                 "FGN202h",
                 "FGN301h",
                 "FGN401h",
-                "MTH403j",
-                "COM405j",
-                "GSE401j",
-                "MCE508j",
-                "MCE509j",
-                "GSE501j",
-                "MCE607j",
-                "GSE601j",
-                "MCE608j",
-                "MCE609j",
-                "MCE701j",
-                "MCE702j",
-                "FGN101j",
-                "FGN201j",
-                "FGN102j",
-                "FGN202j",
-                "FGN301j",
-                "FGN401j"
+                "MTH403i",
+                "COM405i",
+                "MCE506i",
+                "MCE507i",
+                "MCE508i",
+                "MCE509i",
+                "MCE607i",
+                "MCE608i",
+                "MCE609i",
+                "MCE701i",
+                "MCE702i",
+                "FGN101i",
+                "FGN201i",
+                "FGN102i",
+                "FGN202i",
+                "FGN301i",
+                "FGN401i"
               ]
             },
             {
@@ -282,42 +281,42 @@
               "countsTowardGraduation": false,
               "note": "地学・生物学関連科目、幾何学概論、大学院連携科目など。卒業要件に含まれない",
               "subjects": [
-                "GEO201i",
-                "GEO501i",
-                "BIO201i",
-                "BIO501i",
-                "MTH501i",
-                "GSEa01i",
-                "MCEa01i",
-                "MCEa02i",
-                "MCEa03i",
-                "MCEa04i",
-                "MCEa05i",
-                "GSEa02i",
-                "MCEa06i",
-                "MCEa07i",
-                "GSEa03i",
-                "GSEa04i",
-                "MCEb01i",
-                "MCEb02i",
-                "MCEb03i",
-                "MCEb04i",
-                "MCEb05i",
-                "COMb01i",
-                "MCEb06i",
-                "MCEb07i",
-                "MCEb08i",
-                "COMb02i",
-                "PHYb01i",
-                "MCEb09i",
-                "PHYb02i",
-                "GSEb01i",
-                "MCEb10i",
-                "MCEb11i",
-                "MCEb12i",
-                "MCEb13i",
-                "ELEa01i",
-                "LAB501i"
+                "GEO201j",
+                "GEO501j",
+                "BIO201j",
+                "BIO501j",
+                "MTH501j",
+                "GSEa01j",
+                "MCEa01j",
+                "MCEa02j",
+                "MCEa03j",
+                "MCEa04j",
+                "MCEa05j",
+                "GSEa02j",
+                "MCEa06j",
+                "MCEa07j",
+                "GSEa03j",
+                "GSEa04j",
+                "MCEb01j",
+                "MCEb02j",
+                "MCEb03j",
+                "MCEb04j",
+                "MCEb05j",
+                "COMb01j",
+                "MCEb06j",
+                "MCEb07j",
+                "MCEb08j",
+                "COMb02j",
+                "PHYb01j",
+                "MCEb09j",
+                "PHYb02j",
+                "GSEb01j",
+                "MCEb10j",
+                "MCEb11j",
+                "MCEb12j",
+                "MCEb13j",
+                "ELEa01j",
+                "LAB501j"
               ]
             },
             {
@@ -328,8 +327,8 @@
               "kind": "international",
               "note": "単位の扱いは年度ごとの科目一覧表による",
               "subjects": [
-                "INT001i",
-                "INT002i"
+                "INT001j",
+                "INT002j"
               ]
             }
           ]
@@ -377,8 +376,8 @@
             {
               "type": "subjects",
               "codes": [
-                "PHY204i",
-                "MTH301i"
+                "PHY204j",
+                "MTH301j"
               ],
               "note": "別表3: 類共通基礎科目のうち力学・確率統計（1・2年次開講の必修科目、計4単位）"
             }
@@ -392,10 +391,10 @@
       ],
       "onFail": {
         "blockedSubjects": [
-          "MCE502i",
-          "MCE601i"
+          "MCE503j",
+          "MCE601j"
         ],
-        "note": "不合格時はMCE502i・MCE601iを履修できない"
+        "note": "不合格時はMCE503j・MCE601jを履修できない"
       }
     },
     {
@@ -452,11 +451,11 @@
         {
           "type": "subjects",
           "codes": [
-            "MCE403i",
-            "MCE502i",
-            "MCE601i",
-            "MCE503i",
-            "MCE602i"
+            "MCE403j",
+            "MCE503j",
+            "MCE601j",
+            "MCE504j",
+            "MCE602j"
           ],
           "note": "別表4: 類専門科目の指定科目"
         },
@@ -477,7 +476,7 @@
         },
         {
           "type": "commonCredits",
-          "min": 4
+          "min": 5
         },
         {
           "type": "totalCredits",
