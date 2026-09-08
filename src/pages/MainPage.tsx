@@ -297,6 +297,22 @@ function StickyGroupClose({
 }
 
 /**
+ * 審査の詳細を開いたまま長い条件を読んでいるとき、上部から閉じられる入れ子。
+ * 追従ボタンに必要なrefは審査ごとに独立させるため、専用の小さな部品として切り出す。
+ */
+function ReviewDetails({ title, children }: { title: string; children: ReactNode }) {
+  // この詳細入れ子自身の見出し位置を追跡し、画面上端へ閉じる操作を出す。
+  const detailsRef = useRef<HTMLDetailsElement>(null)
+  return (
+    <details ref={detailsRef} className="nested-subject-group review-details">
+      <summary><span>詳細</span></summary>
+      {children}
+      <StickyGroupClose detailsRef={detailsRef} title={title} />
+    </details>
+  )
+}
+
+/**
  * 科目一覧の1行を、科目情報と状態操作の2列グリッドで表示する共通部品。
  *
  * 一覧ごとに科目名・単位・状態ボタンの並びがずれると、学生が「何を変更するか」を
@@ -1584,15 +1600,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                         {r.onFail?.note && <p className="review-note">※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
                       </div>
                     ) : (
-                      <details className="nested-subject-group review-details">
-                        <summary><span>詳細</span></summary>
+                      <ReviewDetails title={`${r.name}の詳細`}>
                         <ul className="review-conditions">
                           {visibleUnsatisfied.map((cond, i) => (
                             <li key={i}>{describeCondition(cond)}</li>
                           ))}
                         </ul>
                         {r.onFail?.note && <p className="review-note">※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
-                      </details>
+                      </ReviewDetails>
                     )
                   )}
                 </li>
