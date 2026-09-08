@@ -353,6 +353,41 @@ select {
   font-weight: 700;
 }
 
+/* 画面のJavaScriptを必要になった時点で読む間も、空白にせず何が起きているかを伝える。 */
+.page-loading {
+  padding: 2rem 0;
+  text-align: center;
+}
+
+/* 長い選択科目では見出しが画面外へ出たときだけ、現在読んでいる区分を閉じる操作を画面上部いっぱいに固定する。 */
+.sticky-group-close {
+  position: fixed;
+  z-index: 10;
+  top: max(0.5rem, env(safe-area-inset-top));
+  right: 0.75rem;
+  left: 0.75rem;
+  min-height: 2.4rem;
+  padding: 0.35rem 0.8rem;
+  border: 2px solid #6079ad;
+  border-radius: 0.35rem;
+  background: Canvas;
+  box-shadow: 0 2px 8px color-mix(in srgb, CanvasText 22%, transparent);
+  color: inherit;
+  font-weight: 700;
+}
+
+/* マウスでもキーボードでも押せることを分かりやすくし、元のsummaryと同じ青系の反応にする。 */
+.sticky-group-close:hover,
+.sticky-group-close:focus-visible {
+  background: color-mix(in srgb, #e9f1ff 70%, Canvas);
+}
+
+/* 親の区分を閉じるバーの下に少し間を空け、子入れ子を閉じるバーを並べる。 */
+.sticky-group-close--nested {
+  top: 3.55rem;
+  border-color: #88a5dc;
+}
+
 /* その他単位認定の項目名とプルダウンを離し、どちらを操作するか分かりやすくする。 */
 .other-common-select {
   display: inline-flex;

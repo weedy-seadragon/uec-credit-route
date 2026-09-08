@@ -10,8 +10,8 @@
 //   （取得単位への追加も、この操作を通じて行う。ファイルからの読み込み等はフェーズ2-5で対応）
 // - 修得予定は将来の単位見込みを表す状態で、更新時には確定できる曜日時限の重複だけを注意表示する。
 //   先修科目（prerequisites）は2026-09-06にprerequisites.ts経由で配線した
-import { useMemo, useRef, useState } from 'react'
-import type { ChangeEvent, ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import type { ChangeEvent, ReactNode, RefObject } from 'react'
 import { Link } from 'react-router-dom'
 import type { GroupKind, RequirementGroup, SubjectStatus } from '../domain/requirements'
 import { evaluateRequirements } from '../domain/requirements'
@@ -197,6 +197,7 @@ function CollapsedSubjectGroup<T>({
   codeOf,
   renderRow,
   footer,
+  stickyClose = false,
 }: {
   title: string
   items: readonly T[]
@@ -204,13 +205,17 @@ function CollapsedSubjectGroup<T>({
   renderRow: (item: T) => ReactNode
   /** 科目一覧の下に置く補足操作。認定単位のように科目が無くても見せる内容に使う。 */
   footer?: ReactNode
+  /** 選択科目の中の入れ子では、長い一覧を上部の追従バーから閉じられるようにする。 */
+  stickyClose?: boolean
 }) {
+  // 子入れ子自身の見出し位置を追跡し、親とは別の「閉じる」操作を出せるようにする。
+  const detailsRef = useRef<HTMLDetailsElement>(null)
   // 科目が無くても、認定単位の入力欄のような補足があれば入れ子自体は表示する。
   if (items.length === 0 && !footer) return null
   return (
     // 折りたたみ自体の▼と中の科目の・が並ぶと紛らわしいので、この<li>自体には・を付けない
     <li style={{ listStyleType: 'none' }}>
-      <details className="nested-subject-group">
+      <details ref={detailsRef} className="nested-subject-group">
         <summary>
           <span>{title}</span>
           <span className="nested-subject-count">{items.length}科目</span>
@@ -221,8 +226,73 @@ function CollapsedSubjectGroup<T>({
           ))}
           {footer}
         </ul>
+        {stickyClose && <StickyGroupClose detailsRef={detailsRef} title={title} level="nested" />}
       </details>
     </li>
+  )
+}
+
+/**
+ * 長い選択区分を読んでいる最中だけ、画面上端からその区分を閉じられるボタンを表示する。
+ * 見出しが画面内にある間は元のsummaryを使えるため、追従ボタンは出さない。
+ */
+function StickyGroupClose({
+  detailsRef,
+  title,
+  level = 'parent',
+}: {
+  detailsRef: RefObject<HTMLDetailsElement | null>
+  title: string
+  /** 親区分と子入れ子を上下に並べるための表示位置。 */
+  level?: 'parent' | 'nested'
+}) {
+  // summaryが画面外へ出ており、かつ区分の中身をまだ読んでいるときだけ追従ボタンを表示する。
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    // スクロール・画面回転・detailsの開閉ごとに、見出しと区分末尾の位置から表示要否を判定する。
+    const updateVisibility = () => {
+      const details = detailsRef.current
+      const summary = details?.querySelector('summary')
+      if (!details || !summary || !details.open) {
+        setIsVisible(false)
+        return
+      }
+      const summaryRect = summary.getBoundingClientRect()
+      const detailsRect = details.getBoundingClientRect()
+      setIsVisible(summaryRect.bottom < 0 && detailsRect.bottom > 0)
+    }
+    const details = detailsRef.current
+    window.addEventListener('scroll', updateVisibility, { passive: true })
+    window.addEventListener('resize', updateVisibility)
+    details?.addEventListener('toggle', updateVisibility)
+    updateVisibility()
+    // 別の区分へ切り替わった後も古いイベント監視が残らないよう、部品が消えるときに解除する。
+    return () => {
+      window.removeEventListener('scroll', updateVisibility)
+      window.removeEventListener('resize', updateVisibility)
+      details?.removeEventListener('toggle', updateVisibility)
+    }
+  }, [detailsRef])
+
+  // 追従ボタンが不要な位置ではDOMも出さず、通常の科目操作を邪魔しない。
+  if (!isVisible) return null
+
+  return (
+    <button
+      type="button"
+      className={`sticky-group-close sticky-group-close--${level}`}
+      onClick={() => {
+        // nativeのdetailsを閉じてから見出しへ戻ることで、閉じた後のページ位置も自然にそろえる。
+        const details = detailsRef.current
+        const summary = details?.querySelector('summary')
+        if (!details || !summary) return
+        details.open = false
+        summary.scrollIntoView({ block: 'start', behavior: 'smooth' })
+      }}
+    >
+      {title}を閉じる ↑
+    </button>
   )
 }
 
@@ -1587,6 +1657,8 @@ function GroupProgress({
   /** 他類専門科目の認定科目数を下書き状態へ反映する */
   onOtherClusterMajorSubjectCountChange: (value: number) => void
 }) {
+  // この区分自身のsummary位置を追跡し、長い一覧を読んでいる間だけ閉じる操作を画面上部へ出す。
+  const detailsRef = useRef<HTMLDetailsElement>(null)
   // 一覧に出す／消すのは committed（確定済み）で判断する。draft はプルダウンの表示値にだけ使う。
   // こうしないと、「更新」を押す前にプルダウンを触っただけで行が消えてしまい、
   // 「残りの必修」など他のセクションと表示の整合性が取れなくなる。
@@ -1656,7 +1728,7 @@ function GroupProgress({
     ? `この一覧からあと${group.shortfall}単位を選んで修得してください。`
     : 'この区分は必要単位を満たしています。'
   return (
-    <details className="elective-group">
+    <details ref={detailsRef} className="elective-group">
       <summary>
         <span className="elective-group-title">{group.label ?? group.name}</span>
         <span className="elective-group-progress">
@@ -1676,15 +1748,15 @@ function GroupProgress({
         ))}
         {splitByTerm && (
           <>
-            <CollapsedSubjectGroup title="前学期" items={springRegular} codeOf={(code) => code} renderRow={rowShort} />
+            <CollapsedSubjectGroup title="前学期" items={springRegular} codeOf={(code) => code} renderRow={rowShort} stickyClose />
             {summerIntensive.length > 0 && (
-              <CollapsedSubjectGroup title="夏期集中" items={summerIntensive} codeOf={(code) => code} renderRow={rowShort} />
+              <CollapsedSubjectGroup title="夏期集中" items={summerIntensive} codeOf={(code) => code} renderRow={rowShort} stickyClose />
             )}
-            <CollapsedSubjectGroup title="後学期" items={fallRegular} codeOf={(code) => code} renderRow={rowShort} />
+            <CollapsedSubjectGroup title="後学期" items={fallRegular} codeOf={(code) => code} renderRow={rowShort} stickyClose />
             {winterIntensive.length > 0 && (
-              <CollapsedSubjectGroup title="冬期集中" items={winterIntensive} codeOf={(code) => code} renderRow={rowShort} />
+              <CollapsedSubjectGroup title="冬期集中" items={winterIntensive} codeOf={(code) => code} renderRow={rowShort} stickyClose />
             )}
-            <CollapsedSubjectGroup title="その他" items={noTermCollapsed} codeOf={(code) => code} renderRow={row} />
+            <CollapsedSubjectGroup title="その他" items={noTermCollapsed} codeOf={(code) => code} renderRow={row} stickyClose />
           </>
         )}
         <CollapsedSubjectGroup
@@ -1692,6 +1764,7 @@ function GroupProgress({
           items={otherProgram}
           codeOf={(code) => code}
           renderRow={row}
+          stickyClose
           footer={group.id === 'major-sel' ? (
             <li className="recognized-major-credit">
               <label className="other-common-select">
@@ -1723,9 +1796,10 @@ function GroupProgress({
             </li>
           ) : undefined}
         />
-        <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} />
+        <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} stickyClose />
         {remaining.length === 0 && <li>（この表示範囲では残っていません）</li>}
       </ul>
+      <StickyGroupClose detailsRef={detailsRef} title={group.label ?? group.name} />
     </details>
   )
 }
