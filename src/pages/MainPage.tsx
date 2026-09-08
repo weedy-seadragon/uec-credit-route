@@ -565,9 +565,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const termRequiredRecommendations = recommendationCandidates.filter(
     (r) => requiredCodes.has(r.code) && committed.get(r.code) == null,
   )
+  // 必修の不合格は卒業要件上もう一度修得する必要があるため、再履修を明確に推奨する。
   // 再履修専用のクラスがある科目は、不合格一覧の再履用案内で時限まで確認できるため、ここへ重複して出さない。
-  const termRetakeRecommendations = recommendationCandidates.filter(
-    (r) => committed.get(r.code) === 'failed' && !hasDedicatedRetakeClass(r.code, classAssignments),
+  const termRequiredRetakeRecommendations = recommendationCandidates.filter(
+    (r) => committed.get(r.code) === 'failed'
+      && requiredCodes.has(r.code)
+      && !hasDedicatedRetakeClass(r.code, classAssignments),
+  )
+  // 選択科目の不合格は別の科目で区分を満たす選択肢もあるため、「必修」とは分けて候補として示す。
+  const termElectiveRetakeRecommendations = recommendationCandidates.filter(
+    (r) => committed.get(r.code) === 'failed'
+      && !requiredCodes.has(r.code)
+      && !hasDedicatedRetakeClass(r.code, classAssignments),
   )
   // 選択区分は「今学期に候補があるか」も含めてすべて出す。候補の中身は画面で折りたたんで確認する。
   const termElectiveRecommendations = boundaryGroups
@@ -1649,12 +1658,26 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               </>
             )}
 
-            {/* 再履修専用のクラスが無い不合格科目だけ、通常開講と同じ学期に取り直す候補として示す。 */}
-            {termRetakeRecommendations.length > 0 && (
+            {/* 必修の不合格は、再履修専用のクラスが無い場合に通常開講と同じ学期で取り直すよう示す。 */}
+            {termRequiredRetakeRecommendations.length > 0 && (
               <>
-                <h3>再履修候補</h3>
+                <h3>再履修推奨（必修科目）</h3>
                 <ul className="term-recommendation-list">
-                  {termRetakeRecommendations.map(({ code }) => (
+                  {termRequiredRetakeRecommendations.map(({ code }) => (
+                    <li key={code}>
+                      {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* 選択科目の不合格は、同一区分の別科目も選べるため再履修の候補として分けて示す。 */}
+            {termElectiveRetakeRecommendations.length > 0 && (
+              <>
+                <h3>再履修候補（選択科目）</h3>
+                <ul className="term-recommendation-list">
+                  {termElectiveRetakeRecommendations.map(({ code }) => (
                     <li key={code}>
                       {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
                     </li>
