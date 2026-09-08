@@ -1205,7 +1205,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                           <li key={i}>{describeCondition(cond)}</li>
                         ))}
                       </ul>
-                      {r.onFail?.note && <p style={{ fontSize: '0.9em' }}>※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects)}</p>}
+                      {r.onFail?.note && <p style={{ fontSize: '0.9em' }}>※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
                     </details>
                   )}
                 </li>
