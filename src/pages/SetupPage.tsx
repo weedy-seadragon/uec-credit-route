@@ -179,6 +179,17 @@ export default function SetupPage() {
         ) : (
           <>
             <div>
+              <label htmlFor="grade">現在の学年</label>
+              <select id="grade" value={grade} onChange={(e) => setGrade(Number(e.target.value))}>
+                {[1, 2, 3, 4].map((g) => (
+                  <option key={g} value={g}>
+                    {g}年生
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
               <label htmlFor="cluster">類</label>
               <select
                 id="cluster"
@@ -189,17 +200,6 @@ export default function SetupPage() {
                 {availableClusters.map((c) => (
                   <option key={c} value={c ?? ''}>
                     {c}類
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="grade">現在の学年</label>
-              <select id="grade" value={grade} onChange={(e) => setGrade(Number(e.target.value))}>
-                {[1, 2, 3, 4].map((g) => (
-                  <option key={g} value={g}>
-                    {g}年生
                   </option>
                 ))}
               </select>

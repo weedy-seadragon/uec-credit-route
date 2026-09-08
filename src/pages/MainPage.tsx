@@ -817,8 +817,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     <main className="main-page" style={{ paddingBottom: '6rem' }}>
       <header className="main-page-header">
         <h1>
-          {profile.entryYear}入学 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
-          {profile.program ?? '未定'} / {profile.grade}年 <Link to="/setup">[変更]</Link>
+          {profile.entryYear}入学 / {profile.grade}年 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
+          {profile.program ?? '未定'} <Link to="/setup">[変更]</Link>
         </h1>
       </header>
 
