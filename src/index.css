@@ -125,6 +125,15 @@ select {
   line-height: 1.6;
 }
 
+/* プログラム未選択時に確認できる範囲を、選択欄の直後で説明する。 */
+.setup-program-guidance {
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  border-left: 3px solid #88a5dc;
+  background: color-mix(in srgb, #eaf1ff 30%, Canvas);
+  line-height: 1.6;
+}
+
 /* 横に長い選択肢でも読みやすくし、狭い画面では親要素の幅を超えないようにする。 */
 .setup-form select {
   width: fit-content;

@@ -21,7 +21,7 @@ import { recommend } from '../domain/recommend'
 import { buildNameToCodes, derivePrerequisites } from '../domain/prerequisites'
 import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
-import { getClassAssignments, getProgramName, getRequirementSet, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
+import { getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { TransferBucketItem } from '../data/requirementSets'
 import { resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
@@ -34,7 +34,7 @@ import SubjectStatusSelect from '../components/SubjectStatusSelect'
 
 /** プロフィールのうち、要件セットを引くのに必要な項目が揃っている状態（夜間主はcluster: null） */
 interface LoadedProfile extends Omit<Profile, 'program'> {
-  program: string
+  program: string | null
 }
 
 /** 表示フィルタ（画面右上）の選択肢。値はそのままrecommend.tsのTermFilterに変換できる形にしておく */
@@ -272,25 +272,15 @@ export default function MainPage() {
       </main>
     )
   }
-  // プログラム未定のときは、専門科目を含む判定ができない（docs/SPEC.md F-1）
-  if (!profile.program) {
-    return (
-      <main>
-        <h1>メイン画面</h1>
-        <p>プログラムが未定のため、専門科目を含めた判定はまだ表示できません（プログラム比較機能は今後実装予定）。</p>
-        <p>
-          <Link to="/setup">プロフィール設定</Link>でプログラムを選ぶか、配属を待ってください。
-        </p>
-      </main>
-    )
-  }
-
   return <MainPageContent profile={{ ...profile, cluster: profile.cluster, program: profile.program }} />
 }
 
 function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const requirementSet = useMemo(
-    () => getRequirementSet(profile.entryYear, profile.course, profile.cluster, profile.program),
+    () => profile.program
+      ? getRequirementSet(profile.entryYear, profile.course, profile.cluster, profile.program)
+      // 夜間主はプロフィール保存時にprogram: 'evening'となるため、ここは昼間コースだけに到達する。
+      : getRequirementSetWithoutProgram(profile.entryYear, profile.cluster as 'I' | 'II' | 'III'),
     [profile],
   )
   // 科目番号は年度をまたぐと別科目を指す場合があるため、プロフィールの入学年度でマスタを切り替える。
@@ -384,6 +374,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 審査（2年次終了時審査など）。reviewsデータが無いプログラムでは空配列になる（現在は全16課程にreviewsがある）。
   // reviewsを一度ローカル変数に受けておく（入れ子関数の中ではrequirementSetの絞り込みが効かないため）
   const reviews = requirementSet.reviews
+  const isProgramUndecided = profile.program == null
   const reviewStatuses = reviews ? evaluateReviews(reviews, evaluation, committed, subjectCredits) : []
   const requiredCodes = new Set(boundaryGroups.filter((g) => g.kind === 'required').flatMap((g) => g.subjects))
   // 「取得単位」「残りの必修」を区分ごとに見出しを分けて表示するための対応表
@@ -1010,6 +1001,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       <section className="requirement-section">
         <h2>残りの必修（あと {requiredShortfall(boundaryGroups)} 単位）</h2>
+        {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、一部の科目が表示されていません。</p>}
         <p className="section-guidance">この一覧の科目はすべて必修です。不合格になった必修科目は、上の「不合格になった科目」で再履修を確認してください。</p>
         {remainingRequiredByCategory.map(({ label, group, items }) => {
           // ()内は単位数だけにする。年次・学期は他の一覧と同じ形の注記で統一する。
@@ -1093,6 +1085,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       <section className="requirement-section">
         <h2>選択科目</h2>
+        {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、一部の科目が表示されていません。</p>}
         <p className="section-guidance">
           区分ごとに表示される不足単位まで、この一覧から科目を選んで修得してください。必修の不合格科目は、この一覧ではなく上の「不合格になった科目」を確認します。
         </p>
@@ -1200,6 +1193,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       {reviewStatuses.length > 0 && (
         <section>
           <h2>審査</h2>
+          {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、卒業研究着手審査や卒業審査が表示されていません。</p>}
           <ul>
             {reviewStatuses.map((r) => {
               // 卒業審査の共通単位条件は、画面上部の審査用総単位の説明と重複するため詳細から省く。

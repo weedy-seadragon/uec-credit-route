@@ -1,6 +1,6 @@
 // 年度別に要件・科目マスタを切り替える入口を検証するテスト。
 import { describe, expect, it } from 'vitest'
-import { findSubjectUsages, getRequirementSet, getSubjectCredits, getSubjectsByCode } from './requirementSets'
+import { findSubjectUsages, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode } from './requirementSets'
 
 describe('年度別の要件・科目マスタ選択', () => {
   it('2026年度の情報数理工学には再編後のMTHb01cを返す', () => {
@@ -27,5 +27,12 @@ describe('年度別の要件・科目マスタ選択', () => {
 
     expect(usages.length).toBeGreaterThan(0)
     expect(findSubjectUsages(2025, 'GSE101m')).toEqual([])
+  })
+
+  it('プログラム未選択でも類共通までの要件と2年次終了時審査を返す', () => {
+    // 配属前は類専門科目を混ぜず、理数基礎・類共通基礎と2年次終了時審査だけを確認できる。
+    const requirementSet = getRequirementSetWithoutProgram(2025, 'I')
+    expect(requirementSet?.groups.at(-1)?.children?.map((group) => group.id)).toEqual(['math-basic', 'cluster-basic'])
+    expect(requirementSet?.reviews?.map((review) => review.id)).toEqual(['y2-end'])
   })
 })

@@ -170,6 +170,27 @@ export function getRequirementSet(entryYear: number, course: string, cluster: st
   }
 }
 
+/** プログラム配属前に、総合文化・実践教育と類共通の専門基礎だけを返す。 */
+export function getRequirementSetWithoutProgram(entryYear: number, cluster: 'I' | 'II' | 'III'): RequirementSet | undefined {
+  const commonDoc = commonDocsByYear.get(entryYear)
+  const representative = programDocs.find((p) => p.entryYear === entryYear && p.course === 'day' && p.cluster === cluster)
+  if (!commonDoc || !representative) return undefined
+  const specialized = representative.groups.find((group) => group.id === 'specialized')
+  const sharedChildren = specialized?.children?.filter((group) => group.id === 'math-basic' || group.id === 'cluster-basic') ?? []
+  const sharedSpecialized: RequirementGroup = {
+    ...(specialized ?? { id: 'specialized', name: '専門科目', required: 0 }),
+    required: sharedChildren.reduce((sum, group) => sum + group.required, 0),
+    children: sharedChildren,
+  }
+  return {
+    totalCredits: representative.totalCredits,
+    commonCredits: representative.commonCredits,
+    groups: [...commonDoc.groups, sharedSpecialized],
+    alwaysCommonSubjects: commonDoc.commonCreditSources?.alwaysCommon ?? [],
+    reviews: representative.reviews?.filter((review) => review.id === 'y2-end'),
+  }
+}
+
 /** 入学年度に対応する科目マスタを返す。未対応年度ならundefinedを返す。 */
 function getSubjectMaster(entryYear: number): typeof subjectsMaster2025 | undefined {
   return subjectMastersByYear.get(entryYear) as typeof subjectsMaster2025 | undefined
