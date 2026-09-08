@@ -990,7 +990,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // セクションから曜日時限を出す（開発者提案、2026-09-06）
   // シラバス上に曜日時限が一切無い（＝offeringsは取れているが全セクションのslotsが空）科目は
   // 「時間割に入っていない」科目とみなす。学修要覧のnoteが「夏期集中」「冬期集中」の場合は
-  // そのままその文言を表示し、それ以外の「集中」（隔年度開講の集中講義等）は何も表示しない。
+  // そのままその文言を表示し、それ以外の「集中」（隔年度開講の集中講義等）は「集中講義」と表示する。
   // どちらでもない（卒業研究・オンデマンド授業等）は「オンデマンド」と表示する
   // （開発者指示、2026-09-06。当初は集中講義を一律非表示にしていたが、政治学Ａ・
   // 生涯スポーツ演習Ｃ/Ｄのように「夏期集中」「冬期集中」であることが分かっている科目は
@@ -1026,7 +1026,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (!hasAnySlots) {
       if (note?.includes('夏期集中')) return <span style={{ marginLeft: '0.4em' }}>夏期集中</span>
       if (note?.includes('冬期集中')) return <span style={{ marginLeft: '0.4em' }}>冬期集中</span>
-      if (note?.includes('集中')) return unavailable('集中講義です')
+      // 夏期・冬期以外の集中講義は、理由つきの注意書きではなく簡潔な開講形態だけを示す。
+      if (note?.includes('集中')) return <span style={{ marginLeft: '0.4em' }}>集中講義</span>
       return <span style={{ marginLeft: '0.4em' }}>オンデマンド</span>
     }
     // 隔年度開講・開講年度により内容が変わる、といった注記は、実際に何か表示するときは
