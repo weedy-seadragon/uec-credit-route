@@ -667,7 +667,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         const g = findGroupResult(evaluation.groups, cond.groupId)
         const current = g?.contribution ?? 0
         const planned = Math.max(0, (g?.projected.contribution ?? 0) - current)
-        return <>{groupLabelOf(cond.groupId)} を{cond.min}単位以上（現在{current}単位{planned > 0 && <span className="planned-credit"> + 修得予定{planned}単位</span>}）</>
+        return <>{groupLabelOf(cond.groupId)} を{cond.min}単位以上（現在 {current}{planned > 0 && <span className="planned-credit"> + {planned}</span>} 単位）</>
       }
       case 'allPassed':
         return <>{groupLabelOf(cond.groupId)} をすべて修得{canBeSatisfiedWithPlans() && <span className="planned-credit">（達成予定）</span>}</>
@@ -681,7 +681,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         const planned = Math.max(0, evaluation.totalCredits.projected.contribution - evaluation.totalCredits.contribution)
         return (
           <>
-            合計 {cond.min}単位以上（現在{evaluation.totalCredits.contribution}単位{planned > 0 && <span className="planned-credit"> + 修得予定{planned}単位</span>}）
+            合計 {cond.min}単位以上（現在 {evaluation.totalCredits.contribution}{planned > 0 && <span className="planned-credit"> + {planned}</span>} 単位）
             <span className="review-credit-note-inline">
               ※ 共通単位の必要数を超えた分や自由科目など、卒業所要単位に算入されない単位は含みません。
             </span>
@@ -691,7 +691,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       case 'commonCredits':
         {
         const planned = Math.max(0, evaluation.commonCredits.projected.contribution - evaluation.commonCredits.contribution)
-        return <>共通単位 {cond.min}単位以上（現在{evaluation.commonCredits.contribution}単位{planned > 0 && <span className="planned-credit"> + 修得予定{planned}単位</span>}）</>
+        return <>共通単位 {cond.min}単位以上（現在 {evaluation.commonCredits.contribution}{planned > 0 && <span className="planned-credit"> + {planned}</span>} 単位）</>
         }
       case 'allGroups':
         return <>すべての区分の必要単位を満たす{canBeSatisfiedWithPlans() && <span className="planned-credit">（達成予定）</span>}</>
