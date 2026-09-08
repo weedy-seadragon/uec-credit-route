@@ -116,6 +116,15 @@ select {
   line-height: 1.5;
 }
 
+/* クラス情報が曜日時限の絞り込みに必要な理由を、入力欄の直前でまとめて説明する。 */
+.setup-class-guidance {
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  border-left: 3px solid #88a5dc;
+  background: color-mix(in srgb, #eaf1ff 30%, Canvas);
+  line-height: 1.6;
+}
+
 /* 横に長い選択肢でも読みやすくし、狭い画面では親要素の幅を超えないようにする。 */
 .setup-form select {
   width: fit-content;
@@ -377,6 +386,12 @@ select {
 .subject-meta,
 .subject-schedule,
 .requirement-badge {
+  font-size: 0.9em;
+}
+
+/* 曜日時限を安全に1つへ絞れないときは、空欄ではなく理由を表示してプロフィール見直しにつなげる。 */
+.schedule-unavailable {
+  margin-left: 0.4em;
   font-size: 0.9em;
 }
 

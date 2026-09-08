@@ -726,16 +726,27 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function dayPeriodTag(code: string) {
     const subject = subjectsByCode.get(code)
     const offerings = subject?.offerings
-    if (!offerings || offerings.length === 0) return null
+    // 曜日時限が出せないときも空欄にせず、利用者が次に確認すべき理由を添える。
+    function unavailable(reason: string) {
+      return <span className="schedule-unavailable">（曜日時限：{reason}）</span>
+    }
+    // Ⅰ〜Ⅲ類の追加クラス情報が未設定なら、複数セクションを絞れない主な原因として案内する。
+    function hasIncompleteClassInfo(): boolean {
+      if (profile.cluster === 'I') return profile.classIABC == null
+      if (profile.cluster === 'II') return profile.classIIArea == null
+      if (profile.cluster === 'III') return profile.classIIIYear2Class == null || profile.classIIIYear2Area == null
+      return false
+    }
+    if (!offerings || offerings.length === 0) return unavailable('開講情報が未登録です')
     // 輪講・卒業研究は研究室ごとに実施形態が異なり、時間割として一律に示せない。
     // slotsが空でも「オンデマンド」と推測せず、曜日時限の注記自体を表示しない。
-    if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return null
+    if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return unavailable('研究室ごとに実施形態が異なります')
     const note = subject?.note
     const hasAnySlots = offerings.some((o) => o.slots.length > 0)
     if (!hasAnySlots) {
       if (note?.includes('夏期集中')) return <span style={{ marginLeft: '0.4em' }}>夏期集中</span>
       if (note?.includes('冬期集中')) return <span style={{ marginLeft: '0.4em' }}>冬期集中</span>
-      if (note?.includes('集中')) return null
+      if (note?.includes('集中')) return unavailable('集中講義です')
       return <span style={{ marginLeft: '0.4em' }}>オンデマンド</span>
     }
     // 隔年度開講・開講年度により内容が変わる、といった注記は、実際に何か表示するときは
@@ -764,7 +775,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       offerings.length === 1
         ? offerings[0].slots
         : resolveSlotsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, isRetaking)
-    if (!slots || slots.length === 0) return null
+    if (!slots || slots.length === 0) {
+      return unavailable(
+        hasIncompleteClassInfo()
+          ? 'クラス情報が未設定です'
+          : '候補を1つに絞り込めません',
+      )
+    }
     const text = slots.map((s) => `${s.day}・${s.period}限`).join('/')
     return (
       <span style={{ marginLeft: '0.4em' }}>
