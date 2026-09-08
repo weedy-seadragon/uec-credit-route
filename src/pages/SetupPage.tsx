@@ -205,6 +205,11 @@ export default function SetupPage() {
               </select>
             </div>
 
+            <p className="setup-program-guidance">
+              プログラムを未定のまま保存すると、総合文化・実践教育・理数基礎・類共通基礎と2年次終了時審査だけを表示します。
+              類専門科目、卒業研究着手審査、卒業審査を確認するにはプログラムを選択してください。
+            </p>
+
             <div>
               <label htmlFor="program">教育プログラム</label>
               <select
@@ -220,11 +225,6 @@ export default function SetupPage() {
                 ))}
               </select>
             </div>
-
-            <p className="setup-program-guidance">
-              プログラムを未定のまま保存すると、総合文化・実践教育・理数基礎・類共通基礎と2年次終了時審査だけを表示します。
-              類専門科目、卒業研究着手審査、卒業審査を確認するにはプログラムを選択してください。
-            </p>
 
             {/* 曜日時限の表示に使うクラス情報（docs/SPEC.md §7.1、CLAUDE.md進捗ログ参照）。
                 1年次クラスは学籍番号による機械的な割り当てで、本人には選べないが他から逆算する
