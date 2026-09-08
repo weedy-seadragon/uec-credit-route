@@ -459,14 +459,14 @@ select {
 
 /* 修得予定による増減・見込み達成は、確定済みの数値と混ざらない黄色系で表示する。 */
 .planned-credit {
-  color: #c9a227;
+  color: #d9d900;
   font-weight: 700;
 }
 
 /* 修得予定は確定済みの修得とは違う黄色系にして、予定分だとすぐ分かるようにする。 */
 .status-taking:has(input:checked) {
-  color: #8a6d00;
-  background: #fff4c8;
+  color: #858500;
+  background: #ffffc8;
 }
 
 .status-failed:has(input:checked) {
