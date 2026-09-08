@@ -872,8 +872,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // （開発者指示、2026-09-06。当初は集中講義を一律非表示にしていたが、政治学Ａ・
   // 生涯スポーツ演習Ｃ/Ｄのように「夏期集中」「冬期集中」であることが分かっている科目は
   // 「オンデマンド」ではなくその文言を出したほうが正確、という指摘を受けて追加）。
-  // offeringsが1件も無い（＝シラバスで名前が一致せずデータ自体が無い）科目は、本当に
-  // 時間割が無いのか単なるデータ欠落なのか区別できないため、従来通り何も表示しない
+  // offeringsが1件も無い科目は、今年度に開講が無い場合と取得漏れを画面上で区別できない。
+  // 「未登録」という表示は利用者の操作に役立たないため、曜日時限の注記自体を出さない。
   function dayPeriodTag(code: string) {
     const subject = subjectsByCode.get(code)
     const offerings = subject?.offerings
@@ -888,7 +888,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       if (profile.cluster === 'III') return profile.classIIIYear2Class == null || profile.classIIIYear2Area == null
       return false
     }
-    if (!offerings || offerings.length === 0) return unavailable('開講情報が未登録です')
+    if (!offerings || offerings.length === 0) return null
     // 輪講・卒業研究は研究室ごとに実施形態が異なり、時間割として一律に示せない。
     // slotsが空でも「オンデマンド」と推測せず、曜日時限の注記自体を表示しない。
     if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return unavailable('研究室ごとに実施形態が異なります')
