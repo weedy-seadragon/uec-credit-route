@@ -376,6 +376,12 @@ select {
   background: color-mix(in srgb, #e9f1ff 70%, Canvas);
 }
 
+/* 親の区分を閉じるバーの下に少し間を空け、子入れ子を閉じるバーを並べる。 */
+.sticky-group-close--nested {
+  top: 3.55rem;
+  border-color: #88a5dc;
+}
+
 /* その他単位認定の項目名とプルダウンを離し、どちらを操作するか分かりやすくする。 */
 .other-common-select {
   display: inline-flex;
