@@ -1,27 +1,34 @@
 {
   "schemaVersion": 1,
-  "entryYear": 2025,
+  "entryYear": 2026,
   "course": "day",
-  "cluster": "II",
-  "program": "security",
-  "programName": "セキュリティ情報学プログラム",
-  "programSuffix": "f",
-  "source": "学修要覧2025（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.2①",
-  "extends": "2025-day-common.json",
+  "cluster": "III",
+  "program": "electro",
+  "programName": "電子工学プログラム",
+  "programSuffix": "m",
+  "source": "学修要覧2026（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.3②",
+  "extends": "2026-day-common.json",
   "totalCredits": 133,
-  "commonCredits": 8,
+  "commonCredits": 5,
   "subtotals": {
     "general": 27,
-    "practical": 17,
-    "specialized": 81,
-    "common": 8
+    "practical": 16,
+    "specialized": 85,
+    "common": 5
+  },
+  "commonOverrides": {
+    "datasci-ex": {
+      "required": 0,
+      "kind": "elective",
+      "note": "計測・制御システム/先端ロボティクス・Ⅲ類は選択科目（required=0）。超過分は共通単位に繰り入れ（day-common.jsonの元の注記参照）"
+    }
   },
   "groups": [
     {
       "id": "specialized",
       "name": "専門科目",
       "label": "専門",
-      "required": 81,
+      "required": 85,
       "children": [
         {
           "id": "math-basic",
@@ -67,49 +74,40 @@
         {
           "id": "cluster-basic",
           "name": "類共通基礎科目",
-          "required": 19,
+          "required": 20,
           "children": [
             {
               "id": "cluster-basic-req",
               "name": "必修",
               "label": "類共通基礎（必修）",
-              "required": 17,
+              "required": 18,
               "kind": "required",
               "subjects": [
-                "MTH301f",
-                "PHY204f",
-                "MTH302f",
-                "ELE301f",
-                "PHY301f",
-                "GSE301f",
-                "COM301f",
-                "COM401f"
-              ],
-              "note": "基礎演習Aの履修方法は注2参照（応用数学A・基礎電気回路・基礎電磁気学を同じクラスで履修）"
-            },
-            {
-              "id": "cluster-basic-sel",
-              "name": "選択",
-              "label": "類共通基礎（選択）",
-              "required": 2,
-              "kind": "elective",
-              "subjects": [
-                "MTH303f",
-                "MTH304f",
-                "PHY302f",
-                "MTH401f"
+                "PHY204m",
+                "PHY205m",
+                "MTH301m",
+                "PHY301m",
+                "PHY302m",
+                "PHY401m",
+                "ELE301m",
+                "ELE401m"
               ]
             },
             {
-              "id": "cluster-basic-free",
-              "name": "自由",
-              "label": "類共通基礎（自由科目）",
-              "required": 0,
-              "kind": "free",
-              "countsTowardGraduation": false,
-              "note": "力学演習は類共通基礎科目の中でも自由科目区分（卒業要件に含まれない）",
+              "id": "cluster-basic-elecreq",
+              "name": "選択必修",
+              "label": "類共通基礎（選択必修）",
+              "required": 2,
+              "kind": "elective-required",
+              "note": "修得した単位は共通単位とする。夜間主コース学生が「分子生物学」の単位を修得した場合は専門基礎科目の選択科目とする",
               "subjects": [
-                "PHY303f"
+                "MTH302m",
+                "MTH303m",
+                "GSE301m",
+                "COM301m",
+                "COM401m",
+                "COM402m",
+                "BIO401m"
               ]
             }
           ]
@@ -117,124 +115,124 @@
         {
           "id": "major",
           "name": "類専門科目",
-          "required": 42,
+          "required": 45,
           "children": [
             {
               "id": "major-req",
               "name": "必修",
               "label": "類専門（必修）",
-              "required": 12,
+              "required": 31,
               "kind": "required",
               "subjects": [
-                "COM501f",
-                "COM601f",
-                "LAB701f",
-                "LAB801f",
-                "LAB702f",
-                "LAB802f"
+                "ELE402m",
+                "PHY402m",
+                "ELE501m",
+                "ELE601m",
+                "ELE502m",
+                "ELE503m",
+                "PHY501m",
+                "ELE504m",
+                "PHY601m",
+                "ELE602m",
+                "PHY602m",
+                "LAB701m",
+                "LAB801m",
+                "LAB702m",
+                "LAB802m"
               ]
             },
             {
               "id": "major-sel",
               "name": "選択",
               "label": "類専門（選択）",
-              "required": 30,
+              "required": 14,
               "kind": "elective",
               "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み",
               "subjects": [
-                "MTH402f",
-                "COM402f",
-                "ELE501f",
-                "MTH501f",
-                "COM502f",
-                "COM503f",
-                "COM504f",
-                "COM505f",
-                "COM602f",
-                "COM603f",
-                "COM604f",
-                "COM605f",
-                "COM606f",
-                "COM607f",
-                "COM506f",
-                "ELE601f",
-                "FGN101f",
-                "FGN201f",
-                "FGN102f",
-                "FGN202f",
-                "FGN301f",
-                "FGN401f",
-                "ELE604g",
-                "ELE605g",
-                "ELE606g",
-                "PHO601g",
-                "ELE607g",
-                "ELE608g",
-                "GSE601g",
-                "MTH701g",
-                "ELE701g",
-                "ELE702g",
-                "ELE505g",
-                "ELE801g",
-                "ELE001g",
-                "FGN101g",
-                "FGN201g",
-                "FGN102g",
-                "FGN202g",
-                "FGN301g",
-                "FGN401g",
-                "ELE604h",
-                "ELE605h",
-                "ELE606h",
-                "ELE607h",
-                "GSE601h",
-                "ELE701h",
-                "ELE702h",
-                "ELE703h",
-                "ELE505h",
-                "ELE801h",
-                "ELE001h",
-                "FGN101h",
-                "FGN201h",
-                "FGN102h",
-                "FGN202h",
-                "FGN301h",
-                "FGN401h",
-                "MTH403i",
-                "COM405i",
-                "MCE506i",
-                "MCE507i",
-                "MCE508i",
-                "MCE509i",
-                "MCE607i",
-                "MCE608i",
-                "MCE609i",
-                "MCE701i",
-                "MCE702i",
-                "FGN101i",
-                "FGN201i",
-                "FGN102i",
-                "FGN202i",
-                "FGN301i",
-                "FGN401i",
-                "MTH403j",
-                "COM405j",
-                "GSE401j",
-                "MCE508j",
-                "MCE509j",
-                "GSE501j",
-                "MCE607j",
-                "GSE601j",
-                "MCE608j",
-                "MCE609j",
-                "MCE701j",
-                "MCE702j",
-                "FGN101j",
-                "FGN201j",
-                "FGN102j",
-                "FGN202j",
-                "FGN301j",
-                "FGN401j"
+                "CHM401m",
+                "CHM402m",
+                "PHY502m",
+                "PHY503m",
+                "PHY603m",
+                "PHY604m",
+                "PHY605m",
+                "PHY606m",
+                "PHO601m",
+                "PHY504m",
+                "ELE603m",
+                "ELE604m",
+                "ELE605m",
+                "ELE701m",
+                "CHM701m",
+                "FGN101m",
+                "FGN201m",
+                "FGN102m",
+                "FGN202m",
+                "FGN301m",
+                "FGN401m",
+                "MCE605k",
+                "MCE606k",
+                "MCE508k",
+                "MCE509k",
+                "GSE501k",
+                "MCE607k",
+                "MCE608k",
+                "GSE601k",
+                "MCE609k",
+                "MCE701k",
+                "MCE702k",
+                "FGN101k",
+                "FGN201k",
+                "FGN102k",
+                "FGN202k",
+                "FGN301k",
+                "FGN401k",
+                "CHM401n",
+                "CHM402n",
+                "BIO501n",
+                "PHY602n",
+                "PHY603n",
+                "PHY604n",
+                "ELE602n",
+                "PHY605n",
+                "ELE603n",
+                "CHM601n",
+                "FGN101n",
+                "FGN201n",
+                "FGN102n",
+                "FGN202n",
+                "FGN301n",
+                "FGN401n",
+                "CHM401p",
+                "CHM402p",
+                "PHY507p",
+                "PHY607p",
+                "ELE601p",
+                "PHY608p",
+                "PHY609p",
+                "FGN101p",
+                "FGN201p",
+                "FGN102p",
+                "FGN202p",
+                "FGN301p",
+                "FGN401p",
+                "ELE601r",
+                "BIO603r",
+                "CHM701r",
+                "FGN101r",
+                "FGN201r",
+                "FGN102r",
+                "FGN202r",
+                "FGN301r",
+                "FGN401r",
+                "GSE101m",
+                "GSE201m",
+                "GSE101n",
+                "GSE201n",
+                "GSE101p",
+                "GSE201p",
+                "GSE101r",
+                "GSE201r"
               ]
             },
             {
@@ -244,24 +242,23 @@
               "required": 0,
               "kind": "free",
               "countsTowardGraduation": false,
-              "note": "大学院連携科目（大学院情報理工学研究科の授業科目）。卒業要件に含まれない。幾何学概論・マルチメディア処理も自由科目区分",
+              "note": "地学・生物学関連科目、大学院連携科目など。卒業要件に含まれない",
               "subjects": [
-                "MTH502f",
-                "COM507f",
-                "INSa01f",
-                "INSa02f",
-                "COMa01f",
-                "COMa02f",
-                "COMa03f",
-                "COMb01f",
-                "INSb01f",
-                "ELEb01f",
-                "MTHb01f",
-                "COMb02f",
-                "MTHb02f",
-                "MTHb03f",
-                "ELEa01f",
-                "LAB501f"
+                "GEO201m",
+                "GEO501m",
+                "BIO501m",
+                "COM501m",
+                "PHOa01m",
+                "PHOa02m",
+                "PHYa01m",
+                "PHYa02m",
+                "BIOa01m",
+                "BIOa02m",
+                "ELEa01m",
+                "ELEa02m",
+                "PHYb01m",
+                "GSEb01m",
+                "LAB501m"
               ]
             },
             {
@@ -272,9 +269,10 @@
               "kind": "international",
               "note": "単位の扱いは年度ごとの科目一覧表による",
               "subjects": [
-                "INT001f",
-                "INT002f",
-                "INT003f"
+                "INT401m",
+                "INT001m",
+                "INT002m",
+                "INT003m"
               ]
             }
           ]
@@ -322,10 +320,10 @@
             {
               "type": "subjects",
               "codes": [
-                "PHY204f",
-                "MTH301f"
+                "PHY204m",
+                "PHY205m"
               ],
-              "note": "別表3: 類共通基礎科目のうち力学・確率統計（1・2年次開講の必修科目、計4単位）"
+              "note": "別表3: 類共通基礎科目のうち力学・力学演習（1年次開講の必修科目2科目、計3単位）"
             }
           ]
         },
@@ -337,10 +335,10 @@
       ],
       "onFail": {
         "blockedSubjects": [
-          "COM501f",
-          "COM601f"
+          "ELE501m",
+          "ELE601m"
         ],
-        "note": "不合格時はCOM501f・COM601fを履修できない"
+        "note": "不合格時はELE501m・ELE601mを履修できない"
       }
     },
     {
@@ -382,23 +380,28 @@
           "groupId": "math-basic-req"
         },
         {
-          "allOf": [
-            {
-              "type": "allPassed",
-              "groupId": "cluster-basic-req"
-            },
-            {
-              "type": "groupMin",
-              "groupId": "cluster-basic-sel",
-              "min": 2
-            }
-          ]
+          "type": "subjectsCreditMin",
+          "codes": [
+            "PHY204m",
+            "PHY205m",
+            "MTH301m",
+            "PHY301m",
+            "PHY302m",
+            "PHY401m",
+            "ELE301m",
+            "ELE401m",
+            "ELE402m",
+            "PHY402m"
+          ],
+          "min": 16,
+          "note": "別表4: 2年次までの類共通基礎科目及び類専門科目の必修科目のうち規定単位数以上"
         },
         {
           "type": "subjects",
           "codes": [
-            "COM501f",
-            "COM601f"
+            "ELE402m",
+            "ELE501m",
+            "ELE601m"
           ],
           "note": "別表4: 類専門科目の指定科目"
         },
@@ -419,7 +422,7 @@
         },
         {
           "type": "commonCredits",
-          "min": 8
+          "min": 5
         },
         {
           "type": "totalCredits",

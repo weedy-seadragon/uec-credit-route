@@ -3,7 +3,7 @@
 // プログラムを選ぶと、そのプログラムの卒業要件の「単位の種類」（必修・選択必修・選択・自由科目…）
 // ごとに見出しを立てて科目を並べる（2026-09-08、開発者の指示でデザインを一新）。
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import type { CourseListSection } from '../data/requirementSets'
 import { getCourseListSections, getSubjectsByCode, programOptions } from '../data/requirementSets'
 
@@ -28,22 +28,30 @@ function yearTermLabel(standardYear: number | null, termType: string | null): st
 }
 
 export default function CoursesPage() {
+  const [searchParams] = useSearchParams()
+  // 詳細ページから戻った場合はURLのyearを使い、古いURLには従来どおり2025年度を使う。
+  const initialYear = searchParams.get('year') === '2026' ? 2026 : 2025
   const [keyword, setKeyword] = useState('')
   const [yearFilter, setYearFilter] = useState('')
   const [termFilter, setTermFilter] = useState('')
   const [dayFilter, setDayFilter] = useState('')
+  const [catalogYear, setCatalogYear] = useState(initialYear)
   const [programValue, setProgramValue] = useState('')
 
-  const subjectsByCode = useMemo(() => getSubjectsByCode(), [])
+  // 表示する科目名・単位数・開講情報は、選択中の年度の科目マスタから取得する。
+  const subjectsByCode = useMemo(() => getSubjectsByCode(catalogYear), [catalogYear])
 
-  const selectedProgram = useMemo(() => programOptions.find((p) => p.program === programValue), [programValue])
+  const selectedProgram = useMemo(
+    () => programOptions.find((p) => p.entryYear === catalogYear && p.program === programValue),
+    [catalogYear, programValue],
+  )
 
   // プログラム未選択時は共通ファイル（総合文化・実践教育科目）だけの区分になる
   // （getCourseListSectionsの仕様上、entryYear/course/clusterはprogramがnullのときは使われない）
   const sections = useMemo<CourseListSection[]>(() => {
-    if (!selectedProgram) return getCourseListSections(2025, 'day', null, null)
+    if (!selectedProgram) return getCourseListSections(catalogYear, 'day', null, null)
     return getCourseListSections(selectedProgram.entryYear, selectedProgram.course, selectedProgram.cluster, selectedProgram.program)
-  }, [selectedProgram])
+  }, [catalogYear, selectedProgram])
 
   const kw = keyword.trim()
 
@@ -55,12 +63,18 @@ export default function CoursesPage() {
       { label: 'Ⅲ類', options: [] },
       { label: '夜間主', options: [] },
     ]
-    for (const p of programOptions) {
+    for (const p of programOptions.filter((option) => option.entryYear === catalogYear)) {
       const bucket = p.cluster === 'I' ? clusters[0] : p.cluster === 'II' ? clusters[1] : p.cluster === 'III' ? clusters[2] : clusters[3]
       bucket.options.push(p)
     }
     return clusters.filter((c) => c.options.length > 0)
-  }, [])
+  }, [catalogYear])
+
+  // 年度を切り替えたときは、前年度のプログラムIDを残さず未選択へ戻す。
+  function handleCatalogYearChange(year: number) {
+    setCatalogYear(year)
+    setProgramValue('')
+  }
 
   // フィルタ適用後の区分一覧と、MAX_ROWSで打ち切ったかどうかを1回の計算でまとめて出す
   // （レンダー中に外側の変数を書き換えるのはReactの作法に反するため、reduceで完結させる）
@@ -108,13 +122,28 @@ export default function CoursesPage() {
       </p>
 
       <div>
+        <label htmlFor="courses-entry-year">入学年度</label>
+        <select
+          id="courses-entry-year"
+          value={catalogYear}
+          onChange={(e) => handleCatalogYearChange(Number(e.target.value))}
+        >
+          {[...new Set(programOptions.map((p) => p.entryYear))].map((year) => (
+            <option key={year} value={year}>
+              {year}年度
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
         <label htmlFor="courses-program">プログラム</label>
         <select id="courses-program" value={programValue} onChange={(e) => setProgramValue(e.target.value)}>
           <option value="">未選択（総合文化・実践教育科目のみ）</option>
           {groupedProgramOptions.map((g) => (
             <optgroup key={g.label} label={g.label}>
               {g.options.map((p) => (
-                <option key={p.program} value={p.program}>
+                <option key={`${p.entryYear}-${p.program}`} value={p.program}>
                   {p.programName}
                 </option>
               ))}
@@ -197,7 +226,7 @@ export default function CoursesPage() {
                   <tr key={code}>
                     <td>{code}</td>
                     <td>
-                      <Link to={`/courses/${code}`}>{s.name}</Link>
+                      <Link to={`/courses/${code}?year=${catalogYear}`}>{s.name}</Link>
                     </td>
                     <td>{s.credits}</td>
                     <td>{yearTermLabel(s.standardYear, s.termType)}</td>

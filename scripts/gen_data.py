@@ -710,11 +710,17 @@ II_III_EVENING_ROWS = [
     ('ELE603h', '電子情報学実験B2', 1, 3, 6, '後学期', '', None, ['major-req']),
     ('ELE603m', '線形システム理論', 2, 3, 6, '後学期', '', None, ['major-sel']),
     ('ELE603n', 'デジタル信号処理', 2, 3, 6, '後学期', '', None, ['major-sel']),
+    # 学修要覧2025・2026の情報通信工学プログラム表に載っている選択科目。
+    # 初回データ化時にこの5科目だけ科目マスタと要件一覧の両方から漏れていた。
+    ('ELE604g', '符号理論', 2, 3, 6, '後学期', '', None, ['major-sel']),
     ('ELE604h', '伝送回路論', 2, 3, 6, '後学期', '', None, ['major-sel']),
     ('ELE604m', '画像工学', 2, 3, 6, '後学期', '', None, ['major-sel']),
+    ('ELE605g', '伝送回路論', 2, 3, 6, '後学期', '', None, ['major-sel']),
     ('ELE605h', '電磁波工学', 2, 3, 6, '後学期', '', None, ['major-sel']),
     ('ELE605m', 'デジタル信号処理', 2, 3, 6, '後学期', '', None, ['major-sel']),
+    ('ELE606g', '電磁波工学', 2, 3, 6, '後学期', '', None, ['major-sel']),
     ('ELE606h', '電子機器システム学', 2, 3, 6, '後学期', '', None, ['major-sel']),
+    ('ELE607g', '通信システム学', 2, 3, 6, '後学期', '', None, ['major-sel']),
     ('ELE607h', '線形システム理論', 2, 3, 6, '後学期', '', None, ['major-sel']),
     ('ELE608g', '線形システム理論', 2, 3, 6, '後学期', '', None, ['major-sel']),
     ('ELE701g', '集積回路学', 2, 4, 7, '前学期', '', None, ['major-sel']),
@@ -1198,6 +1204,7 @@ II_III_EVENING_ROWS = [
     ('PHO601m', '量子エレクトロニクス', 2, 3, 6, '後学期', '', None, ['major-sel']),
     ('PHO601n', '光工学実験第二', 3, 3, 6, '後学期', '', None, ['major-req']),
     ('PHO601p', '量子エレクトロニクス', 2, 3, 6, '後学期', '', None, ['major-elecreq']),
+    ('PHO601g', '光通信工学', 2, 3, 6, '後学期', '', None, ['major-sel']),
     ('PHO602n', '量子エレクトロニクス', 2, 3, 6, '後学期', '', None, ['major-req']),
     ('PHO603n', '光波工学', 2, 3, 6, '後学期', '', None, ['major-req']),
     ('PHO604n', '光通信工学', 2, 3, 6, '後学期', '', None, ['major-req']),
@@ -1515,6 +1522,38 @@ EVENING = {
     'groups': EVENING_GROUPS,
     'reviews': EVENING_REVIEWS,
 }
+
+# 付録CのPDF画像を目視確認した結果、科目コードからの推定値と異なっていた標準年次・学期をここで補正する。
+# 85件の候補を確認したうち、実際に修正が必要だった15件だけを記録している（2026-09-08）。
+STANDARD_TERM_CORRECTIONS = {
+    'FGN301e': (1, 1), 'FGN401e': (1, 2),
+    'PHY502g': (3, 5), 'PHY502h': (3, 5),
+    'MCE502i': (3, 5), 'MCE601i': (3, 6), 'MCE503i': (3, 5), 'MCE602i': (3, 6),
+    'MCE503j': (3, 5), 'MCE601j': (3, 6), 'MCE504j': (3, 5), 'MCE602j': (3, 6),
+    'MCE402k': (2, 4), 'MCE602k': (3, 6), 'MCE609k': (3, 6),
+}
+
+# 補正後の学期に合わせて、画面表示用の前学期・後学期も同時に更新する。
+for code, (year, semester) in STANDARD_TERM_CORRECTIONS.items():
+    subject = SUBJECTS[code]
+    subject['standardYear'] = year
+    subject['standardSemester'] = semester
+    subject['termType'] = '前学期' if semester % 2 == 1 else '後学期'
+
+# 情報通信工学プログラムの選択科目5件は、Ⅱ類の全プログラムで他プログラム科目として
+# 選べるため、各要件ファイルへ同じ科目番号を展開する。
+NETINFO_OMITTED_ELECTIVES = ['ELE604g', 'ELE605g', 'ELE606g', 'PHO601g', 'ELE607g']
+for program_doc in [SECURITY, NETINFO, ELECTROINFO, CONTROL, ROBOTICS]:
+    # 専門科目 > 類専門科目 > 選択の順に、対象グループを探す。
+    specialized_group = next(group for group in program_doc['groups'] if group['id'] == 'specialized')
+    major_group = next(group for group in specialized_group['children'] if group['id'] == 'major')
+    major_select_group = next(group for group in major_group['children'] if group['id'] == 'major-sel')
+    # 学修要覧と同じ順になるよう、既存のELE608gの直前へ不足分を入れる。
+    insert_at = major_select_group['subjects'].index('ELE608g')
+    for offset, code in enumerate(NETINFO_OMITTED_ELECTIVES):
+        # 再生成を複数回行っても重複しないよう、未登録の科目だけを追加する。
+        if code not in major_select_group['subjects']:
+            major_select_group['subjects'].insert(insert_at + offset, code)
 
 # ---------------------------------------------------------------- 出力
 os.makedirs(os.path.join(OUT, "requirements"), exist_ok=True)

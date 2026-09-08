@@ -10,7 +10,7 @@ export default function TopPage() {
   return (
     <main>
       <h1>
-        電通大 単位取得ルートナビ(ver.β2) <small>最終更新日: {__BUILD_DATE__}</small>
+        電通大 単位取得ルートナビ(ver.β2.2) <small>最終更新日: {__BUILD_DATE__}</small>
       </h1>
       <p>
         電気通信大学 情報理工学域の学生向けに、「学年・類・プログラム・取得済み科目」を入力するだけで、
@@ -43,6 +43,18 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section>
         <h2>リリースノート</h2>
+        {/* β2.2では、年度別データ対応とプロフィール・表示まわりの改善を最新情報としてまとめる。 */}
+        <p className="release-note-update">
+          <span>・アップデート(β2.1→β2.2)</span>
+          <span className="release-note-date">アップデート日 2026/9/8</span>
+        </p>
+        <ul className="release-note-items">
+          <li>2026年度入学生向けの卒業要件・科目データに対応しました</li>
+          <li>プロフィールで、学年にかかわらず進学予定のプログラムを選べるようにしました</li>
+          <li>科目の曜日時限・シラバスリンクの表示を改善しました</li>
+          <li>取得単位・審査結果・科目一覧の表示を調整しました</li>
+          <li>その他細かな修正を行いました</li>
+        </ul>
         {/* 最新の更新区分は少し大きく表示し、本文との区切りをひと目で分かるようにする。 */}
         <p className="release-note-update">
           <span>・アップデート(β2→β2.1)</span>

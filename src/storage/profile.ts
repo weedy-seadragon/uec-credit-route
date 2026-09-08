@@ -12,8 +12,6 @@ export interface Profile {
   program: string | null
   /** 現在の学年（1〜4） */
   grade: number
-  /** 推薦入学（入学時からプログラム確定済み）かどうか */
-  recommended: boolean
   /**
    * 曜日時限の表示に使うクラス情報（docs/SPEC.md §7.1のoffering解決用、CLAUDE.md進捗ログ参照）。
    * 昼間コースのみ（夜間主コースは類・クラスの概念が無いのですべてundefined）。

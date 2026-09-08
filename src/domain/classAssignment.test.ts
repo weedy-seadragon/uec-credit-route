@@ -106,6 +106,16 @@ describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () =>
     expect(classIdMatchesProfile(classId, { yearOneClass: 6 }, 'II')).toBe(false) // プログラム未定
   })
 
+  it('単独プログラムの学籍番号偶数/奇数も、1年次クラス番号の偶奇で判定する', () => {
+    // 電子工学実験第一のように、1つのプログラム内だけで曜日時限が偶奇に分かれる場合を確認する。
+    const oddProfile: ClassProfile = { yearOneClass: 9, programName: '電子工学プログラム' }
+    const evenProfile: ClassProfile = { yearOneClass: 10, programName: '電子工学プログラム' }
+    expect(classIdMatchesProfile('電子工学プログラムの学籍番号奇数', oddProfile, 'III')).toBe(true)
+    expect(classIdMatchesProfile('電子工学プログラムの学籍番号偶数', oddProfile, 'III')).toBe(false)
+    expect(classIdMatchesProfile('電子工学プログラムの学籍番号偶数', evenProfile, 'III')).toBe(true)
+    expect(classIdMatchesProfile('電子工学プログラムの学籍番号奇数', evenProfile, 'III')).toBe(false)
+  })
+
   it('未知の表記・未入力のプロフィールに対しては一致させない（誤判定より非表示を優先）', () => {
     expect(classIdMatchesProfile('謎のクラス', {}, 'I')).toBe(false)
     expect(classIdMatchesProfile('クラス3', {}, 'I')).toBe(false)

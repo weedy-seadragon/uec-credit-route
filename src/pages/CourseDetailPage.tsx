@@ -2,12 +2,16 @@
 //
 // `useParams` はReact Routerのフックで、URLの `:id` の部分を読み取れる。
 // 例えば "/courses/COM301k" というURLで表示されたときは `id` が "COM301k" になる。
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { findSubjectUsages, getSubjectsByCode } from '../data/requirementSets'
 
 export default function CourseDetailPage() {
   const { id } = useParams<{ id: string }>()
-  const subject = id ? getSubjectsByCode().get(id) : undefined
+  const [searchParams] = useSearchParams()
+  // 同じ科目番号でも年度で別科目になるため、URLのyearを優先して年度別マスタを引く。
+  const requestedYear = Number(searchParams.get('year'))
+  const entryYear = requestedYear === 2026 ? 2026 : 2025
+  const subject = id ? getSubjectsByCode(entryYear).get(id) : undefined
 
   if (!subject) {
     return (
@@ -15,14 +19,14 @@ export default function CourseDetailPage() {
         <h1>科目詳細</h1>
         <p>科目番号「{id}」は見つかりませんでした。</p>
         <p>
-          <Link to="/courses">科目一覧に戻る</Link>
+          <Link to={`/courses?year=${entryYear}`}>科目一覧に戻る</Link>
         </p>
       </main>
     )
   }
 
   // この科目が卒業要件のどのプログラムのどの区分で使われているかを、全プログラム分探す
-  const usages = findSubjectUsages(subject.code)
+  const usages = findSubjectUsages(entryYear, subject.code)
 
   return (
     <main>
@@ -30,6 +34,7 @@ export default function CourseDetailPage() {
       <p>
         科目番号: {subject.code} ／ 単位数: {subject.credits}
       </p>
+      <p>適用年度: {entryYear}年度</p>
       {subject.standardYear && (
         <p>
           標準履修年次: {subject.standardYear}年 {subject.termType ?? ''}
@@ -72,7 +77,7 @@ export default function CourseDetailPage() {
       )}
 
       <p>
-        <Link to="/courses">科目一覧に戻る</Link>
+        <Link to={`/courses?year=${entryYear}`}>科目一覧に戻る</Link>
       </p>
     </main>
   )

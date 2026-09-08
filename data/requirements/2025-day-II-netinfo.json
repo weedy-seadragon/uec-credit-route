@@ -167,6 +167,11 @@
               "kind": "elective",
               "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み",
               "subjects": [
+                "ELE604g",
+                "ELE605g",
+                "ELE606g",
+                "PHO601g",
+                "ELE607g",
                 "ELE608g",
                 "GSE601g",
                 "MTH701g",
