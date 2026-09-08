@@ -121,7 +121,7 @@ export default function CoursesPage() {
         科目名をクリックすると詳細（開講情報・要件上の位置づけ）を表示します。
       </p>
 
-      <div>
+      <div className="course-filter-row">
         <label htmlFor="courses-entry-year">入学年度</label>
         <select
           id="courses-entry-year"
@@ -136,7 +136,7 @@ export default function CoursesPage() {
         </select>
       </div>
 
-      <div>
+      <div className="course-filter-row">
         <label htmlFor="courses-program">プログラム</label>
         <select id="courses-program" value={programValue} onChange={(e) => setProgramValue(e.target.value)}>
           <option value="">未選択（総合文化・実践教育科目のみ）</option>
@@ -155,7 +155,7 @@ export default function CoursesPage() {
         </span>
       </div>
 
-      <div>
+      <div className="course-filter-row">
         <label htmlFor="courses-keyword">キーワード（科目名・科目番号）</label>
         <input
           id="courses-keyword"
@@ -166,7 +166,7 @@ export default function CoursesPage() {
         />
       </div>
 
-      <div>
+      <div className="course-filter-row">
         <label htmlFor="courses-year">学年</label>
         <select id="courses-year" value={yearFilter} onChange={(e) => setYearFilter(e.target.value)}>
           <option value="">指定なし</option>
