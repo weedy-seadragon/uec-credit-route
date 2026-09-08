@@ -873,7 +873,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 生涯スポーツ演習Ｃ/Ｄのように「夏期集中」「冬期集中」であることが分かっている科目は
   // 「オンデマンド」ではなくその文言を出したほうが正確、という指摘を受けて追加）。
   // offeringsが1件も無い科目は、今年度に開講が無い場合と取得漏れを画面上で区別できない。
-  // 「未登録」という表示は利用者の操作に役立たないため、曜日時限の注記自体を出さない。
+  // 「未登録」という表示は利用者の操作に役立たないため、確定した開講なし注記以外は何も出さない。
   function dayPeriodTag(code: string) {
     const subject = subjectsByCode.get(code)
     const offerings = subject?.offerings
@@ -888,7 +888,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       if (profile.cluster === 'III') return profile.classIIIYear2Class == null || profile.classIIIYear2Area == null
       return false
     }
-    if (!offerings || offerings.length === 0) return null
+    if (!offerings || offerings.length === 0) {
+      // 公式一覧で当年度の不開講が確認できた科目だけは、履修予定に入れないよう理由を明記する。
+      if (subject?.note?.includes('2026年度開講なし')) {
+        return <span className="schedule-unavailable">（2026年度開講なし）</span>
+      }
+      return null
+    }
     // 輪講・卒業研究は研究室ごとに実施形態が異なり、時間割として一律に示せない。
     // slotsが空でも「オンデマンド」と推測せず、曜日時限の注記自体を表示しない。
     if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return unavailable('研究室ごとに実施形態が異なります')
@@ -1068,7 +1074,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           // 履修記録を付けた順ではなく、その区分の科目定義順に並べる。
           const sortedItems = group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
             ? sortByGroupSubjectOrder(items, ([code]) => code, group.subjects)
-            : sortByYearTerm(items, ([code]) => code, standardYearOf, termTypeOf)
+            : sortByYearTermWithJapaneseCultureOrder(items, ([code]) => code, standardYearOf, termTypeOf, nameOf)
           const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, ([code]) => code)
           const row = (code: string) => (
             <SubjectRow
@@ -1210,7 +1216,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           // 標準年次・学期順（早い順）に並べる。
           const sortedItems = group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
             ? sortByGroupSubjectOrder(items, (item) => item.code, group.subjects)
-            : sortByYearTerm(items, (item) => item.code, standardYearOf, termTypeOf)
+            : sortByYearTermWithJapaneseCultureOrder(items, (item) => item.code, standardYearOf, termTypeOf, nameOf)
           const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, (r) => r.code)
           const row = (code: string) => (
             <SubjectRow
@@ -1497,6 +1503,27 @@ function sortByYearTerm<T>(items: readonly T[], codeOf: (item: T) => string, sta
 }
 
 /**
+ * 基本は標準年次・学期順のままにし、日本文化Ａ〜Ｅだけは科目名末尾の英字順に並べる。
+ * 日本文化は開講学期が入り混じるため、Ａ・Ｂ・Ｃ・Ｄ・Ｅの系列として続けて読める方が分かりやすい。
+ */
+function sortByYearTermWithJapaneseCultureOrder<T>(items: readonly T[], codeOf: (item: T) => string, standardYearOf: (code: string) => number | null, termTypeOf: (code: string) => string | null, nameOf: (code: string) => string): T[] {
+  // 先に通常の学年学期順へ並べ、日本文化の位置だけをＡ〜Ｅに入れ替える。
+  // こうすると、同じ区分にある他の科目の位置は変えずに済む。
+  const yearTermSorted = sortByYearTerm(items, codeOf, standardYearOf, termTypeOf)
+  const japaneseCultureSorted = yearTermSorted
+    .filter((item) => /^日本文化[Ａ-Ｅ]$/.test(nameOf(codeOf(item))))
+    .sort((a, b) => nameOf(codeOf(a)).localeCompare(nameOf(codeOf(b)), 'ja'))
+  let japaneseCultureIndex = 0
+  // 日本文化以外は元の項目を返し、日本文化だけを文字列順の次の項目へ差し替える。
+  return yearTermSorted.map((item) => {
+    if (!/^日本文化[Ａ-Ｅ]$/.test(nameOf(codeOf(item)))) return item
+    const sortedItem = japaneseCultureSorted[japaneseCultureIndex]
+    japaneseCultureIndex += 1
+    return sortedItem
+  })
+}
+
+/**
  * 第二外国語など、年次・学期順ではなく要件データに書かれた順を保ちたい科目を並べる。
  * 修得記録を付けた順ではなく、例えば「ドイツ語第一→ドイツ語第二」の順に表示するために使う。
  */
@@ -1567,12 +1594,13 @@ function GroupProgress({
   // あればそちらを優先し、他プログラム専門科目としては出さない）
   const dedupedRemaining = dedupeByName(remainingAll, nameOf, isOtherProgram)
   // 第二外国語・生涯スポーツは、第一・第二のペアや科目のまとまりを崩したくないので元の並び順のまま。
-  // それ以外は「1年前期→1年後期→2年前期→…」の学年学期順に並べ替える
+  // それ以外は「1年前期→1年後期→2年前期→…」の学年学期順に並べ替える。
+  // ただし日本文化Ａ〜Ｅだけは、同じ系列としてＡ〜Ｅ順に揃える。
   // （このあとの重複除去・他プログラム専門科目/留学生のみ/前学期後学期への振り分けは全部フィルタで
   // 元の順番を保つので、ここで並べ替えておけば下流にもそのまま反映される）
   const remaining = GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
     ? dedupedRemaining
-    : sortByYearTerm(dedupedRemaining, (code) => code, standardYearOf, termTypeOf)
+    : sortByYearTermWithJapaneseCultureOrder(dedupedRemaining, (code) => code, standardYearOf, termTypeOf, nameOf)
   // 他プログラム専門科目・留学生のみ履修できる科目は、下の折りたたみにまとめる（他の一覧と同じ扱い）。
   // 両方に該当する科目は留学生のみの方に入れる
   const international = remaining.filter((code) => isInternational(code))
