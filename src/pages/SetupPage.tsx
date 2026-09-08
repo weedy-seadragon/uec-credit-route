@@ -88,6 +88,14 @@ export default function SetupPage() {
     setPreviousProgram(null)
   }
 
+  // 昼間・夜間主では選べるプログラムの集合が別なので、切替時に前の値を持ち越さない。
+  function handleCourseChange(nextCourse: Profile['course']) {
+    setCourse(nextCourse)
+    setProgram(null)
+    // 夜間主では類が無く、昼間へ戻ったときは最初の類を選んだ状態から設定し直してもらう。
+    setCluster(nextCourse === 'day' ? 'I' : null)
+  }
+
   // フォーム送信時：ページの再読み込みを止め（preventDefault）、今の入力内容を保存して
   // メイン画面に移動する
   function handleSubmit(e: FormEvent) {
@@ -145,7 +153,7 @@ export default function SetupPage() {
           <select
             id="course"
             value={course}
-            onChange={(e) => setCourse(e.target.value as Profile['course'])}
+            onChange={(e) => handleCourseChange(e.target.value as Profile['course'])}
           >
             <option value="day">昼間コース</option>
             <option value="evening">夜間主コース</option>

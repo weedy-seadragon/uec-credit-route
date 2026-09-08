@@ -276,19 +276,21 @@ export default function MainPage() {
 }
 
 function MainPageContent({ profile }: { profile: LoadedProfile }) {
+  // 保存済みプロフィールに古い/不正なプログラム値があっても、未選択として共通要件を表示する。
+  const programName = getProgramName(profile.entryYear, profile.program)
+  const isProgramUndecided = programName == null
   const requirementSet = useMemo(
-    () => profile.program
+    () => !isProgramUndecided && profile.program
       ? getRequirementSet(profile.entryYear, profile.course, profile.cluster, profile.program)
       // 夜間主はプロフィール保存時にprogram: 'evening'となるため、ここは昼間コースだけに到達する。
       : getRequirementSetWithoutProgram(profile.entryYear, profile.cluster as 'I' | 'II' | 'III'),
-    [profile],
+    [profile, isProgramUndecided],
   )
   // 科目番号は年度をまたぐと別科目を指す場合があるため、プロフィールの入学年度でマスタを切り替える。
   const subjectsByCode = useMemo(() => getSubjectsByCode(profile.entryYear), [profile.entryYear])
   const subjectCredits = useMemo(() => getSubjectCredits(profile.entryYear), [profile.entryYear])
   const classAssignments = useMemo(() => getClassAssignments(), [])
   // プログラムが決まっていれば（2年後期以降）、その名前をクラス判定にも使う
-  const programName = getProgramName(profile.entryYear, profile.program)
   // dayPeriodTag・nameLinkの両方で使う、クラス判定用プロフィール（resolveSlotsForProfile等の引数）
   const classProfile = {
     yearOneClass: profile.yearOneClass,
@@ -374,7 +376,6 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 審査（2年次終了時審査など）。reviewsデータが無いプログラムでは空配列になる（現在は全16課程にreviewsがある）。
   // reviewsを一度ローカル変数に受けておく（入れ子関数の中ではrequirementSetの絞り込みが効かないため）
   const reviews = requirementSet.reviews
-  const isProgramUndecided = profile.program == null
   const reviewStatuses = reviews ? evaluateReviews(reviews, evaluation, committed, subjectCredits) : []
   const requiredCodes = new Set(boundaryGroups.filter((g) => g.kind === 'required').flatMap((g) => g.subjects))
   // 「取得単位」「残りの必修」を区分ごとに見出しを分けて表示するための対応表
