@@ -29,7 +29,25 @@ import optical from '../../data/requirements/2025-day-III-optical.json'
 import physics from '../../data/requirements/2025-day-III-physics.json'
 import chembio from '../../data/requirements/2025-day-III-chembio.json'
 import evening from '../../data/requirements/2025-evening.json'
-import subjectsMaster from '../../data/subjects/youran-2025.json'
+import common2026 from '../../data/requirements/2026-day-common.json'
+import media2026 from '../../data/requirements/2026-day-I-media.json'
+import management2026 from '../../data/requirements/2026-day-I-management.json'
+import mathinfo2026 from '../../data/requirements/2026-day-I-mathinfo.json'
+import cs2026 from '../../data/requirements/2026-day-I-cs.json'
+import designds2026 from '../../data/requirements/2026-day-I-designds.json'
+import security2026 from '../../data/requirements/2026-day-II-security.json'
+import netinfo2026 from '../../data/requirements/2026-day-II-netinfo.json'
+import electroinfo2026 from '../../data/requirements/2026-day-II-electroinfo.json'
+import control2026 from '../../data/requirements/2026-day-II-control.json'
+import robotics2026 from '../../data/requirements/2026-day-II-robotics.json'
+import mecha2026 from '../../data/requirements/2026-day-III-mecha.json'
+import electro2026 from '../../data/requirements/2026-day-III-electro.json'
+import optical2026 from '../../data/requirements/2026-day-III-optical.json'
+import physics2026 from '../../data/requirements/2026-day-III-physics.json'
+import chembio2026 from '../../data/requirements/2026-day-III-chembio.json'
+import evening2026 from '../../data/requirements/2026-evening.json'
+import subjectsMaster2025 from '../../data/subjects/youran-2025.json'
+import subjectsMaster2026 from '../../data/subjects/youran-2026.json'
 import classAssignmentData from '../../data/timetable/class_assignment.json'
 import type { ClassAssignmentEntry } from '../domain/classAssignment'
 
@@ -85,8 +103,26 @@ function applyCommonOverrides(groups: readonly RequirementGroup[], overrides: Re
 
 // JSONを`import`すると型は自動推論されるが、要件セットの木構造（children等）まではTypeScriptには
 // 分からないので、ここで RequirementGroup[] であることを明示しておく（as で型を指定し直している）。
-const commonDoc = common as { groups: RequirementGroup[]; commonCreditSources?: { alwaysCommon?: string[] } }
-const programDocs: ProgramDoc[] = [media, management, mathinfo, cs, designds, security, netinfo, electroinfo, control, robotics, mecha, electro, optical, physics, chembio, evening] as ProgramDoc[]
+type CommonDoc = { groups: RequirementGroup[]; commonCreditSources?: { alwaysCommon?: string[] } }
+
+// 昼間コース共通要件は入学年度ごとに内容が異なる可能性があるため、年度をキーにして持つ。
+const commonDocsByYear: ReadonlyMap<number, CommonDoc> = new Map([
+  [2025, common as CommonDoc],
+  [2026, common2026 as CommonDoc],
+])
+
+// 要件JSONは年度別に読み込み、プロフィールのentryYearで正しい1件を選ぶ。
+const programDocs: ProgramDoc[] = [
+  media, management, mathinfo, cs, designds, security, netinfo, electroinfo, control, robotics, mecha, electro, optical, physics, chembio, evening,
+  media2026, management2026, mathinfo2026, cs2026, designds2026, security2026, netinfo2026, electroinfo2026, control2026, robotics2026,
+  mecha2026, electro2026, optical2026, physics2026, chembio2026, evening2026,
+] as ProgramDoc[]
+
+// 科目番号は年度をまたぐと別の科目を指すことがあるため、科目マスタも年度別に切り替える。
+const subjectMastersByYear = new Map([
+  [2025, subjectsMaster2025],
+  [2026, subjectsMaster2026],
+])
 
 /** プロフィール設定画面のプルダウンに出す、今データが揃っている選択肢の一覧 */
 export const programOptions: ProgramOption[] = programDocs.map((p) => ({
@@ -109,28 +145,40 @@ export function getRequirementSet(entryYear: number, course: string, cluster: st
   )
   if (!doc) return undefined // まだデータが無い組み合わせ
 
-  // 夜間主（course: 'evening'）は2025-day-common.jsonをextendsしない自己完結ファイルなので、
+  // 夜間主（course: 'evening'）は昼間共通要件をextendsしない自己完結ファイルなので、
   // doc.groups だけをそのまま使う。昼間コースは共通ファイルのgroups（総合文化・実践教育。
   // プログラム固有のcommonOverridesがあれば適用）とプログラム別ファイルのgroups（専門科目）を
   // 1つの配列にまとめて、evaluateRequirements() にそのまま渡せる形にする
-  const groups =
-    doc.course === 'evening'
-      ? [...doc.groups]
-      : [...applyCommonOverrides(commonDoc.groups, doc.commonOverrides), ...doc.groups]
+  const commonDoc = commonDocsByYear.get(entryYear)
+  let groups: RequirementGroup[]
+  // 夜間主は自己完結、昼間は同年度の共通要件と専門要件を結合する。
+  if (doc.course === 'evening') {
+    groups = [...doc.groups]
+  } else {
+    // 昼間共通要件がない年度は、専門要件だけを返して誤った年度の共通要件と混ぜない。
+    if (!commonDoc) return undefined
+    groups = [...applyCommonOverrides(commonDoc.groups, doc.commonOverrides), ...doc.groups]
+  }
 
   return {
     totalCredits: doc.totalCredits,
     commonCredits: doc.commonCredits,
     groups,
-    alwaysCommonSubjects: doc.course === 'evening' ? [] : (commonDoc.commonCreditSources?.alwaysCommon ?? []),
+    alwaysCommonSubjects: doc.course === 'evening' ? [] : (commonDoc?.commonCreditSources?.alwaysCommon ?? []),
     programSuffix: doc.programSuffix,
     reviews: doc.reviews,
   }
 }
 
+/** 入学年度に対応する科目マスタを返す。未対応年度ならundefinedを返す。 */
+function getSubjectMaster(entryYear: number): typeof subjectsMaster2025 | undefined {
+  return subjectMastersByYear.get(entryYear) as typeof subjectsMaster2025 | undefined
+}
+
 /** 科目番号（フルコード）→単位数 のマップ。evaluateRequirements() にそのまま渡せる */
-export function getSubjectCredits(): ReadonlyMap<string, number> {
-  return new Map(subjectsMaster.subjects.map((s) => [s.code, s.credits]))
+export function getSubjectCredits(entryYear: number): ReadonlyMap<string, number> {
+  const subjectMaster = getSubjectMaster(entryYear)
+  return new Map(subjectMaster?.subjects.map((s) => [s.code, s.credits]) ?? [])
 }
 
 /** シラバスWeb公開システムから取得した、1つの開講セクション（クラス）の情報（docs/SPEC.md §7.1） */
@@ -165,8 +213,9 @@ export interface SubjectMasterEntry {
 }
 
 /** 科目番号（フルコード）→科目マスタの情報 のマップ。科目一覧・詳細（F-5）や推奨計算に使う */
-export function getSubjectsByCode(): ReadonlyMap<string, SubjectMasterEntry> {
-  return new Map((subjectsMaster.subjects as SubjectMasterEntry[]).map((s) => [s.code, s]))
+export function getSubjectsByCode(entryYear: number): ReadonlyMap<string, SubjectMasterEntry> {
+  const subjectMaster = getSubjectMaster(entryYear)
+  return new Map((subjectMaster?.subjects as SubjectMasterEntry[] | undefined)?.map((s) => [s.code, s]) ?? [])
 }
 
 /**
@@ -179,8 +228,8 @@ export function getClassAssignments(): ClassAssignmentEntry[] {
 }
 
 /** プログラムID（例:"media"）から、学修要覧の表記そのままのプログラム名（例:「メディア情報学プログラム」）を引く */
-export function getProgramName(program: string | null): string | null {
-  return programOptions.find((p) => p.program === program)?.programName ?? null
+export function getProgramName(entryYear: number, program: string | null): string | null {
+  return programOptions.find((p) => p.entryYear === entryYear && p.program === program)?.programName ?? null
 }
 
 /** 科目一覧の詳細ページ（F-5）で「どのプログラムのどの区分に位置づけられているか」を示すための1件ぶん */
@@ -210,9 +259,10 @@ function collectGroupPaths(groups: readonly RequirementGroup[], code: string, an
  * 科目一覧の詳細ページで「要件上の位置づけ」を示すために使う。同じプログラムに複数箇所（他プログラムの
  * 選択科目としての展開分と本来の区分、など）見つかることもあるので、区分ごとに別の行として返す
  */
-export function findSubjectUsages(code: string): SubjectUsage[] {
+export function findSubjectUsages(entryYear: number, code: string): SubjectUsage[] {
   const usages: SubjectUsage[] = []
-  for (const p of programOptions) {
+  // 同じコードが別年度に別の科目を指すため、表示中の年度のプログラムだけを調べる。
+  for (const p of programOptions.filter((option) => option.entryYear === entryYear)) {
     const set = getRequirementSet(p.entryYear, p.course, p.cluster, p.program)
     if (!set) continue
     const paths: string[] = []
@@ -260,6 +310,9 @@ export function getCourseListSections(
 ): CourseListSection[] {
   const out: CourseListSection[] = []
   if (!program) {
+    const commonDoc = commonDocsByYear.get(entryYear)
+    // 共通要件が未登録の年度は、他年度の一覧を借りず空として返す。
+    if (!commonDoc) return out
     collectCourseListSections(commonDoc.groups, out)
     return out
   }
@@ -318,7 +371,7 @@ export function getTransferBucketSubjects(
   yearLevel: 1 | 2,
   currentSet: RequirementSet,
 ): TransferBucketItem[] {
-  const subjectsByCode = getSubjectsByCode()
+  const subjectsByCode = getSubjectsByCode(entryYear)
 
   const oldProgramId =
     oldProgram ?? programOptions.find((p) => p.entryYear === entryYear && p.course === 'day' && p.cluster === oldCluster)?.program

@@ -9,11 +9,8 @@ import { programOptions } from '../data/requirementSets'
 import type { Profile } from '../storage/profile'
 import { loadProfile, saveProfile } from '../storage/profile'
 
-// 入学年度の入力欄を表示するかどうか（2026-09-06、開発者判断で一時的にfalseにしている）。
-// 今のところdata/requirements/以下が全部entryYear:2025のデータしか無く、選ばせても
-// 実質意味が無いため。2024・2026年度分のデータを追加することになったらtrueに戻す
-// （entryYearの状態・ロジック自体はそのまま残してある）
-const SHOW_ENTRY_YEAR_INPUT = false
+// 2025・2026年度の要件と科目マスタが揃ったため、プロフィールで入学年度を選べるようにする。
+const SHOW_ENTRY_YEAR_INPUT = true
 
 export default function SetupPage() {
   const navigate = useNavigate()
@@ -84,6 +81,13 @@ export default function SetupPage() {
     [entryYear, previousProgramCluster],
   )
 
+  // 入学年度が変わると、プログラムIDが同じでも参照する要件・科目マスタが変わるため選び直してもらう。
+  function handleEntryYearChange(year: number) {
+    setEntryYear(year)
+    setProgram(null)
+    setPreviousProgram(null)
+  }
+
   // フォーム送信時：ページの再読み込みを止め（preventDefault）、今の入力内容を保存して
   // メイン画面に移動する
   function handleSubmit(e: FormEvent) {
@@ -126,7 +130,7 @@ export default function SetupPage() {
         {SHOW_ENTRY_YEAR_INPUT && (
         <div>
           <label htmlFor="entryYear">入学年度</label>
-          <select id="entryYear" value={entryYear} onChange={(e) => setEntryYear(Number(e.target.value))}>
+          <select id="entryYear" value={entryYear} onChange={(e) => handleEntryYearChange(Number(e.target.value))}>
             {[...new Set(programOptions.map((p) => p.entryYear))].map((year) => (
               <option key={year} value={year}>
                 {year}年度

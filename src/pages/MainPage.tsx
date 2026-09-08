@@ -292,11 +292,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     () => getRequirementSet(profile.entryYear, profile.course, profile.cluster, profile.program),
     [profile],
   )
-  const subjectsByCode = useMemo(() => getSubjectsByCode(), [])
-  const subjectCredits = useMemo(() => getSubjectCredits(), [])
+  // 科目番号は年度をまたぐと別科目を指す場合があるため、プロフィールの入学年度でマスタを切り替える。
+  const subjectsByCode = useMemo(() => getSubjectsByCode(profile.entryYear), [profile.entryYear])
+  const subjectCredits = useMemo(() => getSubjectCredits(profile.entryYear), [profile.entryYear])
   const classAssignments = useMemo(() => getClassAssignments(), [])
   // プログラムが決まっていれば（2年後期以降）、その名前をクラス判定にも使う
-  const programName = getProgramName(profile.program)
+  const programName = getProgramName(profile.entryYear, profile.program)
   // dayPeriodTag・nameLinkの両方で使う、クラス判定用プロフィール（resolveSlotsForProfile等の引数）
   const classProfile = {
     yearOneClass: profile.yearOneClass,
@@ -592,7 +593,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       // シラバスを一意に選べない場合も、科目詳細には全セクションの候補が載っている。
       // そこで科目名を詳細ページへの内部リンクにし、利用者が教員を選べるようにする。
       if (!matched || matched.length === 0 || matchedUrls.size !== 1) {
-        return <Link to={`/courses/${code}`}>{name}</Link>
+        return <Link to={`/courses/${code}?year=${profile.entryYear}`}>{name}</Link>
       }
       target = matched.filter((offering) => offering.syllabusUrl.length > 0)
     }
