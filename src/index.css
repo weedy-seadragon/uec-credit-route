@@ -27,9 +27,18 @@ nav a {
   margin-top: 0.55rem;
 }
 
+/* 各アップデートを科目一覧の入れ子と同じように、左の線と白黒の背景で独立して見せる。 */
+.release-note-entry {
+  margin-top: 1.5rem;
+  padding: 0.7rem 0.85rem 0.2rem;
+  border-left: 3px solid #88a5dc;
+  border-radius: 0 0.35rem 0.35rem 0;
+  background: Canvas;
+}
+
 /* リリースノートの更新区分は本文より少し大きくし、どの更新の説明かを見分けやすくする。 */
 .release-note-update {
-  margin-bottom: 0.35rem;
+  margin: 0 0 0.35rem;
   font-size: 1.2rem;
   font-weight: 700;
 }
@@ -51,7 +60,12 @@ nav a {
 /* 更新内容の各行を少し離し、複数の修正点を追いやすくする。 */
 .release-note-items {
   margin-top: 0;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.9rem;
+}
+
+/* 枠内の最後の説明は余白を増やさず、次の更新との間隔は親の枠でそろえる。 */
+.release-note-entry > .release-note-items:last-child {
+  margin-bottom: 0;
 }
 
 .release-note-items > li + li {

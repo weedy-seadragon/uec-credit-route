@@ -235,7 +235,15 @@ export function resolveSlotsForProfile(
   isRetaking = false,
 ): { day: string; period: number }[] | undefined {
   const matched = resolveOfferingsForProfile(code, offerings, assignments, profile, cluster, isRetaking)
-  if (!matched) return undefined
+  if (!matched) {
+    // 国際科目のように複数の候補があり、クラス対応表が無くても全候補の曜日時限が同じなら表示しても誤りにならない。
+    // シラバスURLは候補を1件に決められないので、ここでは曜日時限だけを安全に返す。
+    const slotKeys = new Set(offerings.map((offering) => slotsKey(offering.slots)))
+    if (offerings.length > 1 && offerings[0].slots.length > 0 && slotKeys.size === 1) {
+      return offerings[0].slots.map((slot) => ({ ...slot }))
+    }
+    return undefined
+  }
   const seen = new Set<string>()
   return matched
     .flatMap((o) => o.slots)
