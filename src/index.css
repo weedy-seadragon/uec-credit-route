@@ -86,12 +86,11 @@ select {
   font: inherit;
 }
 
-/* プログラム未選択時の表示範囲は見落とすと混乱しやすいため、補足文に穏やかな注意色を付ける。 */
+/* プログラム未選択時の補足文は、本文と同じ色のまま少し小さく表示する。 */
 .course-program-note {
   margin-left: 0.5em;
-  color: color-mix(in srgb, #c77700 78%, currentColor);
+  color: inherit;
   font-size: 0.9em;
-  font-weight: 600;
 }
 
 /* プロフィール設定は入力項目が続くため、入力欄を大きくし直すのではなく行間を広げて見分けやすくする。 */
@@ -156,7 +155,6 @@ select {
 /* 審査の合計単位条件にだけ、卒業所要単位ベースであることを補足する。 */
 .review-credit-note-inline {
   margin-left: 0.45rem;
-  color: #555;
   font-size: 0.85em;
   line-height: 1.45;
 }
@@ -201,8 +199,6 @@ select {
 .section-guidance,
 .group-guidance {
   margin: 0.35rem 0 0.85rem;
-  /* 卒業要件の補足・注意書きは本文と区別しつつ、警告ほど強くならない青系で読ませる。 */
-  color: color-mix(in srgb, #3e6c9f 78%, currentColor);
   line-height: 1.6;
 }
 

@@ -733,7 +733,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     // 併記しておく（2026-09-06。学域特別講義A/Bのような「毎年テーマは変わるが曜日時限は
     // 固定」という科目で、そのことが伝わるようにするため）
     const noteSuffix = note ? (
-      <span style={{ marginLeft: '0.3em', color: '#555', fontSize: '0.9em' }}>（{note}）</span>
+      <span style={{ marginLeft: '0.3em', fontSize: '0.9em' }}>（{note}）</span>
     ) : null
     // クォーター（春/夏/秋/冬ターム）制で、かつ1つの科目コードに単一のタームしか無い科目
     // （アカデミックスキルズ等）は、曜日時限ではなく「N年◯ターム」と表示する
@@ -1026,7 +1026,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       {(clusterTransferBucket.length > 0 || programTransferBucket.length > 0) && (
         <section className="requirement-section">
           <h2>その他の科目（転類・転プログラム前に必修だった科目）</h2>
-          <p style={{ fontSize: '0.9em', color: '#555' }}>
+          <p style={{ fontSize: '0.9em' }}>
             元の類・プログラムでは必修だったものの、今の要件には出てこない科目です。修得にすると共通単位に加算されます
             （同名の科目は他の一覧の必修・選択にそのまま出てくるので、ここには出しません）。
           </p>
@@ -1184,10 +1184,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               return (
                 <li key={r.id}>
                   {r.name}
-                  {r.when && <span style={{ marginLeft: '0.4em', color: '#555' }}>（{r.when}）</span>}
+                  {r.when && <span style={{ marginLeft: '0.4em' }}>（{r.when}）</span>}
                   {r.satisfied ? ' ✔ 合格見込み' : ' ✖ 不足あり'}
                   {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
-                  {r.caveat && <p style={{ fontSize: '0.9em', color: '#555', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
+                  {r.caveat && <p style={{ fontSize: '0.9em', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
                   {!r.satisfied && visibleUnsatisfied.length > 0 && (
                     <details>
                       <summary>詳細</summary>
@@ -1196,7 +1196,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                           <li key={i}>{describeCondition(cond)}</li>
                         ))}
                       </ul>
-                      {r.onFail?.note && <p style={{ fontSize: '0.9em', color: '#555' }}>※ {r.onFail.note}</p>}
+                      {r.onFail?.note && <p style={{ fontSize: '0.9em' }}>※ {r.onFail.note}</p>}
                     </details>
                   )}
                 </li>
