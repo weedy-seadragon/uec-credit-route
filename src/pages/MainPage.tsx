@@ -245,11 +245,12 @@ function SubjectRow({
         <span className="subject-name">{name}</span>
         <span className="subject-meta">{credits}</span>
         {term && <span className="subject-meta">{term}</span>}
+        {/* 曜日時限は履修状態の操作ではなく科目の属性なので、学年学期の右に並べる。 */}
+        {schedule && <span className="subject-schedule">{schedule}</span>}
         {note}
       </div>
       <div className="subject-row-actions">
         {status}
-        {schedule && <span className="subject-schedule">{schedule}</span>}
       </div>
     </div>
   )
