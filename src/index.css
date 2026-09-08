@@ -504,10 +504,10 @@ select {
   margin-top: 0.35rem;
 }
 
-/* 詳細を開かず表示する審査条件は、審査名の直下で少しだけ下げて読み分けられるようにする。 */
+/* 詳細を開かず表示する審査条件も、卒研着手審査の入れ子と同じ左罫線・本文開始位置にそろえる。 */
 .review-conditions-inline {
-  margin: 0.35rem 0 0.25rem 1.25rem;
-  padding-left: 0.8rem;
+  margin: 0.8rem 0 0.85rem 0.5rem;
+  padding-left: 0.7rem;
   border-left: 3px solid #88a5dc;
 }
 

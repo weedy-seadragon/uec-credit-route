@@ -1572,14 +1572,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                   {r.caveat && <p style={{ fontSize: '0.9em', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
                   {!r.satisfied && visibleUnsatisfied.length > 0 && (
                     showConditionsInline ? (
-                      <>
-                        <ul className="review-conditions review-conditions-inline">
+                      <div className="review-conditions-inline">
+                        <ul className="review-conditions">
                           {visibleUnsatisfied.map((cond, i) => (
                             <li key={i}>{describeCondition(cond)}</li>
                           ))}
                         </ul>
                         {r.onFail?.note && <p className="review-note">※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
-                      </>
+                      </div>
                     ) : (
                       <details className="nested-subject-group review-details">
                         <summary><span>詳細</span></summary>
