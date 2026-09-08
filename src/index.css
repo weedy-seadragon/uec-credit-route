@@ -223,7 +223,7 @@ select {
 /* 修得予定は確定済みの取得単位と区別するため、指定された黄色の枠で囲む。 */
 .planned-section {
   border: 2px solid #d9d900;
-  background: color-mix(in srgb, #d9d900 10%, Canvas);
+  background: color-mix(in srgb, #d9d900 4%, Canvas);
 }
 
 .section-guidance,
