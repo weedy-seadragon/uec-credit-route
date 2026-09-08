@@ -73,6 +73,19 @@ select {
   font: inherit;
 }
 
+/* 科目一覧の絞り込みは条件ごとに行を分け、選択欄が続いても読み取りやすい間隔にする。 */
+.course-filter-row {
+  margin-top: 1.1rem;
+}
+
+/* キーワード欄も選択欄と同じ高さにそろえ、入力場所を押しやすく見つけやすくする。 */
+.course-filter-row input[type='text'] {
+  box-sizing: border-box;
+  min-height: 2.75rem;
+  padding: 0.35rem 0.65rem;
+  font: inherit;
+}
+
 /* プロフィール設定は入力項目が続くため、入力欄を大きくし直すのではなく行間を広げて見分けやすくする。 */
 .setup-page {
   max-width: 44rem;
