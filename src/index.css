@@ -353,6 +353,12 @@ select {
   font-weight: 700;
 }
 
+/* 画面のJavaScriptを必要になった時点で読む間も、空白にせず何が起きているかを伝える。 */
+.page-loading {
+  padding: 2rem 0;
+  text-align: center;
+}
+
 /* 長い選択科目では見出しが画面外へ出たときだけ、現在読んでいる区分を閉じる操作を画面上部いっぱいに固定する。 */
 .sticky-group-close {
   position: fixed;

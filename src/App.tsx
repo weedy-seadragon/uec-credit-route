@@ -8,14 +8,23 @@
 // `<Routes>` の中に並んだ `<Route>` が「このパスならこのコンポーネントを表示する」という
 // 対応表になっている。`element={<SetupPage />}` の部分は「このコンポーネントをレンダリングせよ」
 // という指定で、C++でいう関数ポインタを渡すようなイメージに近い。
+import { lazy, Suspense } from 'react'
 import { HashRouter, Link, Route, Routes } from 'react-router-dom'
-import AboutPage from './pages/AboutPage'
-import CourseDetailPage from './pages/CourseDetailPage'
-import CoursesPage from './pages/CoursesPage'
-import MainPage from './pages/MainPage'
-import RoutePage from './pages/RoutePage'
-import SetupPage from './pages/SetupPage'
-import TopPage from './pages/TopPage'
+
+// lazyは、画面のファイルを最初から全て読み込まず、その画面へ移動するときにだけ取得するReactの仕組み。
+// 科目データを使う重い画面を後回しにして、トップページの最初の表示を軽くする。
+const AboutPage = lazy(() => import('./pages/AboutPage'))
+const CourseDetailPage = lazy(() => import('./pages/CourseDetailPage'))
+const CoursesPage = lazy(() => import('./pages/CoursesPage'))
+const MainPage = lazy(() => import('./pages/MainPage'))
+const RoutePage = lazy(() => import('./pages/RoutePage'))
+const SetupPage = lazy(() => import('./pages/SetupPage'))
+const TopPage = lazy(() => import('./pages/TopPage'))
+
+/** 画面のファイルを読み込んでいる短い間だけ表示する案内。 */
+function PageLoading() {
+  return <main className="page-loading">画面を読み込んでいます…</main>
+}
 
 function App() {
   return (
@@ -26,15 +35,18 @@ function App() {
         <Link to="/main">メイン画面</Link> | <Link to="/courses">科目一覧</Link> |{' '}
         <Link to="/about">このサイトについて</Link>
       </nav>
-      <Routes>
-        <Route path="/" element={<TopPage />} />
-        <Route path="/setup" element={<SetupPage />} />
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/courses" element={<CoursesPage />} />
-        <Route path="/courses/:id" element={<CourseDetailPage />} />
-        <Route path="/route/:year/:cls/:prog" element={<RoutePage />} />
-        <Route path="/about" element={<AboutPage />} />
-      </Routes>
+      {/* Suspenseはlazyで読み込み中の画面に代わって、利用者へ短い案内を表示する。 */}
+      <Suspense fallback={<PageLoading />}>
+        <Routes>
+          <Route path="/" element={<TopPage />} />
+          <Route path="/setup" element={<SetupPage />} />
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/:id" element={<CourseDetailPage />} />
+          <Route path="/route/:year/:cls/:prog" element={<RoutePage />} />
+          <Route path="/about" element={<AboutPage />} />
+        </Routes>
+      </Suspense>
     </HashRouter>
   )
 }
