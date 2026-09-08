@@ -357,6 +357,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 保存済みプロフィールに古い/不正なプログラム値があっても、未選択として共通要件を表示する。
   const programName = getProgramName(profile.entryYear, profile.program)
   const isProgramUndecided = programName == null
+  // 共通単位の入れ子も、長い選択区分と同じ上部追従の「閉じる」操作に使う。
+  const commonCreditsDetailsRef = useRef<HTMLDetailsElement>(null)
   const requirementSet = useMemo(
     () => !isProgramUndecided && profile.program
       ? getRequirementSet(profile.entryYear, profile.course, profile.cluster, profile.program)
@@ -1449,7 +1451,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           // required=0でGroupProgressの対象外だったり、alwaysCommonSubjectsでどの区分にも属さないため、
           // これまで選択状態を変える場所が無かった。類専門（選択）の直後に専用の入れ子を出す
           const commonCreditsElement = (
-            <details key="common-credits" className="elective-group">
+            <details ref={commonCreditsDetailsRef} key="common-credits" className="elective-group">
               <summary>
                 <span className="elective-group-title">共通単位</span>
                 <span className="elective-group-progress">
@@ -1509,6 +1511,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 ))}
                 {commonOnlyRemaining.filter(isVisibleForTermFilter).length === 0 && <li>（この表示範囲では残っていません）</li>}
               </ul>
+              <StickyGroupClose detailsRef={commonCreditsDetailsRef} title="共通単位" />
             </details>
           )
           const electiveGroups = boundaryGroups.filter((g) => (g.kind === 'elective' || g.kind === 'elective-required') && g.required > 0)
