@@ -114,7 +114,7 @@ export default function CoursesPage() {
   }, [sections, subjectsByCode, kw, yearFilter, termFilter, dayFilter])
 
   return (
-    <main>
+    <main className="courses-page">
       <h1>科目一覧</h1>
       <p>
         学修要覧に載っている科目を、キーワード・学年学期・曜日・プログラムで絞り込んで探せます。
