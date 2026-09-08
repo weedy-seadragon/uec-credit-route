@@ -1142,6 +1142,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         ) : null
         const hasMajorSel = passedByCategory.some(({ group }) => group?.id === 'major-sel')
         const rendered = passedByCategory.flatMap(({ label, group, items }) => {
+          // 要件区分に属さない修得科目は自由科目などをまとめた枠なので、曖昧な「その他」ではなく用途も見出しに添える。
+          const displayedLabel = group === null && label === 'その他' ? 'その他（自由科目など）' : label
           // 選択科目と同じく学年学期順に並べ替える。ただし第二外国語（第一・第二のペア）・
           // 生涯スポーツは学修要覧の元の並び順（言語ごと・科目のまとまり）を崩したくないので、
           // 履修記録を付けた順ではなく、その区分の科目定義順に並べる。
@@ -1159,9 +1161,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             />
           )
           const categoryElement = (
-            <div key={label}>
+            <div key={displayedLabel}>
               <h3>
-                {label}
+                {displayedLabel}
                 {/* 必要単位に切り詰めたcontributionではなく、超過分（overflow）を足した「実際に取得した単位数」を出す。
                     こうすると、必要単位を超えて取っている区分が「10/8単位」のように一目で分かる */}
                 {group && (
