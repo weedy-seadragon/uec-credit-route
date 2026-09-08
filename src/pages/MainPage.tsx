@@ -558,6 +558,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const termCommonRecommendations = evaluation.commonCredits.shortfall > 0
     ? recommendationCandidates.filter((r) => committed.get(r.code) == null && commonOnlyRemaining.includes(r.code))
     : []
+  // 選択区分と共通単位を取り切ったときは、候補が空の入れ子そのものを表示しない。
+  const hasOutstandingTermRecommendationGroups = termElectiveRecommendations.length > 0
+    || evaluation.commonCredits.shortfall > 0
 
   // 取得単位・不可の単位のセクションは、committed（確定済み）を状態別に振り分けるだけでよい
   const passedSubjects = [...committed.entries()].filter(([, status]) => status === 'passed')
@@ -1549,6 +1552,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       {/* 一覧全体の表示範囲とは別に、ここで選んだ学年・学期ごとの候補を示す。 */}
       <section className="term-recommendation-section">
         <h2>学期別の修得推奨科目</h2>
+        <p className="section-guidance">
+          単位取得状況を入力したうえで学年・学期を絞り込むと、その学期に開講される修得推奨科目を表示します。
+        </p>
         <label className="term-recommendation-filter" htmlFor="recommendationTermFilter">
           対象とする学年・学期
           <select id="recommendationTermFilter" value={recommendationTermKey} onChange={(e) => setRecommendationTermKey(e.target.value)}>
@@ -1562,17 +1568,17 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         ) : (
           <>
             {/* 必修は学生が選び替えられないため、入れ子にせず最優先としてそのまま並べる。 */}
-            <h3>優先する必修</h3>
-            {termRequiredRecommendations.length > 0 ? (
-              <ul className="term-recommendation-list">
-                {termRequiredRecommendations.map(({ code }) => (
-                  <li key={code}>
-                    {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>選択した学期に優先して修得する必修科目はありません。</p>
+            {termRequiredRecommendations.length > 0 && (
+              <>
+                <h3>優先する必修</h3>
+                <ul className="term-recommendation-list">
+                  {termRequiredRecommendations.map(({ code }) => (
+                    <li key={code}>
+                      {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
+                    </li>
+                  ))}
+                </ul>
+              </>
             )}
 
             {/* 再履修専用のクラスが無い不合格科目だけ、通常開講と同じ学期に取り直す候補として示す。 */}
@@ -1590,52 +1596,56 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             )}
 
             {/* 選択科目は区分ごとに全候補を入れ子へ収め、閉じた状態でも不足と候補数を確認できるようにする。 */}
-            <h3>不足区分ごとの候補</h3>
-            <ul className="term-recommendation-groups">
-              {termElectiveRecommendations.map(({ group, candidates }) => (
-                <li key={group.id} style={{ listStyleType: 'none' }}>
-                  <details className="nested-subject-group">
-                    <summary>
-                      <span>{group.label ?? group.name}（あと{group.shortfall}単位）</span>
-                      <span className="nested-subject-count">選択した学期{candidates.length}科目</span>
-                    </summary>
-                    {candidates.length > 0 ? (
-                      <ul>
-                        {candidates.map(({ code }) => (
-                          <li key={code}>
-                            {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="term-recommendation-note">選択した学期に表示できる候補はありません。以降の学期も含めて履修計画を立ててください。</p>
-                    )}
-                  </details>
-                </li>
-              ))}
-              {evaluation.commonCredits.shortfall > 0 && (
-                <li style={{ listStyleType: 'none' }}>
-                  <details className="nested-subject-group">
-                    <summary>
-                      <span>共通単位（あと{evaluation.commonCredits.shortfall}単位）</span>
-                      <span className="nested-subject-count">選択した学期{termCommonRecommendations.length}科目</span>
-                    </summary>
-                    <p className="term-recommendation-note">区分の超過分やその他単位認定も共通単位に算入されるため、取得状況も確認してください。</p>
-                    {termCommonRecommendations.length > 0 ? (
-                      <ul>
-                        {termCommonRecommendations.map(({ code }) => (
-                          <li key={code}>
-                            {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="term-recommendation-note">選択した学期に表示できる共通単位の候補はありません。</p>
-                    )}
-                  </details>
-                </li>
-              )}
-            </ul>
+            {hasOutstandingTermRecommendationGroups && (
+              <>
+                <h3>不足区分ごとの候補</h3>
+                <ul className="term-recommendation-groups">
+                  {termElectiveRecommendations.map(({ group, candidates }) => (
+                    <li key={group.id} style={{ listStyleType: 'none' }}>
+                      <details className="nested-subject-group">
+                        <summary>
+                          <span>{group.label ?? group.name}（あと{group.shortfall}単位）</span>
+                          <span className="nested-subject-count">選択した学期{candidates.length}科目</span>
+                        </summary>
+                        {candidates.length > 0 ? (
+                          <ul>
+                            {candidates.map(({ code }) => (
+                              <li key={code}>
+                                {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="term-recommendation-note">選択した学期に表示できる候補はありません。以降の学期も含めて履修計画を立ててください。</p>
+                        )}
+                      </details>
+                    </li>
+                  ))}
+                  {evaluation.commonCredits.shortfall > 0 && (
+                    <li style={{ listStyleType: 'none' }}>
+                      <details className="nested-subject-group">
+                        <summary>
+                          <span>共通単位（あと{evaluation.commonCredits.shortfall}単位）</span>
+                          <span className="nested-subject-count">選択した学期{termCommonRecommendations.length}科目</span>
+                        </summary>
+                        <p className="term-recommendation-note">区分の超過分やその他単位認定も共通単位に算入されるため、取得状況も確認してください。</p>
+                        {termCommonRecommendations.length > 0 ? (
+                          <ul>
+                            {termCommonRecommendations.map(({ code }) => (
+                              <li key={code}>
+                                {nameLink(code)}（{creditsLabel(code)}） {dayPeriodTag(code)}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="term-recommendation-note">選択した学期に表示できる共通単位の候補はありません。</p>
+                        )}
+                      </details>
+                    </li>
+                  )}
+                </ul>
+              </>
+            )}
           </>
         )}
       </section>
