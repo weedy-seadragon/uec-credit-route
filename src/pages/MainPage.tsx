@@ -552,6 +552,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function nameOf(code: string): string {
     return subjectsByCode.get(code)?.name ?? code
   }
+
+  // 審査の注意書きに含まれる履修不可科目は、科目コードではなく利用者が読みやすい科目名で表示する。
+  // blockedSubjectsに列挙されたコードだけを置き換えるため、文章中の数字などを誤って変えることはない。
+  function onFailNoteWithSubjectNames(note: string, blockedSubjects: readonly string[]): string {
+    let displayNote = note
+    for (const code of blockedSubjects) displayNote = displayNote.replaceAll(code, nameOf(code))
+    return displayNote
+  }
   // 科目名をシラバスへのリンクにする（一覧の各行で使う）。offeringsが1件も無い科目は
   // リンクにせず名前をそのまま出す。複数セクションでシラバスURLがバラバラな科目
   // （理数基礎・類共通基礎の必修科目など、クラスごとに別ページを持つもの）は、
@@ -1197,7 +1205,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                           <li key={i}>{describeCondition(cond)}</li>
                         ))}
                       </ul>
-                      {r.onFail?.note && <p style={{ fontSize: '0.9em' }}>※ {r.onFail.note}</p>}
+                      {r.onFail?.note && <p style={{ fontSize: '0.9em' }}>※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects)}</p>}
                     </details>
                   )}
                 </li>
