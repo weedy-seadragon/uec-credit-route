@@ -678,8 +678,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     for (const code of blockedSubjects) displayNote = displayNote.replaceAll(code, nameOf(code))
     return displayNote
   }
-  // 科目名をシラバスへのリンクにする（一覧の各行で使う）。offeringsが1件も無い科目は
-  // リンクにせず名前をそのまま出す。複数セクションでシラバスURLがバラバラな科目
+  // 科目名をシラバスまたは科目説明ページへのリンクにする（一覧の各行で使う）。
+  // offeringsが無い・シラバスURLを一意に決められない科目も、サイト内の科目説明ページから
+  // 要件上の位置づけと登録済みの開講候補を確認できるようにする。複数セクションでURLがバラバラな科目
   // （理数基礎・類共通基礎の必修科目など、クラスごとに別ページを持つもの）は、
   // dayPeriodTagと同じクラス解決ロジック（resolveOfferingsForProfile）でこのプロフィールが
   // 受講するセクションを絞り込み、一意に決まればそちらにリンクする。英語系のように
@@ -690,11 +691,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function nameLink(code: string): ReactNode {
     const name = nameOf(code)
     const offerings = subjectsByCode.get(code)?.offerings
-    if (!offerings || offerings.length === 0) return name
+    // シラバスが無い場合も、科目詳細への導線は必ず残す。
+    const detailLink = <Link to={`/courses/${code}?year=${profile.entryYear}`}>{name}</Link>
+    if (!offerings || offerings.length === 0) return detailLink
     // 曜日時限だけを補った科目（学域特別講義A/Bなど）は syllabusUrl が空文字になる。
     // 空のhrefは今見ているサイト自身へのリンクになるため、リンク候補として数えない。
     const urls = new Set(offerings.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
-    if (urls.size === 0) return name
+    if (urls.size === 0) return detailLink
     let target = offerings.filter((offering) => offering.syllabusUrl.length > 0)
     // URLが複数ある場合だけ、プロフィールのクラス情報で受講セクションを絞り込む。
     if (urls.size !== 1 || target.length !== offerings.length) {
@@ -720,7 +723,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       // シラバスを一意に選べない場合も、科目詳細には全セクションの候補が載っている。
       // そこで科目名を詳細ページへの内部リンクにし、利用者が教員を選べるようにする。
       if (!matched || matched.length === 0 || matchedUrls.size !== 1) {
-        return <Link to={`/courses/${code}?year=${profile.entryYear}`}>{name}</Link>
+        return detailLink
       }
       target = matched.filter((offering) => offering.syllabusUrl.length > 0)
     }
