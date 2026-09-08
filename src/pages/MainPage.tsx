@@ -1557,6 +1557,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               const visibleUnsatisfied = r.id === 'graduation'
                 ? r.unsatisfied.filter((cond) => cond.type !== 'commonCredits')
                 : r.unsatisfied
+              // 2年次終了時・卒業審査は不足条件が少ないため、詳細を開かず本文へそのまま出す。
+              const showConditionsInline = r.id === 'y2-end' || r.id === 'graduation'
               return (
                 <li key={r.id}>
                   {r.name}
@@ -1569,15 +1571,26 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                   {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
                   {r.caveat && <p style={{ fontSize: '0.9em', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
                   {!r.satisfied && visibleUnsatisfied.length > 0 && (
-                    <details className="nested-subject-group review-details">
-                      <summary><span>詳細</span></summary>
-                      <ul className="review-conditions">
-                        {visibleUnsatisfied.map((cond, i) => (
-                          <li key={i}>{describeCondition(cond)}</li>
-                        ))}
-                      </ul>
-                      {r.onFail?.note && <p style={{ fontSize: '0.9em' }}>※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
-                    </details>
+                    showConditionsInline ? (
+                      <>
+                        <ul className="review-conditions review-conditions-inline">
+                          {visibleUnsatisfied.map((cond, i) => (
+                            <li key={i}>{describeCondition(cond)}</li>
+                          ))}
+                        </ul>
+                        {r.onFail?.note && <p className="review-note">※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
+                      </>
+                    ) : (
+                      <details className="nested-subject-group review-details">
+                        <summary><span>詳細</span></summary>
+                        <ul className="review-conditions">
+                          {visibleUnsatisfied.map((cond, i) => (
+                            <li key={i}>{describeCondition(cond)}</li>
+                          ))}
+                        </ul>
+                        {r.onFail?.note && <p className="review-note">※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
+                      </details>
+                    )
                   )}
                 </li>
               )

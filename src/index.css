@@ -504,6 +504,18 @@ select {
   margin-top: 0.35rem;
 }
 
+/* 詳細を開かず表示する審査条件は、審査名の直下で少しだけ下げて読み分けられるようにする。 */
+.review-conditions-inline {
+  margin: 0.35rem 0 0.25rem 1.25rem;
+  padding-left: 1.1rem;
+}
+
+/* 審査条件の補足は、折りたたみ内外で同じ小さめの見た目にそろえる。 */
+.review-note {
+  margin: 0.4rem 0;
+  font-size: 0.9em;
+}
+
 /* 科目名・補足情報・操作を一定の列に置く。幅が狭いときは自動で1列へ折り返す。 */
 .subject-row {
   display: grid;
