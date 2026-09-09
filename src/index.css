@@ -250,41 +250,61 @@ select {
   margin-left: 0.2rem;
 }
 
-/* 長いメイン画面で、よく見る区分へ一度の操作で移動するための小さな目次。 */
+/* 長いメイン画面で、よく見る区分へ一度の操作で移動するための表形式の目次。 */
 .quick-section-links {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem;
-  margin: 0.65rem 0 0;
+  margin: 0.85rem 0 0;
+  border: 1px solid #b8c9da;
+  background: Canvas;
 }
 
-/* 見出しではなく補助的な導線なので、ラベルはリンクより少し控えめにする。 */
-.quick-section-links-label {
-  margin-right: 0.15rem;
-  color: color-mix(in srgb, currentColor 72%, transparent);
-  font-size: 0.9em;
+/* 目次の表題を独立した1行にして、一覧と区別する。 */
+.quick-section-links-title {
+  margin: 0;
+  padding: 0.42rem 0.7rem;
+  border-bottom: 1px solid #b8c9da;
+  background: #eef4fa;
+  text-align: center;
   font-weight: 650;
 }
 
-/* ボタンに見える短いリンクにして、指で押すときもリンク同士を取り違えにくくする。 */
-.quick-section-links a {
-  padding: 0.26rem 0.56rem;
-  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, Canvas 92%, currentColor 8%);
-  color: inherit;
-  font-size: 0.88em;
-  font-weight: 650;
-  text-decoration: none;
+/* PCでは3列にして、攻略サイトの目次のように一目で移動先を探せるようにする。 */
+.quick-section-links-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-/* マウス・キーボード操作のどちらでも、現在押せるリンクを分かるようにする。 */
-.quick-section-links a:hover,
-.quick-section-links a:focus-visible {
-  border-color: color-mix(in srgb, #1769aa 62%, currentColor 38%);
-  background: color-mix(in srgb, #cdeaff 42%, Canvas);
-  outline: none;
+/* セル全体を押せるボタンにし、通常のURLアンカーを避けてHashRouterと競合させない。 */
+.quick-section-links button {
+  min-height: 2.45rem;
+  padding: 0.45rem 0.7rem;
+  border: 0;
+  border-right: 1px solid #b8c9da;
+  border-bottom: 1px solid #b8c9da;
+  border-radius: 0;
+  background: Canvas;
+  color: #0068af;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 650;
+  text-align: left;
+}
+
+/* 最終行・最終列だけは外枠と二重にならないよう、罫線を整理する。 */
+.quick-section-links button:nth-child(3n) {
+  border-right: 0;
+}
+
+.quick-section-links button:nth-child(n + 4) {
+  border-bottom: 0;
+}
+
+/* マウス・キーボード操作のどちらでも、現在押せるセルを分かるようにする。 */
+.quick-section-links button:hover,
+.quick-section-links button:focus-visible {
+  background: #e0f0fc;
+  color: #004f86;
+  outline: 2px solid #1769aa;
+  outline-offset: -2px;
 }
 
 /* 追従操作に隠れず、目的の見出しが見える位置までスクロールする。 */

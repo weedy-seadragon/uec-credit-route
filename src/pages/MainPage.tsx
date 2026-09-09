@@ -1213,6 +1213,15 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     return { regular, otherProgram, international }
   }
 
+  /** 目次のボタンから指定セクションへ滑らかにスクロールする。 */
+  function scrollToSection(sectionId: string): void {
+    // HashRouterでは#が経路に使われるため、URLアンカーではなくDOM要素を直接スクロールする。
+    const target = document.getElementById(sectionId)
+    if (!target) return
+    // 既存のscroll-margin-topを使い、追従中の操作ボタンに見出しが隠れないようにする。
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
     // 下側に余白を持たせる：最後の区分（類専門など）の<summary>がページ最下端にくっついて
     // クリックしづらくならないようにするため
@@ -1241,15 +1250,17 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </div>
       </header>
 
-      {/* 長い画面で目的の区分へ直接移動できるよう、よく確認する場所だけを先頭にまとめる。 */}
-      <nav className="quick-section-links" aria-label="メイン画面内の移動">
-        <span className="quick-section-links-label">すぐ見る</span>
-        <a href="#earned-credits">修得した単位</a>
-        <a href="#failed-subjects">不合格</a>
-        <a href="#remaining-required">残りの必修</a>
-        <a href="#elective-subjects">選択科目</a>
-        {reviewStatuses.length > 0 && <a href="#reviews">審査</a>}
-        <a href="#term-recommendations">修得推奨科目</a>
+      {/* HashRouterの#を変えずに画面内を移動するため、通常の<a>ではなくスクロール用ボタンを使う。 */}
+      <nav className="quick-section-links" aria-label="メイン画面内の目次">
+        <p className="quick-section-links-title">目次</p>
+        <div className="quick-section-links-grid">
+          <button type="button" onClick={() => scrollToSection('earned-credits')} aria-controls="earned-credits">▼修得した単位</button>
+          <button type="button" onClick={() => scrollToSection('failed-subjects')} aria-controls="failed-subjects">▼不合格</button>
+          <button type="button" onClick={() => scrollToSection('remaining-required')} aria-controls="remaining-required">▼残りの必修</button>
+          <button type="button" onClick={() => scrollToSection('elective-subjects')} aria-controls="elective-subjects">▼選択科目</button>
+          {reviewStatuses.length > 0 && <button type="button" onClick={() => scrollToSection('reviews')} aria-controls="reviews">▼審査</button>}
+          <button type="button" onClick={() => scrollToSection('term-recommendations')} aria-controls="term-recommendations">▼修得推奨科目</button>
+        </div>
       </nav>
 
       {/* 表示範囲・更新・データ入出力を、目的ごとのグループに分けた操作バーにする。 */}
