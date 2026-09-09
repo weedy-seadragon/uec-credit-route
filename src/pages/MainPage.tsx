@@ -1594,6 +1594,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 isOtherProgram={isOtherProgram}
                 isInternational={isInternational}
                 isVisibleForTerm={isVisibleForTermFilter}
+                showTermCollapses={!isEveningCourse}
                 showOtherProgramSection={!isEveningCourse}
                 otherClusterMajorCredits={otherClusterMajorCreditsDraft}
                 onOtherClusterMajorCreditsChange={setOtherClusterMajorCreditsDraft}
@@ -1884,6 +1885,7 @@ function GroupProgress({
   isOtherProgram,
   isInternational,
   isVisibleForTerm,
+  showTermCollapses,
   showOtherProgramSection,
   otherClusterMajorCredits,
   onOtherClusterMajorCreditsChange,
@@ -1907,6 +1909,8 @@ function GroupProgress({
   isInternational: (code: string) => boolean
   /** 表示フィルタ（学期）で、この科目を一覧に出すかどうか（MainPage.tsxのisVisibleForTermFilter） */
   isVisibleForTerm: (code: string) => boolean
+  /** 前学期・後学期などの子入れ子を使うかどうか。夜間主では科目を直接並べる。 */
+  showTermCollapses: boolean
   /** 昼間コースだけにある、同じ類の他プログラム専門科目の入れ子を表示するかどうか。 */
   showOtherProgramSection: boolean
   /** 学務に認定された他類専門科目の単位数（類専門（選択）にだけ算入する） */
@@ -1961,12 +1965,12 @@ function GroupProgress({
       schedule={dayPeriodTag(code)}
     />
   )
-  // 人文・社会科学科目・上級科目は科目数が多いので、通常の科目一覧の代わりに前学期・後学期の
-  // 折りたたみに分ける（開講学期が前学期・後学期のどちらでもない科目は、通常通りそのまま出す）。
+  // 人文・社会科学科目・上級科目は科目数が多いので、昼間コースでは通常の科目一覧の代わりに前学期・後学期の
+  // 折りたたみに分ける。夜間主は子入れ子を使わず、同じ区分の中へすべて直接並べる。
   // 「夏期集中」「冬期集中」の科目（政治学Ａ等）は、termTypeだけを見ると前学期・後学期の
   // どちらかに入ってしまうが、実際の開講時期が違うので前学期・後学期とは別の入れ子にまとめる
   // （2026-09-06、開発者提案）
-  const splitByTerm = GROUPS_SPLIT_BY_TERM.has(group.id)
+  const splitByTerm = showTermCollapses && GROUPS_SPLIT_BY_TERM.has(group.id)
   const springRegular = splitByTerm
     ? regular.filter((code) => termTypeOf(code) === '前学期' && intensiveSeasonOf(code) === null)
     : []
