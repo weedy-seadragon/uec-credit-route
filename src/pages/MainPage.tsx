@@ -313,6 +313,33 @@ function ReviewDetails({ title, children }: { title: string; children: ReactNode
 }
 
 /**
+ * 学期別の候補区分を開いたまま読み進めたとき、上端から閉じられる入れ子。
+ * mapで複数表示する区分ごとにrefを独立させるため、専用の部品にしている。
+ */
+function TermRecommendationDetails({
+  title,
+  countLabel,
+  children,
+}: {
+  title: string
+  countLabel: string
+  children: ReactNode
+}) {
+  // この候補区分自身のsummary位置を追跡し、読み進めたときだけ閉じる操作を表示する。
+  const detailsRef = useRef<HTMLDetailsElement>(null)
+  return (
+    <details ref={detailsRef} className="nested-subject-group">
+      <summary>
+        <span>{title}</span>
+        <span className="nested-subject-count">{countLabel}</span>
+      </summary>
+      {children}
+      <StickyGroupClose detailsRef={detailsRef} title={title} />
+    </details>
+  )
+}
+
+/**
  * 科目一覧の1行を、科目情報と状態操作の2列グリッドで表示する共通部品。
  *
  * 一覧ごとに科目名・単位・状態ボタンの並びがずれると、学生が「何を変更するか」を
@@ -1693,11 +1720,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 <ul className="term-recommendation-groups">
                   {termElectiveRecommendations.map(({ group, candidates }) => (
                     <li key={group.id} style={{ listStyleType: 'none' }}>
-                      <details className="nested-subject-group">
-                        <summary>
-                          <span>{group.label ?? group.name}（あと{group.shortfall}単位）</span>
-                          <span className="nested-subject-count">選択した学期{candidates.length}科目</span>
-                        </summary>
+                      <TermRecommendationDetails
+                        title={`${group.label ?? group.name}（あと${group.shortfall}単位）`}
+                        countLabel={`選択した学期${candidates.length}科目`}
+                      >
                         {candidates.length > 0 ? (
                           <ul>
                             {candidates.map(({ code }) => (
@@ -1709,16 +1735,15 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                         ) : (
                           <p className="term-recommendation-note">選択した学期に表示できる候補はありません。以降の学期も含めて履修計画を立ててください。</p>
                         )}
-                      </details>
+                      </TermRecommendationDetails>
                     </li>
                   ))}
                   {evaluation.commonCredits.shortfall > 0 && (
                     <li style={{ listStyleType: 'none' }}>
-                      <details className="nested-subject-group">
-                        <summary>
-                          <span>共通単位（あと{evaluation.commonCredits.shortfall}単位）</span>
-                          <span className="nested-subject-count">選択した学期{termCommonRecommendations.length}科目</span>
-                        </summary>
+                      <TermRecommendationDetails
+                        title={`共通単位（あと${evaluation.commonCredits.shortfall}単位）`}
+                        countLabel={`選択した学期${termCommonRecommendations.length}科目`}
+                      >
                         <p className="term-recommendation-note">区分の超過分やその他単位認定も共通単位に算入されるため、取得状況も確認してください。</p>
                         {termCommonRecommendations.length > 0 ? (
                           <ul>
@@ -1731,7 +1756,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                         ) : (
                           <p className="term-recommendation-note">選択した学期に表示できる共通単位の候補はありません。</p>
                         )}
-                      </details>
+                      </TermRecommendationDetails>
                     </li>
                   )}
                 </ul>
