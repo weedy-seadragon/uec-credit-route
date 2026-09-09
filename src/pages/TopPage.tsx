@@ -85,15 +85,31 @@ export default function TopPage() {
         <li>入力した内容はブラウザ内にのみ保存され、外部には送信されません</li>
       </ul>
 
-      <p>
-        {profile ? (
-          <>
-            <Link to="/main">続ける</Link>（前回の設定を引き継ぎます）／<Link to="/setup">設定を変更</Link>
-          </>
-        ) : (
-          <Link to="/setup">はじめる</Link>
-        )}
-      </p>
+      <section className="top-action-links" aria-labelledby="top-action-links-heading">
+        <h2 id="top-action-links-heading">はじめる</h2>
+        <div className="top-action-links-grid">
+          <Link className="top-action-link" to="/setup">
+            <span className="top-action-link-label">はじめて使う</span>
+            <strong>プロフィール設定</strong>
+            <small>{profile ? 'プロフィールを変更する場合もこちら' : '入学年度・類・プログラムを設定します'}</small>
+          </Link>
+          {profile ? (
+            // 保存済みプロフィールがあれば、入力途中の履修状況をそのままメイン画面で続けられる。
+            <Link className="top-action-link top-action-link--continue" to="/main">
+              <span className="top-action-link-label">すでに入力済み</span>
+              <strong>履修状況を続ける</strong>
+              <small>前回の設定と入力内容を引き継ぎます</small>
+            </Link>
+          ) : (
+            // 未設定ではメイン画面へ進めないため、同じ見た目の案内だけを表示して手順を伝える。
+            <div className="top-action-link top-action-link--disabled" aria-disabled="true">
+              <span className="top-action-link-label">すでに入力済み</span>
+              <strong>履修状況を続ける</strong>
+              <small>プロフィール設定後に利用できます</small>
+            </div>
+          )}
+        </div>
+      </section>
 
       <p className="official-disclaimer">
         本サイトは非公式です。学修要覧・シラバスをもとに作成していますが、最終的な卒業要件の確認は

@@ -27,6 +27,66 @@ nav a {
   margin-top: 0.55rem;
 }
 
+/* トップでは初回設定と継続利用を分け、次にする操作を目的から選べるようにする。 */
+.top-action-links {
+  margin: 1.5rem 0;
+}
+
+/* 入口の見出しを直前の説明と詰めず、独立した操作エリアとして読めるようにする。 */
+.top-action-links h2 {
+  margin-bottom: 0.65rem;
+}
+
+/* 2つの入口を同じ大きさに並べ、どちらを押すべきか比較しやすくする。 */
+.top-action-links-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+/* 入口はリンク全体を押せるカードにし、説明と行動名をまとめて見せる。 */
+.top-action-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-height: 5.5rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-left: 4px solid #88a5dc;
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, #e7f1fb 12%, Canvas);
+  text-decoration: none;
+}
+
+/* 行動名を最も目立たせ、初見でもリンクの目的がすぐ伝わるようにする。 */
+.top-action-link strong {
+  font-size: 1.08rem;
+}
+
+/* 「初回」「継続」の違いは補助ラベルで先に示し、内容を読み違えにくくする。 */
+.top-action-link-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* 補足は行動名より控えめにして、カード内の視線順を整える。 */
+.top-action-link small {
+  color: inherit;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+/* 継続操作には落ち着いた緑を添え、設定入口と役割を見分けられるようにする。 */
+.top-action-link--continue {
+  border-left-color: #4d9a6c;
+}
+
+/* 未設定時の継続入口は押せないことを明示し、誤って進めるようには見せない。 */
+.top-action-link--disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+
 /* 非公式サイトであることと最終確認先を見落とさないよう、金色の案内枠で強調する。 */
 .official-disclaimer {
   margin: 1.4rem 0;
@@ -937,6 +997,11 @@ select {
 }
 
 @media (max-width: 42rem) {
+  /* 狭い画面では目的別の入口を縦に並べ、長い補足文も余裕を持って読めるようにする。 */
+  .top-action-links-grid {
+    grid-template-columns: 1fr;
+  }
+
   /* スマホでは操作群を縦に分け、科目行の操作も科目名の真下に置く。 */
   .main-toolbar,
   .toolbar-group,
