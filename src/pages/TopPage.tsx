@@ -41,7 +41,7 @@ export default function TopPage() {
       </p>
 
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
-      <section>
+      <section className="release-notes-section">
         <h2>リリースノート</h2>
         {/* β2.5では、学期ごとの履修計画を立てやすくする修得推奨を追加した。 */}
         <div className="release-note-entry">

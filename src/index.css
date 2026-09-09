@@ -27,6 +27,11 @@ nav a {
   margin-top: 0.55rem;
 }
 
+/* リリースノートは利用案内と役割が違うため、直前の注意書きから少し離して始める。 */
+.release-notes-section {
+  margin-top: 2.25rem;
+}
+
 /* 各アップデートを科目一覧の入れ子と同じように、左の線と白黒の背景で独立して見せる。 */
 .release-note-entry {
   margin-top: 1.5rem;
