@@ -7,6 +7,7 @@
 - Codex向けの作業入口・現状メモ: [CODEX.md](CODEX.md)
 - 現在の実装状況・確認候補: [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md)
 - 公開前の主要導線チェック: [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md)
+- 著作権・利用上の注意: [NOTICE.md](NOTICE.md)
 - 仕様書: [docs/SPEC.md](docs/SPEC.md)
 - ディレクトリ構成の説明: [docs/STRUCTURE.md](docs/STRUCTURE.md)
 - 作業ルール: [AGENTS.md](AGENTS.md)
