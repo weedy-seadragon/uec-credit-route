@@ -70,7 +70,7 @@ export default function TopPage() {
   return (
     <main>
       <h1>
-        電通大 単位取得ルートナビ(ver.2.6) <small>最終更新日: {__BUILD_DATE__}</small>
+        電通大 単位取得ルートナビ(Ver.1.0.0) <small>最終更新日: {__BUILD_DATE__}</small>
       </h1>
       <p>
         電気通信大学 情報理工学域の学生向けに、「学年・類・プログラム・取得済み科目」を入力するだけで、
