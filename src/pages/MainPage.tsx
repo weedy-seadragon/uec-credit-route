@@ -1262,7 +1262,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <ol>
           <li><span>①</span>科目ごとの状態を入力</li>
           <li><span>②</span>「単位取得状況を更新」を押す</li>
-          <li><span>③</span>不足・審査・今学期の候補を確認</li>
+          <li><span>③</span>不足・審査・今学期の履修候補を確認</li>
         </ol>
       </aside>
 
