@@ -1,26 +1,28 @@
 # ディレクトリ構成
 
-このリポジトリの全体像。仕様そのものは [SPEC.md](SPEC.md)、作業ルールと現状の要約は
-[AGENTS.md](../AGENTS.md)、Codex向けの短い入口は [CODEX.md](../CODEX.md) を参照。ここでは「何がどこにあるか」だけをまとめる。
+このリポジトリの全体像。仕様そのものは [SPEC.md](SPEC.md)、作業ルールは
+[AGENTS.md](../AGENTS.md)、現状の要約は[PROJECT_STATUS.md](PROJECT_STATUS.md)、Codex向けの短い入口は [CODEX.md](../CODEX.md) を参照。ここでは「何がどこにあるか」だけをまとめる。
 
 ```
 uec-credit-route/
-├─ AGENTS.md / CLAUDE.md         AIエージェント向けの作業ルール＋現状の要約
+├─ AGENTS.md                     AIエージェント向けの作業ルール
 ├─ CODEX.md                      Codex向けの短い作業入口・現状メモ
 ├─ README.md                    プロジェクトの概要（人間向けの入口）
 ├─ docs/
 │  ├─ SPEC.md                   仕様書（本体）。機能・データモデル・画面構成など全部
 │  ├─ STRUCTURE.md              このファイル
 │  ├─ HANDOVER.md               初めて引き継ぐ人向けの説明
+│  ├─ PROJECT_STATUS.md         現在の実装状況・確認候補
 │  ├─ PROGRESS_LOG.md           過去の作業経緯
-│  └─ PENDING_YEAR_SEMESTER_CHECKS.md  標準年次・学期の目視確認待ち一覧
+│  └─ PENDING_YEAR_SEMESTER_CHECKS.md  標準年次・学期の確認監査記録
 ├─ data/                        卒業要件・科目マスタの静的JSON（アプリが読み込む唯一のデータ源）
 │  ├─ requirements/
 │  │  ├─ 2025-day-common.json       総合文化・実践教育科目の要件（昼間コース全プログラム共通）
 │  │  ├─ 2025-day-{I,II,III}-*.json 昼間コース15プログラムの専門科目要件・審査条件
 │  │  └─ 2025-evening.json          夜間主課程の要件・審査条件
 │  ├─ subjects/
-│     └─ youran-2025.json           科目マスタ（学修要覧2025 付録Cから転記）
+│     ├─ youran-2025.json           2025年度入学生向け科目マスタ
+│     └─ youran-2026.json           2026年度入学生向け科目マスタ
 │  └─ timetable/                    クラス別の曜日時限を解決するCSV・JSON
 ├─ scripts/                     データ更新スクリプト（Python）
 │  ├─ gen_data.py                   要覧から転記した表データ → data/ 以下のJSONを生成
@@ -50,13 +52,13 @@ uec-credit-route/
 
 ## `data/` — 唯一のデータ源
 
-`src/` のコードは科目名・単位数を直接書かず、必ずこの下のJSONを参照する（CLAUDE.md参照）。
+`src/` のコードは科目名・単位数を直接書かず、必ずこの下のJSONを参照する（作業規則は`AGENTS.md`を参照）。
 `requirements/` は「入学年度 × コース × 類 × プログラム」の組み合わせごとに1ファイル。
 `2025-day-common.json`（総合文化・実践教育科目、全プログラム共通）と、プログラム別ファイル
 （専門科目・審査条件）を組み合わせて1つの要件セットになる（`src/data/requirementSets.ts` が合体させる）。
 
 `subjects/youran-2025.json` は科目番号（末尾記号を含むフルコード。例 `COM405a`）を主キーにした科目マスタ。
-1科目1エントリで、名寄せはしない（詳しくはCLAUDE.mdの進捗ログ参照）。
+1科目1エントリで、名寄せはしない（理由は`PROGRESS_LOG.md`を参照）。
 
 ## `src/domain/` — 画面に依存しない純粋なロジック
 
@@ -98,7 +100,7 @@ localStorageへの保存はすべてここを通す。
 ## `tsconfig.*.json` が複数ある理由
 
 TypeScriptの設定を「本番のアプリコード」「テストコード」「Vite自体の設定ファイル」で分けている
-（実行環境が違うため。詳しくは各ファイルの中身とCLAUDE.mdの進捗ログを参照）。
+（実行環境が違うため。詳しくは各ファイルの中身と`PROGRESS_LOG.md`を参照）。
 
 | ファイル | 対象 |
 |---|---|

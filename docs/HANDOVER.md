@@ -30,8 +30,8 @@
   夜間主コース、あわせて16通りの課程すべてで、卒業要件のデータが完成している
 - 各科目の曜日・時限・担当教員・シラバスへのリンクも、可能な範囲で自動取得済み
 - 細かい未対応（一部の科目でクラス分けが未確定、など）が残っているが、致命的な不具合ではない
-- 開発を今後引き継ぐ・再開する場合、残っている作業の一覧は `AGENTS.md` と
-  `CODEX.md` の「残タスク」に最新の状態でまとめてある
+- 開発を今後引き継ぐ・再開する場合、現在の実装状況と確認候補は
+  `docs/PROJECT_STATUS.md`にまとめてある
 
 ---
 
@@ -64,14 +64,14 @@
 ```
 uec-credit-route/                 ← プロジェクト全体
 ├─ README.md                      ← 最初に読むべき概要（GitHub上でも表示される）
-├─ CLAUDE.md                      ← 開発ルール＋「今どこまで終わっていて何が残っているか」の最新状況
+├─ AGENTS.md                      ← 開発ルール
 ├─ CODEX.md                       ← Codex向けの短い作業入口・現状メモ
 ├─ docs/                          ← ドキュメント（説明書）置き場
 │  ├─ SPEC.md                     ← 仕様書。「このサイトは何をするべきか」を全部書いた設計図
 │  ├─ STRUCTURE.md                ← コードの構成をやや技術寄りに説明したもの
 │  ├─ PROGRESS_LOG.md             ← 過去の作業日誌（いつ・何を・なぜ直したか、時系列で全部）
 │  ├─ HANDOVER.md                 ← このファイル
-│  └─ PENDING_YEAR_SEMESTER_CHECKS.md ← 未確認事項の細かいリスト
+│  └─ PENDING_YEAR_SEMESTER_CHECKS.md ← 標準年次・学期の確認監査記録
 ├─ data/                          ← 大学のルールを書いたデータ（唯一の情報源。上記①）
 │  ├─ requirements/                  卒業要件（プログラムごとに1ファイル、計17ファイル）
 │  ├─ subjects/                      全科目のデータ（科目名・単位数など）
@@ -112,7 +112,7 @@ uec-credit-route/                 ← プロジェクト全体
 | 新しい年度・新しいプログラムのデータを追加したい | `data/requirements/` に新しいJSONを作り、`src/data/requirementSets.ts` に1行追加する（`docs/SPEC.md` §7参照） |
 | サイトの目的や仕様そのものを確認したい | `docs/SPEC.md` |
 | 過去に「なぜこう直したか」の経緯を知りたい | `docs/PROGRESS_LOG.md`（時系列の作業日誌） |
-| 今何が終わっていて何が残っているか知りたい | `AGENTS.md` の「現在の状態」「残タスク一覧」 |
+| 今何が終わっていて何が残っているか知りたい | `docs/PROJECT_STATUS.md` |
 | Codexが作業を始めるときの短い入口がほしい | `CODEX.md` |
 
 ---
@@ -151,14 +151,14 @@ python scripts/validate_data.py
 2. `dev` の変更を `main` というブランチに取り込む（マージする）と、
    `.github/workflows/deploy.yml` の設定により**自動的に公開サイトが更新される**
 3. そのため、`main` に取り込む操作は「実際に世の中に公開される」重みのある操作。
-   何を確認してから行うべきかは `CLAUDE.md` の「ブランチ運用」の項目を参照
+   何を確認してから行うべきかは `AGENTS.md` の「ブランチ運用」の項目を参照
 
 ---
 
 ## 7. データの更新はどう回っているか（毎年度の作業イメージ）
 
 新年度になってシラバスや要件が変わったとき、次の順番でデータを作り直します
-（詳細は `CLAUDE.md` の「データ生成パイプラインの実行順序」）。
+（詳細は `CODEX.md` の「データを変更するとき」）。
 
 ```
 1. python scripts/gen_data.py                    科目マスタ・要件データを作り直す
@@ -197,8 +197,9 @@ python scripts/validate_data.py
 |---|---|
 | サイトが実現すべき仕様・設計の全体像 | `docs/SPEC.md` |
 | コードの技術的な構成（プログラミングの前提知識がある人向け） | `docs/STRUCTURE.md` |
-| 開発者向けの作業ルールと「今の状態」の要約 | `CLAUDE.md` |
+| 開発者向けの作業ルール | `AGENTS.md` |
+| 現在の実装状況と確認候補 | `docs/PROJECT_STATUS.md` |
 | Codex向けの短い作業入口・現状メモ | `CODEX.md` |
 | 過去の意思決定・不具合修正の経緯（いつ・なぜ・どう直したか） | `docs/PROGRESS_LOG.md` |
-| 年次・学期の照合がまだ済んでいない科目の一覧 | `docs/PENDING_YEAR_SEMESTER_CHECKS.md` |
+| 標準年次・学期の照合で行った確認の監査記録 | `docs/PENDING_YEAR_SEMESTER_CHECKS.md` |
 | （AIエージェント向け）学修要覧PDFを実際にどう読むか（ツールのパス・手順） | `docs/PDF_READING_NOTES.md` |
