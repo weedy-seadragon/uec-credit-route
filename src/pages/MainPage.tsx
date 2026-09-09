@@ -844,9 +844,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   }
   // 当年度に開講しないことが確認済みの科目は、リンク先を変えずに科目名の直後で注意を示す。
   function availabilityNoteTag(code: string): ReactNode {
-    return subjectsByCode.get(code)?.note?.includes('2026年度開講なし')
+    return isUnavailableIn2026(code)
       ? <span className="schedule-unavailable">（2026年度開講なし）</span>
       : null
+  }
+  // 2026年度に履修できない科目かどうかを、表示位置の振り分けにも再利用する。
+  function isUnavailableIn2026(code: string): boolean {
+    return subjectsByCode.get(code)?.note?.includes('2026年度開講なし') ?? false
   }
   // リンクの種類にかかわらず、開講なしの注意を科目名のすぐ隣へ付ける共通処理。
   function nameWithAvailability(code: string, link: ReactNode): ReactNode {
@@ -1600,6 +1604,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 dayPeriodTag={dayPeriodTag}
                 isOtherProgram={isOtherProgram}
                 isInternational={isInternational}
+                isUnavailableIn2026={isUnavailableIn2026}
                 isVisibleForTerm={isVisibleForTermFilter}
                 showTermCollapses={!isEveningCourse}
                 showOtherProgramSection={!isEveningCourse}
@@ -1891,6 +1896,7 @@ function GroupProgress({
   dayPeriodTag,
   isOtherProgram,
   isInternational,
+  isUnavailableIn2026,
   isVisibleForTerm,
   showTermCollapses,
   showOtherProgramSection,
@@ -1914,6 +1920,8 @@ function GroupProgress({
   dayPeriodTag: (code: string) => ReactNode
   isOtherProgram: (code: string) => boolean
   isInternational: (code: string) => boolean
+  /** 当年度に開講しない科目を、人文・社会科学科目の一覧下部へまとめるための判定 */
+  isUnavailableIn2026: (code: string) => boolean
   /** 表示フィルタ（学期）で、この科目を一覧に出すかどうか（MainPage.tsxのisVisibleForTermFilter） */
   isVisibleForTerm: (code: string) => boolean
   /** 前学期・後学期などの子入れ子を使うかどうか。夜間主では科目を直接並べる。 */
@@ -1953,6 +1961,14 @@ function GroupProgress({
   const international = remaining.filter((code) => isInternational(code))
   const otherProgram = remaining.filter((code) => !isInternational(code) && isOtherProgram(code))
   const regular = remaining.filter((code) => !isInternational(code) && !isOtherProgram(code))
+  // 夜間主の人文・社会科学科目では、当年度に開講しない科目を学年・学期ソートへ混ぜず、
+  // 開講する通常科目を読み終えた後にまとめて確認できるようにする。
+  const unavailableRegular = group.id === 'hss' && !showTermCollapses
+    ? regular.filter((code) => isUnavailableIn2026(code))
+    : []
+  const availableRegular = unavailableRegular.length > 0
+    ? regular.filter((code) => !isUnavailableIn2026(code))
+    : regular
   const row = (code: string) => (
     <SubjectRow
       name={nameLink(code)}
@@ -1993,7 +2009,7 @@ function GroupProgress({
     ? regular.filter((code) => termTypeOf(code) !== '前学期' && termTypeOf(code) !== '後学期' && intensiveSeasonOf(code) === null)
     : []
   const noTermCollapsed = group.id === 'advanced' ? noTermItems : []
-  const topLevelRegular = !splitByTerm ? regular : group.id === 'advanced' ? [] : noTermItems
+  const topLevelRegular = !splitByTerm ? availableRegular : group.id === 'advanced' ? [] : noTermItems
   // 選択科目の区分は「候補の中から何単位選ぶか」が伝わりにくいため、折りたたみを開かなくても
   // 残りの必要単位をsummaryに表示し、開いた直後にも同じ内容を文章で補足する。
   const selectionGuidance = group.shortfall > 0
@@ -2016,6 +2032,12 @@ function GroupProgress({
       <p className="group-guidance">{selectionGuidance}</p>
       <ul>
         {topLevelRegular.map((code) => (
+          <li key={code}>{row(code)}</li>
+        ))}
+        {unavailableRegular.length > 0 && (
+          <li className="schedule-unavailable-group-label">2026年度開講なし</li>
+        )}
+        {unavailableRegular.map((code) => (
           <li key={code}>{row(code)}</li>
         ))}
         {splitByTerm && (

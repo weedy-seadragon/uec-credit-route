@@ -551,6 +551,16 @@ select {
   font-size: 0.9em;
 }
 
+/* 夜間主の人文・社会科学科目では、当年度に開講しない科目を通常の学年・学期ソートと分けて示す。 */
+.schedule-unavailable-group-label {
+  margin: 1rem 0 0.35rem;
+  padding: 0.35rem 0 0.2rem 0.7rem;
+  border-left: 4px solid #8b98aa;
+  color: #536174;
+  font-weight: 700;
+  list-style: none;
+}
+
 .requirement-badge {
   padding: 0.2rem 0.45rem;
   border-radius: 999px;
