@@ -4,11 +4,6 @@ export default function AboutPage() {
     <main>
       <h1>このサイトについて</h1>
 
-      <section>
-        <h2>作成者</h2>
-        <p>あず（電気通信大学 2年）</p>
-      </section>
-
       {/* 非公式サイトとして、何の公式資料をどの年度基準で反映しているかを問い合わせ先の前で明示する。 */}
       <section className="about-data-status">
         <h2>最終データ更新</h2>
@@ -58,6 +53,12 @@ export default function AboutPage() {
           こんな気持ちの人たちの助けになれればという思いで作成いたしました。
           大変と言われる事が多い電気通信大学の大学生活の中、少しでも学生の負担が減らせたらいいなと思っています。
         </p>
+      </section>
+
+      {/* サイトの目的を読んだ後に、作成者情報を簡潔に確認できる順番で置く。 */}
+      <section>
+        <h2>作成者</h2>
+        <p>あず（電気通信大学 2年）</p>
       </section>
     </main>
   )
