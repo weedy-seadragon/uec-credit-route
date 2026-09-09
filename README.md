@@ -6,6 +6,7 @@
 - 引き継ぎ資料（前提知識が無い人向けの入口）: [docs/HANDOVER.md](docs/HANDOVER.md)
 - Codex向けの作業入口・現状メモ: [CODEX.md](CODEX.md)
 - 現在の実装状況・確認候補: [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md)
+- 公開前の主要導線チェック: [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md)
 - 仕様書: [docs/SPEC.md](docs/SPEC.md)
 - ディレクトリ構成の説明: [docs/STRUCTURE.md](docs/STRUCTURE.md)
 - 作業ルール: [AGENTS.md](AGENTS.md)
@@ -13,6 +14,7 @@
 
 ## 状態
 
+- [x] Ver.1.0.0 正式リリース
 - [x] 仕様書 v0.1
 - [x] 昼間コース Ⅰ類5・Ⅱ類5・Ⅲ類5プログラム＋夜間主課程、計16課程分の要件データ
 - [x] 充足判定・推奨・審査判定ロジック（`src/domain/`、単体テスト付き）

@@ -1,7 +1,56 @@
 // データの出典・更新日・問い合わせ先ページ（"/about"）。
+import { useRef, useState } from 'react'
+
+// 不具合を再現するために必要な情報を、報告者が埋めるだけで送れる形にまとめる。
+const ISSUE_REPORT_TEMPLATE = `【不具合報告】
+プロフィール：入学年度 / コース / 類 / プログラム / 学年
+画面・URL：
+科目名・科目番号：
+行った操作：
+期待する表示：
+実際の表示：
+スクリーンショット（あれば）：`
+
+/** 不具合報告をコピーしやすくする、問い合わせ前の補助部品。 */
+function IssueReportTemplate() {
+  // コピーに失敗した場合でも、テキスト欄を手動で選択してコピーできるよう参照を持つ。
+  const templateRef = useRef<HTMLTextAreaElement>(null)
+  const [copyMessage, setCopyMessage] = useState('')
+
+  async function handleCopy(): Promise<void> {
+    try {
+      // 標準のクリップボード機能が使える環境では、テキスト欄を操作せずそのままコピーする。
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(ISSUE_REPORT_TEMPLATE)
+        setCopyMessage('コピーしました。内容を埋めてお送りください。')
+        return
+      }
+    } catch {
+      // 権限が拒否された場合も、下の従来方式でコピーできる可能性があるため続ける。
+    }
+
+    // 古いブラウザなどでは、欄を選択してから従来方式でコピーを試す。
+    templateRef.current?.select()
+    const copied = document.execCommand('copy')
+    setCopyMessage(copied ? 'コピーしました。内容を埋めてお送りください。' : 'コピーできませんでした。欄を選択してコピーしてください。')
+  }
+
+  return (
+    <section className="issue-report-template" aria-labelledby="issue-report-template-heading">
+      <h3 id="issue-report-template-heading">不具合報告テンプレート</h3>
+      <p>不具合のときは、分かる範囲で以下を埋めてお送りください。</p>
+      <textarea ref={templateRef} readOnly value={ISSUE_REPORT_TEMPLATE} aria-label="不具合報告テンプレート" />
+      <p>
+        <button type="button" onClick={handleCopy}>テンプレートをコピー</button>
+        {copyMessage && <span className="issue-report-copy-message" role="status">{copyMessage}</span>}
+      </p>
+    </section>
+  )
+}
+
 export default function AboutPage() {
   return (
-    <main>
+    <main className="about-page">
       <h1>このサイトについて</h1>
 
       {/* 非公式サイトとして、何の公式資料をどの年度基準で反映しているかを問い合わせ先の前で明示する。 */}
@@ -21,6 +70,7 @@ export default function AboutPage() {
 
       <section>
         <h2>不具合・要望など</h2>
+        <IssueReportTemplate />
         <p>こちらのアカウントまでご連絡お願いいたします</p>
         <ul>
           <li>

@@ -1337,6 +1337,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         />
         {dataMessage && <p role="status">{dataMessage}</p>}
       </div>
+      {/* 履修記録はブラウザ内だけにあるため、消去される前にJSONで退避する方法を操作欄の直下で案内する。 */}
+      <p className="backup-reminder">
+        ※ 入力内容はこのブラウザ内にのみ保存されます。機種変更・ブラウザ初期化前は「単位取得状況をダウンロード」でバックアップしてください。
+      </p>
       {/* 更新時に確定した時限重複だけを、次の操作前に見直せる注意として表示する。 */}
       {scheduleWarning && <p className="schedule-conflict-warning" role="alert">{scheduleWarning}</p>}
 
@@ -1367,7 +1371,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 </li>
               ))}
               {/* 科目に紐付かない認定分は他の一覧に現れないため、共通単位の内訳としてここに明示する。 */}
-              {otherCommonCommitted > 0 && <li>その他単位認定として{otherCommonCommitted}単位</li>}
+              {/* 認定分は単位数だけでなく入力済みの科目数も示し、登録科目数との対応を確認できるようにする。 */}
+              {otherCommonCommitted > 0 && <li>その他単位認定として{otherCommonCommitted}単位（{otherCommonSubjectCountCommitted}科目）</li>}
               {[...clusterTransferBucket, ...programTransferBucket].filter((item) => committed.get(item.code) === 'passed').map((item) => (
                 <li key={item.code}>{item.name}として{item.credits}単位</li>
               ))}

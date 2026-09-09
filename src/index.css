@@ -276,6 +276,11 @@ select {
   background: color-mix(in srgb, #e7f1fb 15%, Canvas);
 }
 
+/* Aboutページのタイトルと最初の案内がくっつきすぎないよう、見出しの下に余白を足す。 */
+.about-page > h1 {
+  margin-bottom: 1.35rem;
+}
+
 .about-data-status h2 {
   margin: 0 0 0.45rem;
   font-size: 1.05rem;
@@ -303,6 +308,41 @@ select {
 .about-data-status dd {
   margin: 0;
   font-size: 0.92em;
+}
+
+/* 不具合報告に必要な情報を一か所に集め、問い合わせ前にそのままコピーできるようにする。 */
+.issue-report-template {
+  margin: 1rem 0;
+  padding: 0.75rem 0.85rem;
+  border-left: 4px solid #88a5dc;
+  background: color-mix(in srgb, #e7f1fb 10%, Canvas);
+}
+
+/* 問い合わせ見出しより一段小さくし、補助情報であることを保ちながら目には留まるようにする。 */
+.issue-report-template h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+}
+
+/* テンプレート本文は編集できない欄にし、コピーする範囲を明確にする。 */
+.issue-report-template textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 12rem;
+  padding: 0.55rem;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-radius: 0.3rem;
+  background: Canvas;
+  color: CanvasText;
+  font: inherit;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+/* コピー結果はボタンの横に控えめに表示し、操作の成否だけをすぐ確認できるようにする。 */
+.issue-report-copy-message {
+  margin-left: 0.6rem;
+  font-size: 0.9em;
 }
 
 /* プロフィール設定は入力項目が続くため、入力欄を大きくし直すのではなく行間を広げて見分けやすくする。 */
@@ -544,6 +584,16 @@ select {
   margin: 1rem 0;
   border: 1px solid color-mix(in srgb, currentColor 25%, transparent);
   border-radius: 0.75rem;
+}
+
+/* ブラウザ保存の入力内容を失わないよう、入出力操作の直下で控えめにバックアップを案内する。 */
+.backup-reminder {
+  margin: -0.45rem 0 1rem;
+  padding-left: 0.65rem;
+  border-left: 3px solid #b98700;
+  color: inherit;
+  font-size: 0.88rem;
+  line-height: 1.55;
 }
 
 .toolbar-group {
