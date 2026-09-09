@@ -250,6 +250,51 @@ select {
   margin-left: 0.2rem;
 }
 
+/* 初見向けに、入力から判定結果の確認までを短く案内する常設の操作ガイド。 */
+.main-usage-guide {
+  margin: 0.8rem 0 0;
+  padding: 0.6rem 0.8rem;
+  border-left: 4px solid #88a5dc;
+  background: color-mix(in srgb, #e7f1fb 45%, Canvas);
+}
+
+/* 見出しは小さくし、メインの「履修状況」見出しより主張しすぎないようにする。 */
+.main-usage-guide-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.94em;
+  font-weight: 700;
+}
+
+/* PCでは3段階を横一列にし、矢印で入力から確認までの順番を示す。 */
+.main-usage-guide ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.main-usage-guide li {
+  display: flex;
+  align-items: baseline;
+  font-size: 0.9em;
+}
+
+/* 2段目以降の前に矢印を置き、個別の説明ではなく操作の流れだと伝える。 */
+.main-usage-guide li + li::before {
+  margin: 0 0.65rem;
+  color: color-mix(in srgb, currentColor 55%, transparent);
+  content: '→';
+}
+
+/* 丸数字を少し目立たせ、文章を長く読まなくても手順を追えるようにする。 */
+.main-usage-guide li > span {
+  margin-right: 0.18rem;
+  color: #155b94;
+  font-weight: 750;
+}
+
 /* 長いメイン画面で、よく見る区分へ一度の操作で移動するための表形式の目次。 */
 .quick-section-links {
   margin: 0.85rem 0 0;
@@ -860,6 +905,16 @@ select {
 
   .subject-row-actions {
     justify-content: space-between;
+  }
+
+  /* スマホでは案内を1行ずつにし、長い3つ目の説明が窮屈に折り返さないようにする。 */
+  .main-usage-guide li {
+    width: 100%;
+  }
+
+  /* 横並び用の矢印は、縦並びでも次の手順を示す印として左端に残す。 */
+  .main-usage-guide li + li::before {
+    margin-left: 0;
   }
 
   /* 横幅を守るため、スマホでは上下の更新ボタンを短い文言に切り替える。 */

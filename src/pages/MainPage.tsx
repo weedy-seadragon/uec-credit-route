@@ -1256,6 +1256,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </div>
       </header>
 
+      {/* 初見でも操作の順番を迷わないよう、実際の入力画面の近くに短い案内を常設する。 */}
+      <aside className="main-usage-guide" aria-label="このページでできること">
+        <p className="main-usage-guide-title">このページでできること</p>
+        <ol>
+          <li><span>①</span>科目ごとの状態を入力</li>
+          <li><span>②</span>「単位取得状況を更新」を押す</li>
+          <li><span>③</span>不足・審査・今学期の候補を確認</li>
+        </ol>
+      </aside>
+
       {/* HashRouterの#を変えずに画面内を移動するため、通常の<a>ではなくスクロール用ボタンを使う。 */}
       <nav className="quick-section-links" aria-label="メイン画面内の目次">
         <p className="quick-section-links-title">目次</p>
