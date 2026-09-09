@@ -1,7 +1,7 @@
 // classAssignment.ts の単体テスト。class_assignment.json の表記パターンごとに、
 // プロフィールとの一致判定・セクション解決が正しく動くことを確認する。
 import { describe, expect, it } from 'vitest'
-import { classIdMatchesProfile, resolveOfferingsForProfile, resolveSlotsForProfile } from './classAssignment'
+import { classIdMatchesProfile, hasDedicatedRetakeClass, resolveOfferingsForProfile, resolveSlotsForProfile } from './classAssignment'
 import type { ClassAssignmentEntry, ClassProfile } from './classAssignment'
 
 describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () => {
@@ -137,6 +137,26 @@ describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () =>
     expect(classIdMatchesProfile('メディア情報学プログラム', profile, 'I', true)).toBe(false)
     // isRetakingがfalseなら、これらは今まで通り一致する
     expect(classIdMatchesProfile('クラス3', profile, 'I', false)).toBe(true)
+  })
+})
+
+// 修得推奨では、通常開講に混ぜず専用枠として案内済みの再履修科目を除外するため、専用class_idを検出する。
+describe('hasDedicatedRetakeClass（再履修専用セクションの有無）', () => {
+  it('「再履生」または「再履全員」があれば、再履修用科目が用意されていると判定する', () => {
+    const assignments: ClassAssignmentEntry[] = [
+      { code: 'PHY102z', term: '前学期', day: '火', period: '4', classIds: ['クラス1'] },
+      { code: 'PHY102z', term: '後学期', day: '水', period: '3', classIds: ['再履生'] },
+      { code: 'ENG101z', term: '前学期', day: '月', period: '1', classIds: ['再履全員'] },
+    ]
+    expect(hasDedicatedRetakeClass('PHY102z', assignments)).toBe(true)
+    expect(hasDedicatedRetakeClass('ENG101z', assignments)).toBe(true)
+  })
+
+  it('通常クラスしか無い科目は、再履修専用セクションなしと判定する', () => {
+    const assignments: ClassAssignmentEntry[] = [
+      { code: 'MTH101z', term: '前学期', day: '火', period: '3', classIds: ['クラス1', 'クラス2'] },
+    ]
+    expect(hasDedicatedRetakeClass('MTH101z', assignments)).toBe(false)
   })
 })
 

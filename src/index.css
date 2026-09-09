@@ -359,6 +359,41 @@ select {
   text-align: center;
 }
 
+/* 審査の直下に置く今学期の修得推奨は、結果の続きだと分かるよう左側の罫線でまとまりを作る。 */
+.term-recommendation-section {
+  margin-top: 1.4rem;
+  padding: 0.3rem 0 0.2rem 0.85rem;
+  border-left: 4px solid #88a5dc;
+}
+
+/* 推奨対象の学期はこの枠だけで選べるよう、見出しの直下に余白つきで置く。 */
+.term-recommendation-filter {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.7rem;
+  margin: 0.2rem 0 0.8rem;
+  font-weight: 700;
+}
+
+/* 必修・再履修の候補は、通常の箇条書きより少し行間を空けて科目名を追いやすくする。 */
+.term-recommendation-list > li + li {
+  margin-top: 0.4rem;
+}
+
+/* 区分ごとの入れ子は一覧の左端をそろえ、選択科目の通常表示と同じ開閉デザインを使う。 */
+.term-recommendation-groups {
+  margin: 0.55rem 0 0;
+  padding: 0;
+}
+
+/* 入れ子内の共通単位の説明や候補なしの案内は、科目リストと区別できるよう一段下げて表示する。 */
+.term-recommendation-note {
+  margin: 0.55rem 0;
+  padding-left: 1em;
+  font-size: 0.94em;
+}
+
 /* 長い選択科目では見出しが画面外へ出たときだけ、現在読んでいる区分を閉じる操作を画面上部いっぱいに固定する。 */
 .sticky-group-close {
   position: fixed;
@@ -467,6 +502,19 @@ select {
 
 .review-conditions > li + li {
   margin-top: 0.35rem;
+}
+
+/* 詳細を開かず表示する審査条件も、卒研着手審査の入れ子と同じ左罫線・本文開始位置にそろえる。 */
+.review-conditions-inline {
+  margin: 0.8rem 0 0.85rem 0.5rem;
+  padding-left: 0.7rem;
+  border-left: 3px solid #88a5dc;
+}
+
+/* 審査条件の補足は、折りたたみ内外で同じ小さめの見た目にそろえる。 */
+.review-note {
+  margin: 0.4rem 0;
+  font-size: 0.9em;
 }
 
 /* 科目名・補足情報・操作を一定の列に置く。幅が狭いときは自動で1列へ折り返す。 */

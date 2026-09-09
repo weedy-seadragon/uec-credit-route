@@ -31,6 +31,15 @@ export interface ClassAssignmentEntry {
   instructors?: string[]
 }
 
+/**
+ * 指定科目に「再履全員」または「再履生」向けの専用セクションがあるかを返す。
+ * 再履修の通常開講と専用枠を区別して、修得推奨の表示を重複させないために使う。
+ */
+export function hasDedicatedRetakeClass(code: string, assignments: readonly ClassAssignmentEntry[]): boolean {
+  // 同じ科目の全曜日・時限を見て、再履修専用のclass_idが1件でもあれば専用枠ありと判断する。
+  return assignments.some((entry) => entry.code === code && entry.classIds.some((id) => id === '再履全員' || id === '再履生'))
+}
+
 /** offerings側の型（requirementSets.ts の SubjectOffering と構造的に合っていればよい） */
 interface OfferingLike {
   term: string

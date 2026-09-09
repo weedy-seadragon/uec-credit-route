@@ -23,7 +23,7 @@ import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
 import { getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { TransferBucketItem } from '../data/requirementSets'
-import { resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
+import { hasDedicatedRetakeClass, resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
 import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
 import type { PlannedCourseSchedule } from '../domain/scheduleConflicts'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
@@ -297,6 +297,49 @@ function StickyGroupClose({
 }
 
 /**
+ * 審査の詳細を開いたまま長い条件を読んでいるとき、上部から閉じられる入れ子。
+ * 追従ボタンに必要なrefは審査ごとに独立させるため、専用の小さな部品として切り出す。
+ */
+function ReviewDetails({ title, children }: { title: string; children: ReactNode }) {
+  // この詳細入れ子自身の見出し位置を追跡し、画面上端へ閉じる操作を出す。
+  const detailsRef = useRef<HTMLDetailsElement>(null)
+  return (
+    <details ref={detailsRef} className="nested-subject-group review-details">
+      <summary><span>詳細</span></summary>
+      {children}
+      <StickyGroupClose detailsRef={detailsRef} title={title} />
+    </details>
+  )
+}
+
+/**
+ * 学期別の候補区分を開いたまま読み進めたとき、上端から閉じられる入れ子。
+ * mapで複数表示する区分ごとにrefを独立させるため、専用の部品にしている。
+ */
+function TermRecommendationDetails({
+  title,
+  countLabel,
+  children,
+}: {
+  title: string
+  countLabel: string
+  children: ReactNode
+}) {
+  // この候補区分自身のsummary位置を追跡し、読み進めたときだけ閉じる操作を表示する。
+  const detailsRef = useRef<HTMLDetailsElement>(null)
+  return (
+    <details ref={detailsRef} className="nested-subject-group">
+      <summary>
+        <span>{title}</span>
+        <span className="nested-subject-count">{countLabel}</span>
+      </summary>
+      {children}
+      <StickyGroupClose detailsRef={detailsRef} title={title} />
+    </details>
+  )
+}
+
+/**
  * 科目一覧の1行を、科目情報と状態操作の2列グリッドで表示する共通部品。
  *
  * 一覧ごとに科目名・単位・状態ボタンの並びがずれると、学生が「何を変更するか」を
@@ -357,6 +400,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 保存済みプロフィールに古い/不正なプログラム値があっても、未選択として共通要件を表示する。
   const programName = getProgramName(profile.entryYear, profile.program)
   const isProgramUndecided = programName == null
+  // 共通単位の入れ子も、長い選択区分と同じ上部追従の「閉じる」操作に使う。
+  const commonCreditsDetailsRef = useRef<HTMLDetailsElement>(null)
   const requirementSet = useMemo(
     () => !isProgramUndecided && profile.program
       ? getRequirementSet(profile.entryYear, profile.course, profile.cluster, profile.program)
@@ -390,6 +435,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         credits: s.credits,
         standardYear: s.standardYear,
         termType: s.termType,
+        allowedYears: s.allowedYears,
         prerequisites: derivePrerequisites(s.prerequisitesText, s.code, nameToCodes),
       })
     }
@@ -416,6 +462,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const [otherClusterMajorSubjectCountDraft, setOtherClusterMajorSubjectCountDraft] = useState<number>(otherClusterMajorSubjectCountCommitted)
   // 不合格から修得予定へ変えた科目だけを覚え、再履用の曜日時限があれば重複判定に使う。
   const [retakingPlanCodes, setRetakingPlanCodes] = useState<ReadonlySet<string>>(() => loadRetakingPlanCodes())
+  // 一覧全体の表示範囲とは別に、修得推奨だけで対象の学年・学期を選べるようにする。
+  const [recommendationTermKey, setRecommendationTermKey] = useState('all')
   const [termKey, setTermKey] = useState('all')
   // ダウンロード・読み込みの結果を一言表示するためのメッセージ（F-8）
   const [dataMessage, setDataMessage] = useState<string | null>(null)
@@ -520,7 +568,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function isVisibleForTermFilter(code: string): boolean {
     if (termFilter === 'all') return true
     const subject = subjectsByCode.get(code)
-    if (!subject || subject.termType == null) return true // 通年・不定期開講科目は常に表示
+    if (!subject) return true
+    // 履修可能学年が明記された抽選科目などは、選択した学年だけに表示を限る。
+    if (subject.allowedYears && !subject.allowedYears.includes(termFilter.year)) return false
+    if (subject.termType == null) return true // 通年・不定期開講科目は常に表示
     return subject.termType === termFilter.half && (subject.standardYear == null || subject.standardYear <= termFilter.year)
   }
 
@@ -530,6 +581,44 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const remainingRequired = recommended.filter(
     (r) => requiredCodes.has(r.code) && committed.get(r.code) == null && isVisibleForTermFilter(r.code),
   )
+
+  // 修得推奨は一覧全体の表示範囲と独立した学年・学期で絞り、必修・再履修・不足選択区分を分けて案内する。
+  const recommendationTermFilter = TERM_OPTIONS.find((t) => t.key === recommendationTermKey)?.filter ?? 'all'
+  const recommendationCandidates = recommend({
+    requirementSet, evaluation, records: committed, subjects: recommendSubjects,
+    currentGrade: profile.grade, termFilter: recommendationTermFilter,
+  })
+  // recommendationCandidatesは既に対象学期で絞り、優先順に並んでいるため、この後の候補にもその順を保つ。
+  const termRequiredRecommendations = recommendationCandidates.filter(
+    (r) => requiredCodes.has(r.code) && committed.get(r.code) == null,
+  )
+  // 必修の不合格は卒業要件上もう一度修得する必要があるため、再履修を明確に推奨する。
+  // 再履修専用のクラスがある科目は、不合格一覧の再履用案内で時限まで確認できるため、ここへ重複して出さない。
+  const termRequiredRetakeRecommendations = recommendationCandidates.filter(
+    (r) => committed.get(r.code) === 'failed'
+      && requiredCodes.has(r.code)
+      && !hasDedicatedRetakeClass(r.code, classAssignments),
+  )
+  // 選択科目の不合格は別の科目で区分を満たす選択肢もあるため、「必修」とは分けて候補として示す。
+  const termElectiveRetakeRecommendations = recommendationCandidates.filter(
+    (r) => committed.get(r.code) === 'failed'
+      && !requiredCodes.has(r.code)
+      && !hasDedicatedRetakeClass(r.code, classAssignments),
+  )
+  // 選択区分は「今学期に候補があるか」も含めてすべて出す。候補の中身は画面で折りたたんで確認する。
+  const termElectiveRecommendations = boundaryGroups
+    .filter((group) => group.kind === 'elective' && group.shortfall > 0)
+    .map((group) => ({
+      group,
+      candidates: recommendationCandidates.filter((r) => committed.get(r.code) == null && group.subjects.includes(r.code)),
+    }))
+  // 共通単位は通常の選択区分と別計算なので、共通単位として直接算入される科目だけを専用の候補にする。
+  const termCommonRecommendations = evaluation.commonCredits.shortfall > 0
+    ? recommendationCandidates.filter((r) => committed.get(r.code) == null && commonOnlyRemaining.includes(r.code))
+    : []
+  // 選択区分と共通単位を取り切ったときは、候補が空の入れ子そのものを表示しない。
+  const hasOutstandingTermRecommendationGroups = termElectiveRecommendations.length > 0
+    || evaluation.commonCredits.shortfall > 0
 
   // 取得単位・不可の単位のセクションは、committed（確定済み）を状態別に振り分けるだけでよい
   const passedSubjects = [...committed.entries()].filter(([, status]) => status === 'passed')
@@ -803,6 +892,25 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </a>
     )
   }
+  // 修得推奨で選んだ学期より前に標準開講された科目かを判定する。
+  // 過年度の未修得科目は、当時のクラス・時限が現在の履修条件とは限らないため、表示を分ける。
+  function isBeforeRecommendationTerm(code: string): boolean {
+    if (recommendationTermFilter === 'all') return false
+    const subject = subjectsByCode.get(code)
+    if (subject?.standardYear == null) return false
+    const selectedTermOrder = recommendationTermFilter.year * 2
+      + (recommendationTermFilter.half === '前学期' ? 0 : 1)
+    const subjectTermOrder = subject.standardYear * 2
+      + (subject.termType === '後学期' ? 1 : 0)
+    return subjectTermOrder < selectedTermOrder
+  }
+  // 過年度の未修得科目は、現在のシラバスを直接開かず、要件と開講候補を確認できる科目説明へ案内する。
+  function recommendationNameLink(code: string): ReactNode {
+    if (isBeforeRecommendationTerm(code)) {
+      return <Link to={`/courses/${code}?year=${profile.entryYear}`}>{nameOf(code)}</Link>
+    }
+    return nameLink(code)
+  }
   function creditsOf(code: string): number | undefined {
     return subjectsByCode.get(code)?.credits
   }
@@ -940,7 +1048,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // セクションから曜日時限を出す（開発者提案、2026-09-06）
   // シラバス上に曜日時限が一切無い（＝offeringsは取れているが全セクションのslotsが空）科目は
   // 「時間割に入っていない」科目とみなす。学修要覧のnoteが「夏期集中」「冬期集中」の場合は
-  // そのままその文言を表示し、それ以外の「集中」（隔年度開講の集中講義等）は何も表示しない。
+  // そのままその文言を表示し、それ以外の「集中」（隔年度開講の集中講義等）は「集中講義」と表示する。
   // どちらでもない（卒業研究・オンデマンド授業等）は「オンデマンド」と表示する
   // （開発者指示、2026-09-06。当初は集中講義を一律非表示にしていたが、政治学Ａ・
   // 生涯スポーツ演習Ｃ/Ｄのように「夏期集中」「冬期集中」であることが分かっている科目は
@@ -976,7 +1084,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (!hasAnySlots) {
       if (note?.includes('夏期集中')) return <span style={{ marginLeft: '0.4em' }}>夏期集中</span>
       if (note?.includes('冬期集中')) return <span style={{ marginLeft: '0.4em' }}>冬期集中</span>
-      if (note?.includes('集中')) return unavailable('集中講義です')
+      // 夏期・冬期以外の集中講義は、理由つきの注意書きではなく簡潔な開講形態だけを示す。
+      if (note?.includes('集中')) return <span style={{ marginLeft: '0.4em' }}>集中講義</span>
       return <span style={{ marginLeft: '0.4em' }}>オンデマンド</span>
     }
     // 隔年度開講・開講年度により内容が変わる、といった注記は、実際に何か表示するときは
@@ -1019,6 +1128,19 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {noteSuffix}
       </span>
     )
+  }
+  // 修得推奨では、選択した学期より前の標準開講科目は曜日時限に縛られないため、時限を添えない。
+  // 同じ年の前学期から後学期へ進んだ場合も、既に終わった前学期として扱う。
+  function recommendationDayPeriodTag(code: string) {
+    if (isBeforeRecommendationTerm(code)) return null
+    return dayPeriodTag(code)
+  }
+  // 過年度の未修得科目には、曜日時限の代わりに標準開講年次を注記して位置づけを分かりやすくする。
+  function recommendationPastCourseNote(code: string) {
+    if (!isBeforeRecommendationTerm(code)) return null
+    const standardYear = subjectsByCode.get(code)?.standardYear
+    if (standardYear == null) return null
+    return <span style={{ marginLeft: '0.4em', fontSize: '0.9em' }}>※{standardYear}年次開講科目</span>
   }
   // 同じ類に属する他プログラムの専門科目かどうか（他類の科目は原則自由科目）
   function isOtherProgram(code: string): boolean {
@@ -1381,7 +1503,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           // required=0でGroupProgressの対象外だったり、alwaysCommonSubjectsでどの区分にも属さないため、
           // これまで選択状態を変える場所が無かった。類専門（選択）の直後に専用の入れ子を出す
           const commonCreditsElement = (
-            <details key="common-credits" className="elective-group">
+            <details ref={commonCreditsDetailsRef} key="common-credits" className="elective-group">
               <summary>
                 <span className="elective-group-title">共通単位</span>
                 <span className="elective-group-progress">
@@ -1441,6 +1563,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 ))}
                 {commonOnlyRemaining.filter(isVisibleForTermFilter).length === 0 && <li>（この表示範囲では残っていません）</li>}
               </ul>
+              <StickyGroupClose detailsRef={commonCreditsDetailsRef} title="共通単位" />
             </details>
           )
           const electiveGroups = boundaryGroups.filter((g) => (g.kind === 'elective' || g.kind === 'elective-required') && g.required > 0)
@@ -1489,6 +1612,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               const visibleUnsatisfied = r.id === 'graduation'
                 ? r.unsatisfied.filter((cond) => cond.type !== 'commonCredits')
                 : r.unsatisfied
+              // 2年次終了時・卒業審査は不足条件が少ないため、詳細を開かず本文へそのまま出す。
+              const showConditionsInline = r.id === 'y2-end' || r.id === 'graduation'
               return (
                 <li key={r.id}>
                   {r.name}
@@ -1501,15 +1626,25 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                   {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
                   {r.caveat && <p style={{ fontSize: '0.9em', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
                   {!r.satisfied && visibleUnsatisfied.length > 0 && (
-                    <details className="nested-subject-group review-details">
-                      <summary><span>詳細</span></summary>
-                      <ul className="review-conditions">
-                        {visibleUnsatisfied.map((cond, i) => (
-                          <li key={i}>{describeCondition(cond)}</li>
-                        ))}
-                      </ul>
-                      {r.onFail?.note && <p style={{ fontSize: '0.9em' }}>※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
-                    </details>
+                    showConditionsInline ? (
+                      <div className="review-conditions-inline">
+                        <ul className="review-conditions">
+                          {visibleUnsatisfied.map((cond, i) => (
+                            <li key={i}>{describeCondition(cond)}</li>
+                          ))}
+                        </ul>
+                        {r.onFail?.note && <p className="review-note">※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
+                      </div>
+                    ) : (
+                      <ReviewDetails title={`${r.name}の詳細`}>
+                        <ul className="review-conditions">
+                          {visibleUnsatisfied.map((cond, i) => (
+                            <li key={i}>{describeCondition(cond)}</li>
+                          ))}
+                        </ul>
+                        {r.onFail?.note && <p className="review-note">※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
+                      </ReviewDetails>
+                    )
                   )}
                 </li>
               )
@@ -1517,6 +1652,119 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           </ul>
         </section>
       )}
+
+      {/* 一覧全体の表示範囲とは別に、ここで選んだ学年・学期ごとの候補を示す。 */}
+      <section className="term-recommendation-section">
+        <h2>学期別の修得推奨科目</h2>
+        <p className="section-guidance">
+          単位取得状況を入力したうえで学年・学期を絞り込むと、その学期に開講される修得推奨科目を表示します。
+        </p>
+        <label className="term-recommendation-filter" htmlFor="recommendationTermFilter">
+          対象とする学年・学期
+          <select id="recommendationTermFilter" value={recommendationTermKey} onChange={(e) => setRecommendationTermKey(e.target.value)}>
+            {TERM_OPTIONS.map((term) => (
+              <option key={term.key} value={term.key}>{term.label}</option>
+            ))}
+          </select>
+        </label>
+        {recommendationTermFilter === 'all' ? (
+          <p className="section-guidance">学年・学期を選ぶと、選択した学期の修得推奨科目を表示します。</p>
+        ) : (
+          <>
+            {/* 必修は学生が選び替えられないため、入れ子にせず最優先としてそのまま並べる。 */}
+            {termRequiredRecommendations.length > 0 && (
+              <>
+                <h3>優先する必修</h3>
+                <ul className="term-recommendation-list">
+                  {termRequiredRecommendations.map(({ code }) => (
+                    <li key={code}>
+                      {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* 必修の不合格は、再履修専用のクラスが無い場合に通常開講と同じ学期で取り直すよう示す。 */}
+            {termRequiredRetakeRecommendations.length > 0 && (
+              <>
+                <h3>再履修推奨（必修科目）</h3>
+                <ul className="term-recommendation-list">
+                  {termRequiredRetakeRecommendations.map(({ code }) => (
+                    <li key={code}>
+                      {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* 選択科目の不合格は、同一区分の別科目も選べるため再履修の候補として分けて示す。 */}
+            {termElectiveRetakeRecommendations.length > 0 && (
+              <>
+                <h3>再履修候補（選択科目）</h3>
+                <ul className="term-recommendation-list">
+                  {termElectiveRetakeRecommendations.map(({ code }) => (
+                    <li key={code}>
+                      {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* 選択科目は区分ごとに全候補を入れ子へ収め、閉じた状態でも不足と候補数を確認できるようにする。 */}
+            {hasOutstandingTermRecommendationGroups && (
+              <>
+                <h3>不足区分ごとの候補</h3>
+                <ul className="term-recommendation-groups">
+                  {termElectiveRecommendations.map(({ group, candidates }) => (
+                    <li key={group.id} style={{ listStyleType: 'none' }}>
+                      <TermRecommendationDetails
+                        title={`${group.label ?? group.name}（あと${group.shortfall}単位）`}
+                        countLabel={`選択した学期${candidates.length}科目`}
+                      >
+                        {candidates.length > 0 ? (
+                          <ul>
+                            {candidates.map(({ code }) => (
+                              <li key={code}>
+                                {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="term-recommendation-note">選択した学期に表示できる候補はありません。以降の学期も含めて履修計画を立ててください。</p>
+                        )}
+                      </TermRecommendationDetails>
+                    </li>
+                  ))}
+                  {evaluation.commonCredits.shortfall > 0 && (
+                    <li style={{ listStyleType: 'none' }}>
+                      <TermRecommendationDetails
+                        title={`共通単位（あと${evaluation.commonCredits.shortfall}単位）`}
+                        countLabel={`選択した学期${termCommonRecommendations.length}科目`}
+                      >
+                        <p className="term-recommendation-note">区分の超過分やその他単位認定も共通単位に算入されるため、取得状況も確認してください。</p>
+                        {termCommonRecommendations.length > 0 ? (
+                          <ul>
+                            {termCommonRecommendations.map(({ code }) => (
+                              <li key={code}>
+                                {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="term-recommendation-note">選択した学期に表示できる共通単位の候補はありません。</p>
+                        )}
+                      </TermRecommendationDetails>
+                    </li>
+                  )}
+                </ul>
+              </>
+            )}
+          </>
+        )}
+      </section>
 
       {/* 上のツールバーの「更新」と同じボタン。プルダウンをたくさん触った後、
           いちいちページ上部まで戻らなくて済むように一番下にも置いておく。
