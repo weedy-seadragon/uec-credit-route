@@ -262,7 +262,8 @@ select {
   margin: 0;
   padding: 0.42rem 0.7rem;
   border-bottom: 1px solid #b8c9da;
-  background: #eef4fa;
+  /* 淡すぎる青ではなく、文字との明暗差が出る半透明グレーで見出しを区別する。 */
+  background: rgb(128 128 128 / 45%);
   text-align: center;
   font-weight: 650;
 }
@@ -298,11 +299,8 @@ select {
   border-bottom: 0;
 }
 
-/* マウス・キーボード操作のどちらでも、現在押せるセルを分かるようにする。 */
-.quick-section-links button:hover,
+/* キーボード操作時だけ輪郭を出し、マウスを乗せたときは色を変えない。 */
 .quick-section-links button:focus-visible {
-  background: #e0f0fc;
-  color: #004f86;
   outline: 2px solid #1769aa;
   outline-offset: -2px;
 }
