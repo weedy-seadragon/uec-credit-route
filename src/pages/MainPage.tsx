@@ -1014,8 +1014,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // （一覧によって出たり出なかったりすると分かりにくいので、全部の一覧で同じ形で出す）
   function yearTermTag(code: string) {
     const yearTerm = yearTermOf(code)
-    if (!yearTerm) return null
-    return <span style={{ marginLeft: '0.4em' }}>{yearTerm}</span>
+    const note = subjectsByCode.get(code)?.note
+    // シラバスへの導線は残しつつ、当年度に開講しない科目を科目名のすぐ横で見分けられるようにする。
+    const unavailable = note?.includes('2026年度開講なし')
+      ? <span className="schedule-unavailable">（2026年度開講なし）</span>
+      : null
+    if (!yearTerm && !unavailable) return null
+    return (
+      <>
+        {yearTerm && <span style={{ marginLeft: '0.4em' }}>{yearTerm}</span>}
+        {unavailable}
+      </>
+    )
   }
   // 科目の開講学期（前学期/後学期）。人文・社会科学科目や上級科目のように科目数が多い区分を
   // 前学期・後学期で折りたたむために使う（無ければnull）
@@ -1075,10 +1085,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       return false
     }
     if (!offerings || offerings.length === 0) {
-      // 公式一覧で当年度の不開講が確認できた科目だけは、履修予定に入れないよう理由を明記する。
-      if (subject?.note?.includes('2026年度開講なし')) {
-        return <span className="schedule-unavailable">（2026年度開講なし）</span>
-      }
+      // 当年度の開講なし注記は科目名の横（yearTermTag）へ出すため、曜日時限欄では重複させない。
       return null
     }
     // 輪講・卒業研究は研究室ごとに実施形態が異なり、時間割として一律に示せない。

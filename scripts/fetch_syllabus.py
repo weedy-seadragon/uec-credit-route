@@ -333,6 +333,12 @@ def main():
             updated += 1
         if s["code"] in prereq_text_by_code:
             s["prerequisitesText"] = prereq_text_by_code[s["code"]]
+
+        # 学修要覧側で学期が空欄でも、2026年度シラバスの全セクションが同じ前／後学期なら表示に使える。
+        # 年次はシラバスの「開講年次」が空欄の科目もあるため、この補完では推測しない。
+        offering_terms = {o["term"] for o in s.get("offerings", []) if o.get("term") in {"前学期", "後学期"}}
+        if s.get("termType") is None and len(offering_terms) == 1:
+            s["termType"] = offering_terms.pop()
             prereq_updated += 1
 
     with open(SUBJECTS_PATH, "w", encoding="utf-8") as f:
