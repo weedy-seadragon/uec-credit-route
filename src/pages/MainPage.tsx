@@ -1639,8 +1639,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               const visibleUnsatisfied = r.id === 'graduation'
                 ? r.unsatisfied.filter((cond) => cond.type !== 'commonCredits')
                 : r.unsatisfied
-              // 2年次終了時・卒業審査は不足条件が少ないため、詳細を開かず本文へそのまま出す。
-              const showConditionsInline = r.id === 'y2-end' || r.id === 'graduation'
+              // 2年次終了時・卒業審査と、夜間主の輪講履修条件は不足条件が少ないため、
+              // 詳細を開かず本文へそのまま出す。
+              const showConditionsInline = r.id === 'y2-end' || r.id === 'graduation' || r.id === 'seminar-eligibility'
               return (
                 <li key={r.id}>
                   {r.name}
