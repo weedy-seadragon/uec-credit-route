@@ -115,6 +115,11 @@ export default function AboutPage() {
       <section>
         <h2>アイコンのイラスト制作</h2>
       </section>
+
+      {/* β版の動作確認や改善提案に協力した人の名前を、後から追記できるようにする。 */}
+      <section>
+        <h2>βテスト協力者</h2>
+      </section>
     </main>
   )
 }
