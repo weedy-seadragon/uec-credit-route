@@ -37,6 +37,8 @@ nav a {
   box-shadow: inset 0 0 0 2px color-mix(in srgb, Canvas 75%, #d0a229 25%);
   font-weight: 650;
   line-height: 1.65;
+  /* 注意書き全体を枠の中央に寄せ、独立した案内であることを視線で分かりやすくする。 */
+  text-align: center;
 }
 
 /* リリースノートは利用案内と役割が違うため、直前の注意書きから少し離して始める。 */
