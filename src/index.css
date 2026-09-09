@@ -41,6 +41,26 @@ nav a {
   background: Canvas;
 }
 
+/* 古い更新は最初からページを長くしないよう、必要なときだけ開ける入れ子へまとめる。 */
+.release-note-history {
+  margin-top: 1.5rem;
+  border: 1px solid color-mix(in srgb, currentColor 26%, transparent);
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, CanvasText 3%, Canvas);
+}
+
+.release-note-history > summary {
+  min-height: 2.8rem;
+  padding: 0.6rem 0.85rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+/* 開いた状態でも最初の過去ログと見出しが詰まらないよう、内側の余白を少し確保する。 */
+.release-note-history[open] > .release-note-entry:first-of-type {
+  margin-top: 0.2rem;
+}
+
 /* リリースノートの更新区分は本文より少し大きくし、どの更新の説明かを見分けやすくする。 */
 .release-note-update {
   margin: 0 0 0.35rem;

@@ -64,6 +64,9 @@ export default function TopPage() {
             <li>集中講義の曜日時限表示を簡潔にしました</li>
           </ul>
         </div>
+        {/* 最新版だけを最初から読めるようにし、それ以前の更新は必要なときだけ開けるようにする。 */}
+        <details className="release-note-history">
+          <summary>過去のアップデートを見る（8件）</summary>
         {/* β2.4.2では、長い選択科目を閉じる操作と初回表示の読み込み方を改善した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -193,6 +196,7 @@ export default function TopPage() {
         <h3 className="release-note-category">見た目の変更</h3>
           <p className="release-note-items">サイトのデザインを一新しました</p>
         </div>
+        </details>
         {/* 初回リリース日は更新内容と混ざらないよう、独立した枠で表示する。 */}
         <p className="release-note-initial">β版リリース 2026/9/7</p>
       </section>
