@@ -1,6 +1,9 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
+// GitHub ActionsなどUTCで動く環境でも、利用者に表示する更新日は日本時間でそろえる。
+const buildDateInJapan = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Tokyo' }).format(new Date())
+
 // GitHub Pagesは https://<ユーザー名>.github.io/<リポジトリ名>/ という
 // サブパスで公開される。base をリポジトリ名に合わせておかないと、
 // JS/CSSファイルへのリンクがルート直下（/assets/...）を指してしまい404になる。
@@ -15,6 +18,6 @@ export default defineConfig({
   // define に書いた値は、ビルド時にコード中の同名の識別子（__BUILD_DATE__）へそのまま置き換えられる。
   // GitHub Actionsはmainへのpushのたびにビルドし直すので、これがそのままサイトの最終更新日になる
   define: {
-    __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+    __BUILD_DATE__: JSON.stringify(buildDateInJapan),
   },
 })
