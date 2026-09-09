@@ -842,6 +842,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     for (const code of blockedSubjects) displayNote = displayNote.replaceAll(code, nameOf(code))
     return displayNote
   }
+  // 当年度に開講しないことが確認済みの科目は、リンク先を変えずに科目名の直後で注意を示す。
+  function availabilityNoteTag(code: string): ReactNode {
+    return subjectsByCode.get(code)?.note?.includes('2026年度開講なし')
+      ? <span className="schedule-unavailable">（2026年度開講なし）</span>
+      : null
+  }
+  // リンクの種類にかかわらず、開講なしの注意を科目名のすぐ隣へ付ける共通処理。
+  function nameWithAvailability(code: string, link: ReactNode): ReactNode {
+    return <>{link}{availabilityNoteTag(code)}</>
+  }
   // 科目名をシラバスまたは科目説明ページへのリンクにする（一覧の各行で使う）。
   // offeringsが無い・シラバスURLを一意に決められない科目も、サイト内の科目説明ページから
   // 要件上の位置づけと登録済みの開講候補を確認できるようにする。複数セクションでURLがバラバラな科目
@@ -857,11 +867,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     const offerings = subjectsByCode.get(code)?.offerings
     // シラバスが無い場合も、科目詳細への導線は必ず残す。
     const detailLink = <Link to={`/courses/${code}?year=${profile.entryYear}`}>{name}</Link>
-    if (!offerings || offerings.length === 0) return detailLink
+    if (!offerings || offerings.length === 0) return nameWithAvailability(code, detailLink)
     // 曜日時限だけを補った科目（学域特別講義A/Bなど）は syllabusUrl が空文字になる。
     // 空のhrefは今見ているサイト自身へのリンクになるため、リンク候補として数えない。
     const urls = new Set(offerings.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
-    if (urls.size === 0) return detailLink
+    if (urls.size === 0) return nameWithAvailability(code, detailLink)
     let target = offerings.filter((offering) => offering.syllabusUrl.length > 0)
     // URLが複数ある場合だけ、プロフィールのクラス情報で受講セクションを絞り込む。
     if (urls.size !== 1 || target.length !== offerings.length) {
@@ -887,15 +897,15 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       // シラバスを一意に選べない場合も、科目詳細には全セクションの候補が載っている。
       // そこで科目名を詳細ページへの内部リンクにし、利用者が教員を選べるようにする。
       if (!matched || matched.length === 0 || matchedUrls.size !== 1) {
-        return detailLink
+        return nameWithAvailability(code, detailLink)
       }
       target = matched.filter((offering) => offering.syllabusUrl.length > 0)
     }
-    return (
+    return nameWithAvailability(code, (
       <a href={target[0].syllabusUrl} target="_blank" rel="noopener noreferrer">
         {name}
       </a>
-    )
+    ))
   }
   // 修得推奨で選んだ学期より前に標準開講された科目かを判定する。
   // 過年度の未修得科目は、当時のクラス・時限が現在の履修条件とは限らないため、表示を分ける。
@@ -912,7 +922,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 過年度の未修得科目は、現在のシラバスを直接開かず、要件と開講候補を確認できる科目説明へ案内する。
   function recommendationNameLink(code: string): ReactNode {
     if (isBeforeRecommendationTerm(code)) {
-      return <Link to={`/courses/${code}?year=${profile.entryYear}`}>{nameOf(code)}</Link>
+      return nameWithAvailability(code, <Link to={`/courses/${code}?year=${profile.entryYear}`}>{nameOf(code)}</Link>)
     }
     return nameLink(code)
   }
@@ -1014,18 +1024,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // （一覧によって出たり出なかったりすると分かりにくいので、全部の一覧で同じ形で出す）
   function yearTermTag(code: string) {
     const yearTerm = yearTermOf(code)
-    const note = subjectsByCode.get(code)?.note
-    // シラバスへの導線は残しつつ、当年度に開講しない科目を科目名のすぐ横で見分けられるようにする。
-    const unavailable = note?.includes('2026年度開講なし')
-      ? <span className="schedule-unavailable">（2026年度開講なし）</span>
-      : null
-    if (!yearTerm && !unavailable) return null
-    return (
-      <>
-        {yearTerm && <span style={{ marginLeft: '0.4em' }}>{yearTerm}</span>}
-        {unavailable}
-      </>
-    )
+    if (!yearTerm) return null
+    return <span style={{ marginLeft: '0.4em' }}>{yearTerm}</span>
   }
   // 科目の開講学期（前学期/後学期）。人文・社会科学科目や上級科目のように科目数が多い区分を
   // 前学期・後学期で折りたたむために使う（無ければnull）
