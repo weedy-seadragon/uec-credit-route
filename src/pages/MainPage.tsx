@@ -1222,6 +1222,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     target.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  /** ページ末尾から、メイン画面の最上部へ滑らかに戻る。 */
+  function scrollToPageTop(): void {
+    // HashRouterのURLを変えず、ブラウザのスクロール位置だけを先頭へ戻す。
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     // 下側に余白を持たせる：最後の区分（類専門など）の<summary>がページ最下端にくっついて
     // クリックしづらくならないようにするため
@@ -1863,6 +1869,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <button type="button" onClick={handleUpdate} style={{ marginTop: '1em' }} aria-label="単位取得状況を更新">
         <span className="toolbar-update-full">単位取得状況を更新</span>
         <span className="toolbar-update-short">更新</span>
+      </button>
+      {/* 長い科目一覧を見終えたあと、固定バーに頼らず先頭へ戻れる操作を置く。 */}
+      <button type="button" className="back-to-page-top" onClick={scrollToPageTop}>
+        ▲ ページの最上部に戻る
       </button>
     </main>
   )

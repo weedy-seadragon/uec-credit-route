@@ -487,6 +487,26 @@ select {
   border-left: 4px solid #88a5dc;
 }
 
+/* メイン画面の末尾から先頭へ戻るための、枠や背景を持たない補助ボタン。 */
+.back-to-page-top {
+  display: block;
+  margin: 2.2rem auto 0;
+  padding: 0.35rem 0.7rem;
+  border: 0;
+  background: transparent;
+  color: #0068af;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9em;
+  font-weight: 650;
+}
+
+/* マウスを乗せても配色を変えず、キーボード操作時だけ輪郭を示す。 */
+.back-to-page-top:focus-visible {
+  outline: 2px solid #1769aa;
+  outline-offset: 2px;
+}
+
 /* 推奨対象の学期はこの枠だけで選べるよう、見出しの直下に余白つきで置く。 */
 .term-recommendation-filter {
   display: inline-flex;
