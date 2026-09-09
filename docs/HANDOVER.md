@@ -71,6 +71,7 @@ uec-credit-route/                 ← プロジェクト全体
 │  ├─ STRUCTURE.md                ← コードの構成をやや技術寄りに説明したもの
 │  ├─ PROGRESS_LOG.md             ← 過去の作業日誌（いつ・何を・なぜ直したか、時系列で全部）
 │  ├─ HANDOVER.md                 ← このファイル
+│  ├─ RELEASE_CHECKLIST.md         ← 公開前に主要な画面操作を確認する手順
 │  └─ PENDING_YEAR_SEMESTER_CHECKS.md ← 標準年次・学期の確認監査記録
 ├─ data/                          ← 大学のルールを書いたデータ（唯一の情報源。上記①）
 │  ├─ requirements/                  卒業要件（プログラムごとに1ファイル、計17ファイル）
@@ -199,6 +200,7 @@ python scripts/validate_data.py
 | コードの技術的な構成（プログラミングの前提知識がある人向け） | `docs/STRUCTURE.md` |
 | 開発者向けの作業ルール | `AGENTS.md` |
 | 現在の実装状況と確認候補 | `docs/PROJECT_STATUS.md` |
+| 公開前に実際の画面操作を確認したい | `docs/RELEASE_CHECKLIST.md` |
 | Codex向けの短い作業入口・現状メモ | `CODEX.md` |
 | 過去の意思決定・不具合修正の経緯（いつ・なぜ・どう直したか） | `docs/PROGRESS_LOG.md` |
 | 標準年次・学期の照合で行った確認の監査記録 | `docs/PENDING_YEAR_SEMESTER_CHECKS.md` |

@@ -77,6 +77,8 @@ python scripts/validate_data.py
 
 ## 公開前チェックリスト
 
+画面操作を含む詳細な確認手順は、`RELEASE_CHECKLIST.md`を使用する。
+
 - [ ] `python scripts/validate_data.py` が通る
 - [ ] `npm test` が通る
 - [ ] `npm run lint` が通る
