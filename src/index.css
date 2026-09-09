@@ -281,6 +281,11 @@ select {
   margin-bottom: 1.35rem;
 }
 
+/* Aboutページの最後の協力者情報が画面下端にくっつかないよう、下側に余白を確保する。 */
+.about-page {
+  padding-bottom: 4rem;
+}
+
 .about-data-status h2 {
   margin: 0 0 0.45rem;
   font-size: 1.05rem;
