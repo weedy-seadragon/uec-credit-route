@@ -44,16 +44,6 @@ nav a {
 /* 古い更新は最初からページを長くしないよう、必要なときだけ開ける入れ子へまとめる。 */
 .release-note-history {
   margin-top: 1.5rem;
-  border: 1px solid color-mix(in srgb, currentColor 26%, transparent);
-  border-radius: 0.5rem;
-  background: color-mix(in srgb, CanvasText 3%, Canvas);
-}
-
-.release-note-history > summary {
-  min-height: 2.8rem;
-  padding: 0.6rem 0.85rem;
-  cursor: pointer;
-  font-weight: 700;
 }
 
 /* 開いた状態でも最初の過去ログと見出しが詰まらないよう、内側の余白を少し確保する。 */
@@ -326,7 +316,8 @@ select {
 }
 
 .elective-group > summary,
-.nested-subject-group > summary {
+.nested-subject-group > summary,
+.release-note-history > summary {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -347,12 +338,14 @@ select {
 
 /* ブラウザ標準の小さな三角を隠し、押しやすい丸い＋/−を右端に表示する。 */
 .elective-group > summary::-webkit-details-marker,
-.nested-subject-group > summary::-webkit-details-marker {
+.nested-subject-group > summary::-webkit-details-marker,
+.release-note-history > summary::-webkit-details-marker {
   display: none;
 }
 
 .elective-group > summary::after,
-.nested-subject-group > summary::after {
+.nested-subject-group > summary::after,
+.release-note-history > summary::after {
   content: '＋';
   display: grid;
   place-items: center;
@@ -370,18 +363,21 @@ select {
 
 /* 開いているときは＋を−に変え、開閉後の状態を文字以外でも分かるようにする。 */
 .elective-group[open] > summary::after,
-.nested-subject-group[open] > summary::after {
+.nested-subject-group[open] > summary::after,
+.release-note-history[open] > summary::after {
   content: '−';
 }
 
 /* マウス操作とキーボード操作のどちらでも、押せる見出しだと分かる反応を付ける。 */
 .elective-group > summary:hover,
-.nested-subject-group > summary:hover {
+.nested-subject-group > summary:hover,
+.release-note-history > summary:hover {
   background: color-mix(in srgb, #e9f1ff 70%, Canvas);
 }
 
 .elective-group > summary:focus-visible,
-.nested-subject-group > summary:focus-visible {
+.nested-subject-group > summary:focus-visible,
+.release-note-history > summary:focus-visible {
   outline: 3px solid #2e63d6;
   outline-offset: 3px;
 }
