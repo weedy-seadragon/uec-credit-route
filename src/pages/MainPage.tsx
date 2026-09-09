@@ -1371,7 +1371,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 </li>
               ))}
               {/* 科目に紐付かない認定分は他の一覧に現れないため、共通単位の内訳としてここに明示する。 */}
-              {otherCommonCommitted > 0 && <li>その他単位認定として{otherCommonCommitted}単位</li>}
+              {/* 認定分は単位数だけでなく入力済みの科目数も示し、登録科目数との対応を確認できるようにする。 */}
+              {otherCommonCommitted > 0 && <li>その他単位認定として{otherCommonCommitted}単位（{otherCommonSubjectCountCommitted}科目）</li>}
               {[...clusterTransferBucket, ...programTransferBucket].filter((item) => committed.get(item.code) === 'passed').map((item) => (
                 <li key={item.code}>{item.name}として{item.credits}単位</li>
               ))}
