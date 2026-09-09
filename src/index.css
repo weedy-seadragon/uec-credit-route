@@ -299,8 +299,14 @@ select {
   border-bottom: 0;
 }
 
-/* キーボード操作時だけ輪郭を出し、マウスを乗せたときは色を変えない。 */
+/* 背景は変えず、マウスを乗せたときだけ文字を黄橙色にして移動操作だと分かるようにする。 */
+.quick-section-links button:hover {
+  color: #bd7200;
+}
+
+/* キーボード操作時だけは、文字色に加えて輪郭も出す。 */
 .quick-section-links button:focus-visible {
+  color: #bd7200;
   outline: 2px solid #1769aa;
   outline-offset: -2px;
 }
@@ -501,8 +507,14 @@ select {
   font-weight: 650;
 }
 
-/* マウスを乗せても配色を変えず、キーボード操作時だけ輪郭を示す。 */
+/* 上部へ戻る操作も目次と同じく、ホバー時は文字色だけを黄橙色にする。 */
+.back-to-page-top:hover {
+  color: #bd7200;
+}
+
+/* キーボード操作時は文字色に加えて輪郭を示す。 */
 .back-to-page-top:focus-visible {
+  color: #bd7200;
   outline: 2px solid #1769aa;
   outline-offset: 2px;
 }
