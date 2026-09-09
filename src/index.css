@@ -203,6 +203,20 @@ nav a {
   text-align: center;
 }
 
+/* 正式版の公開日は、β版リリースと同じプレート形式で赤枠にして強調する。 */
+.release-note-formal {
+  margin: 1rem 0 1.6rem;
+  padding: 0.65rem 0.85rem;
+  border: 3px double #b84646;
+  border-radius: 0.35rem;
+  background: linear-gradient(135deg, color-mix(in srgb, #ffe3e3 42%, Canvas), Canvas);
+  box-shadow: inset 0 0 0 3px color-mix(in srgb, Canvas 76%, #c95a5a 24%);
+  color: #a11f1f;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
 /* ボタン・プルダウンは、スマホでも指で押しやすい高さと余白を確保する */
 button,
 select {
