@@ -1095,6 +1095,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     // 輪講・卒業研究は研究室ごとに実施形態が異なり、時間割として一律に示せない。
     // slotsが空でも「オンデマンド」と推測せず、曜日時限の注記自体を表示しない。
     if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return unavailable('研究室ごとに実施形態が異なります')
+    // 情報工学工房はオンデマンド授業ではなく、担当教員ごとに開講時限が異なる。
+    // シラバスから一意の時限を取得できないため、誤ってオンデマンドと表示しない。
+    if (subject?.name.startsWith('情報工学工房')) return unavailable('担当教員により開講時限が異なります')
     const note = subject?.note
     const hasAnySlots = offerings.some((o) => o.slots.length > 0)
     if (!hasAnySlots) {
