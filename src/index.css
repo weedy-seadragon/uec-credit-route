@@ -399,6 +399,34 @@ select {
   font-size: 0.94em;
 }
 
+/* 未更新の変更がある間だけ、画面上端から更新操作を行えるようにする。 */
+.sticky-pending-changes {
+  position: fixed;
+  z-index: 20;
+  top: max(0.5rem, env(safe-area-inset-top));
+  right: 0.75rem;
+  left: 0.75rem;
+  min-height: 2.4rem;
+  padding: 0.35rem 0.8rem;
+  border: 2px solid #c98a00;
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, #fff2bd 68%, Canvas);
+  box-shadow: 0 2px 8px color-mix(in srgb, CanvasText 22%, transparent);
+  color: inherit;
+  font-weight: 700;
+}
+
+/* 更新操作だと分かるよう、右側の文言だけ少し強調する。 */
+.sticky-pending-changes > span {
+  margin-left: 0.45rem;
+  text-decoration: underline;
+}
+
+.sticky-pending-changes:hover,
+.sticky-pending-changes:focus-visible {
+  background: color-mix(in srgb, #ffe17a 52%, Canvas);
+}
+
 /* 長い選択科目では見出しが画面外へ出たときだけ、現在読んでいる区分を閉じる操作を画面上部いっぱいに固定する。 */
 .sticky-group-close {
   position: fixed;
@@ -426,6 +454,15 @@ select {
 .sticky-group-close--nested {
   top: 3.55rem;
   border-color: #88a5dc;
+}
+
+/* 未更新バーが最上段にある間は、親・子入れ子を閉じる操作を一段ずつ下へずらす。 */
+.main-page--has-pending-changes .sticky-group-close--parent {
+  top: 3.55rem;
+}
+
+.main-page--has-pending-changes .sticky-group-close--nested {
+  top: 6.6rem;
 }
 
 /* その他単位認定の項目名とプルダウンを離し、どちらを操作するか分かりやすくする。 */

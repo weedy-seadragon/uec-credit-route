@@ -340,6 +340,23 @@ function TermRecommendationDetails({
 }
 
 /**
+ * 更新前の科目状態と確定済みの科目状態が同じかを比べる。
+ * Mapは参照が異なっていても内容が同じ場合があるため、サイズと各科目の状態を順に確認する。
+ */
+function areSubjectStatusMapsEqual(
+  left: ReadonlyMap<string, SubjectStatus>,
+  right: ReadonlyMap<string, SubjectStatus>,
+): boolean {
+  // 件数が違う時点で、未履修へ戻した科目などを含め状態は異なる。
+  if (left.size !== right.size) return false
+  // 同じ科目コードに対する状態がすべて一致するときだけ、更新済みと判断する。
+  for (const [code, status] of left) {
+    if (right.get(code) !== status) return false
+  }
+  return true
+}
+
+/**
  * 科目一覧の1行を、科目情報と状態操作の2列グリッドで表示する共通部品。
  *
  * 一覧ごとに科目名・単位・状態ボタンの並びがずれると、学生が「何を変更するか」を
@@ -473,6 +490,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const [scheduleWarning, setScheduleWarning] = useState<string | null>(null)
   // 「単位取得状況をファイルから読み込む」ボタンから、見えない<input type="file">を操作するための参照
   const fileInputRef = useRef<HTMLInputElement>(null)
+  // 科目状態だけでなく、共通単位認定・他類専門科目認定のプルダウンも更新前なら追従表示する。
+  const hasPendingChanges = !areSubjectStatusMapsEqual(draft, committed)
+    || otherCommonDraft !== otherCommonCommitted
+    || otherCommonSubjectCountDraft !== otherCommonSubjectCountCommitted
+    || otherClusterMajorCreditsDraft !== otherClusterMajorCreditsCommitted
+    || otherClusterMajorSubjectCountDraft !== otherClusterMajorSubjectCountCommitted
 
   // Ⅱ・Ⅲ類・夜間主などまだデータが無い組み合わせの場合はここで終わる
   if (!requirementSet) {
@@ -1193,7 +1216,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   return (
     // 下側に余白を持たせる：最後の区分（類専門など）の<summary>がページ最下端にくっついて
     // クリックしづらくならないようにするため
-    <main className="main-page" style={{ paddingBottom: '6rem' }}>
+    <main className={`main-page${hasPendingChanges ? ' main-page--has-pending-changes' : ''}`} style={{ paddingBottom: '6rem' }}>
+      {/* 編集中の値が確定済みの判定へまだ反映されていない間だけ、どこからでも更新できる追従バーを出す。 */}
+      {hasPendingChanges && (
+        <button
+          type="button"
+          className="sticky-pending-changes"
+          onClick={handleUpdate}
+          aria-label="未更新の変更を反映する"
+        >
+          未更新の変更があります <span>更新する</span>
+        </button>
+      )}
       <header className="main-page-header">
         <h1>
           {profile.entryYear}入学 / {profile.grade}年 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
