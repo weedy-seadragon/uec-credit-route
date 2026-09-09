@@ -147,6 +147,19 @@ select {
   font-size: 0.9em;
 }
 
+/* 科目詳細から不足一覧へ戻る導線は、本文を邪魔しない小さなテキストリンクで添える。 */
+.course-main-section-link {
+  display: inline-block;
+  margin-left: 0.65em;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+/* マウス操作でもページ内移動であることが分かるよう、リンク文字だけ色を変える。 */
+.course-main-section-link:hover {
+  color: #bd7200;
+}
+
 /* このサイトについてで、卒業要件と開講情報の参照年度を簡潔に示す案内。 */
 .about-data-status {
   margin: 1.4rem 0;

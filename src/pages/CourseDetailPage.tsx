@@ -4,6 +4,17 @@
 // 例えば "/courses/COM301k" というURLで表示されたときは `id` が "COM301k" になる。
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { entryYearLabel, findSubjectUsages, getSubjectsByCode } from '../data/requirementSets'
+import type { GroupKind } from '../domain/requirements'
+
+/** 科目詳細の利用箇所から、メイン画面で見せられる区分だけを選ぶ。 */
+function getMainSectionForUsage(kind: GroupKind | undefined): 'remaining-required' | 'elective-subjects' | null {
+  // 必修は、メイン画面の「残りの必修」一覧に対応する。
+  if (kind === 'required') return 'remaining-required'
+  // 選択・選択必修は、メイン画面の「選択科目」一覧に対応する。
+  if (kind === 'elective' || kind === 'elective-required') return 'elective-subjects'
+  // 共通単位・自由科目などは、科目ごとに戻り先を一意に決められないためリンクを出さない。
+  return null
+}
 
 export default function CourseDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -46,13 +57,25 @@ export default function CourseDetailPage() {
       <h2>要件上の位置づけ</h2>
       {usages.length > 0 ? (
         <ul>
-          {usages.map((u, i) => (
-            // 同じプログラム名が複数行に分かれることもある（例:他プログラムの選択科目としての
-            // 展開分と本来の区分の両方に載っている場合）ので、配列の添字も含めてkeyにする
-            <li key={`${u.programName}-${u.groupPath}-${i}`}>
-              {u.programName}: {u.groupPath}
-            </li>
-          ))}
+          {usages.map((u, i) => {
+            // 同じプログラム名が複数行に分かれることもあるため、添字を含むkeyと案内先を行ごとに用意する。
+            const mainSection = getMainSectionForUsage(u.kind)
+            return (
+              <li key={`${u.programName}-${u.groupPath}-${i}`}>
+                {u.programName}: {u.groupPath}
+                {mainSection && (
+                  // HashRouterの経路にクエリを渡し、メイン画面側で該当の不足区分までスクロールする。
+                  <Link
+                    className="course-main-section-link"
+                    to={`/main?section=${mainSection}`}
+                    aria-label={`${u.programName}の${u.groupPath}をメイン画面で見る`}
+                  >
+                    → この区分をメインで見る
+                  </Link>
+                )}
+              </li>
+            )
+          })}
         </ul>
       ) : (
         <p>卒業要件のどの区分にも直接は登場しません（自由科目・大学院連携科目など）。</p>

@@ -12,7 +12,7 @@
 //   先修科目（prerequisites）は2026-09-06にprerequisites.ts経由で配線した
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ChangeEvent, ReactNode, RefObject } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import type { GroupKind, RequirementGroup, SubjectStatus } from '../domain/requirements'
 import { evaluateRequirements } from '../domain/requirements'
 import type { GroupResult } from '../domain/requirements'
@@ -414,6 +414,8 @@ export default function MainPage() {
 }
 
 function MainPageContent({ profile }: { profile: LoadedProfile }) {
+  // 科目詳細から渡された戻り先を読み取り、描画後に対応する区分へ移動する。
+  const [searchParams] = useSearchParams()
   // 保存済みプロフィールに古い/不正なプログラム値があっても、未選択として共通要件を表示する。
   const programName = getProgramName(profile.entryYear, profile.program)
   const isProgramUndecided = programName == null
@@ -496,6 +498,20 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     || otherCommonSubjectCountDraft !== otherCommonSubjectCountCommitted
     || otherClusterMajorCreditsDraft !== otherClusterMajorCreditsCommitted
     || otherClusterMajorSubjectCountDraft !== otherClusterMajorSubjectCountCommitted
+
+  useEffect(() => {
+    // 画面内の固定IDだけを受け付け、意図しない場所へスクロールしないようにする。
+    const sectionId = searchParams.get('section')
+    if (sectionId !== 'remaining-required' && sectionId !== 'elective-subjects') return
+
+    // 要素の描画と追従UIの配置が終わった後に動かし、見出しが隠れない位置へ移動する。
+    const animationFrameId = window.requestAnimationFrame(() => {
+      const target = document.getElementById(sectionId)
+      if (!target) return
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+    return () => window.cancelAnimationFrame(animationFrameId)
+  }, [searchParams])
 
   // Ⅱ・Ⅲ類・夜間主などまだデータが無い組み合わせの場合はここで終わる
   if (!requirementSet) {

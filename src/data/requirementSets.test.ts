@@ -29,6 +29,13 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(findSubjectUsages(2025, 'GSE101m')).toEqual([])
   })
 
+  it('科目利用箇所にはメイン画面の案内先を決める区分種類を含める', () => {
+    // 必修科目の利用箇所にはrequiredを残し、科目詳細から「残りの必修」へ戻れるようにする。
+    const usages = findSubjectUsages(2025, 'ENG101z')
+
+    expect(usages.some((usage) => usage.kind === 'required')).toBe(true)
+  })
+
   it('プログラム未選択でも類共通までの要件と2年次終了時審査を返す', () => {
     // 配属前は類専門科目を混ぜず、理数基礎・類共通基礎と2年次終了時審査だけを確認できる。
     const requirementSet = getRequirementSetWithoutProgram(2025, 'I')

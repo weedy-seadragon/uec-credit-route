@@ -281,16 +281,25 @@ export interface SubjectUsage {
   programName: string
   /** 区分の親子関係を「>」でつないだもの（例:「類専門科目 > 必修」） */
   groupPath: string
+  /** 利用箇所の末端区分の種類。メイン画面の対応する一覧へ案内するために使う。 */
+  kind?: GroupKind
+}
+
+/** 再帰探索の途中で保持する、表示用の経路と末端区分の種類の組。 */
+interface CollectedGroupPath {
+  path: string
+  kind?: GroupKind
 }
 
 // RequirementGroup の木を根からたどり、指定した科目番号が subjects に直接含まれるグループを探す。
 // 見つかった経路（親グループ名の連なり）をそのまま結果に積んでいく再帰関数
-function collectGroupPaths(groups: readonly RequirementGroup[], code: string, ancestors: string[], out: string[]): void {
+function collectGroupPaths(groups: readonly RequirementGroup[], code: string, ancestors: string[], out: CollectedGroupPath[]): void {
   for (const g of groups) {
     const label = g.label ?? g.name
     const path = [...ancestors, label]
     if (g.subjects?.includes(code)) {
-      out.push(path.join(' > '))
+      // 科目を直接持つ末端グループの種類を残し、画面側で対応するメイン区分を選べるようにする。
+      out.push({ path: path.join(' > '), kind: g.kind })
     }
     if (g.children) {
       collectGroupPaths(g.children, code, path, out)
@@ -311,10 +320,11 @@ export function findSubjectUsages(entryYear: number, code: string): SubjectUsage
   for (const p of programOptions.filter((option) => option.entryYear === dataEntryYear)) {
     const set = getRequirementSet(p.entryYear, p.course, p.cluster, p.program)
     if (!set) continue
-    const paths: string[] = []
+    const paths: CollectedGroupPath[] = []
     collectGroupPaths(set.groups, code, [], paths)
     for (const path of paths) {
-      usages.push({ programName: p.programName, groupPath: path })
+      // 表示用の経路だけでなく、リンク先を決める区分種類も科目詳細へ渡す。
+      usages.push({ programName: p.programName, groupPath: path.path, kind: path.kind })
     }
   }
   return usages
