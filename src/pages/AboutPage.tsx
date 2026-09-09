@@ -9,6 +9,21 @@ export default function AboutPage() {
         <p>あず（電気通信大学 2年）</p>
       </section>
 
+      {/* 非公式サイトとして、何の公式資料をどの年度基準で反映しているかを問い合わせ先の前で明示する。 */}
+      <section className="about-data-status">
+        <h2>最終データ更新</h2>
+        <dl>
+          <div>
+            <dt>卒業要件データ</dt>
+            <dd>2026年度要覧確認済み</dd>
+          </div>
+          <div>
+            <dt>開講情報</dt>
+            <dd>2026年度シラバス基準</dd>
+          </div>
+        </dl>
+      </section>
+
       <section>
         <h2>不具合・要望など</h2>
         <p>こちらのアカウントまでご連絡お願いいたします</p>
