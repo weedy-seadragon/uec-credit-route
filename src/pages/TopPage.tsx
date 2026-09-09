@@ -1,7 +1,67 @@
 // トップページ（"/"）。説明・免責・「はじめる」ボタンを置く（docs/SPEC.md §6, §9 F-9）。
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { loadProfile } from '../storage/profile'
+
+/**
+ * 過去の更新履歴を開いて読み進めたとき、画面上部から閉じられる入れ子。
+ * 見出しが画面外にある間だけボタンを出し、普段は通常のsummaryだけを使う。
+ */
+function ReleaseNoteHistory({ children }: { children: ReactNode }) {
+  // detailsとsummaryの画面上での位置を読むため、DOM要素をrefで保持する。
+  const detailsRef = useRef<HTMLDetailsElement>(null)
+  const [isStickyCloseVisible, setIsStickyCloseVisible] = useState(false)
+
+  useEffect(() => {
+    // スクロール・画面サイズ・開閉に応じて、過去ログを閉じる追従操作が必要かを更新する。
+    const updateVisibility = () => {
+      const details = detailsRef.current
+      const summary = details?.querySelector('summary')
+      if (!details || !summary || !details.open) {
+        setIsStickyCloseVisible(false)
+        return
+      }
+      const summaryRect = summary.getBoundingClientRect()
+      const detailsRect = details.getBoundingClientRect()
+      setIsStickyCloseVisible(summaryRect.bottom < 0 && detailsRect.bottom > 0)
+    }
+    const details = detailsRef.current
+    window.addEventListener('scroll', updateVisibility, { passive: true })
+    window.addEventListener('resize', updateVisibility)
+    details?.addEventListener('toggle', updateVisibility)
+    updateVisibility()
+    // ページ移動後も古い監視が残らないよう、部品を外すときに解除する。
+    return () => {
+      window.removeEventListener('scroll', updateVisibility)
+      window.removeEventListener('resize', updateVisibility)
+      details?.removeEventListener('toggle', updateVisibility)
+    }
+  }, [])
+
+  return (
+    <details ref={detailsRef} className="release-note-history">
+      <summary>過去のアップデートを見る（8件）</summary>
+      {children}
+      {isStickyCloseVisible && (
+        <button
+          type="button"
+          className="sticky-group-close"
+          onClick={() => {
+            // 閉じた後は見出しへ戻し、利用者がどの履歴を閉じたか見失わないようにする。
+            const details = detailsRef.current
+            const summary = details?.querySelector('summary')
+            if (!details || !summary) return
+            details.open = false
+            summary.scrollIntoView({ block: 'start', behavior: 'smooth' })
+          }}
+        >
+          過去のアップデートを閉じる ↑
+        </button>
+      )}
+    </details>
+  )
+}
 
 export default function TopPage() {
   // 既にプロフィール設定済みなら、トップに戻ってきたときに「続ける」で直接メイン画面に行けるようにする
@@ -65,8 +125,7 @@ export default function TopPage() {
           </ul>
         </div>
         {/* 最新版だけを最初から読めるようにし、それ以前の更新は必要なときだけ開けるようにする。 */}
-        <details className="release-note-history">
-          <summary>過去のアップデートを見る（8件）</summary>
+        <ReleaseNoteHistory>
         {/* β2.4.2では、長い選択科目を閉じる操作と初回表示の読み込み方を改善した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -196,7 +255,7 @@ export default function TopPage() {
         <h3 className="release-note-category">見た目の変更</h3>
           <p className="release-note-items">サイトのデザインを一新しました</p>
         </div>
-        </details>
+        </ReleaseNoteHistory>
         {/* 初回リリース日は更新内容と混ざらないよう、独立した枠で表示する。 */}
         <p className="release-note-initial">β版リリース 2026/9/7</p>
       </section>
