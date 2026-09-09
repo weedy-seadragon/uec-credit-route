@@ -27,6 +27,23 @@ nav a {
   margin-top: 0.55rem;
 }
 
+/* 非公式サイトであることと最終確認先を見落とさないよう、金色の案内枠で強調する。 */
+.official-disclaimer {
+  margin: 1.4rem 0;
+  padding: 0.8rem 0.95rem;
+  border: 2px solid #b98700;
+  border-radius: 0.55rem;
+  background: linear-gradient(135deg, color-mix(in srgb, #ffe49a 42%, Canvas), Canvas);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, Canvas 75%, #d0a229 25%);
+  font-weight: 650;
+  line-height: 1.65;
+}
+
+/* リリースノートは利用案内と役割が違うため、直前の注意書きから少し離して始める。 */
+.release-notes-section {
+  margin-top: 2.25rem;
+}
+
 /* 各アップデートを科目一覧の入れ子と同じように、左の線と白黒の背景で独立して見せる。 */
 .release-note-entry {
   margin-top: 1.5rem;
@@ -34,6 +51,16 @@ nav a {
   border-left: 3px solid #88a5dc;
   border-radius: 0 0.35rem 0.35rem 0;
   background: Canvas;
+}
+
+/* 古い更新は最初からページを長くしないよう、必要なときだけ開ける入れ子へまとめる。 */
+.release-note-history {
+  margin-top: 1.5rem;
+}
+
+/* 開いた状態でも最初の過去ログと見出しが詰まらないよう、内側の余白を少し確保する。 */
+.release-note-history[open] > .release-note-entry:first-of-type {
+  margin-top: 0.2rem;
 }
 
 /* リリースノートの更新区分は本文より少し大きくし、どの更新の説明かを見分けやすくする。 */
@@ -197,6 +224,30 @@ select {
   margin: 0;
 }
 
+/* メイン画面で判定対象のプロフィールを、内部コードではなく項目名付きで確認できるようにする。 */
+.profile-overview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.65rem;
+}
+
+.profile-overview > span {
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: baseline;
+}
+
+/* 項目名は値より少し控えめにし、設定内容そのものを読み取りやすくする。 */
+.profile-overview strong {
+  color: color-mix(in srgb, currentColor 70%, transparent);
+  font-size: 0.86em;
+}
+
+.profile-overview-change {
+  margin-left: 0.2rem;
+}
+
 /* 審査の合計単位条件にだけ、卒業所要単位ベースであることを補足する。 */
 .review-credit-note-inline {
   margin-left: 0.45rem;
@@ -277,7 +328,8 @@ select {
 }
 
 .elective-group > summary,
-.nested-subject-group > summary {
+.nested-subject-group > summary,
+.release-note-history > summary {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -298,12 +350,14 @@ select {
 
 /* ブラウザ標準の小さな三角を隠し、押しやすい丸い＋/−を右端に表示する。 */
 .elective-group > summary::-webkit-details-marker,
-.nested-subject-group > summary::-webkit-details-marker {
+.nested-subject-group > summary::-webkit-details-marker,
+.release-note-history > summary::-webkit-details-marker {
   display: none;
 }
 
 .elective-group > summary::after,
-.nested-subject-group > summary::after {
+.nested-subject-group > summary::after,
+.release-note-history > summary::after {
   content: '＋';
   display: grid;
   place-items: center;
@@ -321,18 +375,21 @@ select {
 
 /* 開いているときは＋を−に変え、開閉後の状態を文字以外でも分かるようにする。 */
 .elective-group[open] > summary::after,
-.nested-subject-group[open] > summary::after {
+.nested-subject-group[open] > summary::after,
+.release-note-history[open] > summary::after {
   content: '−';
 }
 
 /* マウス操作とキーボード操作のどちらでも、押せる見出しだと分かる反応を付ける。 */
 .elective-group > summary:hover,
-.nested-subject-group > summary:hover {
+.nested-subject-group > summary:hover,
+.release-note-history > summary:hover {
   background: color-mix(in srgb, #e9f1ff 70%, Canvas);
 }
 
 .elective-group > summary:focus-visible,
-.nested-subject-group > summary:focus-visible {
+.nested-subject-group > summary:focus-visible,
+.release-note-history > summary:focus-visible {
   outline: 3px solid #2e63d6;
   outline-offset: 3px;
 }
@@ -394,6 +451,34 @@ select {
   font-size: 0.94em;
 }
 
+/* 未更新の変更がある間だけ、画面上端から更新操作を行えるようにする。 */
+.sticky-pending-changes {
+  position: fixed;
+  z-index: 20;
+  top: max(0.5rem, env(safe-area-inset-top));
+  right: 0.75rem;
+  left: 0.75rem;
+  min-height: 2.4rem;
+  padding: 0.35rem 0.8rem;
+  border: 2px solid #c98a00;
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, #fff2bd 68%, Canvas);
+  box-shadow: 0 2px 8px color-mix(in srgb, CanvasText 22%, transparent);
+  color: inherit;
+  font-weight: 700;
+}
+
+/* 更新操作だと分かるよう、右側の文言だけ少し強調する。 */
+.sticky-pending-changes > span {
+  margin-left: 0.45rem;
+  text-decoration: underline;
+}
+
+.sticky-pending-changes:hover,
+.sticky-pending-changes:focus-visible {
+  background: color-mix(in srgb, #ffe17a 52%, Canvas);
+}
+
 /* 長い選択科目では見出しが画面外へ出たときだけ、現在読んでいる区分を閉じる操作を画面上部いっぱいに固定する。 */
 .sticky-group-close {
   position: fixed;
@@ -421,6 +506,15 @@ select {
 .sticky-group-close--nested {
   top: 3.55rem;
   border-color: #88a5dc;
+}
+
+/* 未更新バーが最上段にある間は、親・子入れ子を閉じる操作を一段ずつ下へずらす。 */
+.main-page--has-pending-changes .sticky-group-close--parent {
+  top: 3.55rem;
+}
+
+.main-page--has-pending-changes .sticky-group-close--nested {
+  top: 6.6rem;
 }
 
 /* その他単位認定の項目名とプルダウンを離し、どちらを操作するか分かりやすくする。 */
@@ -549,6 +643,16 @@ select {
 .schedule-unavailable {
   margin-left: 0.4em;
   font-size: 0.9em;
+}
+
+/* 夜間主の人文・社会科学科目では、当年度に開講しない科目を通常の学年・学期ソートと分けて示す。 */
+.schedule-unavailable-group-label {
+  margin: 1rem 0 0.35rem;
+  padding: 0.35rem 0 0.2rem 0.7rem;
+  border-left: 4px solid #8b98aa;
+  color: #536174;
+  font-weight: 700;
+  list-style: none;
 }
 
 .requirement-badge {

@@ -50,6 +50,9 @@ ROW_RE = re.compile(
 TD_RE = re.compile(r"<td[^>]*>(.*?)</td>", re.S)
 LINK_RE = re.compile(r'href="([^"]+)">([^<]*)<')
 CODE_CELL_RE = re.compile(r"科目番号<br\s*/?>/Code</th>\s*<td[^>]*>([^<]+)</td>")
+# 2026年度シラバスには、科目ページ自体は残しつつ「R8開講なし」と明記する科目がある。
+# リンクを消さず、画面側で注意を出すために科目マスタへ記録する。
+NOT_OFFERED_RE = re.compile(r"R8\s*開講なし")
 # 「前もって履修しておくべき科目」欄は自由記述のテキストで、科目コードの一覧ではない
 # （例:「なし」「化学関連授業。化学構造式を多く用いて授業を進めます。」）。中身が
 # 自由記述である以上、ここから科目コードを機械的に抜き出すのは誤検出のリスクが高いので、
@@ -172,6 +175,7 @@ def main():
 
     offerings_by_code: dict[str, list[dict]] = {}
     prereq_text_by_code: dict[str, str] = {}
+    not_offered_codes: set[str] = set()
     today = time.strftime("%Y-%m-%d")
 
     for faculty in FACULTIES:
@@ -209,6 +213,9 @@ def main():
                 c for c in raw_codes
                 if c in known_codes and (row["timetableCode"], c) not in IGNORE_CODE_MATCH
             ]
+            # 科目名・担当者欄などにR8開講なしと書かれていれば、当年度は履修できない科目として記録する。
+            if NOT_OFFERED_RE.search(detail_html):
+                not_offered_codes.update(matched_codes)
             instructors = [s.strip() for s in re.split(r"[・,、]", row["instructor"]) if s.strip()]
             prereq_m = PREREQ_RE.search(detail_html)
             prereq_text = clean_text(prereq_m.group(1)) if prereq_m else ""
@@ -333,6 +340,16 @@ def main():
             updated += 1
         if s["code"] in prereq_text_by_code:
             s["prerequisitesText"] = prereq_text_by_code[s["code"]]
+
+        # 既存の注意書きは残し、当年度の不開講であることだけを追記する。
+        if s["code"] in not_offered_codes and "2026年度開講なし" not in s.get("note", ""):
+            s["note"] = f"{s['note']}／2026年度開講なし" if s.get("note") else "2026年度開講なし"
+
+        # 学修要覧側で学期が空欄でも、2026年度シラバスの全セクションが同じ前／後学期なら表示に使える。
+        # 年次はシラバスの「開講年次」が空欄の科目もあるため、この補完では推測しない。
+        offering_terms = {o["term"] for o in s.get("offerings", []) if o.get("term") in {"前学期", "後学期"}}
+        if s.get("termType") is None and len(offering_terms) == 1:
+            s["termType"] = offering_terms.pop()
             prereq_updated += 1
 
     with open(SUBJECTS_PATH, "w", encoding="utf-8") as f:

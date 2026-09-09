@@ -340,6 +340,23 @@ function TermRecommendationDetails({
 }
 
 /**
+ * 更新前の科目状態と確定済みの科目状態が同じかを比べる。
+ * Mapは参照が異なっていても内容が同じ場合があるため、サイズと各科目の状態を順に確認する。
+ */
+function areSubjectStatusMapsEqual(
+  left: ReadonlyMap<string, SubjectStatus>,
+  right: ReadonlyMap<string, SubjectStatus>,
+): boolean {
+  // 件数が違う時点で、未履修へ戻した科目などを含め状態は異なる。
+  if (left.size !== right.size) return false
+  // 同じ科目コードに対する状態がすべて一致するときだけ、更新済みと判断する。
+  for (const [code, status] of left) {
+    if (right.get(code) !== status) return false
+  }
+  return true
+}
+
+/**
  * 科目一覧の1行を、科目情報と状態操作の2列グリッドで表示する共通部品。
  *
  * 一覧ごとに科目名・単位・状態ボタンの並びがずれると、学生が「何を変更するか」を
@@ -400,6 +417,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 保存済みプロフィールに古い/不正なプログラム値があっても、未選択として共通要件を表示する。
   const programName = getProgramName(profile.entryYear, profile.program)
   const isProgramUndecided = programName == null
+  // 夜間主には類・プログラムの区分がないため、昼間コース専用の案内や個別認定を表示・計算しない。
+  const isEveningCourse = profile.course === 'evening'
   // 共通単位の入れ子も、長い選択区分と同じ上部追従の「閉じる」操作に使う。
   const commonCreditsDetailsRef = useRef<HTMLDetailsElement>(null)
   const requirementSet = useMemo(
@@ -471,6 +490,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const [scheduleWarning, setScheduleWarning] = useState<string | null>(null)
   // 「単位取得状況をファイルから読み込む」ボタンから、見えない<input type="file">を操作するための参照
   const fileInputRef = useRef<HTMLInputElement>(null)
+  // 科目状態だけでなく、共通単位認定・他類専門科目認定のプルダウンも更新前なら追従表示する。
+  const hasPendingChanges = !areSubjectStatusMapsEqual(draft, committed)
+    || otherCommonDraft !== otherCommonCommitted
+    || otherCommonSubjectCountDraft !== otherCommonSubjectCountCommitted
+    || otherClusterMajorCreditsDraft !== otherClusterMajorCreditsCommitted
+    || otherClusterMajorSubjectCountDraft !== otherClusterMajorSubjectCountCommitted
 
   // Ⅱ・Ⅲ類・夜間主などまだデータが無い組み合わせの場合はここで終わる
   if (!requirementSet) {
@@ -517,7 +542,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     subjectCredits,
     commonCreditsWithTransferBucket,
     transferBucketPlannedCreditsSum,
-    new Map([['major-sel', otherClusterMajorCreditsCommitted]]),
+    // 他類専門科目の個別認定は昼間コースだけの制度なので、夜間主の古い保存値は計算へ混ぜない。
+    new Map([['major-sel', isEveningCourse ? 0 : otherClusterMajorCreditsCommitted]]),
   )
   const boundaryGroups = collectBoundaryGroups(requirementSet.groups, evaluation.groups)
   // 審査（2年次終了時審査など）。reviewsデータが無いプログラムでは空配列になる（現在は全16課程にreviewsがある）。
@@ -632,7 +658,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 審査用の総単位（evaluation.totalCredits）は卒業所要単位に算入される分だけなので、別に表示する。
   const earnedTotalCredits = passedCredits + otherCommonCommitted
   // Mapは科目コードをキーにするため、修得→不合格→再履修のような同一科目の履歴でも1科目として数えられる。
-  const registeredSubjectCount = passedSubjects.length + failedSubjects.length + otherCommonSubjectCountCommitted + otherClusterMajorSubjectCountCommitted
+  // 夜間主には他類専門科目認定がないため、別プロフィールで保存された件数を登録科目数へ加えない。
+  const registeredSubjectCount = passedSubjects.length + failedSubjects.length + otherCommonSubjectCountCommitted
+    + (isEveningCourse ? 0 : otherClusterMajorSubjectCountCommitted)
   // 「取得単位」「残りの必修」は区分ごとの見出しを付けて表示する（例:「理数基礎（必修）」「類専門（必修）」）
   // countAs: common の科目は「理数基礎」ではなく共通単位の内訳へ出すため、通常区分には混ぜない。
   const passedByCategory = groupByCategory(
@@ -837,6 +865,20 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     for (const code of blockedSubjects) displayNote = displayNote.replaceAll(code, nameOf(code))
     return displayNote
   }
+  // 当年度に開講しないことが確認済みの科目は、リンク先を変えずに科目名の直後で注意を示す。
+  function availabilityNoteTag(code: string): ReactNode {
+    return isUnavailableIn2026(code)
+      ? <span className="schedule-unavailable">（2026年度開講なし）</span>
+      : null
+  }
+  // 2026年度に履修できない科目かどうかを、表示位置の振り分けにも再利用する。
+  function isUnavailableIn2026(code: string): boolean {
+    return subjectsByCode.get(code)?.note?.includes('2026年度開講なし') ?? false
+  }
+  // リンクの種類にかかわらず、開講なしの注意を科目名のすぐ隣へ付ける共通処理。
+  function nameWithAvailability(code: string, link: ReactNode): ReactNode {
+    return <>{link}{availabilityNoteTag(code)}</>
+  }
   // 科目名をシラバスまたは科目説明ページへのリンクにする（一覧の各行で使う）。
   // offeringsが無い・シラバスURLを一意に決められない科目も、サイト内の科目説明ページから
   // 要件上の位置づけと登録済みの開講候補を確認できるようにする。複数セクションでURLがバラバラな科目
@@ -852,11 +894,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     const offerings = subjectsByCode.get(code)?.offerings
     // シラバスが無い場合も、科目詳細への導線は必ず残す。
     const detailLink = <Link to={`/courses/${code}?year=${profile.entryYear}`}>{name}</Link>
-    if (!offerings || offerings.length === 0) return detailLink
+    if (!offerings || offerings.length === 0) return nameWithAvailability(code, detailLink)
     // 曜日時限だけを補った科目（学域特別講義A/Bなど）は syllabusUrl が空文字になる。
     // 空のhrefは今見ているサイト自身へのリンクになるため、リンク候補として数えない。
     const urls = new Set(offerings.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
-    if (urls.size === 0) return detailLink
+    if (urls.size === 0) return nameWithAvailability(code, detailLink)
     let target = offerings.filter((offering) => offering.syllabusUrl.length > 0)
     // URLが複数ある場合だけ、プロフィールのクラス情報で受講セクションを絞り込む。
     if (urls.size !== 1 || target.length !== offerings.length) {
@@ -882,15 +924,15 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       // シラバスを一意に選べない場合も、科目詳細には全セクションの候補が載っている。
       // そこで科目名を詳細ページへの内部リンクにし、利用者が教員を選べるようにする。
       if (!matched || matched.length === 0 || matchedUrls.size !== 1) {
-        return detailLink
+        return nameWithAvailability(code, detailLink)
       }
       target = matched.filter((offering) => offering.syllabusUrl.length > 0)
     }
-    return (
+    return nameWithAvailability(code, (
       <a href={target[0].syllabusUrl} target="_blank" rel="noopener noreferrer">
         {name}
       </a>
-    )
+    ))
   }
   // 修得推奨で選んだ学期より前に標準開講された科目かを判定する。
   // 過年度の未修得科目は、当時のクラス・時限が現在の履修条件とは限らないため、表示を分ける。
@@ -907,7 +949,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 過年度の未修得科目は、現在のシラバスを直接開かず、要件と開講候補を確認できる科目説明へ案内する。
   function recommendationNameLink(code: string): ReactNode {
     if (isBeforeRecommendationTerm(code)) {
-      return <Link to={`/courses/${code}?year=${profile.entryYear}`}>{nameOf(code)}</Link>
+      return nameWithAvailability(code, <Link to={`/courses/${code}?year=${profile.entryYear}`}>{nameOf(code)}</Link>)
     }
     return nameLink(code)
   }
@@ -1070,15 +1112,15 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       return false
     }
     if (!offerings || offerings.length === 0) {
-      // 公式一覧で当年度の不開講が確認できた科目だけは、履修予定に入れないよう理由を明記する。
-      if (subject?.note?.includes('2026年度開講なし')) {
-        return <span className="schedule-unavailable">（2026年度開講なし）</span>
-      }
+      // 当年度の開講なし注記は科目名の横（yearTermTag）へ出すため、曜日時限欄では重複させない。
       return null
     }
     // 輪講・卒業研究は研究室ごとに実施形態が異なり、時間割として一律に示せない。
     // slotsが空でも「オンデマンド」と推測せず、曜日時限の注記自体を表示しない。
     if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return unavailable('研究室ごとに実施形態が異なります')
+    // 情報工学工房はオンデマンド授業ではなく、担当教員ごとに開講時限が異なる。
+    // シラバスから一意の時限を取得できないため、誤ってオンデマンドと表示しない。
+    if (subject?.name.startsWith('情報工学工房')) return unavailable('担当教員により開講時限が異なります')
     const note = subject?.note
     const hasAnySlots = offerings.some((o) => o.slots.length > 0)
     if (!hasAnySlots) {
@@ -1174,12 +1216,29 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   return (
     // 下側に余白を持たせる：最後の区分（類専門など）の<summary>がページ最下端にくっついて
     // クリックしづらくならないようにするため
-    <main className="main-page" style={{ paddingBottom: '6rem' }}>
+    <main className={`main-page${hasPendingChanges ? ' main-page--has-pending-changes' : ''}`} style={{ paddingBottom: '6rem' }}>
+      {/* 編集中の値が確定済みの判定へまだ反映されていない間だけ、どこからでも更新できる追従バーを出す。 */}
+      {hasPendingChanges && (
+        <button
+          type="button"
+          className="sticky-pending-changes"
+          onClick={handleUpdate}
+          aria-label="未更新の変更を反映する"
+        >
+          未更新の変更があります <span>更新する</span>
+        </button>
+      )}
       <header className="main-page-header">
-        <h1>
-          {profile.entryYear}入学 / {profile.grade}年 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
-          {profile.program ?? '未定'} <Link to="/setup">[変更]</Link>
-        </h1>
+        <h1>履修状況</h1>
+        {/* 内部コードを並べるのではなく、設定したプロフィールをラベル付きでいつでも確認できるようにする。 */}
+        <div className="profile-overview" aria-label="現在のプロフィール設定">
+          <span><strong>入学年度</strong>{profile.entryYear}年度</span>
+          <span><strong>コース</strong>{isEveningCourse ? '夜間主コース' : '昼間コース'}</span>
+          {profile.cluster && <span><strong>類</strong>{profile.cluster}類</span>}
+          {!isEveningCourse && <span><strong>プログラム</strong>{programName ?? '未定'}</span>}
+          <span><strong>現在の学年</strong>{profile.grade}年</span>
+          <Link className="profile-overview-change" to="/setup">プロフィールを変更</Link>
+        </div>
       </header>
 
       {/* 表示範囲・更新・データ入出力を、目的ごとのグループに分けた操作バーにする。 */}
@@ -1232,8 +1291,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <section className="requirement-section earned-section">
         {/* 科目として修得した分だけでなく、科目番号を持たない認定分も取得単位に含める。 */}
         <h2>
-          修得した単位 {earnedTotalCredits}
-          {plannedCredits > 0 && <span className="planned-credit"> + {plannedCredits}</span>} 単位
+          修得した単位（{earnedTotalCredits}単位
+          {plannedCredits > 0 && <span className="planned-credit"> + {plannedCredits}単位（修得予定）</span>}）
         </h2>
         {(() => {
         // 共通単位が0のときは空の見出しを出さない。その他単位認定だけを取得した場合も内訳を表示する。
@@ -1492,9 +1551,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <p className="section-guidance">
           区分ごとに表示される不足単位まで、この一覧から科目を選んで修得してください。必修の不合格科目は、この一覧ではなく上の「不合格になった科目」を確認します。
         </p>
-        <p className="section-guidance">
-          ※ 同じ類の他プログラム専門科目（各区分の中の「他プログラム専門科目」にまとめているもの）は、専門科目の単位として扱われます。他類の専門科目は原則自由科目で、個別認定がある場合だけ「他類専門科目の専門科目認定」で入力してください。
-        </p>
+        {!isEveningCourse && (
+          <p className="section-guidance">
+            ※ 同じ類の他プログラム専門科目（各区分の中の「他プログラム専門科目」にまとめているもの）は、専門科目の単位として扱われます。他類の専門科目は原則自由科目で、個別認定がある場合だけ「他類専門科目の専門科目認定」で入力してください。
+          </p>
+        )}
         {/* ここに出すのは「選択」「選択必修」の区分だけ（必修は上の「残りの必修」で扱う。自由・国際は対象外）。
             必要単位が0のグループ（そのプログラムでは使わない区分）も出す意味が無いので除く。
             この条件だけで絞るので、プログラムによって実際に何が出るかは自然に変わる */}
@@ -1514,6 +1575,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                   {commonEarnedTotal >= requirementSet.commonCredits ? '充足済み' : `あと${requirementSet.commonCredits - commonEarnedTotal}単位`}
                 </span>
               </summary>
+              <p className="group-guidance">
+                ※ 人文・社会科学科目に限らず、卒業所要単位を超えて修得した単位のうち、共通単位へ繰り入れられる分もここに加算されます。
+              </p>
               <ul>
                 <li>
                   その他単位認定（TOEIC等、科目を介さず認定される単位）
@@ -1586,7 +1650,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 dayPeriodTag={dayPeriodTag}
                 isOtherProgram={isOtherProgram}
                 isInternational={isInternational}
+                isUnavailableIn2026={isUnavailableIn2026}
                 isVisibleForTerm={isVisibleForTermFilter}
+                showTermCollapses={!isEveningCourse}
+                showOtherProgramSection={!isEveningCourse}
                 otherClusterMajorCredits={otherClusterMajorCreditsDraft}
                 onOtherClusterMajorCreditsChange={setOtherClusterMajorCreditsDraft}
                 otherClusterMajorSubjectCount={otherClusterMajorSubjectCountDraft}
@@ -1612,8 +1679,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               const visibleUnsatisfied = r.id === 'graduation'
                 ? r.unsatisfied.filter((cond) => cond.type !== 'commonCredits')
                 : r.unsatisfied
-              // 2年次終了時・卒業審査は不足条件が少ないため、詳細を開かず本文へそのまま出す。
-              const showConditionsInline = r.id === 'y2-end' || r.id === 'graduation'
+              // 2年次終了時・卒業審査と、夜間主の輪講履修条件は不足条件が少ないため、
+              // 詳細を開かず本文へそのまま出す。
+              const showConditionsInline = r.id === 'y2-end' || r.id === 'graduation' || r.id === 'seminar-eligibility'
               return (
                 <li key={r.id}>
                   {r.name}
@@ -1875,7 +1943,10 @@ function GroupProgress({
   dayPeriodTag,
   isOtherProgram,
   isInternational,
+  isUnavailableIn2026,
   isVisibleForTerm,
+  showTermCollapses,
+  showOtherProgramSection,
   otherClusterMajorCredits,
   onOtherClusterMajorCreditsChange,
   otherClusterMajorSubjectCount,
@@ -1896,8 +1967,14 @@ function GroupProgress({
   dayPeriodTag: (code: string) => ReactNode
   isOtherProgram: (code: string) => boolean
   isInternational: (code: string) => boolean
+  /** 当年度に開講しない科目を、人文・社会科学科目の一覧下部へまとめるための判定 */
+  isUnavailableIn2026: (code: string) => boolean
   /** 表示フィルタ（学期）で、この科目を一覧に出すかどうか（MainPage.tsxのisVisibleForTermFilter） */
   isVisibleForTerm: (code: string) => boolean
+  /** 前学期・後学期などの子入れ子を使うかどうか。夜間主では科目を直接並べる。 */
+  showTermCollapses: boolean
+  /** 昼間コースだけにある、同じ類の他プログラム専門科目の入れ子を表示するかどうか。 */
+  showOtherProgramSection: boolean
   /** 学務に認定された他類専門科目の単位数（類専門（選択）にだけ算入する） */
   otherClusterMajorCredits: number
   /** 他類専門科目の認定単位を下書き状態へ反映する */
@@ -1931,6 +2008,14 @@ function GroupProgress({
   const international = remaining.filter((code) => isInternational(code))
   const otherProgram = remaining.filter((code) => !isInternational(code) && isOtherProgram(code))
   const regular = remaining.filter((code) => !isInternational(code) && !isOtherProgram(code))
+  // 夜間主の人文・社会科学科目では、当年度に開講しない科目を学年・学期ソートへ混ぜず、
+  // 開講する通常科目を読み終えた後にまとめて確認できるようにする。
+  const unavailableRegular = group.id === 'hss' && !showTermCollapses
+    ? regular.filter((code) => isUnavailableIn2026(code))
+    : []
+  const availableRegular = unavailableRegular.length > 0
+    ? regular.filter((code) => !isUnavailableIn2026(code))
+    : regular
   const row = (code: string) => (
     <SubjectRow
       name={nameLink(code)}
@@ -1950,12 +2035,12 @@ function GroupProgress({
       schedule={dayPeriodTag(code)}
     />
   )
-  // 人文・社会科学科目・上級科目は科目数が多いので、通常の科目一覧の代わりに前学期・後学期の
-  // 折りたたみに分ける（開講学期が前学期・後学期のどちらでもない科目は、通常通りそのまま出す）。
+  // 人文・社会科学科目・上級科目は科目数が多いので、昼間コースでは通常の科目一覧の代わりに前学期・後学期の
+  // 折りたたみに分ける。夜間主は子入れ子を使わず、同じ区分の中へすべて直接並べる。
   // 「夏期集中」「冬期集中」の科目（政治学Ａ等）は、termTypeだけを見ると前学期・後学期の
   // どちらかに入ってしまうが、実際の開講時期が違うので前学期・後学期とは別の入れ子にまとめる
   // （2026-09-06、開発者提案）
-  const splitByTerm = GROUPS_SPLIT_BY_TERM.has(group.id)
+  const splitByTerm = showTermCollapses && GROUPS_SPLIT_BY_TERM.has(group.id)
   const springRegular = splitByTerm
     ? regular.filter((code) => termTypeOf(code) === '前学期' && intensiveSeasonOf(code) === null)
     : []
@@ -1971,7 +2056,7 @@ function GroupProgress({
     ? regular.filter((code) => termTypeOf(code) !== '前学期' && termTypeOf(code) !== '後学期' && intensiveSeasonOf(code) === null)
     : []
   const noTermCollapsed = group.id === 'advanced' ? noTermItems : []
-  const topLevelRegular = !splitByTerm ? regular : group.id === 'advanced' ? [] : noTermItems
+  const topLevelRegular = !splitByTerm ? availableRegular : group.id === 'advanced' ? [] : noTermItems
   // 選択科目の区分は「候補の中から何単位選ぶか」が伝わりにくいため、折りたたみを開かなくても
   // 残りの必要単位をsummaryに表示し、開いた直後にも同じ内容を文章で補足する。
   const selectionGuidance = group.shortfall > 0
@@ -1996,6 +2081,12 @@ function GroupProgress({
         {topLevelRegular.map((code) => (
           <li key={code}>{row(code)}</li>
         ))}
+        {unavailableRegular.length > 0 && (
+          <li className="schedule-unavailable-group-label">2026年度開講なし</li>
+        )}
+        {unavailableRegular.map((code) => (
+          <li key={code}>{row(code)}</li>
+        ))}
         {splitByTerm && (
           <>
             <CollapsedSubjectGroup title="前学期" items={springRegular} codeOf={(code) => code} renderRow={rowShort} stickyClose />
@@ -2009,13 +2100,15 @@ function GroupProgress({
             <CollapsedSubjectGroup title="その他" items={noTermCollapsed} codeOf={(code) => code} renderRow={row} stickyClose />
           </>
         )}
-        <CollapsedSubjectGroup
-          title="他プログラム専門科目"
-          items={otherProgram}
-          codeOf={(code) => code}
-          renderRow={row}
-          stickyClose
-          footer={group.id === 'major-sel' ? (
+        {/* 夜間主にはプログラム区分がないため、他プログラム専門科目の入れ子も個別認定の入力も出さない。 */}
+        {showOtherProgramSection && (
+          <CollapsedSubjectGroup
+            title="他プログラム専門科目"
+            items={otherProgram}
+            codeOf={(code) => code}
+            renderRow={row}
+            stickyClose
+            footer={group.id === 'major-sel' ? (
             <li className="recognized-major-credit">
               <label className="other-common-select">
                 他類専門科目の専門科目認定
@@ -2044,8 +2137,9 @@ function GroupProgress({
               </label>
               <span className="recognized-major-credit-note">学務による個別認定がある場合のみ選択してください。</span>
             </li>
-          ) : undefined}
-        />
+            ) : undefined}
+          />
+        )}
         <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} stickyClose />
         {remaining.length === 0 && <li>（この表示範囲では残っていません）</li>}
       </ul>

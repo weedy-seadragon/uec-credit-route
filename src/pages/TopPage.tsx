@@ -1,7 +1,67 @@
 // トップページ（"/"）。説明・免責・「はじめる」ボタンを置く（docs/SPEC.md §6, §9 F-9）。
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { loadProfile } from '../storage/profile'
+
+/**
+ * 過去の更新履歴を開いて読み進めたとき、画面上部から閉じられる入れ子。
+ * 見出しが画面外にある間だけボタンを出し、普段は通常のsummaryだけを使う。
+ */
+function ReleaseNoteHistory({ children }: { children: ReactNode }) {
+  // detailsとsummaryの画面上での位置を読むため、DOM要素をrefで保持する。
+  const detailsRef = useRef<HTMLDetailsElement>(null)
+  const [isStickyCloseVisible, setIsStickyCloseVisible] = useState(false)
+
+  useEffect(() => {
+    // スクロール・画面サイズ・開閉に応じて、過去ログを閉じる追従操作が必要かを更新する。
+    const updateVisibility = () => {
+      const details = detailsRef.current
+      const summary = details?.querySelector('summary')
+      if (!details || !summary || !details.open) {
+        setIsStickyCloseVisible(false)
+        return
+      }
+      const summaryRect = summary.getBoundingClientRect()
+      const detailsRect = details.getBoundingClientRect()
+      setIsStickyCloseVisible(summaryRect.bottom < 0 && detailsRect.bottom > 0)
+    }
+    const details = detailsRef.current
+    window.addEventListener('scroll', updateVisibility, { passive: true })
+    window.addEventListener('resize', updateVisibility)
+    details?.addEventListener('toggle', updateVisibility)
+    updateVisibility()
+    // ページ移動後も古い監視が残らないよう、部品を外すときに解除する。
+    return () => {
+      window.removeEventListener('scroll', updateVisibility)
+      window.removeEventListener('resize', updateVisibility)
+      details?.removeEventListener('toggle', updateVisibility)
+    }
+  }, [])
+
+  return (
+    <details ref={detailsRef} className="release-note-history">
+      <summary>過去のアップデート(β版)を見る（9件）</summary>
+      {children}
+      {isStickyCloseVisible && (
+        <button
+          type="button"
+          className="sticky-group-close"
+          onClick={() => {
+            // 閉じた後は見出しへ戻し、利用者がどの履歴を閉じたか見失わないようにする。
+            const details = detailsRef.current
+            const summary = details?.querySelector('summary')
+            if (!details || !summary) return
+            details.open = false
+            summary.scrollIntoView({ block: 'start', behavior: 'smooth' })
+          }}
+        >
+          過去のアップデート(β版)を閉じる ↑
+        </button>
+      )}
+    </details>
+  )
+}
 
 export default function TopPage() {
   // 既にプロフィール設定済みなら、トップに戻ってきたときに「続ける」で直接メイン画面に行けるようにする
@@ -10,7 +70,7 @@ export default function TopPage() {
   return (
     <main>
       <h1>
-        電通大 単位取得ルートナビ(ver.β2.5) <small>最終更新日: {__BUILD_DATE__}</small>
+        電通大 単位取得ルートナビ(ver.2.6) <small>最終更新日: {__BUILD_DATE__}</small>
       </h1>
       <p>
         電気通信大学 情報理工学域の学生向けに、「学年・類・プログラム・取得済み科目」を入力するだけで、
@@ -35,14 +95,36 @@ export default function TopPage() {
         )}
       </p>
 
-      <p>
+      <p className="official-disclaimer">
         本サイトは非公式です。学修要覧・シラバスをもとに作成していますが、最終的な卒業要件の確認は
         必ず学修要覧および教務課で行ってください。
       </p>
 
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
-      <section>
+      <section className="release-notes-section">
         <h2>リリースノート</h2>
+        {/* 2.6では、入力内容の確認・夜間主コース・開講情報の表示を中心に改善した。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(ver.β2.5→2.6)</span>
+            <span className="release-note-date">アップデート日 2026/9/9</span>
+          </p>
+          <h3 className="release-note-category">機能・判定の改善</h3>
+          <ul className="release-note-items">
+            <li>メイン画面の上部で、入学年度・コース・類・プログラム・学年を正式名称と項目名付きで確認できるようにしました</li>
+            <li>入力内容を変更して未更新のとき、画面上部から更新できる追従表示を追加しました</li>
+            <li>夜間主コースの輪講履修条件を、詳細を開かずに確認できるようにしました</li>
+            <li>共通単位へ繰り入れられる余剰単位の扱いを分かりやすく説明しました</li>
+          </ul>
+          <h3 className="release-note-category">表示の改善</h3>
+          <ul className="release-note-items">
+            <li>夜間主コースの人文・社会科学科目で、2026年度開講なしの科目を一覧下部にまとめました</li>
+            <li>情報工学工房をオンデマンドと表示せず、担当教員により開講時限が異なることを表示するようにしました</li>
+            <li>リリースノートは最新情報を先に表示し、過去のβ版アップデートは折りたたんで確認できるようにしました</li>
+          </ul>
+        </div>
+        {/* 最新版だけを最初から読めるようにし、それ以前の更新は必要なときだけ開けるようにする。 */}
+        <ReleaseNoteHistory>
         {/* β2.5では、学期ごとの履修計画を立てやすくする修得推奨を追加した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -193,6 +275,7 @@ export default function TopPage() {
         <h3 className="release-note-category">見た目の変更</h3>
           <p className="release-note-items">サイトのデザインを一新しました</p>
         </div>
+        </ReleaseNoteHistory>
         {/* 初回リリース日は更新内容と混ざらないよう、独立した枠で表示する。 */}
         <p className="release-note-initial">β版リリース 2026/9/7</p>
       </section>
