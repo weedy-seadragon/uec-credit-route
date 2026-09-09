@@ -202,6 +202,30 @@ select {
   margin: 0;
 }
 
+/* メイン画面で判定対象のプロフィールを、内部コードではなく項目名付きで確認できるようにする。 */
+.profile-overview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.65rem;
+}
+
+.profile-overview > span {
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: baseline;
+}
+
+/* 項目名は値より少し控えめにし、設定内容そのものを読み取りやすくする。 */
+.profile-overview strong {
+  color: color-mix(in srgb, currentColor 70%, transparent);
+  font-size: 0.86em;
+}
+
+.profile-overview-change {
+  margin-left: 0.2rem;
+}
+
 /* 審査の合計単位条件にだけ、卒業所要単位ベースであることを補足する。 */
 .review-credit-note-inline {
   margin-left: 0.45rem;

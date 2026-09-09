@@ -1229,10 +1229,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </button>
       )}
       <header className="main-page-header">
-        <h1>
-          {profile.entryYear}入学 / {profile.grade}年 / {profile.cluster ? `${profile.cluster}類 / ` : ''}
-          {profile.program ?? '未定'} <Link to="/setup">[変更]</Link>
-        </h1>
+        <h1>履修状況</h1>
+        {/* 内部コードを並べるのではなく、設定したプロフィールをラベル付きでいつでも確認できるようにする。 */}
+        <div className="profile-overview" aria-label="現在のプロフィール設定">
+          <span><strong>入学年度</strong>{profile.entryYear}年度</span>
+          <span><strong>コース</strong>{isEveningCourse ? '夜間主コース' : '昼間コース'}</span>
+          {profile.cluster && <span><strong>類</strong>{profile.cluster}類</span>}
+          {!isEveningCourse && <span><strong>プログラム</strong>{programName ?? '未定'}</span>}
+          <span><strong>現在の学年</strong>{profile.grade}年</span>
+          <Link className="profile-overview-change" to="/setup">プロフィールを変更</Link>
+        </div>
       </header>
 
       {/* 表示範囲・更新・データ入出力を、目的ごとのグループに分けた操作バーにする。 */}
