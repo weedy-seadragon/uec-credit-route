@@ -1260,12 +1260,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <nav className="quick-section-links" aria-label="メイン画面内の目次">
         <p className="quick-section-links-title">目次</p>
         <div className="quick-section-links-grid">
-          <button type="button" onClick={() => scrollToSection('earned-credits')} aria-controls="earned-credits">▼修得した単位</button>
-          <button type="button" onClick={() => scrollToSection('failed-subjects')} aria-controls="failed-subjects">▼不合格</button>
-          <button type="button" onClick={() => scrollToSection('remaining-required')} aria-controls="remaining-required">▼残りの必修</button>
-          <button type="button" onClick={() => scrollToSection('elective-subjects')} aria-controls="elective-subjects">▼選択科目</button>
-          {reviewStatuses.length > 0 && <button type="button" onClick={() => scrollToSection('reviews')} aria-controls="reviews">▼審査</button>}
-          <button type="button" onClick={() => scrollToSection('term-recommendations')} aria-controls="term-recommendations">▼修得推奨科目</button>
+          <button type="button" onClick={() => scrollToSection('earned-credits')} aria-controls="earned-credits"><span className="page-move-icon">▼</span>修得した単位</button>
+          <button type="button" onClick={() => scrollToSection('failed-subjects')} aria-controls="failed-subjects"><span className="page-move-icon">▼</span>不合格</button>
+          <button type="button" onClick={() => scrollToSection('remaining-required')} aria-controls="remaining-required"><span className="page-move-icon">▼</span>残りの必修</button>
+          <button type="button" onClick={() => scrollToSection('elective-subjects')} aria-controls="elective-subjects"><span className="page-move-icon">▼</span>選択科目</button>
+          {reviewStatuses.length > 0 && <button type="button" onClick={() => scrollToSection('reviews')} aria-controls="reviews"><span className="page-move-icon">▼</span>審査</button>}
+          <button type="button" onClick={() => scrollToSection('term-recommendations')} aria-controls="term-recommendations"><span className="page-move-icon">▼</span>修得推奨科目</button>
         </div>
       </nav>
 
@@ -1872,7 +1872,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </button>
       {/* 長い科目一覧を見終えたあと、固定バーに頼らず先頭へ戻れる操作を置く。 */}
       <button type="button" className="back-to-page-top" onClick={scrollToPageTop}>
-        ▲ ページの最上部に戻る
+        <span className="page-move-icon">▲</span>ページの最上部に戻る
       </button>
     </main>
   )

@@ -290,6 +290,14 @@ select {
   text-align: left;
 }
 
+/* 三角記号だけは本文より控えめな大きさにし、リンク文字を読みやすく保つ。 */
+.page-move-icon {
+  display: inline-block;
+  margin-right: 0.16em;
+  font-size: 0.72em;
+  vertical-align: 0.05em;
+}
+
 /* 最終行・最終列だけは外枠と二重にならないよう、罫線を整理する。 */
 .quick-section-links button:nth-child(3n) {
   border-right: 0;
