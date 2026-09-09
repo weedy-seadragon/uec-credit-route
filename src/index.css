@@ -54,7 +54,7 @@ nav a {
   border: 1px solid #3670aa;
   border-left: 5px solid #205a92;
   border-radius: 0.5rem;
-  background: color-mix(in srgb, #dbeeff 30%, Canvas);
+  background: Canvas;
   box-shadow: 0 2px 0 color-mix(in srgb, #205a92 52%, transparent);
   color: inherit;
   cursor: pointer;
@@ -84,20 +84,17 @@ nav a {
 .top-action-link--continue {
   border-color: #43835b;
   border-left-color: #28683f;
-  background: color-mix(in srgb, #d9f3e2 32%, Canvas);
   box-shadow: 0 2px 0 color-mix(in srgb, #28683f 52%, transparent);
 }
 
 /* 押せる入口は、ホバー時に少し浮かせて操作できることを視覚的に伝える。 */
 .top-action-link:not(.top-action-link--disabled):hover {
-  background: color-mix(in srgb, #c9e4ff 42%, Canvas);
   transform: translateY(-1px);
   box-shadow: 0 3px 0 color-mix(in srgb, #205a92 58%, transparent);
 }
 
 /* 継続用のボタンはホバー時も緑系のままにして、2つの役割を保つ。 */
 .top-action-link--continue:hover {
-  background: color-mix(in srgb, #c8edd5 44%, Canvas);
   box-shadow: 0 3px 0 color-mix(in srgb, #28683f 58%, transparent);
 }
 
