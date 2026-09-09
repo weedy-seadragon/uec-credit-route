@@ -12,7 +12,7 @@
 //   先修科目（prerequisites）は2026-09-06にprerequisites.ts経由で配線した
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ChangeEvent, ReactNode, RefObject } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import type { GroupKind, RequirementGroup, SubjectStatus } from '../domain/requirements'
 import { evaluateRequirements } from '../domain/requirements'
 import type { GroupResult } from '../domain/requirements'
@@ -21,7 +21,7 @@ import { recommend } from '../domain/recommend'
 import { buildNameToCodes, derivePrerequisites } from '../domain/prerequisites'
 import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
-import { getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
+import { entryYearLabel, getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { TransferBucketItem } from '../data/requirementSets'
 import { hasDedicatedRetakeClass, resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
 import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
@@ -414,6 +414,8 @@ export default function MainPage() {
 }
 
 function MainPageContent({ profile }: { profile: LoadedProfile }) {
+  // 科目詳細から渡された戻り先を読み取り、描画後に対応する区分へ移動する。
+  const [searchParams] = useSearchParams()
   // 保存済みプロフィールに古い/不正なプログラム値があっても、未選択として共通要件を表示する。
   const programName = getProgramName(profile.entryYear, profile.program)
   const isProgramUndecided = programName == null
@@ -497,13 +499,27 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     || otherClusterMajorCreditsDraft !== otherClusterMajorCreditsCommitted
     || otherClusterMajorSubjectCountDraft !== otherClusterMajorSubjectCountCommitted
 
+  useEffect(() => {
+    // 画面内の固定IDだけを受け付け、意図しない場所へスクロールしないようにする。
+    const sectionId = searchParams.get('section')
+    if (sectionId !== 'remaining-required' && sectionId !== 'elective-subjects') return
+
+    // 要素の描画と追従UIの配置が終わった後に動かし、見出しが隠れない位置へ移動する。
+    const animationFrameId = window.requestAnimationFrame(() => {
+      const target = document.getElementById(sectionId)
+      if (!target) return
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+    return () => window.cancelAnimationFrame(animationFrameId)
+  }, [searchParams])
+
   // Ⅱ・Ⅲ類・夜間主などまだデータが無い組み合わせの場合はここで終わる
   if (!requirementSet) {
     return (
       <main>
         <h1>メイン画面</h1>
         <p>
-          このプロフィール（{profile.entryYear}年度 / {profile.course}
+          このプロフィール（{entryYearLabel(profile.entryYear)} / {profile.course}
           {profile.cluster ? ` / ${profile.cluster}類` : ''} / {profile.program}）の要件データはまだありません。
         </p>
       </main>
@@ -1213,6 +1229,21 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     return { regular, otherProgram, international }
   }
 
+  /** 目次のボタンから指定セクションへ滑らかにスクロールする。 */
+  function scrollToSection(sectionId: string): void {
+    // HashRouterでは#が経路に使われるため、URLアンカーではなくDOM要素を直接スクロールする。
+    const target = document.getElementById(sectionId)
+    if (!target) return
+    // 既存のscroll-margin-topを使い、追従中の操作ボタンに見出しが隠れないようにする。
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  /** ページ末尾から、メイン画面の最上部へ滑らかに戻る。 */
+  function scrollToPageTop(): void {
+    // HashRouterのURLを変えず、ブラウザのスクロール位置だけを先頭へ戻す。
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     // 下側に余白を持たせる：最後の区分（類専門など）の<summary>がページ最下端にくっついて
     // クリックしづらくならないようにするため
@@ -1232,7 +1263,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <h1>履修状況</h1>
         {/* 内部コードを並べるのではなく、設定したプロフィールをラベル付きでいつでも確認できるようにする。 */}
         <div className="profile-overview" aria-label="現在のプロフィール設定">
-          <span><strong>入学年度</strong>{profile.entryYear}年度</span>
+          <span><strong>入学年度</strong>{entryYearLabel(profile.entryYear)}</span>
           <span><strong>コース</strong>{isEveningCourse ? '夜間主コース' : '昼間コース'}</span>
           {profile.cluster && <span><strong>類</strong>{profile.cluster}類</span>}
           {!isEveningCourse && <span><strong>プログラム</strong>{programName ?? '未定'}</span>}
@@ -1240,6 +1271,29 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           <Link className="profile-overview-change" to="/setup">プロフィールを変更</Link>
         </div>
       </header>
+
+      {/* 初見でも操作の順番を迷わないよう、実際の入力画面の近くに短い案内を常設する。 */}
+      <aside className="main-usage-guide" aria-label="このページでできること">
+        <p className="main-usage-guide-title">このページでできること</p>
+        <ol>
+          <li><span>①</span>科目ごとの状態を入力</li>
+          <li><span>②</span>「単位取得状況を更新」を押す</li>
+          <li><span>③</span>不足・審査・今学期の履修候補を確認</li>
+        </ol>
+      </aside>
+
+      {/* HashRouterの#を変えずに画面内を移動するため、通常の<a>ではなくスクロール用ボタンを使う。 */}
+      <nav className="quick-section-links" aria-label="メイン画面内の目次">
+        <p className="quick-section-links-title">目次</p>
+        <div className="quick-section-links-grid">
+          <button type="button" onClick={() => scrollToSection('earned-credits')} aria-controls="earned-credits"><span className="page-move-icon">▼</span>修得した単位</button>
+          <button type="button" onClick={() => scrollToSection('failed-subjects')} aria-controls="failed-subjects"><span className="page-move-icon">▼</span>不合格</button>
+          <button type="button" onClick={() => scrollToSection('remaining-required')} aria-controls="remaining-required"><span className="page-move-icon">▼</span>残りの必修</button>
+          <button type="button" onClick={() => scrollToSection('elective-subjects')} aria-controls="elective-subjects"><span className="page-move-icon">▼</span>選択科目</button>
+          {reviewStatuses.length > 0 && <button type="button" onClick={() => scrollToSection('reviews')} aria-controls="reviews"><span className="page-move-icon">▼</span>審査</button>}
+          <button type="button" onClick={() => scrollToSection('term-recommendations')} aria-controls="term-recommendations"><span className="page-move-icon">▼</span>修得推奨科目</button>
+        </div>
+      </nav>
 
       {/* 表示範囲・更新・データ入出力を、目的ごとのグループに分けた操作バーにする。 */}
       <div className="main-toolbar">
@@ -1288,7 +1342,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       {/* 登録科目数は要件区分の一部ではないため、取得単位の枠の外で先に表示する。 */}
       <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>
-      <section className="requirement-section earned-section">
+      <section id="earned-credits" className="requirement-section earned-section">
         {/* 科目として修得した分だけでなく、科目番号を持たない認定分も取得単位に含める。 */}
         <h2>
           修得した単位（{earnedTotalCredits}単位
@@ -1399,7 +1453,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {plannedSubjects.length === 0 && <p>・（ありません）</p>}
       </section>
 
-      <section className="requirement-section failed-section">
+      <section id="failed-subjects" className="requirement-section failed-section">
         <h2>不合格になった科目（{failedSubjects.length}科目）</h2>
         <p className="section-guidance">
           要件区分ごとに表示します。必修科目は再履修して単位を修得する必要があります。選択科目は、再履修するか同じ区分から別の科目を選べます。
@@ -1458,7 +1512,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {failedSubjects.length === 0 && <p>・（ありません）</p>}
       </section>
 
-      <section className="requirement-section">
+      <section id="remaining-required" className="requirement-section">
         <h2>
           残りの必修（あと {requiredShortfall(boundaryGroups)}
           {requiredPlannedCredits(boundaryGroups) > 0 && <span className="planned-credit"> - {requiredPlannedCredits(boundaryGroups)}</span>} 単位）
@@ -1545,7 +1599,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </section>
       )}
 
-      <section className="requirement-section">
+      <section id="elective-subjects" className="requirement-section">
         <h2>選択科目</h2>
         {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、一部の科目が表示されていません。</p>}
         <p className="section-guidance">
@@ -1669,7 +1723,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       {/* 審査（2年次終了時審査など）。reviewsデータがあるプログラムだけ表示する */}
       {reviewStatuses.length > 0 && (
-        <section>
+        <section id="reviews">
           <h2>審査</h2>
           {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、卒業研究着手審査や卒業審査が表示されていません。</p>}
           <ul>
@@ -1722,7 +1776,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       )}
 
       {/* 一覧全体の表示範囲とは別に、ここで選んだ学年・学期ごとの候補を示す。 */}
-      <section className="term-recommendation-section">
+      <section id="term-recommendations" className="term-recommendation-section">
         <h2>学期別の修得推奨科目</h2>
         <p className="section-guidance">
           単位取得状況を入力したうえで学年・学期を絞り込むと、その学期に開講される修得推奨科目を表示します。
@@ -1841,6 +1895,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <button type="button" onClick={handleUpdate} style={{ marginTop: '1em' }} aria-label="単位取得状況を更新">
         <span className="toolbar-update-full">単位取得状況を更新</span>
         <span className="toolbar-update-short">更新</span>
+      </button>
+      {/* 長い科目一覧を見終えたあと、固定バーに頼らず先頭へ戻れる操作を置く。 */}
+      <button type="button" className="back-to-page-top" onClick={scrollToPageTop}>
+        <span className="page-move-icon">▲</span>ページの最上部に戻る
       </button>
     </main>
   )

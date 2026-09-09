@@ -51,6 +51,21 @@ import subjectsMaster2026 from '../../data/subjects/youran-2026.json'
 import classAssignmentData from '../../data/timetable/class_assignment.json'
 import type { ClassAssignmentEntry } from '../domain/classAssignment'
 
+/**
+ * プロフィール上の入学年度を、実際に参照するデータ年度へ読み替える。
+ * 2024年度以前は学修要覧2025と同じ要件として扱うため、2025年度データを共有する。
+ */
+export function getDataEntryYear(entryYear: number): number {
+  // 2024以前を別JSONに複製せず、検証済みの2025年度データへまとめる。
+  return entryYear <= 2024 ? 2025 : entryYear
+}
+
+/** プロフィールなどで表示する入学年度の文言を返す。 */
+export function entryYearLabel(entryYear: number): string {
+  // 2024以下の個別年を出さず、「2024年以前」という利用者向けの選択肢名を一貫して使う。
+  return entryYear <= 2024 ? '2024年以前' : `${entryYear}年度`
+}
+
 /** プロフィール設定画面（F-1）の選択肢1つぶん */
 export interface ProgramOption {
   entryYear: number
@@ -139,9 +154,11 @@ export const programOptions: ProgramOption[] = programDocs.map((p) => ({
  * ここで合体させる（`extends` の解決）。データが無ければ undefined を返す。
  */
 export function getRequirementSet(entryYear: number, course: string, cluster: string | null, program: string): RequirementSet | undefined {
+  // 2024年度以前のプロフィールは、同一要件である2025年度のデータを参照する。
+  const dataEntryYear = getDataEntryYear(entryYear)
   // 4つの条件すべてに一致するプログラムファイルを探す
   const doc = programDocs.find(
-    (p) => p.entryYear === entryYear && p.course === course && p.cluster === cluster && p.program === program,
+    (p) => p.entryYear === dataEntryYear && p.course === course && p.cluster === cluster && p.program === program,
   )
   if (!doc) return undefined // まだデータが無い組み合わせ
 
@@ -149,7 +166,7 @@ export function getRequirementSet(entryYear: number, course: string, cluster: st
   // doc.groups だけをそのまま使う。昼間コースは共通ファイルのgroups（総合文化・実践教育。
   // プログラム固有のcommonOverridesがあれば適用）とプログラム別ファイルのgroups（専門科目）を
   // 1つの配列にまとめて、evaluateRequirements() にそのまま渡せる形にする
-  const commonDoc = commonDocsByYear.get(entryYear)
+  const commonDoc = commonDocsByYear.get(dataEntryYear)
   let groups: RequirementGroup[]
   // 夜間主は自己完結、昼間は同年度の共通要件と専門要件を結合する。
   if (doc.course === 'evening') {
@@ -172,8 +189,10 @@ export function getRequirementSet(entryYear: number, course: string, cluster: st
 
 /** プログラム配属前に、総合文化・実践教育と類共通の専門基礎だけを返す。 */
 export function getRequirementSetWithoutProgram(entryYear: number, cluster: 'I' | 'II' | 'III'): RequirementSet | undefined {
-  const commonDoc = commonDocsByYear.get(entryYear)
-  const representative = programDocs.find((p) => p.entryYear === entryYear && p.course === 'day' && p.cluster === cluster)
+  // プログラム配属前も、2024年度以前は2025年度の共通・類共通要件を利用する。
+  const dataEntryYear = getDataEntryYear(entryYear)
+  const commonDoc = commonDocsByYear.get(dataEntryYear)
+  const representative = programDocs.find((p) => p.entryYear === dataEntryYear && p.course === 'day' && p.cluster === cluster)
   if (!commonDoc || !representative) return undefined
   const specialized = representative.groups.find((group) => group.id === 'specialized')
   const sharedChildren = specialized?.children?.filter((group) => group.id === 'math-basic' || group.id === 'cluster-basic') ?? []
@@ -193,7 +212,8 @@ export function getRequirementSetWithoutProgram(entryYear: number, cluster: 'I' 
 
 /** 入学年度に対応する科目マスタを返す。未対応年度ならundefinedを返す。 */
 function getSubjectMaster(entryYear: number): typeof subjectsMaster2025 | undefined {
-  return subjectMastersByYear.get(entryYear) as typeof subjectsMaster2025 | undefined
+  // 科目マスタも要件と同じ年度読み替え規則を使い、片方だけ別年度にならないようにする。
+  return subjectMastersByYear.get(getDataEntryYear(entryYear)) as typeof subjectsMaster2025 | undefined
 }
 
 /** 科目番号（フルコード）→単位数 のマップ。evaluateRequirements() にそのまま渡せる */
@@ -252,7 +272,8 @@ export function getClassAssignments(): ClassAssignmentEntry[] {
 
 /** プログラムID（例:"media"）から、学修要覧の表記そのままのプログラム名（例:「メディア情報学プログラム」）を引く */
 export function getProgramName(entryYear: number, program: string | null): string | null {
-  return programOptions.find((p) => p.entryYear === entryYear && p.program === program)?.programName ?? null
+  // 表示名は、読み替え後の年度で同じプログラムIDを探す。
+  return programOptions.find((p) => p.entryYear === getDataEntryYear(entryYear) && p.program === program)?.programName ?? null
 }
 
 /** 科目一覧の詳細ページ（F-5）で「どのプログラムのどの区分に位置づけられているか」を示すための1件ぶん */
@@ -260,21 +281,45 @@ export interface SubjectUsage {
   programName: string
   /** 区分の親子関係を「>」でつないだもの（例:「類専門科目 > 必修」） */
   groupPath: string
+  /** 利用箇所の末端区分の種類。メイン画面の対応する一覧へ案内するために使う。 */
+  kind?: GroupKind
+}
+
+/** 科目詳細でプロフィールの類だけを表示するときに使う、画面向けの類名。 */
+const CLUSTER_LABEL: Record<NonNullable<ProgramOption['cluster']>, string> = {
+  I: 'Ⅰ類',
+  II: 'Ⅱ類',
+  III: 'Ⅲ類',
+}
+
+/** 再帰探索の途中で保持する、表示用の経路と末端区分の種類の組。 */
+interface CollectedGroupPath {
+  path: string
+  kind?: GroupKind
 }
 
 // RequirementGroup の木を根からたどり、指定した科目番号が subjects に直接含まれるグループを探す。
 // 見つかった経路（親グループ名の連なり）をそのまま結果に積んでいく再帰関数
-function collectGroupPaths(groups: readonly RequirementGroup[], code: string, ancestors: string[], out: string[]): void {
+function collectGroupPaths(groups: readonly RequirementGroup[], code: string, ancestors: string[], out: CollectedGroupPath[]): void {
   for (const g of groups) {
     const label = g.label ?? g.name
     const path = [...ancestors, label]
     if (g.subjects?.includes(code)) {
-      out.push(path.join(' > '))
+      // 科目を直接持つ末端グループの種類を残し、画面側で対応するメイン区分を選べるようにする。
+      out.push({ path: path.join(' > '), kind: g.kind })
     }
     if (g.children) {
       collectGroupPaths(g.children, code, path, out)
     }
   }
+}
+
+/** 1つの要件セット内から、指定科目の利用箇所を画面用の形式に変換する。 */
+function collectSubjectUsagesFromSet(requirementSet: RequirementSet, programName: string, code: string): SubjectUsage[] {
+  // 要件ツリーをたどった経路を、プログラム名付きの利用箇所一覧へ変換する。
+  const paths: CollectedGroupPath[] = []
+  collectGroupPaths(requirementSet.groups, code, [], paths)
+  return paths.map((path) => ({ programName, groupPath: path.path, kind: path.kind }))
 }
 
 /**
@@ -283,18 +328,44 @@ function collectGroupPaths(groups: readonly RequirementGroup[], code: string, an
  * 選択科目としての展開分と本来の区分、など）見つかることもあるので、区分ごとに別の行として返す
  */
 export function findSubjectUsages(entryYear: number, code: string): SubjectUsage[] {
+  // 2024年度以前の科目詳細も、共有している2025年度要件内から利用箇所を探す。
+  const dataEntryYear = getDataEntryYear(entryYear)
   const usages: SubjectUsage[] = []
   // 同じコードが別年度に別の科目を指すため、表示中の年度のプログラムだけを調べる。
-  for (const p of programOptions.filter((option) => option.entryYear === entryYear)) {
+  for (const p of programOptions.filter((option) => option.entryYear === dataEntryYear)) {
     const set = getRequirementSet(p.entryYear, p.course, p.cluster, p.program)
     if (!set) continue
-    const paths: string[] = []
-    collectGroupPaths(set.groups, code, [], paths)
-    for (const path of paths) {
-      usages.push({ programName: p.programName, groupPath: path })
-    }
+    // 全プログラム表示では、各要件セットでの採用箇所をそのまま足し合わせる。
+    usages.push(...collectSubjectUsagesFromSet(set, p.programName, code))
   }
   return usages
+}
+
+/**
+ * プロフィールで選んだ所属に限定して、科目の要件上の位置づけを返す。
+ * プログラム未選択の昼間コースは、メイン画面と同じく類共通までの要件だけを対象にする。
+ */
+export function findSubjectUsagesForProfile(
+  entryYear: number,
+  course: ProgramOption['course'],
+  cluster: ProgramOption['cluster'],
+  program: string | null,
+  code: string,
+): SubjectUsage[] {
+  // プログラムが選ばれている場合は、現在のプロフィールと同じ1課程の要件だけを調べる。
+  if (program) {
+    const set = getRequirementSet(entryYear, course, cluster, program)
+    const programName = getProgramName(entryYear, program)
+    if (!set || !programName) return []
+    return collectSubjectUsagesFromSet(set, programName, code)
+  }
+
+  // 夜間主はプログラムが必須で保存されるため、未選択として扱うのは昼間コースだけに限る。
+  if (course !== 'day' || !cluster) return []
+  const set = getRequirementSetWithoutProgram(entryYear, cluster)
+  if (!set) return []
+  // プログラム配属前でも、選んだ類の共通要件内にある位置づけは確認できる。
+  return collectSubjectUsagesFromSet(set, `${CLUSTER_LABEL[cluster]}（プログラム未選択）`, code)
 }
 
 /** 科目一覧ページ（F-5）で「単位の種類」ごとに見出しを立てて科目を並べるための1区分ぶん */
@@ -332,8 +403,10 @@ export function getCourseListSections(
   program: string | null,
 ): CourseListSection[] {
   const out: CourseListSection[] = []
+  // 2024年度以前を選んだ科目一覧も、共有先の2025年度共通要件から組み立てる。
+  const dataEntryYear = getDataEntryYear(entryYear)
   if (!program) {
-    const commonDoc = commonDocsByYear.get(entryYear)
+    const commonDoc = commonDocsByYear.get(dataEntryYear)
     // 共通要件が未登録の年度は、他年度の一覧を借りず空として返す。
     if (!commonDoc) return out
     collectCourseListSections(commonDoc.groups, out)
@@ -397,7 +470,7 @@ export function getTransferBucketSubjects(
   const subjectsByCode = getSubjectsByCode(entryYear)
 
   const oldProgramId =
-    oldProgram ?? programOptions.find((p) => p.entryYear === entryYear && p.course === 'day' && p.cluster === oldCluster)?.program
+    oldProgram ?? programOptions.find((p) => p.entryYear === getDataEntryYear(entryYear) && p.course === 'day' && p.cluster === oldCluster)?.program
   if (!oldProgramId) return []
   const oldSet = getRequirementSet(entryYear, 'day', oldCluster, oldProgramId)
   if (!oldSet) return []

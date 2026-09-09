@@ -64,12 +64,21 @@ export interface Profile {
 
 const STORAGE_KEY = 'profile'
 
+/** 2024年度以前の保存済みプロフィールを、画面用の「2024年以前」へ正規化する。 */
+function normalizeProfileEntryYear(profile: Profile): Profile {
+  // 古いバージョンで2023などを直接保存していても、選択肢とデータ参照を一貫させる。
+  return profile.entryYear <= 2024 ? { ...profile, entryYear: 2024 } : profile
+}
+
 /** 保存済みのプロフィールを読み込む。一度も保存していなければ undefined */
 export function loadProfile(): Profile | undefined {
-  return loadFromStorage<Profile>(STORAGE_KEY)
+  const profile = loadFromStorage<Profile>(STORAGE_KEY)
+  // 保存済みの値があるときだけ年度を正規化し、未設定時はundefinedのまま返す。
+  return profile ? normalizeProfileEntryYear(profile) : undefined
 }
 
 /** プロフィールをまるごと上書き保存する */
 export function saveProfile(profile: Profile): void {
-  saveToStorage(STORAGE_KEY, profile)
+  // 新しく保存する場合も同じ規則を通し、2023などの個別年度が残らないようにする。
+  saveToStorage(STORAGE_KEY, normalizeProfileEntryYear(profile))
 }

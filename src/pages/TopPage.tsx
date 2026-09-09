@@ -41,7 +41,7 @@ function ReleaseNoteHistory({ children }: { children: ReactNode }) {
 
   return (
     <details ref={detailsRef} className="release-note-history">
-      <summary>過去のアップデート(β版)を見る（9件）</summary>
+      <summary>過去のアップデート(β版)を見る（10件）</summary>
       {children}
       {isStickyCloseVisible && (
         <button
@@ -85,15 +85,31 @@ export default function TopPage() {
         <li>入力した内容はブラウザ内にのみ保存され、外部には送信されません</li>
       </ul>
 
-      <p>
-        {profile ? (
-          <>
-            <Link to="/main">続ける</Link>（前回の設定を引き継ぎます）／<Link to="/setup">設定を変更</Link>
-          </>
-        ) : (
-          <Link to="/setup">はじめる</Link>
-        )}
-      </p>
+      <section className="top-action-links" aria-labelledby="top-action-links-heading">
+        <h2 id="top-action-links-heading">はじめる</h2>
+        <div className="top-action-links-grid">
+          <Link className="top-action-link" to="/setup">
+            <span className="top-action-link-label">はじめて使う</span>
+            <strong>プロフィール設定</strong>
+            <small>{profile ? 'プロフィールを変更する場合もこちら' : '入学年度・類・プログラムを設定します'}</small>
+          </Link>
+          {profile ? (
+            // 保存済みプロフィールがあれば、入力途中の履修状況をそのままメイン画面で続けられる。
+            <Link className="top-action-link top-action-link--continue" to="/main">
+              <span className="top-action-link-label">すでに入力済み</span>
+              <strong>履修状況を続ける</strong>
+              <small>前回の設定と入力内容を引き継ぎます</small>
+            </Link>
+          ) : (
+            // 未設定ではメイン画面へ進めないため、同じ見た目の案内だけを表示して手順を伝える。
+            <div className="top-action-link top-action-link--disabled" aria-disabled="true">
+              <span className="top-action-link-label">すでに入力済み</span>
+              <strong>履修状況を続ける</strong>
+              <small>プロフィール設定後に利用できます</small>
+            </div>
+          )}
+        </div>
+      </section>
 
       <p className="official-disclaimer">
         本サイトは非公式です。学修要覧・シラバスをもとに作成していますが、最終的な卒業要件の確認は
@@ -103,6 +119,22 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section className="release-notes-section">
         <h2>リリースノート</h2>
+        {/* 正式版の公開日は、通常の更新内容と区別して独立した記念プレートで示す。 */}
+        <p className="release-note-formal">正式版リリース 2026/9/9</p>
+        {/* 正式版では、β版で行った判定・表示・操作性の改善をまとめて公開する。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(ver.β2.6→Ver.1.0.0)</span>
+            <span className="release-note-date">アップデート日 2026/9/9</span>
+          </p>
+          <ul className="release-note-items">
+            <li>β版での利用者フィードバックを反映し、電通大 単位取得ルートナビ Ver.1.0.0を正式リリースしました</li>
+            <li>卒業要件の確認、履修状況の入力、不足科目・審査結果・学期別の履修候補の確認を一連の流れで行えるようにしました</li>
+            <li>科目詳細から要件上の区分へ戻る導線と、トップ画面の目的別入口を追加しました</li>
+          </ul>
+        </div>
+        {/* 最新版だけを最初から読めるようにし、それ以前の更新は必要なときだけ開けるようにする。 */}
+        <ReleaseNoteHistory>
         {/* 2.6では、入力内容の確認・夜間主コース・開講情報の表示を中心に改善した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -123,8 +155,6 @@ export default function TopPage() {
             <li>リリースノートは最新情報を先に表示し、過去のβ版アップデートは折りたたんで確認できるようにしました</li>
           </ul>
         </div>
-        {/* 最新版だけを最初から読めるようにし、それ以前の更新は必要なときだけ開けるようにする。 */}
-        <ReleaseNoteHistory>
         {/* β2.5では、学期ごとの履修計画を立てやすくする修得推奨を追加した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
