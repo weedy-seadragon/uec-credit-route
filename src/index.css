@@ -250,6 +250,50 @@ select {
   margin-left: 0.2rem;
 }
 
+/* 長いメイン画面で、よく見る区分へ一度の操作で移動するための小さな目次。 */
+.quick-section-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.65rem 0 0;
+}
+
+/* 見出しではなく補助的な導線なので、ラベルはリンクより少し控えめにする。 */
+.quick-section-links-label {
+  margin-right: 0.15rem;
+  color: color-mix(in srgb, currentColor 72%, transparent);
+  font-size: 0.9em;
+  font-weight: 650;
+}
+
+/* ボタンに見える短いリンクにして、指で押すときもリンク同士を取り違えにくくする。 */
+.quick-section-links a {
+  padding: 0.26rem 0.56rem;
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, Canvas 92%, currentColor 8%);
+  color: inherit;
+  font-size: 0.88em;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+/* マウス・キーボード操作のどちらでも、現在押せるリンクを分かるようにする。 */
+.quick-section-links a:hover,
+.quick-section-links a:focus-visible {
+  border-color: color-mix(in srgb, #1769aa 62%, currentColor 38%);
+  background: color-mix(in srgb, #cdeaff 42%, Canvas);
+  outline: none;
+}
+
+/* 追従操作に隠れず、目的の見出しが見える位置までスクロールする。 */
+.requirement-section[id],
+.term-recommendation-section[id],
+.main-page > section[id] {
+  scroll-margin-top: 4.5rem;
+}
+
 /* 審査の合計単位条件にだけ、卒業所要単位ベースであることを補足する。 */
 .review-credit-note-inline {
   margin-left: 0.45rem;

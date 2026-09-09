@@ -1241,6 +1241,17 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </div>
       </header>
 
+      {/* 長い画面で目的の区分へ直接移動できるよう、よく確認する場所だけを先頭にまとめる。 */}
+      <nav className="quick-section-links" aria-label="メイン画面内の移動">
+        <span className="quick-section-links-label">すぐ見る</span>
+        <a href="#earned-credits">修得した単位</a>
+        <a href="#failed-subjects">不合格</a>
+        <a href="#remaining-required">残りの必修</a>
+        <a href="#elective-subjects">選択科目</a>
+        {reviewStatuses.length > 0 && <a href="#reviews">審査</a>}
+        <a href="#term-recommendations">修得推奨科目</a>
+      </nav>
+
       {/* 表示範囲・更新・データ入出力を、目的ごとのグループに分けた操作バーにする。 */}
       <div className="main-toolbar">
         <div className="toolbar-group">
@@ -1288,7 +1299,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       {/* 登録科目数は要件区分の一部ではないため、取得単位の枠の外で先に表示する。 */}
       <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>
-      <section className="requirement-section earned-section">
+      <section id="earned-credits" className="requirement-section earned-section">
         {/* 科目として修得した分だけでなく、科目番号を持たない認定分も取得単位に含める。 */}
         <h2>
           修得した単位（{earnedTotalCredits}単位
@@ -1399,7 +1410,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {plannedSubjects.length === 0 && <p>・（ありません）</p>}
       </section>
 
-      <section className="requirement-section failed-section">
+      <section id="failed-subjects" className="requirement-section failed-section">
         <h2>不合格になった科目（{failedSubjects.length}科目）</h2>
         <p className="section-guidance">
           要件区分ごとに表示します。必修科目は再履修して単位を修得する必要があります。選択科目は、再履修するか同じ区分から別の科目を選べます。
@@ -1458,7 +1469,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {failedSubjects.length === 0 && <p>・（ありません）</p>}
       </section>
 
-      <section className="requirement-section">
+      <section id="remaining-required" className="requirement-section">
         <h2>
           残りの必修（あと {requiredShortfall(boundaryGroups)}
           {requiredPlannedCredits(boundaryGroups) > 0 && <span className="planned-credit"> - {requiredPlannedCredits(boundaryGroups)}</span>} 単位）
@@ -1545,7 +1556,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </section>
       )}
 
-      <section className="requirement-section">
+      <section id="elective-subjects" className="requirement-section">
         <h2>選択科目</h2>
         {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、一部の科目が表示されていません。</p>}
         <p className="section-guidance">
@@ -1669,7 +1680,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       {/* 審査（2年次終了時審査など）。reviewsデータがあるプログラムだけ表示する */}
       {reviewStatuses.length > 0 && (
-        <section>
+        <section id="reviews">
           <h2>審査</h2>
           {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、卒業研究着手審査や卒業審査が表示されていません。</p>}
           <ul>
@@ -1722,7 +1733,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       )}
 
       {/* 一覧全体の表示範囲とは別に、ここで選んだ学年・学期ごとの候補を示す。 */}
-      <section className="term-recommendation-section">
+      <section id="term-recommendations" className="term-recommendation-section">
         <h2>学期別の修得推奨科目</h2>
         <p className="section-guidance">
           単位取得状況を入力したうえで学年・学期を絞り込むと、その学期に開講される修得推奨科目を表示します。
