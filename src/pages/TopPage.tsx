@@ -10,7 +10,7 @@ export default function TopPage() {
   return (
     <main>
       <h1>
-        電通大 単位取得ルートナビ(ver.β2.4.2) <small>最終更新日: {__BUILD_DATE__}</small>
+        電通大 単位取得ルートナビ(ver.β2.5) <small>最終更新日: {__BUILD_DATE__}</small>
       </h1>
       <p>
         電気通信大学 情報理工学域の学生向けに、「学年・類・プログラム・取得済み科目」を入力するだけで、
@@ -43,6 +43,27 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section>
         <h2>リリースノート</h2>
+        {/* β2.5では、学期ごとの履修計画を立てやすくする修得推奨を追加した。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(ver.β2.4.2→β2.5)</span>
+            <span className="release-note-date">アップデート日 2026/9/9</span>
+          </p>
+          <h3 className="release-note-category">機能変更</h3>
+          <ul className="release-note-items">
+            <li>学年・学期を選ぶと、その学期に開講される修得推奨科目を確認できるようにしました</li>
+            <li>未修得の必修科目、不足している選択区分、共通単位を分けて表示するようにしました</li>
+            <li>不合格の科目は、必修の「再履修推奨」と選択科目の「再履修候補」を分けて表示するようにしました</li>
+            <li>選択した学期より前に開講される未修得科目は、年次を示して科目説明ページへ案内するようにしました</li>
+            <li>キャリア教育基礎・物理学演習第一・第二は、2年次以降の推奨候補に表示しないようにしました</li>
+          </ul>
+          <h3 className="release-note-category">表示の改善</h3>
+          <ul className="release-note-items">
+            <li>修得推奨の不足区分・共通単位・卒業研究着手審査の入れ子も、画面上部から閉じられるようにしました</li>
+            <li>2年次終了時審査と卒業審査は、詳細を開かなくても不足条件を確認できるようにしました</li>
+            <li>集中講義の曜日時限表示を簡潔にしました</li>
+          </ul>
+        </div>
         {/* β2.4.2では、長い選択科目を閉じる操作と初回表示の読み込み方を改善した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
