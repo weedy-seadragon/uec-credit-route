@@ -255,7 +255,8 @@ select {
   margin: 0.8rem 0 0;
   padding: 0.6rem 0.8rem;
   border-left: 4px solid #88a5dc;
-  background: color-mix(in srgb, #e7f1fb 45%, Canvas);
+  /* 目次のセルと同じCanvasを基調にし、青みはごく薄くして本文の邪魔をしないようにする。 */
+  background: color-mix(in srgb, #e7f1fb 15%, Canvas);
 }
 
 /* 見出しは小さくし、メインの「履修状況」見出しより主張しすぎないようにする。 */
@@ -917,13 +918,18 @@ select {
     margin-left: 0;
   }
 
-  /* 横幅を守るため、スマホでは上下の更新ボタンを短い文言に切り替える。 */
+  /* 学期選択は1行を使い、その次の行に長い更新ボタンとリセットを並べる。 */
+  .toolbar-label {
+    width: 100%;
+  }
+
+  /* 学期選択と分けたので、スマホでも更新対象を省略せず明記する。 */
   .toolbar-update-full {
-    display: none;
+    display: inline;
   }
 
   .toolbar-update-short {
-    display: inline;
+    display: none;
   }
 
   /* 小さい画面では不足単位を次の行へ回し、＋/−のための右側の余白を守る。 */
