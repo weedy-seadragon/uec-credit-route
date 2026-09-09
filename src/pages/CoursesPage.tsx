@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import type { CourseListSection } from '../data/requirementSets'
 import { getCourseListSections, getDataEntryYear, getSubjectsByCode, programOptions } from '../data/requirementSets'
+import { loadProfile } from '../storage/profile'
 
 const DAYS = ['月', '火', '水', '木', '金', '土', '日'] as const
 const YEARS = ['1', '2', '3', '4'] as const
@@ -31,15 +32,25 @@ function yearTermLabel(standardYear: number | null, termType: string | null): st
 
 export default function CoursesPage() {
   const [searchParams] = useSearchParams()
-  // 詳細ページから戻った場合はURLのyearを使い、古いURLには従来どおり2025年度を使う。
+  // 保存済みのプロフィールを一度だけ読み、一覧を直接開いたときの初期絞り込みに使う。
+  const profile = useMemo(() => loadProfile(), [])
+  // 詳細ページから戻った場合はURLのyearを優先し、それ以外はプロフィールの入学年度を初期値にする。
   const requestedYear = Number(searchParams.get('year'))
-  const initialYear = requestedYear === 2024 || requestedYear === 2026 ? requestedYear : 2025
+  const initialYear = requestedYear === 2024 || requestedYear === 2026
+    ? requestedYear
+    : profile?.entryYear === 2024 || profile?.entryYear === 2026
+      ? profile.entryYear
+      : 2025
   const [keyword, setKeyword] = useState('')
   const [yearFilter, setYearFilter] = useState('')
   const [termFilter, setTermFilter] = useState('')
   const [dayFilter, setDayFilter] = useState('')
   const [catalogYear, setCatalogYear] = useState(initialYear)
-  const [programValue, setProgramValue] = useState('')
+  const [programValue, setProgramValue] = useState(() => {
+    // 表示年度とプロフィール年度が同じデータ版のときだけ、保存済みプログラムを初期選択にする。
+    if (!profile?.program || getDataEntryYear(profile.entryYear) !== getDataEntryYear(initialYear)) return ''
+    return profile.program
+  })
 
   // 表示する科目名・単位数・開講情報は、選択中の年度の科目マスタから取得する。
   const subjectsByCode = useMemo(() => getSubjectsByCode(catalogYear), [catalogYear])
