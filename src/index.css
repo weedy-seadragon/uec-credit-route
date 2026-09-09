@@ -276,6 +276,11 @@ select {
   background: color-mix(in srgb, #e7f1fb 15%, Canvas);
 }
 
+/* Aboutページのタイトルと最初の案内がくっつきすぎないよう、見出しの下に余白を足す。 */
+.about-page > h1 {
+  margin-bottom: 1.35rem;
+}
+
 .about-data-status h2 {
   margin: 0 0 0.45rem;
   font-size: 1.05rem;

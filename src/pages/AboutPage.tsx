@@ -50,7 +50,7 @@ function IssueReportTemplate() {
 
 export default function AboutPage() {
   return (
-    <main>
+    <main className="about-page">
       <h1>このサイトについて</h1>
 
       {/* 非公式サイトとして、何の公式資料をどの年度基準で反映しているかを問い合わせ先の前で明示する。 */}
