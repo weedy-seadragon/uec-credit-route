@@ -1,6 +1,6 @@
 // 年度別に要件・科目マスタを切り替える入口を検証するテスト。
 import { describe, expect, it } from 'vitest'
-import { entryYearLabel, findSubjectUsages, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode } from './requirementSets'
+import { entryYearLabel, findSubjectUsages, findSubjectUsagesForProfile, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode } from './requirementSets'
 
 describe('年度別の要件・科目マスタ選択', () => {
   it('2026年度の情報数理工学には再編後のMTHb01cを返す', () => {
@@ -34,6 +34,22 @@ describe('年度別の要件・科目マスタ選択', () => {
     const usages = findSubjectUsages(2025, 'ENG101z')
 
     expect(usages.some((usage) => usage.kind === 'required')).toBe(true)
+  })
+
+  it('プロフィールのプログラムを選ぶと、その課程内の利用箇所だけを返す', () => {
+    // 科目詳細で別プログラムの要件まで混ぜず、選択中の情報通信工学だけを表示する。
+    const usages = findSubjectUsagesForProfile(2025, 'day', 'II', 'netinfo', 'ENG101z')
+
+    expect(usages.length).toBeGreaterThan(0)
+    expect(usages.every((usage) => usage.programName === '情報通信工学プログラム')).toBe(true)
+  })
+
+  it('プログラム未選択では選んだ類の共通要件だけを返す', () => {
+    // 配属前は各プログラム固有の区分を出さず、Ⅰ類として共通する要件だけを位置づけにする。
+    const usages = findSubjectUsagesForProfile(2025, 'day', 'I', null, 'ENG101z')
+
+    expect(usages.length).toBeGreaterThan(0)
+    expect(usages.every((usage) => usage.programName === 'Ⅰ類（プログラム未選択）')).toBe(true)
   })
 
   it('プログラム未選択でも類共通までの要件と2年次終了時審査を返す', () => {

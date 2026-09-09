@@ -3,8 +3,9 @@
 // `useParams` はReact Routerのフックで、URLの `:id` の部分を読み取れる。
 // 例えば "/courses/COM301k" というURLで表示されたときは `id` が "COM301k" になる。
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { entryYearLabel, findSubjectUsages, getSubjectsByCode } from '../data/requirementSets'
+import { entryYearLabel, findSubjectUsages, findSubjectUsagesForProfile, getSubjectsByCode } from '../data/requirementSets'
 import type { GroupKind } from '../domain/requirements'
+import { loadProfile } from '../storage/profile'
 
 /** 科目詳細の利用箇所から、メイン画面で見せられる区分だけを選ぶ。 */
 function getMainSectionForUsage(kind: GroupKind | undefined): 'remaining-required' | 'elective-subjects' | null {
@@ -23,6 +24,8 @@ export default function CourseDetailPage() {
   const requestedYear = Number(searchParams.get('year'))
   const entryYear = requestedYear === 2024 || requestedYear === 2026 ? requestedYear : 2025
   const subject = id ? getSubjectsByCode(entryYear).get(id) : undefined
+  // プロフィールがあれば、その学生に適用される課程だけを位置づけとして表示する。
+  const profile = loadProfile()
 
   if (!subject) {
     return (
@@ -36,8 +39,10 @@ export default function CourseDetailPage() {
     )
   }
 
-  // この科目が卒業要件のどのプログラムのどの区分で使われているかを、全プログラム分探す
-  const usages = findSubjectUsages(entryYear, subject.code)
+  // プロフィール未設定時だけは従来どおり全プログラムを見せ、設定済みなら所属に限定する。
+  const usages = profile
+    ? findSubjectUsagesForProfile(entryYear, profile.course, profile.cluster, profile.program, subject.code)
+    : findSubjectUsages(entryYear, subject.code)
 
   return (
     <main>

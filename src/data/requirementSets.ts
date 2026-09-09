@@ -285,6 +285,13 @@ export interface SubjectUsage {
   kind?: GroupKind
 }
 
+/** 科目詳細でプロフィールの類だけを表示するときに使う、画面向けの類名。 */
+const CLUSTER_LABEL: Record<NonNullable<ProgramOption['cluster']>, string> = {
+  I: 'Ⅰ類',
+  II: 'Ⅱ類',
+  III: 'Ⅲ類',
+}
+
 /** 再帰探索の途中で保持する、表示用の経路と末端区分の種類の組。 */
 interface CollectedGroupPath {
   path: string
@@ -307,6 +314,14 @@ function collectGroupPaths(groups: readonly RequirementGroup[], code: string, an
   }
 }
 
+/** 1つの要件セット内から、指定科目の利用箇所を画面用の形式に変換する。 */
+function collectSubjectUsagesFromSet(requirementSet: RequirementSet, programName: string, code: string): SubjectUsage[] {
+  // 要件ツリーをたどった経路を、プログラム名付きの利用箇所一覧へ変換する。
+  const paths: CollectedGroupPath[] = []
+  collectGroupPaths(requirementSet.groups, code, [], paths)
+  return paths.map((path) => ({ programName, groupPath: path.path, kind: path.kind }))
+}
+
 /**
  * 指定した科目番号(フルコード)が、どのプログラムのどの区分で採用されているかを全プログラム分探す。
  * 科目一覧の詳細ページで「要件上の位置づけ」を示すために使う。同じプログラムに複数箇所（他プログラムの
@@ -320,14 +335,37 @@ export function findSubjectUsages(entryYear: number, code: string): SubjectUsage
   for (const p of programOptions.filter((option) => option.entryYear === dataEntryYear)) {
     const set = getRequirementSet(p.entryYear, p.course, p.cluster, p.program)
     if (!set) continue
-    const paths: CollectedGroupPath[] = []
-    collectGroupPaths(set.groups, code, [], paths)
-    for (const path of paths) {
-      // 表示用の経路だけでなく、リンク先を決める区分種類も科目詳細へ渡す。
-      usages.push({ programName: p.programName, groupPath: path.path, kind: path.kind })
-    }
+    // 全プログラム表示では、各要件セットでの採用箇所をそのまま足し合わせる。
+    usages.push(...collectSubjectUsagesFromSet(set, p.programName, code))
   }
   return usages
+}
+
+/**
+ * プロフィールで選んだ所属に限定して、科目の要件上の位置づけを返す。
+ * プログラム未選択の昼間コースは、メイン画面と同じく類共通までの要件だけを対象にする。
+ */
+export function findSubjectUsagesForProfile(
+  entryYear: number,
+  course: ProgramOption['course'],
+  cluster: ProgramOption['cluster'],
+  program: string | null,
+  code: string,
+): SubjectUsage[] {
+  // プログラムが選ばれている場合は、現在のプロフィールと同じ1課程の要件だけを調べる。
+  if (program) {
+    const set = getRequirementSet(entryYear, course, cluster, program)
+    const programName = getProgramName(entryYear, program)
+    if (!set || !programName) return []
+    return collectSubjectUsagesFromSet(set, programName, code)
+  }
+
+  // 夜間主はプログラムが必須で保存されるため、未選択として扱うのは昼間コースだけに限る。
+  if (course !== 'day' || !cluster) return []
+  const set = getRequirementSetWithoutProgram(entryYear, cluster)
+  if (!set) return []
+  // プログラム配属前でも、選んだ類の共通要件内にある位置づけは確認できる。
+  return collectSubjectUsagesFromSet(set, `${CLUSTER_LABEL[cluster]}（プログラム未選択）`, code)
 }
 
 /** 科目一覧ページ（F-5）で「単位の種類」ごとに見出しを立てて科目を並べるための1区分ぶん */
