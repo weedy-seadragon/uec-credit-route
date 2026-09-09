@@ -923,6 +923,11 @@ select {
     width: 100%;
   }
 
+  /* ラベルは1行を使っても、学年・学期の選択欄まで横いっぱいに伸ばさない。 */
+  .toolbar-label select {
+    width: fit-content;
+  }
+
   /* 学期選択と分けたので、スマホでも更新対象を省略せず明記する。 */
   .toolbar-update-full {
     display: inline;
