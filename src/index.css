@@ -44,18 +44,22 @@ nav a {
   gap: 0.7rem;
 }
 
-/* 入口はリンク全体を押せるカードにし、説明と行動名をまとめて見せる。 */
+/* 入口はリンク全体を押せる大きなボタンにし、説明と行動名をまとめて見せる。 */
 .top-action-link {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
   min-height: 5.5rem;
   padding: 0.75rem 0.85rem;
-  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
-  border-left: 4px solid #88a5dc;
-  border-radius: 0.35rem;
-  background: color-mix(in srgb, #e7f1fb 12%, Canvas);
+  border: 1px solid #3670aa;
+  border-left: 5px solid #205a92;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, #dbeeff 30%, Canvas);
+  box-shadow: 0 2px 0 color-mix(in srgb, #205a92 52%, transparent);
+  color: inherit;
+  cursor: pointer;
   text-decoration: none;
+  transition: transform 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
 }
 
 /* 行動名を最も目立たせ、初見でもリンクの目的がすぐ伝わるようにする。 */
@@ -78,7 +82,35 @@ nav a {
 
 /* 継続操作には落ち着いた緑を添え、設定入口と役割を見分けられるようにする。 */
 .top-action-link--continue {
-  border-left-color: #4d9a6c;
+  border-color: #43835b;
+  border-left-color: #28683f;
+  background: color-mix(in srgb, #d9f3e2 32%, Canvas);
+  box-shadow: 0 2px 0 color-mix(in srgb, #28683f 52%, transparent);
+}
+
+/* 押せる入口は、ホバー時に少し浮かせて操作できることを視覚的に伝える。 */
+.top-action-link:not(.top-action-link--disabled):hover {
+  background: color-mix(in srgb, #c9e4ff 42%, Canvas);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 0 color-mix(in srgb, #205a92 58%, transparent);
+}
+
+/* 継続用のボタンはホバー時も緑系のままにして、2つの役割を保つ。 */
+.top-action-link--continue:hover {
+  background: color-mix(in srgb, #c8edd5 44%, Canvas);
+  box-shadow: 0 3px 0 color-mix(in srgb, #28683f 58%, transparent);
+}
+
+/* 押下時は影を縮め、実際に押した感覚を与える。 */
+.top-action-link:not(.top-action-link--disabled):active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 color-mix(in srgb, #205a92 58%, transparent);
+}
+
+/* キーボードで選んだときも、ボタンの輪郭を明確に表示する。 */
+.top-action-link:focus-visible {
+  outline: 3px solid #bd7200;
+  outline-offset: 2px;
 }
 
 /* 未設定時の継続入口は押せないことを明示し、誤って進めるようには見せない。 */
