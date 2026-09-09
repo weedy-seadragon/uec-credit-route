@@ -1532,6 +1532,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                   {commonEarnedTotal >= requirementSet.commonCredits ? '充足済み' : `あと${requirementSet.commonCredits - commonEarnedTotal}単位`}
                 </span>
               </summary>
+              <p className="group-guidance">
+                ※ 人文・社会科学科目に限らず、卒業所要単位を超えて修得した単位のうち、共通単位へ繰り入れられる分もここに加算されます。
+              </p>
               <ul>
                 <li>
                   その他単位認定（TOEIC等、科目を介さず認定される単位）
