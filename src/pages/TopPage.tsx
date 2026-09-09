@@ -41,7 +41,7 @@ function ReleaseNoteHistory({ children }: { children: ReactNode }) {
 
   return (
     <details ref={detailsRef} className="release-note-history">
-      <summary>過去のアップデート(β版)を見る（8件）</summary>
+      <summary>過去のアップデート(β版)を見る（9件）</summary>
       {children}
       {isStickyCloseVisible && (
         <button
@@ -70,7 +70,7 @@ export default function TopPage() {
   return (
     <main>
       <h1>
-        電通大 単位取得ルートナビ(ver.β2.5) <small>最終更新日: {__BUILD_DATE__}</small>
+        電通大 単位取得ルートナビ(ver.2.6) <small>最終更新日: {__BUILD_DATE__}</small>
       </h1>
       <p>
         電気通信大学 情報理工学域の学生向けに、「学年・類・プログラム・取得済み科目」を入力するだけで、
@@ -103,6 +103,28 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section className="release-notes-section">
         <h2>リリースノート</h2>
+        {/* 2.6では、入力内容の確認・夜間主コース・開講情報の表示を中心に改善した。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(ver.β2.5→2.6)</span>
+            <span className="release-note-date">アップデート日 2026/9/9</span>
+          </p>
+          <h3 className="release-note-category">機能・判定の改善</h3>
+          <ul className="release-note-items">
+            <li>メイン画面の上部で、入学年度・コース・類・プログラム・学年を正式名称と項目名付きで確認できるようにしました</li>
+            <li>入力内容を変更して未更新のとき、画面上部から更新できる追従表示を追加しました</li>
+            <li>夜間主コースの輪講履修条件を、詳細を開かずに確認できるようにしました</li>
+            <li>共通単位へ繰り入れられる余剰単位の扱いを分かりやすく説明しました</li>
+          </ul>
+          <h3 className="release-note-category">表示の改善</h3>
+          <ul className="release-note-items">
+            <li>夜間主コースの人文・社会科学科目で、2026年度開講なしの科目を一覧下部にまとめました</li>
+            <li>情報工学工房をオンデマンドと表示せず、担当教員により開講時限が異なることを表示するようにしました</li>
+            <li>リリースノートは最新情報を先に表示し、過去のβ版アップデートは折りたたんで確認できるようにしました</li>
+          </ul>
+        </div>
+        {/* 最新版だけを最初から読めるようにし、それ以前の更新は必要なときだけ開けるようにする。 */}
+        <ReleaseNoteHistory>
         {/* β2.5では、学期ごとの履修計画を立てやすくする修得推奨を追加した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -124,8 +146,6 @@ export default function TopPage() {
             <li>集中講義の曜日時限表示を簡潔にしました</li>
           </ul>
         </div>
-        {/* 最新版だけを最初から読めるようにし、それ以前の更新は必要なときだけ開けるようにする。 */}
-        <ReleaseNoteHistory>
         {/* β2.4.2では、長い選択科目を閉じる操作と初回表示の読み込み方を改善した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
