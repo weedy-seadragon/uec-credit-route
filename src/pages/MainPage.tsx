@@ -1337,6 +1337,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         />
         {dataMessage && <p role="status">{dataMessage}</p>}
       </div>
+      {/* 履修記録はブラウザ内だけにあるため、消去される前にJSONで退避する方法を操作欄の直下で案内する。 */}
+      <p className="backup-reminder">
+        ※ 入力内容はこのブラウザ内にのみ保存されます。機種変更・ブラウザ初期化前は「単位取得状況をダウンロード」でバックアップしてください。
+      </p>
       {/* 更新時に確定した時限重複だけを、次の操作前に見直せる注意として表示する。 */}
       {scheduleWarning && <p className="schedule-conflict-warning" role="alert">{scheduleWarning}</p>}
 
