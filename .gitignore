@@ -10,3 +10,5 @@ __pycache__/
 PDF/
 # 動作確認用のテストケース（個人の履修記録データ）は丸ごとリポジトリに入れない
 testcases/
+# サイトアイコンの元絵（保管用）。公開用に縮小した public/site-icon.png だけをリポジトリに入れる
+src/assets/icon.png
