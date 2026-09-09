@@ -41,7 +41,7 @@ function ReleaseNoteHistory({ children }: { children: ReactNode }) {
 
   return (
     <details ref={detailsRef} className="release-note-history">
-      <summary>過去のアップデート(β版)を見る（9件）</summary>
+      <summary>過去のアップデート(β版)を見る（10件）</summary>
       {children}
       {isStickyCloseVisible && (
         <button
@@ -132,6 +132,8 @@ export default function TopPage() {
             <li>科目詳細から要件上の区分へ戻る導線と、トップ画面の目的別入口を追加しました</li>
           </ul>
         </div>
+        {/* 最新版だけを最初から読めるようにし、それ以前の更新は必要なときだけ開けるようにする。 */}
+        <ReleaseNoteHistory>
         {/* 2.6では、入力内容の確認・夜間主コース・開講情報の表示を中心に改善した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -152,8 +154,6 @@ export default function TopPage() {
             <li>リリースノートは最新情報を先に表示し、過去のβ版アップデートは折りたたんで確認できるようにしました</li>
           </ul>
         </div>
-        {/* 最新版だけを最初から読めるようにし、それ以前の更新は必要なときだけ開けるようにする。 */}
-        <ReleaseNoteHistory>
         {/* β2.5では、学期ごとの履修計画を立てやすくする修得推奨を追加した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
