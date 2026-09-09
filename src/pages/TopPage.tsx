@@ -56,7 +56,7 @@ function ReleaseNoteHistory({ children }: { children: ReactNode }) {
             summary.scrollIntoView({ block: 'start', behavior: 'smooth' })
           }}
         >
-          過去のアップデートを閉じる ↑
+          過去のアップデート(β版)を閉じる ↑
         </button>
       )}
     </details>
