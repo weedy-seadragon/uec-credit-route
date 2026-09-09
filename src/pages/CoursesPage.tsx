@@ -5,13 +5,15 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import type { CourseListSection } from '../data/requirementSets'
-import { getCourseListSections, getSubjectsByCode, programOptions } from '../data/requirementSets'
+import { getCourseListSections, getDataEntryYear, getSubjectsByCode, programOptions } from '../data/requirementSets'
 
 const DAYS = ['月', '火', '水', '木', '金', '土', '日'] as const
 const YEARS = ['1', '2', '3', '4'] as const
 
 // 一度に描画する科目数の上限（絞り込み前・プログラム未選択時に全1000件超を描画すると重いため）
 const MAX_ROWS = 300
+// プロフィールと同様、2024年以前は2025年度の科目データを共用する。
+const CATALOG_YEAR_OPTIONS = [2024, 2025, 2026] as const
 
 // kindから見出しに添える読みやすい呼び方（groupのlabelが無いときのフォールバック用）
 const KIND_LABEL: Record<string, string> = {
@@ -30,7 +32,8 @@ function yearTermLabel(standardYear: number | null, termType: string | null): st
 export default function CoursesPage() {
   const [searchParams] = useSearchParams()
   // 詳細ページから戻った場合はURLのyearを使い、古いURLには従来どおり2025年度を使う。
-  const initialYear = searchParams.get('year') === '2026' ? 2026 : 2025
+  const requestedYear = Number(searchParams.get('year'))
+  const initialYear = requestedYear === 2024 || requestedYear === 2026 ? requestedYear : 2025
   const [keyword, setKeyword] = useState('')
   const [yearFilter, setYearFilter] = useState('')
   const [termFilter, setTermFilter] = useState('')
@@ -40,17 +43,19 @@ export default function CoursesPage() {
 
   // 表示する科目名・単位数・開講情報は、選択中の年度の科目マスタから取得する。
   const subjectsByCode = useMemo(() => getSubjectsByCode(catalogYear), [catalogYear])
+  // 選択肢上の2024年以前と、実データの2025年度を分けて持つ。
+  const dataCatalogYear = getDataEntryYear(catalogYear)
 
   const selectedProgram = useMemo(
-    () => programOptions.find((p) => p.entryYear === catalogYear && p.program === programValue),
-    [catalogYear, programValue],
+    () => programOptions.find((p) => p.entryYear === dataCatalogYear && p.program === programValue),
+    [dataCatalogYear, programValue],
   )
 
   // プログラム未選択時は共通ファイル（総合文化・実践教育科目）だけの区分になる
   // （getCourseListSectionsの仕様上、entryYear/course/clusterはprogramがnullのときは使われない）
   const sections = useMemo<CourseListSection[]>(() => {
     if (!selectedProgram) return getCourseListSections(catalogYear, 'day', null, null)
-    return getCourseListSections(selectedProgram.entryYear, selectedProgram.course, selectedProgram.cluster, selectedProgram.program)
+    return getCourseListSections(catalogYear, selectedProgram.course, selectedProgram.cluster, selectedProgram.program)
   }, [catalogYear, selectedProgram])
 
   const kw = keyword.trim()
@@ -63,12 +68,12 @@ export default function CoursesPage() {
       { label: 'Ⅲ類', options: [] },
       { label: '夜間主', options: [] },
     ]
-    for (const p of programOptions.filter((option) => option.entryYear === catalogYear)) {
+    for (const p of programOptions.filter((option) => option.entryYear === dataCatalogYear)) {
       const bucket = p.cluster === 'I' ? clusters[0] : p.cluster === 'II' ? clusters[1] : p.cluster === 'III' ? clusters[2] : clusters[3]
       bucket.options.push(p)
     }
     return clusters.filter((c) => c.options.length > 0)
-  }, [catalogYear])
+  }, [dataCatalogYear])
 
   // 年度を切り替えたときは、前年度のプログラムIDを残さず未選択へ戻す。
   function handleCatalogYearChange(year: number) {
@@ -128,9 +133,9 @@ export default function CoursesPage() {
           value={catalogYear}
           onChange={(e) => handleCatalogYearChange(Number(e.target.value))}
         >
-          {[...new Set(programOptions.map((p) => p.entryYear))].map((year) => (
+          {CATALOG_YEAR_OPTIONS.map((year) => (
             <option key={year} value={year}>
-              {year}年度
+              {year === 2024 ? '2024年以前' : `${year}年度`}
             </option>
           ))}
         </select>

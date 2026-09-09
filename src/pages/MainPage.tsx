@@ -21,7 +21,7 @@ import { recommend } from '../domain/recommend'
 import { buildNameToCodes, derivePrerequisites } from '../domain/prerequisites'
 import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
-import { getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
+import { entryYearLabel, getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { TransferBucketItem } from '../data/requirementSets'
 import { hasDedicatedRetakeClass, resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
 import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
@@ -503,7 +503,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <main>
         <h1>メイン画面</h1>
         <p>
-          このプロフィール（{profile.entryYear}年度 / {profile.course}
+          このプロフィール（{entryYearLabel(profile.entryYear)} / {profile.course}
           {profile.cluster ? ` / ${profile.cluster}類` : ''} / {profile.program}）の要件データはまだありません。
         </p>
       </main>
@@ -1232,7 +1232,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <h1>履修状況</h1>
         {/* 内部コードを並べるのではなく、設定したプロフィールをラベル付きでいつでも確認できるようにする。 */}
         <div className="profile-overview" aria-label="現在のプロフィール設定">
-          <span><strong>入学年度</strong>{profile.entryYear}年度</span>
+          <span><strong>入学年度</strong>{entryYearLabel(profile.entryYear)}</span>
           <span><strong>コース</strong>{isEveningCourse ? '夜間主コース' : '昼間コース'}</span>
           {profile.cluster && <span><strong>類</strong>{profile.cluster}類</span>}
           {!isEveningCourse && <span><strong>プログラム</strong>{programName ?? '未定'}</span>}

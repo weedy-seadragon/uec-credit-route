@@ -5,12 +5,13 @@
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { programOptions } from '../data/requirementSets'
+import { getDataEntryYear, programOptions } from '../data/requirementSets'
 import type { Profile } from '../storage/profile'
 import { loadProfile, saveProfile } from '../storage/profile'
 
-// 2025・2026年度の要件と科目マスタが揃ったため、プロフィールで入学年度を選べるようにする。
+// 2024年以前は2025年度と同じ要件として扱い、選択肢ではまとめて表示する。
 const SHOW_ENTRY_YEAR_INPUT = true
+const ENTRY_YEAR_OPTIONS = [2024, 2025, 2026] as const
 
 export default function SetupPage() {
   const navigate = useNavigate()
@@ -53,14 +54,14 @@ export default function SetupPage() {
   // 依存が変わっていないのに毎回の再描画で計算し直すのを避けられる。
   const availableClusters = useMemo(() => {
     const set = new Set(
-      programOptions.filter((p) => p.entryYear === entryYear && p.course === course).map((p) => p.cluster),
+      programOptions.filter((p) => p.entryYear === getDataEntryYear(entryYear) && p.course === course).map((p) => p.cluster),
     )
     return [...set]
   }, [entryYear, course])
 
   // さらに「類」まで絞り込んだ、選べるプログラムの一覧
   const availablePrograms = useMemo(
-    () => programOptions.filter((p) => p.entryYear === entryYear && p.course === course && p.cluster === cluster),
+    () => programOptions.filter((p) => p.entryYear === getDataEntryYear(entryYear) && p.course === course && p.cluster === cluster),
     [entryYear, course, cluster],
   )
 
@@ -77,7 +78,7 @@ export default function SetupPage() {
 
   // 転プログラムした場合の「元のプログラム」の選べる一覧（元の類で絞り込む）
   const previousProgramOptions = useMemo(
-    () => (previousProgramCluster ? programOptions.filter((p) => p.entryYear === entryYear && p.course === 'day' && p.cluster === previousProgramCluster) : []),
+    () => (previousProgramCluster ? programOptions.filter((p) => p.entryYear === getDataEntryYear(entryYear) && p.course === 'day' && p.cluster === previousProgramCluster) : []),
     [entryYear, previousProgramCluster],
   )
 
@@ -139,9 +140,9 @@ export default function SetupPage() {
         <div>
           <label htmlFor="entryYear">入学年度</label>
           <select id="entryYear" value={entryYear} onChange={(e) => handleEntryYearChange(Number(e.target.value))}>
-            {[...new Set(programOptions.map((p) => p.entryYear))].map((year) => (
+            {ENTRY_YEAR_OPTIONS.map((year) => (
               <option key={year} value={year}>
-                {year}年度
+                {year === 2024 ? '2024年以前' : `${year}年度`}
               </option>
             ))}
           </select>

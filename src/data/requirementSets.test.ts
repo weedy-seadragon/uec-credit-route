@@ -1,6 +1,6 @@
 // 年度別に要件・科目マスタを切り替える入口を検証するテスト。
 import { describe, expect, it } from 'vitest'
-import { findSubjectUsages, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode } from './requirementSets'
+import { entryYearLabel, findSubjectUsages, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode } from './requirementSets'
 
 describe('年度別の要件・科目マスタ選択', () => {
   it('2026年度の情報数理工学には再編後のMTHb01cを返す', () => {
@@ -34,5 +34,15 @@ describe('年度別の要件・科目マスタ選択', () => {
     const requirementSet = getRequirementSetWithoutProgram(2025, 'I')
     expect(requirementSet?.groups.at(-1)?.children?.map((group) => group.id)).toEqual(['math-basic', 'cluster-basic'])
     expect(requirementSet?.reviews?.map((review) => review.id)).toEqual(['y2-end'])
+  })
+
+  it('2024年度以前は2025年度と同じ要件・科目マスタを参照する', () => {
+    // 旧年度用のJSONを重複保持せず、画面上だけ「2024年以前」とまとめる仕様を検証する。
+    const set2024 = getRequirementSet(2024, 'day', 'I', 'media')
+    const set2025 = getRequirementSet(2025, 'day', 'I', 'media')
+
+    expect(entryYearLabel(2024)).toBe('2024年以前')
+    expect(getSubjectsByCode(2024).get('MTHb01c')).toEqual(getSubjectsByCode(2025).get('MTHb01c'))
+    expect(set2024?.totalCredits).toBe(set2025?.totalCredits)
   })
 })
