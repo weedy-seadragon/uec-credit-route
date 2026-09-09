@@ -110,6 +110,11 @@ export default function AboutPage() {
         <h2>サイト制作</h2>
         <p>あず（電気通信大学 学部2年）</p>
       </section>
+
+      {/* 制作担当の情報と分けて、サイトアイコンの担当者を後から記載できるようにする。 */}
+      <section>
+        <h2>サイトのアイコン制作</h2>
+      </section>
     </main>
   )
 }
