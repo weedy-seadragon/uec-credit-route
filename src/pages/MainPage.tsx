@@ -400,6 +400,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 保存済みプロフィールに古い/不正なプログラム値があっても、未選択として共通要件を表示する。
   const programName = getProgramName(profile.entryYear, profile.program)
   const isProgramUndecided = programName == null
+  // 夜間主には類・プログラムの区分がないため、昼間コース専用の案内や個別認定を表示・計算しない。
+  const isEveningCourse = profile.course === 'evening'
   // 共通単位の入れ子も、長い選択区分と同じ上部追従の「閉じる」操作に使う。
   const commonCreditsDetailsRef = useRef<HTMLDetailsElement>(null)
   const requirementSet = useMemo(
@@ -517,7 +519,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     subjectCredits,
     commonCreditsWithTransferBucket,
     transferBucketPlannedCreditsSum,
-    new Map([['major-sel', otherClusterMajorCreditsCommitted]]),
+    // 他類専門科目の個別認定は昼間コースだけの制度なので、夜間主の古い保存値は計算へ混ぜない。
+    new Map([['major-sel', isEveningCourse ? 0 : otherClusterMajorCreditsCommitted]]),
   )
   const boundaryGroups = collectBoundaryGroups(requirementSet.groups, evaluation.groups)
   // 審査（2年次終了時審査など）。reviewsデータが無いプログラムでは空配列になる（現在は全16課程にreviewsがある）。
@@ -632,7 +635,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 審査用の総単位（evaluation.totalCredits）は卒業所要単位に算入される分だけなので、別に表示する。
   const earnedTotalCredits = passedCredits + otherCommonCommitted
   // Mapは科目コードをキーにするため、修得→不合格→再履修のような同一科目の履歴でも1科目として数えられる。
-  const registeredSubjectCount = passedSubjects.length + failedSubjects.length + otherCommonSubjectCountCommitted + otherClusterMajorSubjectCountCommitted
+  // 夜間主には他類専門科目認定がないため、別プロフィールで保存された件数を登録科目数へ加えない。
+  const registeredSubjectCount = passedSubjects.length + failedSubjects.length + otherCommonSubjectCountCommitted
+    + (isEveningCourse ? 0 : otherClusterMajorSubjectCountCommitted)
   // 「取得単位」「残りの必修」は区分ごとの見出しを付けて表示する（例:「理数基礎（必修）」「類専門（必修）」）
   // countAs: common の科目は「理数基礎」ではなく共通単位の内訳へ出すため、通常区分には混ぜない。
   const passedByCategory = groupByCategory(
@@ -1492,9 +1497,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <p className="section-guidance">
           区分ごとに表示される不足単位まで、この一覧から科目を選んで修得してください。必修の不合格科目は、この一覧ではなく上の「不合格になった科目」を確認します。
         </p>
-        <p className="section-guidance">
-          ※ 同じ類の他プログラム専門科目（各区分の中の「他プログラム専門科目」にまとめているもの）は、専門科目の単位として扱われます。他類の専門科目は原則自由科目で、個別認定がある場合だけ「他類専門科目の専門科目認定」で入力してください。
-        </p>
+        {!isEveningCourse && (
+          <p className="section-guidance">
+            ※ 同じ類の他プログラム専門科目（各区分の中の「他プログラム専門科目」にまとめているもの）は、専門科目の単位として扱われます。他類の専門科目は原則自由科目で、個別認定がある場合だけ「他類専門科目の専門科目認定」で入力してください。
+          </p>
+        )}
         {/* ここに出すのは「選択」「選択必修」の区分だけ（必修は上の「残りの必修」で扱う。自由・国際は対象外）。
             必要単位が0のグループ（そのプログラムでは使わない区分）も出す意味が無いので除く。
             この条件だけで絞るので、プログラムによって実際に何が出るかは自然に変わる */}
@@ -1587,6 +1594,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 isOtherProgram={isOtherProgram}
                 isInternational={isInternational}
                 isVisibleForTerm={isVisibleForTermFilter}
+                showOtherProgramSection={!isEveningCourse}
                 otherClusterMajorCredits={otherClusterMajorCreditsDraft}
                 onOtherClusterMajorCreditsChange={setOtherClusterMajorCreditsDraft}
                 otherClusterMajorSubjectCount={otherClusterMajorSubjectCountDraft}
@@ -1876,6 +1884,7 @@ function GroupProgress({
   isOtherProgram,
   isInternational,
   isVisibleForTerm,
+  showOtherProgramSection,
   otherClusterMajorCredits,
   onOtherClusterMajorCreditsChange,
   otherClusterMajorSubjectCount,
@@ -1898,6 +1907,8 @@ function GroupProgress({
   isInternational: (code: string) => boolean
   /** 表示フィルタ（学期）で、この科目を一覧に出すかどうか（MainPage.tsxのisVisibleForTermFilter） */
   isVisibleForTerm: (code: string) => boolean
+  /** 昼間コースだけにある、同じ類の他プログラム専門科目の入れ子を表示するかどうか。 */
+  showOtherProgramSection: boolean
   /** 学務に認定された他類専門科目の単位数（類専門（選択）にだけ算入する） */
   otherClusterMajorCredits: number
   /** 他類専門科目の認定単位を下書き状態へ反映する */
@@ -2009,13 +2020,15 @@ function GroupProgress({
             <CollapsedSubjectGroup title="その他" items={noTermCollapsed} codeOf={(code) => code} renderRow={row} stickyClose />
           </>
         )}
-        <CollapsedSubjectGroup
-          title="他プログラム専門科目"
-          items={otherProgram}
-          codeOf={(code) => code}
-          renderRow={row}
-          stickyClose
-          footer={group.id === 'major-sel' ? (
+        {/* 夜間主にはプログラム区分がないため、他プログラム専門科目の入れ子も個別認定の入力も出さない。 */}
+        {showOtherProgramSection && (
+          <CollapsedSubjectGroup
+            title="他プログラム専門科目"
+            items={otherProgram}
+            codeOf={(code) => code}
+            renderRow={row}
+            stickyClose
+            footer={group.id === 'major-sel' ? (
             <li className="recognized-major-credit">
               <label className="other-common-select">
                 他類専門科目の専門科目認定
@@ -2044,8 +2057,9 @@ function GroupProgress({
               </label>
               <span className="recognized-major-credit-note">学務による個別認定がある場合のみ選択してください。</span>
             </li>
-          ) : undefined}
-        />
+            ) : undefined}
+          />
+        )}
         <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(code) => code} renderRow={row} stickyClose />
         {remaining.length === 0 && <li>（この表示範囲では残っていません）</li>}
       </ul>
