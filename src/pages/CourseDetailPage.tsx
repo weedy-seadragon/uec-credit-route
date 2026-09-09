@@ -104,7 +104,7 @@ export default function CourseDetailPage() {
         <p>シラバスの開講情報はまだ取得できていません。</p>
       )}
 
-      <p>
+      <p className="course-detail-back-link">
         <Link to={`/courses?year=${entryYear}`}>科目一覧に戻る</Link>
       </p>
     </main>

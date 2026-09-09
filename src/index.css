@@ -220,6 +220,11 @@ select {
   color: #bd7200;
 }
 
+/* 科目詳細の最後の戻るリンクが画面下端に寄りすぎないよう、下側に余白を確保する。 */
+.course-detail-back-link {
+  margin-bottom: 4rem;
+}
+
 /* このサイトについてで、卒業要件と開講情報の参照年度を簡潔に示す案内。 */
 .about-data-status {
   margin: 1.4rem 0;
