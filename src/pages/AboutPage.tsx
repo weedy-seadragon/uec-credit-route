@@ -58,7 +58,7 @@ export default function AboutPage() {
       {/* サイトの目的を読んだ後に、作成者情報を簡潔に確認できる順番で置く。 */}
       <section>
         <h2>作成者</h2>
-        <p>あず（電気通信大学 2年）</p>
+        <p>あず（電気通信大学 学部2年）</p>
       </section>
     </main>
   )
