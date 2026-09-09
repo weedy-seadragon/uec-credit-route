@@ -27,6 +27,18 @@ nav a {
   margin-top: 0.55rem;
 }
 
+/* 非公式サイトであることと最終確認先を見落とさないよう、金色の案内枠で強調する。 */
+.official-disclaimer {
+  margin: 1.4rem 0;
+  padding: 0.8rem 0.95rem;
+  border: 2px solid #b98700;
+  border-radius: 0.55rem;
+  background: linear-gradient(135deg, color-mix(in srgb, #ffe49a 42%, Canvas), Canvas);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, Canvas 75%, #d0a229 25%);
+  font-weight: 650;
+  line-height: 1.65;
+}
+
 /* リリースノートは利用案内と役割が違うため、直前の注意書きから少し離して始める。 */
 .release-notes-section {
   margin-top: 2.25rem;

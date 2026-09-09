@@ -95,7 +95,7 @@ export default function TopPage() {
         )}
       </p>
 
-      <p>
+      <p className="official-disclaimer">
         本サイトは非公式です。学修要覧・シラバスをもとに作成していますが、最終的な卒業要件の確認は
         必ず学修要覧および教務課で行ってください。
       </p>
