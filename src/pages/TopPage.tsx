@@ -119,6 +119,19 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section className="release-notes-section">
         <h2>リリースノート</h2>
+        {/* 正式版では、β版で行った判定・表示・操作性の改善をまとめて公開する。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(ver.β2.6→Ver.1.0.0)</span>
+            <span className="release-note-date">アップデート日 2026/9/9</span>
+          </p>
+          <h3 className="release-note-category">正式リリース</h3>
+          <ul className="release-note-items">
+            <li>β版での利用者フィードバックを反映し、電通大 単位取得ルートナビ Ver.1.0.0を正式リリースしました</li>
+            <li>卒業要件の確認、履修状況の入力、不足科目・審査結果・学期別の履修候補の確認を一連の流れで行えるようにしました</li>
+            <li>科目詳細から要件上の区分へ戻る導線と、トップ画面の目的別入口を追加しました</li>
+          </ul>
+        </div>
         {/* 2.6では、入力内容の確認・夜間主コース・開講情報の表示を中心に改善した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
