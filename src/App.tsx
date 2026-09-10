@@ -8,7 +8,7 @@
 // `<Routes>` の中に並んだ `<Route>` が「このパスならこのコンポーネントを表示する」という
 // 対応表になっている。`element={<SetupPage />}` の部分は「このコンポーネントをレンダリングせよ」
 // という指定で、C++でいう関数ポインタを渡すようなイメージに近い。
-import { lazy, Suspense } from 'react'
+import { Fragment, lazy, Suspense } from 'react'
 import { HashRouter, NavLink, Route, Routes } from 'react-router-dom'
 
 // lazyは、画面のファイルを最初から全て読み込まず、その画面へ移動するときにだけ取得するReactの仕組み。
@@ -40,18 +40,22 @@ function App() {
     <HashRouter>
       {/* NavLinkは現在開いている画面を判別できるリンク。選択中のタブだけ見た目を変えるために使う。 */}
       <nav className="site-navigation" aria-label="サイト内ナビゲーション">
-        {navigationItems.map(({ to, label }) => (
-          // 各リンクは帯の中で独立したタブとして扱い、スマホでも押しやすい大きさにする。
-          <NavLink
-            key={to}
-            to={to}
-            end={to === '/'}
-            className={({ isActive }) =>
-              `site-navigation-link${isActive ? ' site-navigation-link-current' : ''}`
-            }
-          >
-            {label}
-          </NavLink>
+        {navigationItems.map(({ to, label }, index) => (
+          // Fragmentは画面上に余分な要素を作らず、リンクとスマホ用の区切り線をひとまとめにするReactの仕組み。
+          <Fragment key={to}>
+            {/* 各リンクは帯の中で独立したタブとして扱い、スマホでも押しやすい大きさにする。 */}
+            <NavLink
+              to={to}
+              end={to === '/'}
+              className={({ isActive }) =>
+                `site-navigation-link${isActive ? ' site-navigation-link-current' : ''}`
+              }
+            >
+              {label}
+            </NavLink>
+            {/* 3項目目の後だけ、スマホで1段目と2段目を分ける専用の線を置く。 */}
+            {index === 2 && <span className="site-navigation-row-divider" aria-hidden="true" />}
+          </Fragment>
         ))}
       </nav>
       {/* Suspenseはlazyで読み込み中の画面に代わって、利用者へ短い案内を表示する。 */}

@@ -12,7 +12,6 @@ body {
 
 /* 上部ナビゲーションは、項目を薄い枠線で区切ったフラットなメニューにして画面の入口を見つけやすくする。 */
 .site-navigation {
-  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 0;
@@ -25,6 +24,7 @@ body {
 
 /* 各画面へのリンクは、文字列全体を押せるメニュー項目にし、横の境界線で項目の区切りを示す。 */
 .site-navigation-link {
+  box-sizing: border-box;
   display: grid;
   flex: 1 1 8.5rem;
   min-height: 3rem;
@@ -67,22 +67,23 @@ body {
   outline-offset: -3px;
 }
 
+/* 専用の区切り線は横幅のある画面では不要なため、通常は表示しない。 */
+.site-navigation-row-divider {
+  display: none;
+}
+
 /* スマホではタブを1段目3項目・2段目2項目にし、コンパクトさと読みやすさを両立する。 */
-@media (max-width: 34rem) {
+@media (max-width: 40rem) {
   .site-navigation-link {
     flex-basis: 33.333%;
   }
 
-  /* 帯全体を横切る線にして、2段のメニューの境目を最後の空白部分まで分かりやすくする。 */
-  .site-navigation::after {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    left: 0;
+  /* 3項目目の直後に専用の線を置き、2段のメニューの境目を確実に示す。 */
+  .site-navigation-row-divider {
+    display: block;
+    flex: 0 0 100%;
     height: 1px;
-    background: #c7cdd3;
-    content: '';
-    pointer-events: none;
+    background: #d4d8dd;
   }
 }
 
@@ -100,10 +101,10 @@ body {
     color: #e8ebed;
   }
 
-  /* ダークモードでは、2段目との区切り線も周囲になじむ暗い色にする。 */
-  @media (max-width: 34rem) {
-    .site-navigation::after {
-      background: #59616a;
+  /* ダークモードでは、2段目との区切り線も下端と同じ色にする。 */
+  @media (max-width: 40rem) {
+    .site-navigation-row-divider {
+      background: #3d4248;
     }
   }
 
