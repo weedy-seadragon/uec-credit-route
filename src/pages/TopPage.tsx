@@ -121,6 +121,18 @@ export default function TopPage() {
         <h2>リリースノート</h2>
         {/* 正式版の公開日は、通常の更新内容と区別して独立した記念プレートで示す。 */}
         <p className="release-note-formal">正式版リリース 2026/9/9</p>
+        {/* Ver.1.0.1では、履修状態の呼び方と画面上部の操作性を利用者の意見に合わせて整えた。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(ver.1.0.0→1.0.1)</span>
+            <span className="release-note-date">アップデート日 2026/9/10</span>
+          </p>
+          <h3 className="release-note-category">表示の改善</h3>
+          <ul className="release-note-items">
+            <li>履修状態の「修得予定」を「修得見込」に変更し、履修予定との違いを分かりやすくしました</li>
+            <li>画面上部のナビゲーションをコンパクトなタブ表示に変更し、ライト／ダークモードそれぞれの配色になじむようにしました</li>
+          </ul>
+        </div>
         {/* 正式版では、β版で行った判定・表示・操作性の改善をまとめて公開する。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
