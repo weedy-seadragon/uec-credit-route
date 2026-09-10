@@ -10,29 +10,29 @@ body {
   padding: 0.5rem 1rem;
 }
 
-/* 上部ナビゲーションは、攻略サイトのように項目を区切った帯にして画面の入口を見つけやすくする。 */
+/* 上部ナビゲーションは、項目を薄い枠線で区切ったフラットなメニューにして画面の入口を見つけやすくする。 */
 .site-navigation {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: 0;
   margin: -0.5rem -1rem 1.2rem;
-  padding: 0.5rem 1rem;
-  border-bottom: 3px solid #d9d900;
-  background: linear-gradient(135deg, #1d4e7b, #306c9e);
-  box-shadow: 0 2px 6px color-mix(in srgb, #102c46 35%, transparent);
+  padding: 0;
+  border-bottom: 1px solid #d4d8dd;
+  background: #f5f6f7;
+  box-shadow: 0 2px 5px color-mix(in srgb, #1d2730 18%, transparent);
 }
 
-/* 各画面へのリンクは、背景と枠で独立したタブに見せつつ、文字列全体を押せるようにする。 */
+/* 各画面へのリンクは、文字列全体を押せるメニュー項目にし、横の境界線で項目の区切りを示す。 */
 .site-navigation-link {
   display: grid;
-  flex: 1 1 8.5rem;
-  min-height: 2.45rem;
-  padding: 0.1rem 0.8rem;
+  flex: 1 1 9rem;
+  min-height: 4.15rem;
+  padding: 0.15rem 0.7rem;
   place-items: center;
-  border: 1px solid color-mix(in srgb, white 55%, transparent);
-  border-radius: 0.35rem;
-  background: color-mix(in srgb, #0d3153 32%, transparent);
-  color: #fff;
+  border-right: 1px solid #d8dce0;
+  border-bottom: 3px solid transparent;
+  background: #fff;
+  color: #34383c;
   font-size: 0.92rem;
   font-weight: 700;
   line-height: 1.25;
@@ -41,36 +41,35 @@ body {
   transition: background-color 140ms ease, color 140ms ease, transform 140ms ease;
 }
 
-/* 現在表示している画面は明るいタブにして、現在地を一目で分かるようにする。 */
+/* 現在表示している画面は淡い背景と下線で、現在地を一目で分かるようにする。 */
 .site-navigation-link-current {
-  border-color: #fff;
-  background: #fff;
-  color: #1d4e7b;
+  border-bottom-color: #3c63a0;
+  background: #f1f6fc;
+  color: #31598e;
 }
 
-/* マウス操作時には少し浮かせ、押せる要素であることを伝える。 */
+/* マウス操作時は淡い背景を付け、押せる要素であることを伝える。 */
 .site-navigation-link:hover {
-  background: color-mix(in srgb, #fff 26%, transparent);
-  color: #fff;
-  transform: translateY(-1px);
+  background: #edf2f7;
+  color: #31598e;
 }
 
-/* 選択中タブでもホバーで文字色が変わらないよう、現在地の見た目を保つ。 */
+/* 選択中タブでもホバーで下線を保ち、現在地の表示が崩れないようにする。 */
 .site-navigation-link-current:hover {
-  background: #fff;
-  color: #1d4e7b;
+  background: #e8f1fb;
+  color: #31598e;
 }
 
 /* キーボード操作でも、どのリンクを選んでいるか分かる輪郭を表示する。 */
 .site-navigation-link:focus-visible {
-  outline: 3px solid #d9d900;
-  outline-offset: 2px;
+  outline: 3px solid #799dd0;
+  outline-offset: -3px;
 }
 
 /* 狭い画面ではタブを2列にし、横幅不足で文字が読みにくくなるのを防ぐ。 */
 @media (max-width: 34rem) {
   .site-navigation-link {
-    flex-basis: calc(50% - 0.35rem);
+    flex-basis: 50%;
   }
 }
 
