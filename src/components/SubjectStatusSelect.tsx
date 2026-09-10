@@ -19,7 +19,7 @@ export default function SubjectStatusSelect({ code, value, onChange }: SubjectSt
       {([
         ['none', '未履修'],
         ['passed', '修得'],
-        ['taking', '修得予定'],
+        ['taking', '修得見込'],
         ['failed', '不合格'],
       ] as const).map(([status, label]) => (
         <label key={status} className={`status-option status-${status}`}>
