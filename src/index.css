@@ -10,11 +10,115 @@ body {
   padding: 0.5rem 1rem;
 }
 
-/* ナビゲーションのリンクは指でタップしやすいよう、上下左右に少し余白を持たせる
-   （リンクの周りの空白部分もタップできるように display: inline-block にする） */
-nav a {
-  display: inline-block;
-  padding: 0.3em 0.15em;
+/* 上部ナビゲーションは、項目を薄い枠線で区切ったフラットなメニューにして画面の入口を見つけやすくする。 */
+.site-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: -0.5rem -1rem 1.2rem;
+  padding: 0;
+  border-bottom: 1px solid #d4d8dd;
+  background: #f5f6f7;
+  box-shadow: 0 2px 5px color-mix(in srgb, #1d2730 18%, transparent);
+}
+
+/* 各画面へのリンクは、文字列全体を押せるメニュー項目にし、横の境界線で項目の区切りを示す。 */
+.site-navigation-link {
+  box-sizing: border-box;
+  display: grid;
+  flex: 1 1 8.5rem;
+  min-height: 3rem;
+  padding: 0.15rem 0.7rem;
+  place-items: center;
+  border-right: 1px solid #d8dce0;
+  border-bottom: 3px solid transparent;
+  background: #fff;
+  color: #34383c;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+/* 現在表示している画面は淡い背景と下線で、現在地を一目で分かるようにする。 */
+.site-navigation-link-current {
+  border-bottom-color: #3c63a0;
+  background: #f1f6fc;
+  color: #31598e;
+}
+
+/* マウス操作時は淡い背景を付け、押せる要素であることを伝える。 */
+.site-navigation-link:hover {
+  background: #edf2f7;
+  color: #31598e;
+}
+
+/* 選択中タブでもホバーで下線を保ち、現在地の表示が崩れないようにする。 */
+.site-navigation-link-current:hover {
+  background: #e8f1fb;
+  color: #31598e;
+}
+
+/* キーボード操作でも、どのリンクを選んでいるか分かる輪郭を表示する。 */
+.site-navigation-link:focus-visible {
+  outline: 3px solid #799dd0;
+  outline-offset: -3px;
+}
+
+/* 専用の区切り線は横幅のある画面では不要なため、通常は表示しない。 */
+.site-navigation-row-divider {
+  display: none;
+}
+
+/* スマホではタブを1段目3項目・2段目2項目にし、コンパクトさと読みやすさを両立する。 */
+@media (max-width: 40rem) {
+  .site-navigation-link {
+    flex-basis: 33.333%;
+  }
+
+  /* 3項目目の直後に専用の線を置き、2段のメニューの境目を確実に示す。 */
+  .site-navigation-row-divider {
+    display: block;
+    flex: 0 0 100%;
+    height: 1px;
+    background: #d4d8dd;
+  }
+}
+
+/* ダークモードでは白い帯が浮かないよう、背景・区切り線・文字色を黒系へ切り替える。 */
+@media (prefers-color-scheme: dark) {
+  .site-navigation {
+    border-bottom-color: #3d4248;
+    background: #17191b;
+    box-shadow: 0 2px 5px color-mix(in srgb, black 50%, transparent);
+  }
+
+  .site-navigation-link {
+    border-right-color: #3d4248;
+    background: #17191b;
+    color: #e8ebed;
+  }
+
+  /* ダークモードでは、2段目との区切り線も下端と同じ色にする。 */
+  @media (max-width: 40rem) {
+    .site-navigation-row-divider {
+      background: #3d4248;
+    }
+  }
+
+  .site-navigation-link-current {
+    border-bottom-color: #8caad0;
+    background: #252a2f;
+    color: #bcd6f3;
+  }
+
+  .site-navigation-link:hover,
+  .site-navigation-link-current:hover {
+    background: #2d343b;
+    color: #d5e6fa;
+  }
 }
 
 /* トップページの機能紹介は、各項目を一文ずつ落ち着いて読める行間にする。 */
