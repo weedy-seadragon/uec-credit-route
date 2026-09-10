@@ -119,7 +119,18 @@ export default function AboutPage() {
 
       {/* β版の動作確認や改善提案に協力した人の名前を、後から追記できるようにする。 */}
       <section>
-        <h2>βテスト協力者</h2>
+        <h2>βテスト協力者一覧（50音順）</h2>
+        <ul className="beta-testers">
+          <li><span>かわせみ</span><span>（電気通信大学 学部2年）</span></li>
+          <li><span>グオポン</span><span>（電気通信大学 学部2年）</span></li>
+          <li><span>こうちゃ</span><span>（電気通信大学 学部2年）</span></li>
+          <li><span>サンバ</span><span>（電気通信大学 学部2年）</span></li>
+          <li><span>柴犬被り</span><span>（電気通信大学 学部2年）</span></li>
+          <li><span>トラマト</span><span>（電気通信大学 学部2年）</span></li>
+          <li><span>のみのみあのみ</span><span>（電気通信大学 学部2年）</span></li>
+          <li><span>匿名（1名）</span><span>（電気通信大学 学部2年）</span></li>
+        </ul>
+        <p>本当にありがとうございました！</p>
       </section>
     </main>
   )

@@ -286,6 +286,21 @@ select {
   padding-bottom: 4rem;
 }
 
+/* 協力者の名前と所属を別列にし、所属の括弧が縦に揃う一覧にする。 */
+.beta-testers {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.8rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.beta-testers > li {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  gap: 1rem;
+}
+
 .about-data-status h2 {
   margin: 0 0 0.45rem;
   font-size: 1.05rem;
