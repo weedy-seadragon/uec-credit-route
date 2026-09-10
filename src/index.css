@@ -25,8 +25,8 @@ body {
 /* 各画面へのリンクは、文字列全体を押せるメニュー項目にし、横の境界線で項目の区切りを示す。 */
 .site-navigation-link {
   display: grid;
-  flex: 1 1 9rem;
-  min-height: 4.15rem;
+  flex: 1 1 8.5rem;
+  min-height: 3rem;
   padding: 0.15rem 0.7rem;
   place-items: center;
   border-right: 1px solid #d8dce0;
@@ -66,10 +66,37 @@ body {
   outline-offset: -3px;
 }
 
-/* 狭い画面ではタブを2列にし、横幅不足で文字が読みにくくなるのを防ぐ。 */
+/* スマホではタブを1段目3項目・2段目2項目にし、コンパクトさと読みやすさを両立する。 */
 @media (max-width: 34rem) {
   .site-navigation-link {
-    flex-basis: 50%;
+    flex-basis: 33.333%;
+  }
+}
+
+/* ダークモードでは白い帯が浮かないよう、背景・区切り線・文字色を黒系へ切り替える。 */
+@media (prefers-color-scheme: dark) {
+  .site-navigation {
+    border-bottom-color: #3d4248;
+    background: #17191b;
+    box-shadow: 0 2px 5px color-mix(in srgb, black 50%, transparent);
+  }
+
+  .site-navigation-link {
+    border-right-color: #3d4248;
+    background: #17191b;
+    color: #e8ebed;
+  }
+
+  .site-navigation-link-current {
+    border-bottom-color: #8caad0;
+    background: #252a2f;
+    color: #bcd6f3;
+  }
+
+  .site-navigation-link:hover,
+  .site-navigation-link-current:hover {
+    background: #2d343b;
+    color: #d5e6fa;
   }
 }
 
