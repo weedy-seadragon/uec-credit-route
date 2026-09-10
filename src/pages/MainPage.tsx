@@ -746,7 +746,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     // 重複が確定した科目名の組を利用者へ示す。候補が1つでも空いている科目はここに含まれない。
     if (conflicts.length > 0) {
       const pairs = conflicts.map(({ firstCode, secondCode }) => `${nameOf(firstCode)}・${nameOf(secondCode)}`)
-      setScheduleWarning(`時限が重複している修得予定の科目があります：${pairs.join('／')}`)
+      setScheduleWarning(`時限が重複している修得見込の科目があります：${pairs.join('／')}`)
     } else {
       setScheduleWarning(null)
     }
@@ -1350,7 +1350,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         {/* 科目として修得した分だけでなく、科目番号を持たない認定分も取得単位に含める。 */}
         <h2>
           修得した単位（{earnedTotalCredits}単位
-          {plannedCredits > 0 && <span className="planned-credit"> + {plannedCredits}単位（修得予定）</span>}）
+          {plannedCredits > 0 && <span className="planned-credit"> + {plannedCredits}単位（修得見込）</span>}）
         </h2>
         {(() => {
         // 共通単位が0のときは空の見出しを出さない。その他単位認定だけを取得した場合も内訳を表示する。
@@ -1433,10 +1433,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         )}
       </section>
 
-      {/* 修得予定は確定済みの修得単位と不合格科目の間に置き、現在地と見込みを続けて確認できるようにする。 */}
+      {/* 修得見込は確定済みの修得単位と不合格科目の間に置き、現在地と見込みを続けて確認できるようにする。 */}
       <section className="requirement-section planned-section">
-        <h2>修得予定の単位（{plannedCredits}単位）</h2>
-        <p className="section-guidance">修得予定の科目をすべて修得できた場合、黄色で示した予定単位が各区分・審査の計算に反映されます。</p>
+        <h2>修得見込の単位（{plannedCredits}単位）</h2>
+        <p className="section-guidance">修得見込の科目をすべて修得できた場合、黄色で示した見込単位が各区分・審査の計算に反映されます。</p>
         {plannedByCategory.map(({ label, group, items }) => (
           <div key={group?.id ?? label}>
             <h3>{label}</h3>
@@ -1748,7 +1748,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                   {r.satisfied
                     ? ' ✔ 合格見込み'
                     : r.projectedSatisfied
-                      ? ' △ 修得予定のものをすべて修得したら合格'
+                      ? ' △ 修得見込のものをすべて修得したら合格'
                       : ' ✖ 不足あり'}
                   {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
                   {r.caveat && <p style={{ fontSize: '0.9em', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
@@ -2132,7 +2132,7 @@ function GroupProgress({
         <span className="elective-group-progress">
           {group.contribution}/{group.required}単位
           {group.projectedContribution > group.contribution && (
-            <span className="planned-credit"> → {group.projectedContribution}/{group.required}単位（修得予定）</span>
+            <span className="planned-credit"> → {group.projectedContribution}/{group.required}単位（修得見込）</span>
           )}
         </span>
         <span className="elective-group-status">

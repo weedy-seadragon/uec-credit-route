@@ -41,7 +41,7 @@ function ReleaseNoteHistory({ children }: { children: ReactNode }) {
 
   return (
     <details ref={detailsRef} className="release-note-history">
-      <summary>過去のアップデート(β版)を見る（10件）</summary>
+      <summary>過去のアップデートを見る（11件）</summary>
       {children}
       {isStickyCloseVisible && (
         <button
@@ -56,7 +56,7 @@ function ReleaseNoteHistory({ children }: { children: ReactNode }) {
             summary.scrollIntoView({ block: 'start', behavior: 'smooth' })
           }}
         >
-          過去のアップデート(β版)を閉じる ↑
+          過去のアップデートを閉じる ↑
         </button>
       )}
     </details>
@@ -119,9 +119,23 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section className="release-notes-section">
         <h2>リリースノート</h2>
+        {/* Ver.1.0.1では、履修状態の呼び方と画面上部の操作性を利用者の意見に合わせて整えた。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(ver.1.0.0→1.0.1)</span>
+            <span className="release-note-date">アップデート日 2026/9/10</span>
+          </p>
+          <h3 className="release-note-category">表示の改善</h3>
+          <ul className="release-note-items">
+            <li>履修状態の「修得予定」を「修得見込」に変更し、履修予定との違いを分かりやすくしました</li>
+            <li>画面上部のナビゲーションをコンパクトなタブ表示に変更し、ライト／ダークモードそれぞれの配色になじむようにしました</li>
+          </ul>
+        </div>
         {/* 正式版の公開日は、通常の更新内容と区別して独立した記念プレートで示す。 */}
         <p className="release-note-formal">正式版リリース 2026/9/9</p>
-        {/* 正式版では、β版で行った判定・表示・操作性の改善をまとめて公開する。 */}
+        {/* 以前の更新は正式版への移行を含め、必要なときだけ開ける履歴にまとめる。 */}
+        <ReleaseNoteHistory>
+        {/* 正式版では、β版で行った判定・表示・操作性の改善をまとめて公開した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
             <span>・アップデート(ver.β2.6→Ver.1.0.0)</span>
@@ -133,8 +147,6 @@ export default function TopPage() {
             <li>科目詳細から要件上の区分へ戻る導線と、トップ画面の目的別入口を追加しました</li>
           </ul>
         </div>
-        {/* 最新版だけを最初から読めるようにし、それ以前の更新は必要なときだけ開けるようにする。 */}
-        <ReleaseNoteHistory>
         {/* 2.6では、入力内容の確認・夜間主コース・開講情報の表示を中心に改善した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -205,13 +217,13 @@ export default function TopPage() {
           <li>他類専門科目の専門科目認定を、単位数・科目数ごとに入力できるようにしました</li>
           <li>情報通信工学プログラムの一部選択科目で、曜日時限とシラバスリンクが表示されない問題を修正しました</li>
           <li>同じ類の他プログラム科目と、他類の専門科目の扱いを分かりやすく整理しました</li>
-          <li>修得予定の時限が確実に重複する場合、更新時に注意を表示するようにしました</li>
-          <li>修得した単位・修得予定・不合格科目の表示順と色を見やすく調整しました</li>
+          <li>修得見込の時限が確実に重複する場合、更新時に注意を表示するようにしました</li>
+          <li>修得した単位・修得見込・不合格科目の表示順と色を見やすく調整しました</li>
           <li>開講情報が未登録の科目は曜日時限の注記を表示せず、日本文化Ｅは2026年度開講なしと分かるようにしました</li>
           <li>日本文化Ａ〜Ｅを、学期順ではなくＡ〜Ｅ順で表示するようにしました</li>
           </ul>
         </div>
-        {/* β2.4では、修得予定を実績と分けて記録・見込み計算できるようにした。 */}
+        {/* β2.4では、修得見込を実績と分けて記録・見込み計算できるようにした。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
           <span>・アップデート(ver.β2.3→β2.4)</span>
@@ -219,14 +231,14 @@ export default function TopPage() {
         </p>
         <h3 className="release-note-category">機能変更</h3>
         <ul className="release-note-items">
-          <li>科目の状態に「修得予定」を追加しました</li>
-          <li>修得予定の単位を、取得単位・残りの必修・選択科目・審査の見込み計算に反映するようにしました</li>
-          <li>修得予定の科目を一覧でまとめて確認・変更できるようにしました</li>
+          <li>科目の状態に「修得見込」を追加しました</li>
+          <li>修得見込の単位を、取得単位・残りの必修・選択科目・審査の見込み計算に反映するようにしました</li>
+          <li>修得見込の科目を一覧でまとめて確認・変更できるようにしました</li>
         </ul>
         <h3 className="release-note-category">見た目の変更</h3>
         <ul className="release-note-items">
-          <li>修得予定による単位の増減や達成予定を、黄色で見分けやすく表示するようにしました</li>
-          <li>不合格・修得予定・残りの必修の一覧を整理しました</li>
+          <li>修得見込による単位の増減や達成見込を、黄色で見分けやすく表示するようにしました</li>
+          <li>不合格・修得見込・残りの必修の一覧を整理しました</li>
           </ul>
         </div>
         {/* β2.3では、プログラム未定のままでも共通科目と進級審査を確認できるようにした。 */}
