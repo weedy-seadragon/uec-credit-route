@@ -297,7 +297,8 @@ select {
 
 .beta-testers > li {
   display: grid;
-  grid-template-columns: max-content max-content;
+  /* 行ごとの名前の長さではなく固定幅を使い、全員の所属の開始位置を揃える。 */
+  grid-template-columns: 10em max-content;
   gap: 1rem;
 }
 
