@@ -71,6 +71,11 @@ body {
   .site-navigation-link {
     flex-basis: 33.333%;
   }
+
+  /* 2段目の項目だけ上に細い線を置き、メニューが折り返されていることを分かりやすくする。 */
+  .site-navigation-link:nth-child(n + 4) {
+    border-top: 1px solid #d8dce0;
+  }
 }
 
 /* ダークモードでは白い帯が浮かないよう、背景・区切り線・文字色を黒系へ切り替える。 */
@@ -85,6 +90,13 @@ body {
     border-right-color: #3d4248;
     background: #17191b;
     color: #e8ebed;
+  }
+
+  /* ダークモードでは、2段目との区切り線も周囲になじむ暗い色にする。 */
+  @media (max-width: 34rem) {
+    .site-navigation-link:nth-child(n + 4) {
+      border-top-color: #3d4248;
+    }
   }
 
   .site-navigation-link-current {
