@@ -41,7 +41,7 @@ function ReleaseNoteHistory({ children }: { children: ReactNode }) {
 
   return (
     <details ref={detailsRef} className="release-note-history">
-      <summary>過去のアップデート(β版)を見る（10件）</summary>
+      <summary>過去のアップデートを見る（11件）</summary>
       {children}
       {isStickyCloseVisible && (
         <button
@@ -56,7 +56,7 @@ function ReleaseNoteHistory({ children }: { children: ReactNode }) {
             summary.scrollIntoView({ block: 'start', behavior: 'smooth' })
           }}
         >
-          過去のアップデート(β版)を閉じる ↑
+          過去のアップデートを閉じる ↑
         </button>
       )}
     </details>
@@ -119,8 +119,6 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section className="release-notes-section">
         <h2>リリースノート</h2>
-        {/* 正式版の公開日は、通常の更新内容と区別して独立した記念プレートで示す。 */}
-        <p className="release-note-formal">正式版リリース 2026/9/9</p>
         {/* Ver.1.0.1では、履修状態の呼び方と画面上部の操作性を利用者の意見に合わせて整えた。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -133,7 +131,11 @@ export default function TopPage() {
             <li>画面上部のナビゲーションをコンパクトなタブ表示に変更し、ライト／ダークモードそれぞれの配色になじむようにしました</li>
           </ul>
         </div>
-        {/* 正式版では、β版で行った判定・表示・操作性の改善をまとめて公開する。 */}
+        {/* 正式版の公開日は、通常の更新内容と区別して独立した記念プレートで示す。 */}
+        <p className="release-note-formal">正式版リリース 2026/9/9</p>
+        {/* 以前の更新は正式版への移行を含め、必要なときだけ開ける履歴にまとめる。 */}
+        <ReleaseNoteHistory>
+        {/* 正式版では、β版で行った判定・表示・操作性の改善をまとめて公開した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
             <span>・アップデート(ver.β2.6→Ver.1.0.0)</span>
@@ -145,8 +147,6 @@ export default function TopPage() {
             <li>科目詳細から要件上の区分へ戻る導線と、トップ画面の目的別入口を追加しました</li>
           </ul>
         </div>
-        {/* 最新版だけを最初から読めるようにし、それ以前の更新は必要なときだけ開けるようにする。 */}
-        <ReleaseNoteHistory>
         {/* 2.6では、入力内容の確認・夜間主コース・開講情報の表示を中心に改善した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
