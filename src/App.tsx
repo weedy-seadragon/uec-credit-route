@@ -9,7 +9,7 @@
 // 対応表になっている。`element={<SetupPage />}` の部分は「このコンポーネントをレンダリングせよ」
 // という指定で、C++でいう関数ポインタを渡すようなイメージに近い。
 import { lazy, Suspense } from 'react'
-import { HashRouter, Link, Route, Routes } from 'react-router-dom'
+import { HashRouter, NavLink, Route, Routes } from 'react-router-dom'
 
 // lazyは、画面のファイルを最初から全て読み込まず、その画面へ移動するときにだけ取得するReactの仕組み。
 // 科目データを使う重い画面を後回しにして、トップページの最初の表示を軽くする。
@@ -26,14 +26,33 @@ function PageLoading() {
   return <main className="page-loading">画面を読み込んでいます…</main>
 }
 
+// ヘッダーに常に出す主要画面への入口。配列にまとめると、表示順とリンク先を一か所で管理できる。
+const navigationItems = [
+  { to: '/', label: 'トップ' },
+  { to: '/setup', label: 'プロフィール設定' },
+  { to: '/main', label: 'メイン画面' },
+  { to: '/courses', label: '科目一覧' },
+  { to: '/about', label: 'このサイトについて' },
+]
+
 function App() {
   return (
     <HashRouter>
-      {/* ナビゲーションは仮のもの。フェーズ2-4以降で見た目を整える */}
-      <nav>
-        <Link to="/">トップ</Link> | <Link to="/setup">プロフィール設定</Link> |{' '}
-        <Link to="/main">メイン画面</Link> | <Link to="/courses">科目一覧</Link> |{' '}
-        <Link to="/about">このサイトについて</Link>
+      {/* NavLinkは現在開いている画面を判別できるリンク。選択中のタブだけ見た目を変えるために使う。 */}
+      <nav className="site-navigation" aria-label="サイト内ナビゲーション">
+        {navigationItems.map(({ to, label }) => (
+          // 各リンクは帯の中で独立したタブとして扱い、スマホでも押しやすい大きさにする。
+          <NavLink
+            key={to}
+            to={to}
+            end={to === '/'}
+            className={({ isActive }) =>
+              `site-navigation-link${isActive ? ' site-navigation-link-current' : ''}`
+            }
+          >
+            {label}
+          </NavLink>
+        ))}
       </nav>
       {/* Suspenseはlazyで読み込み中の画面に代わって、利用者へ短い案内を表示する。 */}
       <Suspense fallback={<PageLoading />}>

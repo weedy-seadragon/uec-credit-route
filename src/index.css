@@ -10,11 +10,68 @@ body {
   padding: 0.5rem 1rem;
 }
 
-/* ナビゲーションのリンクは指でタップしやすいよう、上下左右に少し余白を持たせる
-   （リンクの周りの空白部分もタップできるように display: inline-block にする） */
-nav a {
-  display: inline-block;
-  padding: 0.3em 0.15em;
+/* 上部ナビゲーションは、攻略サイトのように項目を区切った帯にして画面の入口を見つけやすくする。 */
+.site-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: -0.5rem -1rem 1.2rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 3px solid #d9d900;
+  background: linear-gradient(135deg, #1d4e7b, #306c9e);
+  box-shadow: 0 2px 6px color-mix(in srgb, #102c46 35%, transparent);
+}
+
+/* 各画面へのリンクは、背景と枠で独立したタブに見せつつ、文字列全体を押せるようにする。 */
+.site-navigation-link {
+  display: grid;
+  flex: 1 1 8.5rem;
+  min-height: 2.45rem;
+  padding: 0.1rem 0.8rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, white 55%, transparent);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, #0d3153 32%, transparent);
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+/* 現在表示している画面は明るいタブにして、現在地を一目で分かるようにする。 */
+.site-navigation-link-current {
+  border-color: #fff;
+  background: #fff;
+  color: #1d4e7b;
+}
+
+/* マウス操作時には少し浮かせ、押せる要素であることを伝える。 */
+.site-navigation-link:hover {
+  background: color-mix(in srgb, #fff 26%, transparent);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* 選択中タブでもホバーで文字色が変わらないよう、現在地の見た目を保つ。 */
+.site-navigation-link-current:hover {
+  background: #fff;
+  color: #1d4e7b;
+}
+
+/* キーボード操作でも、どのリンクを選んでいるか分かる輪郭を表示する。 */
+.site-navigation-link:focus-visible {
+  outline: 3px solid #d9d900;
+  outline-offset: 2px;
+}
+
+/* 狭い画面ではタブを2列にし、横幅不足で文字が読みにくくなるのを防ぐ。 */
+@media (max-width: 34rem) {
+  .site-navigation-link {
+    flex-basis: calc(50% - 0.35rem);
+  }
 }
 
 /* トップページの機能紹介は、各項目を一文ずつ落ち着いて読める行間にする。 */
