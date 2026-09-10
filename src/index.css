@@ -12,6 +12,7 @@ body {
 
 /* 上部ナビゲーションは、項目を薄い枠線で区切ったフラットなメニューにして画面の入口を見つけやすくする。 */
 .site-navigation {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 0;
@@ -72,9 +73,16 @@ body {
     flex-basis: 33.333%;
   }
 
-  /* 2段目の項目だけ上に細い線を置き、メニューが折り返されていることを分かりやすくする。 */
-  .site-navigation-link:nth-child(n + 4) {
-    border-top: 1px solid #d8dce0;
+  /* 帯全体を横切る線にして、2段のメニューの境目を最後の空白部分まで分かりやすくする。 */
+  .site-navigation::after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: 0;
+    height: 1px;
+    background: #c7cdd3;
+    content: '';
+    pointer-events: none;
   }
 }
 
@@ -94,8 +102,8 @@ body {
 
   /* ダークモードでは、2段目との区切り線も周囲になじむ暗い色にする。 */
   @media (max-width: 34rem) {
-    .site-navigation-link:nth-child(n + 4) {
-      border-top-color: #3d4248;
+    .site-navigation::after {
+      background: #59616a;
     }
   }
 
