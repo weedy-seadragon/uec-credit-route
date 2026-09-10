@@ -108,13 +108,13 @@ export default function AboutPage() {
       {/* サイトの目的を読んだ後に、制作担当を簡潔に確認できる順番で置く。 */}
       <section>
         <h2>サイト制作</h2>
-        <p>あず（電気通信大学 学部2年）</p>
+        <p className="creator-credit"><span>あず</span><span>（電気通信大学 学部2年）</span></p>
       </section>
 
       {/* 制作担当の情報と分けて、アイコンイラストの担当者を後から記載できるようにする。 */}
       <section>
         <h2>アイコンのイラスト制作</h2>
-        <p>マシーン・ヨーテボリ（明治大学 学部2年）</p>
+        <p className="creator-credit"><span>マシーン・ヨーテボリ</span><span>（明治大学 学部2年）</span></p>
       </section>
 
       {/* β版の動作確認や改善提案に協力した人の名前を、後から追記できるようにする。 */}

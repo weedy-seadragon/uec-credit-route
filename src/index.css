@@ -302,6 +302,13 @@ select {
   gap: 1rem;
 }
 
+/* 制作担当も協力者一覧と同じ列幅にして、所属の開始位置を揃える。 */
+.creator-credit {
+  display: grid;
+  grid-template-columns: 10em max-content;
+  gap: 1rem;
+}
+
 .about-data-status h2 {
   margin: 0 0 0.45rem;
   font-size: 1.05rem;
