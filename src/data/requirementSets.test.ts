@@ -68,4 +68,15 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(getSubjectsByCode(2024).get('MTHb01c')).toEqual(getSubjectsByCode(2025).get('MTHb01c'))
     expect(set2024?.totalCredits).toBe(set2025?.totalCredits)
   })
+
+  it('自プログラムの同名科目がある他プログラム科目は選択肢から除く', () => {
+    // CS必修のCOM501dと同じ授業であるCOM502aを、類専門（選択）からも選べる状態にしない。
+    const requirementSet = getRequirementSet(2025, 'day', 'I', 'cs')
+    const major = requirementSet?.groups.find((group) => group.id === 'specialized')?.children?.find((group) => group.id === 'major')
+    const required = major?.children?.find((group) => group.id === 'major-req')
+    const elective = major?.children?.find((group) => group.id === 'major-sel')
+
+    expect(required?.subjects).toContain('COM501d')
+    expect(elective?.subjects).not.toContain('COM502a')
+  })
 })

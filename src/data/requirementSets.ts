@@ -12,6 +12,7 @@
 // resolveJsonModule で型チェックも通るようにしている）。
 
 import type { GroupKind, RequirementGroup, RequirementSet, ReviewDef } from '../domain/requirements'
+import { isSameClusterOtherProgramSubject } from '../domain/programSuffix'
 import common from '../../data/requirements/2025-day-common.json'
 import media from '../../data/requirements/2025-day-I-media.json'
 import management from '../../data/requirements/2025-day-I-management.json'
@@ -116,6 +117,34 @@ function applyCommonOverrides(groups: readonly RequirementGroup[], overrides: Re
   })
 }
 
+/** 自プログラムに同名科目がある他プログラム科目を、要件の選択肢から除く。 */
+function removeSameNamedOtherProgramSubjects(
+  groups: readonly RequirementGroup[],
+  entryYear: number,
+  programSuffix: string,
+  cluster: ProgramDoc['cluster'],
+): RequirementGroup[] {
+  // 夜間主のように類・プログラムの比較対象がない場合は、要件データをそのまま使う。
+  if (!cluster) return [...groups]
+  const subjectsByCode = getSubjectsByCode(entryYear)
+  const ownProgramNames = new Set(
+    [...subjectsByCode.values()]
+      .filter((subject) => subject.code.endsWith(programSuffix))
+      .map((subject) => subject.name),
+  )
+  // グループ木を複製しながら、同名の他プログラム科目だけを各科目リストから取り除く。
+  return groups.map((group) => {
+    const subjects = group.subjects?.filter((code) => {
+      const name = subjectsByCode.get(code)?.name
+      return !isSameClusterOtherProgramSubject(code, programSuffix, cluster) || !name || !ownProgramNames.has(name)
+    })
+    const children = group.children
+      ? removeSameNamedOtherProgramSubjects(group.children, entryYear, programSuffix, cluster)
+      : undefined
+    return { ...group, ...(subjects ? { subjects } : {}), ...(children ? { children } : {}) }
+  })
+}
+
 // JSONを`import`すると型は自動推論されるが、要件セットの木構造（children等）まではTypeScriptには
 // 分からないので、ここで RequirementGroup[] であることを明示しておく（as で型を指定し直している）。
 type CommonDoc = { groups: RequirementGroup[]; commonCreditSources?: { alwaysCommon?: string[] } }
@@ -167,14 +196,15 @@ export function getRequirementSet(entryYear: number, course: string, cluster: st
   // プログラム固有のcommonOverridesがあれば適用）とプログラム別ファイルのgroups（専門科目）を
   // 1つの配列にまとめて、evaluateRequirements() にそのまま渡せる形にする
   const commonDoc = commonDocsByYear.get(dataEntryYear)
+  const programGroups = removeSameNamedOtherProgramSubjects(doc.groups, entryYear, doc.programSuffix, doc.cluster)
   let groups: RequirementGroup[]
   // 夜間主は自己完結、昼間は同年度の共通要件と専門要件を結合する。
   if (doc.course === 'evening') {
-    groups = [...doc.groups]
+    groups = programGroups
   } else {
     // 昼間共通要件がない年度は、専門要件だけを返して誤った年度の共通要件と混ぜない。
     if (!commonDoc) return undefined
-    groups = [...applyCommonOverrides(commonDoc.groups, doc.commonOverrides), ...doc.groups]
+    groups = [...applyCommonOverrides(commonDoc.groups, doc.commonOverrides), ...programGroups]
   }
 
   return {
