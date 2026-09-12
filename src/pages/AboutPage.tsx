@@ -105,6 +105,36 @@ export default function AboutPage() {
         </p>
       </section>
 
+      {/* 単位取得ルートナビと併用できる学生向けアプリを、サイト制作者の案内より前に紹介する。 */}
+      <section>
+        <h2>NEXUSリンク集</h2>
+        <p>
+          NEXUS for UECは電通大の学生が母体となる団体、bookmarkさんが開発したアプリです。
+          UECポータルや学務情報など大学関連のサイトへのリンクのほか、時間割機能も搭載しており、大学生活を便利にしてくれます。
+          こちらのサイトと合わせてご活用ください。
+        </p>
+        <ul>
+          <li>
+            Webサイト：
+            <a href="https://nexusforuec.team-bookmark.com/" target="_blank" rel="noopener noreferrer">
+              NEXUS for UEC
+            </a>
+          </li>
+          <li>
+            App Store：
+            <a href="https://apps.apple.com/jp/app/nexus-for-uec/id6759309164" target="_blank" rel="noopener noreferrer">
+              NEXUS for UECをApp Storeで見る
+            </a>
+          </li>
+          <li>
+            Google Play：
+            <a href="https://play.google.com/store/apps/details?id=com.bookmark.nexusforuec" target="_blank" rel="noopener noreferrer">
+              NEXUS for UECをGoogle Playで見る
+            </a>
+          </li>
+        </ul>
+      </section>
+
       {/* サイトの目的を読んだ後に、制作担当を簡潔に確認できる順番で置く。 */}
       <section>
         <h2>サイト制作</h2>
