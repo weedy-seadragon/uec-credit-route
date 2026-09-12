@@ -119,6 +119,21 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section className="release-notes-section">
         <h2>リリースノート</h2>
+        {/* Ver.1.0.2では、同じ授業の二重計上を防ぎ、関連サービスへの導線を追加した。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(ver.1.0.1→1.0.2)</span>
+            <span className="release-note-date">アップデート日 2026/9/12</span>
+          </p>
+          <h3 className="release-note-category">不具合修正</h3>
+          <ul className="release-note-items">
+            <li>同じ授業が「プログラム必修」と「類選択」などの複数箇所に表示される場合に、単位数が二重計上される不具合を修正しました</li>
+          </ul>
+          <h3 className="release-note-category">サイト情報の追加</h3>
+          <ul className="release-note-items">
+            <li>「このサイトについて」に、大学関連サイトへのリンクや時間割機能を利用できる「NEXUS for UEC」のWebサイト・App Store・Google Playへのリンクを追加しました</li>
+          </ul>
+        </div>
         {/* Ver.1.0.1では、履修状態の呼び方と画面上部の操作性を利用者の意見に合わせて整えた。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
