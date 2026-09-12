@@ -41,7 +41,7 @@ function ReleaseNoteHistory({ children }: { children: ReactNode }) {
 
   return (
     <details ref={detailsRef} className="release-note-history">
-      <summary>過去のアップデートを見る（11件）</summary>
+      <summary>β版のアップデートを見る（11件）</summary>
       {children}
       {isStickyCloseVisible && (
         <button
