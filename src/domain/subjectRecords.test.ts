@@ -7,6 +7,7 @@ describe('同名科目の履修記録の正規化', () => {
   const subjects = new Map([
     ['COM501d', { name: 'オペレーティングシステム論' }],
     ['COM502a', { name: 'オペレーティングシステム論' }],
+    ['ELE501g', { name: 'オペレーティングシステム論' }],
     ['COM503d', { name: '別の科目' }],
   ])
   const isOwnProgramSubject = (code: string) => code.endsWith('d')
@@ -41,5 +42,17 @@ describe('同名科目の履修記録の正規化', () => {
   it('優先する自プログラムの科目番号を同名科目から選ぶ', () => {
     // 他プログラム側のプルダウンを操作しても、CSのCOM501dを一貫して画面・集計に使う。
     expect(preferredSubjectCode('COM502a', subjects, isOwnProgramSubject, isSameClassProgramSubject)).toBe('COM501d')
+  })
+
+  it('別の類にある同名科目は別科目として保存したままにする', () => {
+    // 科目名だけで全学の科目を名寄せすると別授業まで消してしまうため、Ⅰ類以外のgは統合しない。
+    const result = normalizeDuplicateSubjectRecords(
+      new Map<string, SubjectStatus>([['COM501d', 'passed'], ['ELE501g', 'passed']]),
+      subjects,
+      isOwnProgramSubject,
+      isSameClassProgramSubject,
+    )
+
+    expect(result).toEqual(new Map([['COM501d', 'passed'], ['ELE501g', 'passed']]))
   })
 })

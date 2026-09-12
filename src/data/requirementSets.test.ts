@@ -1,6 +1,18 @@
 // 年度別に要件・科目マスタを切り替える入口を検証するテスト。
 import { describe, expect, it } from 'vitest'
+import { evaluateRequirements, type GroupResult } from '../domain/requirements'
 import { entryYearLabel, findSubjectUsages, findSubjectUsagesForProfile, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode } from './requirementSets'
+
+/** 判定結果のグループ木から、指定IDのグループを再帰的に探す。 */
+function findGroupById(groups: readonly GroupResult[], id: string): GroupResult | undefined {
+  // 現在の階層を順に調べ、子グループも同じ関数で探索する。
+  for (const group of groups) {
+    if (group.id === id) return group
+    const child = findGroupById(group.children, id)
+    if (child) return child
+  }
+  return undefined
+}
 
 describe('年度別の要件・科目マスタ選択', () => {
   it('2026年度の情報数理工学には再編後のMTHb01cを返す', () => {
@@ -78,5 +90,19 @@ describe('年度別の要件・科目マスタ選択', () => {
 
     expect(required?.subjects).toContain('COM501d')
     expect(elective?.subjects).not.toContain('COM502a')
+  })
+
+  it('CSの同名OS科目を両方修得としても、必修の2単位だけを算入する', () => {
+    // COM501d（CS必修）とCOM502a（他プログラム番号）を同時に渡しても、要件計算で4単位にしない。
+    const requirementSet = getRequirementSet(2025, 'day', 'I', 'cs')
+    expect(requirementSet).toBeDefined()
+    const result = evaluateRequirements(
+      requirementSet!,
+      new Map([['COM501d', 'passed' as const], ['COM502a', 'passed' as const]]),
+      getSubjectCredits(2025),
+    )
+
+    expect(findGroupById(result.groups, 'major-req')?.contribution).toBe(2)
+    expect(findGroupById(result.groups, 'major-sel')?.contribution).toBe(0)
   })
 })
