@@ -41,7 +41,7 @@ function ReleaseNoteHistory({ children }: { children: ReactNode }) {
 
   return (
     <details ref={detailsRef} className="release-note-history">
-      <summary>β版のアップデートを見る（11件）</summary>
+      <summary>過去のアップデートを見る（12件）</summary>
       {children}
       {isStickyCloseVisible && (
         <button
@@ -134,6 +134,8 @@ export default function TopPage() {
             <li>「このサイトについて」に、大学関連サイトへのリンクや時間割機能を利用できる「NEXUS for UEC」のWebサイト・App Store・Google Playへのリンクを追加しました</li>
           </ul>
         </div>
+        {/* 最新のVer.1.0.2以外の更新は、正式版リリースより上の履歴にまとめる。 */}
+        <ReleaseNoteHistory>
         {/* Ver.1.0.1では、履修状態の呼び方と画面上部の操作性を利用者の意見に合わせて整えた。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -146,10 +148,6 @@ export default function TopPage() {
             <li>画面上部のナビゲーションをコンパクトなタブ表示に変更し、ライト／ダークモードそれぞれの配色になじむようにしました</li>
           </ul>
         </div>
-        {/* 正式版の公開日は、通常の更新内容と区別して独立した記念プレートで示す。 */}
-        <p className="release-note-formal">正式版リリース 2026/9/9</p>
-        {/* 以前の更新は正式版への移行を含め、必要なときだけ開ける履歴にまとめる。 */}
-        <ReleaseNoteHistory>
         {/* 正式版では、β版で行った判定・表示・操作性の改善をまとめて公開した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -333,6 +331,8 @@ export default function TopPage() {
           <p className="release-note-items">サイトのデザインを一新しました</p>
         </div>
         </ReleaseNoteHistory>
+        {/* 正式版の公開日は、更新履歴と区別して独立した記念プレートで示す。 */}
+        <p className="release-note-formal">正式版リリース 2026/9/9</p>
         {/* 初回リリース日は更新内容と混ざらないよう、独立した枠で表示する。 */}
         <p className="release-note-initial">β版リリース 2026/9/7</p>
       </section>
