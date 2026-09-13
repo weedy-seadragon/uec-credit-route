@@ -276,8 +276,6 @@
               "required": 0,
               "subjects": [
                 "COM504a",
-                "COM002a",
-                "COM003a",
                 "INSa01a",
                 "INSa02a",
                 "COMa01a",
@@ -291,9 +289,8 @@
                 "INSb01a",
                 "ELEb01a",
                 "MTHb01a",
-                "MTHb02a",
-                "MTHb03a",
-                "LAB501a"
+                "MTHb02b",
+                "MTHb03b"
               ],
               "kind": "free",
               "countsTowardGraduation": false,

@@ -84,6 +84,27 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(getSubjectsByCode(2023).get('COM603a')).toEqual(getSubjectsByCode(2024).get('COM603a'))
   })
 
+  it('2023年度のⅠ類は情報工学工房が分割されておらず、メディア情報学は経営・社会情報学の番号を参照する', () => {
+    // 2026-09-14訂正：情報工学工房B・C（COM002x/COM003x）とGLTPラボワーク（LAB501x）は2024年度新設。
+    // メディア情報学の現代代数学・数理解析学は自分専用の番号を持たず、経営・社会情報学の番号（MTHb02b/03b）を使う。
+    const media2023 = getRequirementSet(2023, 'day', 'I', 'media')
+    const free2023 = media2023?.groups.find((g) => g.id === 'specialized')?.children
+      ?.find((g) => g.id === 'major')?.children?.find((g) => g.id === 'major-free')
+
+    expect(getSubjectsByCode(2023).get('COM001a')?.name).toBe('情報工学工房')
+    expect(free2023?.subjects).not.toContain('COM002a')
+    expect(free2023?.subjects).not.toContain('LAB501a')
+    expect(free2023?.subjects).toContain('MTHb02b')
+    expect(getSubjectsByCode(2023).get('MTHb02a')).toBeUndefined()
+
+    const media2024 = getRequirementSet(2024, 'day', 'I', 'media')
+    const free2024 = media2024?.groups.find((g) => g.id === 'specialized')?.children
+      ?.find((g) => g.id === 'major')?.children?.find((g) => g.id === 'major-free')
+    expect(getSubjectsByCode(2024).get('COM001a')?.name).toBe('情報工学工房A')
+    expect(free2024?.subjects).toContain('COM002a')
+    expect(free2024?.subjects).toContain('MTHb02a')
+  })
+
   it('2022年度は旧カリキュラムのⅠ類単位配分を参照し、後設プログラムを表示しない', () => {
     // 2022年度は理数基礎20単位・専門78単位であり、デザイン思考・データサイエンスはまだ存在しない。
     const media2022 = getRequirementSet(2022, 'day', 'I', 'media')

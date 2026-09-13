@@ -278,8 +278,6 @@
               "required": 0,
               "subjects": [
                 "COM508c",
-                "COM002c",
-                "COM003c",
                 "COMa01c",
                 "COMa02c",
                 "MTHa01c",
@@ -290,8 +288,7 @@
                 "MTHb01c",
                 "MTHb02c",
                 "MTHb03c",
-                "MTHb04c",
-                "LAB501c"
+                "MTHb04c"
               ],
               "kind": "free",
               "countsTowardGraduation": false,

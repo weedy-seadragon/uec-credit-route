@@ -275,8 +275,6 @@
               "required": 0,
               "subjects": [
                 "COM503b",
-                "COM002b",
-                "COM003b",
                 "INSa01b",
                 "MSSa01b",
                 "MSSa02b",
@@ -288,8 +286,7 @@
                 "ELEb01b",
                 "MTHb01b",
                 "MTHb02b",
-                "MTHb03b",
-                "LAB501b"
+                "MTHb03b"
               ],
               "kind": "free",
               "countsTowardGraduation": false,

@@ -3668,7 +3668,7 @@
     },
     {
       "code": "COM001a",
-      "name": "情報工学工房A",
+      "name": "情報工学工房",
       "credits": 2,
       "field": "COM",
       "standardSemester": null,
@@ -3698,7 +3698,7 @@
     },
     {
       "code": "COM001b",
-      "name": "情報工学工房A",
+      "name": "情報工学工房",
       "credits": 2,
       "field": "COM",
       "standardSemester": null,
@@ -3728,7 +3728,7 @@
     },
     {
       "code": "COM001c",
-      "name": "情報工学工房A",
+      "name": "情報工学工房",
       "credits": 2,
       "field": "COM",
       "standardSemester": null,
@@ -3758,7 +3758,7 @@
     },
     {
       "code": "COM001d",
-      "name": "情報工学工房A",
+      "name": "情報工学工房",
       "credits": 2,
       "field": "COM",
       "standardSemester": null,
@@ -3788,7 +3788,7 @@
     },
     {
       "code": "COM001e",
-      "name": "情報工学工房A",
+      "name": "情報工学工房",
       "credits": 2,
       "field": "COM",
       "standardSemester": null,
@@ -3811,306 +3811,6 @@
             "小泉　直也"
           ],
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124302.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "情報工学工房B"
-    },
-    {
-      "code": "COM002a",
-      "name": "情報工学工房B",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "通年",
-      "offerings": [
-        {
-          "timetableCode": "21124303",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "小泉　直也"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124303.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "情報工学工房A"
-    },
-    {
-      "code": "COM002b",
-      "name": "情報工学工房B",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "通年",
-      "offerings": [
-        {
-          "timetableCode": "21124303",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "小泉　直也"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124303.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "情報工学工房A"
-    },
-    {
-      "code": "COM002c",
-      "name": "情報工学工房B",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "通年",
-      "offerings": [
-        {
-          "timetableCode": "21124303",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "小泉　直也"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124303.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "情報工学工房A"
-    },
-    {
-      "code": "COM002d",
-      "name": "情報工学工房B",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "通年",
-      "offerings": [
-        {
-          "timetableCode": "21124303",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "小泉　直也"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124303.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "情報工学工房A"
-    },
-    {
-      "code": "COM002e",
-      "name": "情報工学工房B",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "通年",
-      "offerings": [
-        {
-          "timetableCode": "21124303",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "小泉　直也"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124303.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "情報工学工房A"
-    },
-    {
-      "code": "COM003a",
-      "name": "情報工学工房C",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "通年",
-      "offerings": [
-        {
-          "timetableCode": "21124304",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "小泉　直也"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124304.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "情報工学工房B"
-    },
-    {
-      "code": "COM003b",
-      "name": "情報工学工房C",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "通年",
-      "offerings": [
-        {
-          "timetableCode": "21124304",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "小泉　直也"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124304.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "情報工学工房B"
-    },
-    {
-      "code": "COM003c",
-      "name": "情報工学工房C",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "通年",
-      "offerings": [
-        {
-          "timetableCode": "21124304",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "小泉　直也"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124304.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "情報工学工房B"
-    },
-    {
-      "code": "COM003d",
-      "name": "情報工学工房C",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "通年",
-      "offerings": [
-        {
-          "timetableCode": "21124304",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "小泉　直也"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124304.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "情報工学工房B"
-    },
-    {
-      "code": "COM003e",
-      "name": "情報工学工房C",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "通年",
-      "offerings": [
-        {
-          "timetableCode": "21124304",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "小泉　直也"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124304.html",
           "updatedAt": "2026-09-07"
         }
       ],
@@ -37056,156 +36756,6 @@
       "prerequisitesText": "韓国朝鮮語第一・韓国朝鮮語第二・韓国朝鮮語（運用）演習　または、これに相当する語学能力があること"
     },
     {
-      "code": "LAB501a",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "GLTP学生のみ履修可",
-      "offerings": [
-        {
-          "timetableCode": "21124129",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "山﨑　匡"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124129.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501b",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "GLTP学生のみ履修可",
-      "offerings": [
-        {
-          "timetableCode": "21124129",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "山﨑　匡"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124129.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501c",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "GLTP学生のみ履修可",
-      "offerings": [
-        {
-          "timetableCode": "21124129",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "山﨑　匡"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124129.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501d",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "GLTP学生のみ履修可",
-      "offerings": [
-        {
-          "timetableCode": "21124129",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "山﨑　匡"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124129.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501e",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "note": "GLTP学生のみ履修可",
-      "offerings": [
-        {
-          "timetableCode": "21124129",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "山﨑　匡"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124129.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
       "code": "LAB501f",
       "name": "GLTPラボワーク",
       "credits": 1,
@@ -51420,22 +50970,6 @@
       ]
     },
     {
-      "code": "MTHb02a",
-      "name": "現代代数学",
-      "credits": 2,
-      "field": "MTH",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": null,
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ],
-      "note": "偶数年度開講"
-    },
-    {
       "code": "MTHb02b",
       "name": "現代代数学",
       "credits": 2,
@@ -51511,22 +51045,6 @@
       "groups": [
         "major-free"
       ]
-    },
-    {
-      "code": "MTHb03a",
-      "name": "数理解析学",
-      "credits": 2,
-      "field": "MTH",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": null,
-      "eveningAllowed": true,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ],
-      "note": "奇数年度開講"
     },
     {
       "code": "MTHb03b",

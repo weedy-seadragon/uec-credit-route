@@ -249,6 +249,21 @@ def check_known_2023_values(
         if actual != expected_name:
             add_error(2023, f"{code} の科目名が期待と異なる: {actual!r} != {expected_name!r}")
 
+    # Ⅰ類5プログラム共通：情報工学工房B・C・GLTPラボワークは2024年度新設で2023年度には無い。
+    for suffix in ("a", "b", "c", "d"):
+        for code in (f"COM002{suffix}", f"COM003{suffix}", f"LAB501{suffix}"):
+            if code in subjects:
+                add_error(2023, f"2024年度に新設された科目が2023年度マスタに残っている: {code}")
+    if subjects.get("COM001a", {}).get("name") != "情報工学工房":
+        add_error(2023, "情報工学工房A（COM001a）は2024年度の名称のはず。2023年度は「情報工学工房」")
+    # メディア情報学だけ、現代代数学・数理解析学は経営・社会情報学の番号を参照する。
+    if "MTHb02a" in subjects or "MTHb03a" in subjects:
+        add_error(2023, "メディア情報学専用のMTHb02a/MTHb03aは2024年度新設で2023年度には無い")
+    media = programs["2023-day-I-media.json"]
+    media_free = next(group for group in walk(media["groups"]) if group["id"] == "major-free")
+    if not {"MTHb02b", "MTHb03b"} <= set(media_free["subjects"]):
+        add_error(2023, "メディア情報学の自由科目にMTHb02b/MTHb03b（経営・社会情報学の番号）が無い")
+
 
 def validate_year(year: int) -> tuple[int, int]:
     """1年度分の科目マスタ・共通要件・全プログラム要件をまとめて検証する。"""
