@@ -70,7 +70,7 @@ export default function TopPage() {
   return (
     <main>
       <h1>
-        電通大 単位取得ルートナビ(Ver.1.0.0) <small>最終更新日: {__BUILD_DATE__}</small>
+        電通大 単位取得ルートナビ(Ver.1.1.0) <small>最終更新日: {__BUILD_DATE__}</small>
       </h1>
       <p>
         電気通信大学 情報理工学域の学生向けに、「学年・類・プログラム・取得済み科目」を入力するだけで、
@@ -119,6 +119,24 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section className="release-notes-section">
         <h2>リリースノート</h2>
+        {/* Ver.1.1.0では、より前の入学年度の卒業要件を確認できるようにした。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(ver.1.0.2→1.1.0)</span>
+            <span className="release-note-date">アップデート日 2026/9/13</span>
+          </p>
+          <h3 className="release-note-category">入学年度対応</h3>
+          <ul className="release-note-items">
+            <li>2021年度以前・2022年度・2023年度入学生向けの卒業要件と科目データに対応しました</li>
+            <li>プロフィール設定と科目一覧で、2026年度から2021年度以前まで入学年度を選べるようにしました</li>
+            <li>2021・2022年度の旧カリキュラムについて、当時の実践教育科目・専門科目の必要単位を反映しました</li>
+          </ul>
+          <h3 className="release-note-category">入力・表示の改善</h3>
+          <ul className="release-note-items">
+            <li>入学年度を後から変更しても、入力済みの履修記録や単位認定を引き継ぐようにしました</li>
+            <li>入学年度の選択肢を新しい年度から順に表示するようにしました</li>
+          </ul>
+        </div>
         {/* Ver.1.0.2では、同じ授業の二重計上を防ぎ、関連サービスへの導線を追加した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -135,7 +153,7 @@ export default function TopPage() {
           </ul>
         </div>
         {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（1件）">
+        <ReleaseNoteHistory summary="過去のアップデートを見る（2件）">
         {/* Ver.1.0.1では、履修状態の呼び方と画面上部の操作性を利用者の意見に合わせて整えた。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
