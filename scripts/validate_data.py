@@ -216,17 +216,38 @@ def check_known_2024_differences(
         add_error(2024, "デザイン思考・データサイエンスの必修にデザイン思考概論・システム思考概論が無い")
 
 
-def check_known_2023_values(programs: dict[str, dict[str, Any]]) -> None:
-    """PDF照合した2023年度のデザイン思考・データサイエンスの単位配分を検査する。"""
+def check_known_2023_values(
+    subjects: dict[str, dict[str, Any]],
+    programs: dict[str, dict[str, Any]],
+) -> None:
+    """PDF画像で照合した2023年度のデザイン思考・データサイエンスの単位配分を検査する。
+
+    2026-09-14訂正：この関数は元々「2024年度と同じ必修19・選択17」という誤った期待値を
+    持っていた。学修要覧2023の付録C・別表2を画像で確認したところ、2023年度は「データサイエンス演習」
+    （COM502e）が独立した必修科目として存在し、以降のCOM50Xeが2024年度から1つずつ番号がずれる
+    （必修20・選択16が正しい）。2024年度との差分は docs/YOURAN_2023_COMPARISON.md 参照。
+    """
     designds = programs["2023-day-I-designds.json"]
     groups = {group["id"]: group for group in walk(designds["groups"])}
-    # 別表2・付録Cどおり、類専門は必修19・選択17で合計36単位になる必要がある。
-    if groups["major-req"]["required"] != 19:
-        add_error(2023, f"デザイン思考・データサイエンスの必修required={groups['major-req']['required']} 期待=19")
-    if groups["major-sel"]["required"] != 17:
-        add_error(2023, f"デザイン思考・データサイエンスの選択required={groups['major-sel']['required']} 期待=17")
+    # 別表2・付録Cどおり、類専門は必修20・選択16で合計36単位になる必要がある。
+    if groups["major-req"]["required"] != 20:
+        add_error(2023, f"デザイン思考・データサイエンスの必修required={groups['major-req']['required']} 期待=20")
+    if groups["major-sel"]["required"] != 16:
+        add_error(2023, f"デザイン思考・データサイエンスの選択required={groups['major-sel']['required']} 期待=16")
     if designds["subtotals"]["specialized"] != 77:
         add_error(2023, f"デザイン思考・データサイエンスの専門小計={designds['subtotals']['specialized']} 期待=77")
+    if "COM503e" not in groups["major-req"]["subjects"]:
+        add_error(2023, "デザイン思考・データサイエンスの必修にデータサイエンス実践演習１（COM503e）が無い")
+    for code, expected_name in {
+        "COM502e": "データサイエンス演習",
+        "COM503e": "データサイエンス実践演習１",
+        "COM504e": "オペレーティングシステム論",
+        "COM505e": "メディア分析法",
+        "COM506e": "マルチメディア処理",
+    }.items():
+        actual = subjects.get(code, {}).get("name")
+        if actual != expected_name:
+            add_error(2023, f"{code} の科目名が期待と異なる: {actual!r} != {expected_name!r}")
 
 
 def validate_year(year: int) -> tuple[int, int]:
@@ -286,7 +307,7 @@ def validate_year(year: int) -> tuple[int, int]:
             add_error(year, f"standardSemesterが範囲外: {subject['code']}")
     # 確定済みの年度固有差分をそれぞれ回帰検査する。
     if year == 2023:
-        check_known_2023_values(programs)
+        check_known_2023_values(subjects, programs)
     if year == 2024:
         check_known_2024_differences(subjects, programs)
     if year == 2026:

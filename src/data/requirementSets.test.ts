@@ -71,14 +71,16 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(requirementSet?.reviews?.map((review) => review.id)).toEqual(['y2-end'])
   })
 
-  it('2023年度は年度別データを参照し、照合済みの2024年度と同じ配分を保つ', () => {
-    // 2023・2024年度の付録Cでは同プログラムの類専門が必修19・選択17単位で一致している。
+  it('2023年度は年度別データを参照し、2024年度には無い「データサイエンス演習」を必修に含む', () => {
+    // 2026-09-14訂正：2023年度は独立必修科目「データサイエンス演習」（COM502e）がある分だけ
+    // 2024年度より必修が1単位多い（必修20・選択16）。画像で確認済み（docs/YOURAN_2023_COMPARISON.md）。
     const designds2023 = getRequirementSet(2023, 'day', 'I', 'designds')
     const major2023 = designds2023?.groups.find((g) => g.id === 'specialized')?.children?.find((g) => g.id === 'major')
 
     expect(entryYearLabel(2023)).toBe('2023年度')
-    expect(major2023?.children?.find((g) => g.id === 'major-req')?.required).toBe(19)
-    expect(major2023?.children?.find((g) => g.id === 'major-sel')?.required).toBe(17)
+    expect(major2023?.children?.find((g) => g.id === 'major-req')?.required).toBe(20)
+    expect(major2023?.children?.find((g) => g.id === 'major-sel')?.required).toBe(16)
+    expect(getSubjectsByCode(2023).get('COM502e')?.name).toBe('データサイエンス演習')
     expect(getSubjectsByCode(2023).get('COM603a')).toEqual(getSubjectsByCode(2024).get('COM603a'))
   })
 
