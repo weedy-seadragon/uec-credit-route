@@ -118,7 +118,11 @@ export default function TopPage() {
 
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section className="release-notes-section">
-        <h2>リリースノート</h2>
+        <h2>
+          リリースノート
+          {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
+          <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
+        </h2>
         {/* Ver.1.1.0では、より前の入学年度の卒業要件を確認できるようにした。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
