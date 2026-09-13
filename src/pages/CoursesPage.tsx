@@ -14,7 +14,7 @@ const YEARS = ['1', '2', '3', '4'] as const
 // 一度に描画する科目数の上限（絞り込み前・プログラム未選択時に全1000件超を描画すると重いため）
 const MAX_ROWS = 300
 // 学修要覧データを用意できた年度だけを、科目一覧で個別に選べるようにする。
-const CATALOG_YEAR_OPTIONS = [2021, 2022, 2023, 2024, 2025, 2026] as const
+const CATALOG_YEAR_OPTIONS = [2026, 2025, 2024, 2023, 2022, 2021] as const
 
 /** 科目一覧として選べる年度かを判定する。 */
 function isCatalogYear(year: number): year is (typeof CATALOG_YEAR_OPTIONS)[number] {

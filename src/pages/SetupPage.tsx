@@ -11,7 +11,7 @@ import { loadProfile, saveProfile } from '../storage/profile'
 
 // 学修要覧データを用意できた入学年度だけを、プロフィールで個別に選べるようにする。
 const SHOW_ENTRY_YEAR_INPUT = true
-const ENTRY_YEAR_OPTIONS = [2021, 2022, 2023, 2024, 2025, 2026] as const
+const ENTRY_YEAR_OPTIONS = [2026, 2025, 2024, 2023, 2022, 2021] as const
 
 export default function SetupPage() {
   const navigate = useNavigate()
