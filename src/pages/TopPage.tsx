@@ -190,7 +190,7 @@ export default function TopPage() {
         {/* 2.6では、入力内容の確認・夜間主コース・開講情報の表示を中心に改善した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
-            <span>・アップデート(Ver.β2.5→2.6)</span>
+            <span>・アップデート(Ver.β2.5→Ver.β2.6)</span>
             <span className="release-note-date">アップデート日 2026/9/9</span>
           </p>
           <h3 className="release-note-category">機能・判定の改善</h3>
