@@ -239,6 +239,15 @@ body {
   margin-top: 2.25rem;
 }
 
+/* 更新方法の案内は見出しを邪魔しない小さな文字にし、狭い画面では自然に折り返せるようにする。 */
+.release-note-refresh-note {
+  display: inline-block;
+  margin-left: 0.55rem;
+  color: color-mix(in srgb, currentColor 72%, transparent);
+  font-size: 0.78rem;
+  font-weight: 400;
+}
+
 /* 各アップデートを科目一覧の入れ子と同じように、左の線と白黒の背景で独立して見せる。 */
 .release-note-entry {
   margin-top: 1.5rem;
