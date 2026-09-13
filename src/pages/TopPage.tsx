@@ -126,7 +126,7 @@ export default function TopPage() {
         {/* Ver.1.1.0では、より前の入学年度の卒業要件を確認できるようにした。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
-            <span>・アップデート(ver.1.0.2→1.1.0)</span>
+            <span>・アップデート(Ver.1.0.2→Ver.1.1.0)</span>
             <span className="release-note-date">アップデート日 2026/9/13</span>
           </p>
           <h3 className="release-note-category">入学年度対応</h3>
@@ -146,7 +146,7 @@ export default function TopPage() {
         {/* Ver.1.0.2では、同じ授業の二重計上を防ぎ、関連サービスへの導線を追加した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
-            <span>・アップデート(ver.1.0.1→1.0.2)</span>
+            <span>・アップデート(Ver.1.0.1→Ver.1.0.2)</span>
             <span className="release-note-date">アップデート日 2026/9/12</span>
           </p>
           <h3 className="release-note-category">不具合修正</h3>
@@ -161,7 +161,7 @@ export default function TopPage() {
         {/* Ver.1.0.1では、履修状態の呼び方と画面上部の操作性を利用者の意見に合わせて整えた。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
-            <span>・アップデート(ver.1.0.0→1.0.1)</span>
+            <span>・アップデート(Ver.1.0.0→Ver.1.0.1)</span>
             <span className="release-note-date">アップデート日 2026/9/10</span>
           </p>
           <h3 className="release-note-category">表示の改善</h3>
@@ -190,7 +190,7 @@ export default function TopPage() {
         {/* 2.6では、入力内容の確認・夜間主コース・開講情報の表示を中心に改善した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
-            <span>・アップデート(ver.β2.5→2.6)</span>
+            <span>・アップデート(ver.β2.5→β2.6)</span>
             <span className="release-note-date">アップデート日 2026/9/9</span>
           </p>
           <h3 className="release-note-category">機能・判定の改善</h3>

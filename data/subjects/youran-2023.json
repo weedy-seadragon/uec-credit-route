@@ -10301,7 +10301,7 @@
     },
     {
       "code": "COM502e",
-      "name": "データサイエンス実践演習１",
+      "name": "データサイエンス演習",
       "credits": 1,
       "field": "COM",
       "standardSemester": 5,
@@ -10519,8 +10519,8 @@
     },
     {
       "code": "COM503e",
-      "name": "オペレーティングシステム論",
-      "credits": 2,
+      "name": "データサイエンス実践演習１",
+      "credits": 1,
       "field": "COM",
       "standardSemester": 5,
       "standardYear": 3,
@@ -10529,27 +10529,8 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major-sel"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21124103",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [
-            {
-              "day": "火",
-              "period": 4
-            }
-          ],
-          "instructors": [
-            "中山　泰一"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124103.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "基礎プログラミングおよび演習、論理設計学、計算機通論、プログラミング通論"
+        "major-req"
+      ]
     },
     {
       "code": "COM503f",
@@ -10690,7 +10671,7 @@
     },
     {
       "code": "COM504e",
-      "name": "メディア分析法",
+      "name": "オペレーティングシステム論",
       "credits": 2,
       "field": "COM",
       "standardSemester": 5,
@@ -10702,7 +10683,25 @@
       "groups": [
         "major-sel"
       ],
-      "note": "外国人留学生のみ履修可"
+      "offerings": [
+        {
+          "timetableCode": "21124103",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "中山　泰一"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124103.html",
+          "updatedAt": "2026-09-07"
+        }
+      ],
+      "prerequisitesText": "基礎プログラミングおよび演習、論理設計学、計算機通論、プログラミング通論"
     },
     {
       "code": "COM504f",
@@ -10812,7 +10811,7 @@
     },
     {
       "code": "COM505e",
-      "name": "マルチメディア処理",
+      "name": "メディア分析法",
       "credits": 2,
       "field": "COM",
       "standardSemester": 5,
@@ -10822,8 +10821,9 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "major-free"
-      ]
+        "major-sel"
+      ],
+      "note": "外国人留学生のみ履修可"
     },
     {
       "code": "COM505f",
@@ -10941,6 +10941,21 @@
         }
       ],
       "prerequisitesText": "特定の科目の履修を前提にすることはないが，* 基本的なプログラミング（例えば「プログラミング通論」）* 計算機の基本的な仕組み（例えば「計算機通論」）* 集合論と記号論理の数学記法（例えば「離散数学」）についての知識は前提とする．"
+    },
+    {
+      "code": "COM506e",
+      "name": "マルチメディア処理",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 5,
+      "standardYear": 3,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
     },
     {
       "code": "COM506f",
