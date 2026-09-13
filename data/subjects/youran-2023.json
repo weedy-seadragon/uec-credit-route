@@ -191,36 +191,6 @@
       ]
     },
     {
-      "code": "BCHa02r",
-      "name": "生命分子化学特論",
-      "credits": 2,
-      "field": "BCH",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "BCHa03r",
-      "name": "化学生命工学特論",
-      "credits": 2,
-      "field": "BCH",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
       "code": "BIO201i",
       "name": "生物学概論",
       "credits": 2,
@@ -994,21 +964,6 @@
     {
       "code": "BIOb01r",
       "name": "生体機能システム学基礎",
-      "credits": 2,
-      "field": "BIO",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "BIOb02r",
-      "name": "ゲノム生物学特論",
       "credits": 2,
       "field": "BIO",
       "standardSemester": 8,
@@ -3609,51 +3564,6 @@
     {
       "code": "CHMa01r",
       "name": "光化学",
-      "credits": 2,
-      "field": "CHM",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "CHMb01r",
-      "name": "固体物性化学特論",
-      "credits": 2,
-      "field": "CHM",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "CHMb02r",
-      "name": "無機物質化学特論",
-      "credits": 2,
-      "field": "CHM",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "CHMb03r",
-      "name": "物理化学特論",
       "credits": 2,
       "field": "CHM",
       "standardSemester": 8,
@@ -17457,21 +17367,6 @@
       ]
     },
     {
-      "code": "ELEa02m",
-      "name": "画像情報学基礎",
-      "credits": 2,
-      "field": "ELE",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
       "code": "ELEa02n",
       "name": "画像情報学基礎",
       "credits": 2,
@@ -29461,7 +29356,7 @@
     },
     {
       "code": "GSE401i",
-      "name": "機械計測工学",
+      "name": "計測工学",
       "credits": 2,
       "field": "GSE",
       "standardSemester": 4,
@@ -29495,7 +29390,7 @@
     },
     {
       "code": "GSE401j",
-      "name": "機械計測工学",
+      "name": "計測工学",
       "credits": 2,
       "field": "GSE",
       "standardSemester": 6,
@@ -31134,6 +31029,21 @@
     },
     {
       "code": "HSS102s",
+      "name": "美術",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS103s",
       "name": "音楽",
       "credits": 2,
       "field": "HSS",
@@ -31163,7 +31073,22 @@
       "prerequisitesText": "特になし"
     },
     {
-      "code": "HSS103s",
+      "code": "HSS104s",
+      "name": "経済学",
+      "credits": 2,
+      "field": "HSS",
+      "standardSemester": 1,
+      "standardYear": 1,
+      "termType": "前学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "hss"
+      ]
+    },
+    {
+      "code": "HSS105s",
       "name": "社会学",
       "credits": 2,
       "field": "HSS",
@@ -31193,7 +31118,7 @@
       "prerequisitesText": "特になし"
     },
     {
-      "code": "HSS104s",
+      "code": "HSS106s",
       "name": "法学",
       "credits": 2,
       "field": "HSS",
@@ -31227,7 +31152,7 @@
       "prerequisitesText": "ありません。"
     },
     {
-      "code": "HSS105s",
+      "code": "HSS107s",
       "name": "地理学",
       "credits": 2,
       "field": "HSS",
@@ -31260,7 +31185,7 @@
       ]
     },
     {
-      "code": "HSS106s",
+      "code": "HSS108s",
       "name": "社会思想史",
       "credits": 2,
       "field": "HSS",
@@ -36754,296 +36679,6 @@
         }
       ],
       "prerequisitesText": "韓国朝鮮語第一・韓国朝鮮語第二・韓国朝鮮語（運用）演習　または、これに相当する語学能力があること"
-    },
-    {
-      "code": "LAB501f",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 7,
-      "standardYear": 4,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21224140",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "範　公可"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224140.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501g",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21224140",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "範　公可"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224140.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501h",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21224140",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "範　公可"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224140.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501i",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21224140",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "範　公可"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224140.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501j",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21224140",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "範　公可"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224140.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501k",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21324144",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "池田　暁彦"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324144.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501m",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21324144",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "池田　暁彦"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324144.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501n",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21324144",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "池田　暁彦"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324144.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501p",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21324144",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "池田　暁彦"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324144.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
-    },
-    {
-      "code": "LAB501r",
-      "name": "GLTPラボワーク",
-      "credits": 1,
-      "field": "LAB",
-      "standardSemester": 5,
-      "standardYear": 3,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-free"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21324144",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "池田　暁彦"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324144.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "なしnone"
     },
     {
       "code": "LAB701a",
@@ -56945,7 +56580,7 @@
     },
     {
       "code": "PHY502g",
-      "name": "量子と情報",
+      "name": "量子力学",
       "credits": 2,
       "field": "PHY",
       "standardSemester": 5,
@@ -56979,7 +56614,7 @@
     },
     {
       "code": "PHY502h",
-      "name": "量子と情報",
+      "name": "量子力学",
       "credits": 2,
       "field": "PHY",
       "standardSemester": 5,
@@ -58380,21 +58015,6 @@
       ]
     },
     {
-      "code": "PHYb01r",
-      "name": "X線結晶学特論",
-      "credits": 2,
-      "field": "PHY",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
       "code": "PHYb02i",
       "name": "ナノトライボロジー特論",
       "credits": 2,
@@ -58457,36 +58077,6 @@
     {
       "code": "PHYb02p",
       "name": "応用電磁気学",
-      "credits": 2,
-      "field": "PHY",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "PHYb03p",
-      "name": "凝縮体量子工学特論",
-      "credits": 2,
-      "field": "PHY",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "PHYb04p",
-      "name": "ナノトライボロジー特論",
       "credits": 2,
       "field": "PHY",
       "standardSemester": 8,

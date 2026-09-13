@@ -105,6 +105,40 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(free2024?.subjects).toContain('MTHb02a')
   })
 
+  it('2023年度のⅡ類・Ⅲ類はGLTPラボワークが無く、一部科目は2024年度と別名で改称前', () => {
+    // 2026-09-14追加：GLTPラボワーク（LAB501x）はⅡ類・Ⅲ類の10プログラム共通で2024年度新設。
+    // 「量子力学」（PHY502g）は2024年度に「量子と情報」へ、「計測工学」（GSE401i）は
+    // 2024年度に「機械計測工学」へ改称された（docs/YOURAN_2023_COMPARISON.md参照）。
+    const security2023 = getRequirementSet(2023, 'day', 'II', 'security')
+    const free2023 = security2023?.groups.find((g) => g.id === 'specialized')?.children
+      ?.find((g) => g.id === 'major')?.children?.find((g) => g.id === 'major-free')
+
+    expect(free2023?.subjects).not.toContain('LAB501f')
+    expect(getSubjectsByCode(2023).get('LAB501g')).toBeUndefined()
+    expect(getSubjectsByCode(2023).get('PHY502g')?.name).toBe('量子力学')
+    expect(getSubjectsByCode(2023).get('GSE401i')?.name).toBe('計測工学')
+    expect(getSubjectsByCode(2024).get('PHY502g')?.name).toBe('量子と情報')
+    expect(getSubjectsByCode(2024).get('GSE401i')?.name).toBe('機械計測工学')
+  })
+
+  it('2023年度の夜間主は「美術」「経済学」が選択候補にあり、以降の科目は番号が2つ若い', () => {
+    // 2026-09-14追加：夜間主の人文・社会科学科目にあった「美術」（HSS102s）・「経済学」（HSS104s）は
+    // 2024年度に廃止され、音楽・社会学・法学・地理学・社会思想史の番号が2つずつ若返った。
+    const evening2023 = getRequirementSet(2023, 'evening', null, 'evening')
+    const hss2023 = evening2023?.groups.find((g) => g.id === 'general')?.children?.find((g) => g.id === 'hss')
+
+    expect(hss2023?.subjects).toContain('HSS102s')
+    expect(hss2023?.subjects).toContain('HSS104s')
+    expect(getSubjectsByCode(2023).get('HSS102s')?.name).toBe('美術')
+    expect(getSubjectsByCode(2023).get('HSS103s')?.name).toBe('音楽')
+    expect(getSubjectsByCode(2023).get('HSS104s')?.name).toBe('経済学')
+    expect(getSubjectsByCode(2023).get('HSS107s')?.name).toBe('地理学')
+    expect(getSubjectsByCode(2023).get('HSS108s')?.name).toBe('社会思想史')
+
+    expect(getSubjectsByCode(2024).get('HSS102s')?.name).toBe('音楽')
+    expect(getSubjectsByCode(2024).get('HSS107s')).toBeUndefined()
+  })
+
   it('2022年度は旧カリキュラムのⅠ類単位配分を参照し、後設プログラムを表示しない', () => {
     // 2022年度は理数基礎20単位・専門78単位であり、デザイン思考・データサイエンスはまだ存在しない。
     const media2022 = getRequirementSet(2022, 'day', 'I', 'media')

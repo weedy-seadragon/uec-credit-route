@@ -10,6 +10,21 @@ docs/YOURAN_2023_COMPARISON.md参照）。
 - デザイン思考・データサイエンスプログラムだけ「データサイエンス演習」（COM502e）が独立した
   必修科目として存在し、以降のCOM50Xeが2024年度から1つずつ番号がずれる
 
+Ⅱ類5・Ⅲ類5プログラムと夜間主課程についても同様に照合した（2026-09-14追加）。
+
+- Ⅱ類5・Ⅲ類5プログラム共通：GLTPラボワーク（LAB501x）は2024年度新設でⅠ類同様2023年度には無い
+- 情報通信工学（g）・電子情報学（h）：「量子力学」（PHY502g/h）が2024年度に「量子と情報」へ改称
+- 計測制御システム（i）・先端ロボティクス（j）：「計測工学」（GSE401i/j）が2024年度に
+  「機械計測工学」へ改称
+- 電子工学（m）：「画像情報学基礎」（ELEa02m）は2024年度新設
+- 物理工学（p）：「凝縮体量子工学特論」（PHYb03p）・「ナノトライボロジー特論」（PHYb04p）は
+  2024年度新設
+- 化学生命工学（r）：大学院連携科目7件（PHYb01r・CHMb01r・BCHa02r・BCHa03r・CHMb02r・
+  CHMb03r・BIOb02r）は2024年度新設
+- 夜間主課程：人文・社会科学科目に「美術」（HSS102s）・「経済学」（HSS104s）が存在し、
+  2024年度に廃止された。以降の科目（音楽・社会学・法学・地理学・社会思想史）は番号が2つ
+  ずつ若返る（例: 音楽は2023年度HSS103s→2024年度HSS102s）
+
 実行: python scripts/build_2023_data.py
 """
 
@@ -84,6 +99,45 @@ def update_first_cluster_requirements() -> None:
         write_json(path, document)
 
 
+def update_second_third_cluster_requirements() -> None:
+    """Ⅱ類5・Ⅲ類5プログラム共通：GLTPラボワークの2024年度新設分を外す。
+    電子工学（m）・物理工学（p）・化学生命工学（r）は、それぞれ2024年度新設の
+    大学院連携科目も合わせて外す。
+    """
+    removed_by_program = {
+        "II-security": {"LAB501f"},
+        "II-netinfo": {"LAB501g"},
+        "II-electroinfo": {"LAB501h"},
+        "II-control": {"LAB501i"},
+        "II-robotics": {"LAB501j"},
+        "III-mecha": {"LAB501k"},
+        "III-electro": {"LAB501m", "ELEa02m"},
+        "III-optical": {"LAB501n"},
+        "III-physics": {"LAB501p", "PHYb03p", "PHYb04p"},
+        "III-chembio": {
+            "LAB501r", "PHYb01r", "CHMb01r", "BCHa02r", "BCHa03r", "CHMb02r", "CHMb03r", "BIOb02r",
+        },
+    }
+    for program, removed in removed_by_program.items():
+        path = REQUIREMENTS_DIR / f"2023-day-{program}.json"
+        document = load_json(path)
+        free_group = find_group(document, "major-free")
+        free_group["subjects"] = [code for code in free_group["subjects"] if code not in removed]
+        write_json(path, document)
+
+
+def update_evening_requirement() -> None:
+    """夜間主課程：2024年度に廃止された「美術」（HSS102s）・「経済学」（HSS104s）を
+    選択候補に戻す（以降の科目の番号は2024年度のものを引き継いでいるため、ここでは
+    2023年度だけに存在する2科目分のコードを追加するだけでよい）。
+    """
+    path = REQUIREMENTS_DIR / "2023-evening.json"
+    document = load_json(path)
+    hss = find_group(document, "hss")
+    hss["subjects"] = hss["subjects"] + ["HSS107s", "HSS108s"]
+    write_json(path, document)
+
+
 def update_designds_requirement() -> None:
     """デザイン思考・データサイエンス：独立必修科目「データサイエンス演習」の追加による
     必修/選択の配分変化と、以降のCOM50Xeの番号ずれを反映する。
@@ -129,6 +183,66 @@ def update_first_cluster_subjects(subjects: list[dict[str, Any]]) -> list[dict[s
     return subjects
 
 
+def update_second_third_cluster_subjects(subjects: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Ⅱ類5・Ⅲ類5プログラム共通のGLTPラボワーク・プログラム固有の2024年度新設科目を
+    2023年度マスタから除き、名称が変わった科目を2023年度時点の名称に戻す（要件JSON側の
+    参照はupdate_second_third_cluster_requirementsで調整済み）。
+    """
+    removed = {
+        "LAB501f", "LAB501g", "LAB501h", "LAB501i", "LAB501j",
+        "LAB501k", "LAB501m", "LAB501n", "LAB501p", "LAB501r",
+        "ELEa02m", "PHYb03p", "PHYb04p",
+        "PHYb01r", "CHMb01r", "BCHa02r", "BCHa03r", "CHMb02r", "CHMb03r", "BIOb02r",
+    }
+    subjects = [subject for subject in subjects if subject["code"] not in removed]
+    renamed = {"PHY502g": "量子力学", "PHY502h": "量子力学", "GSE401i": "計測工学", "GSE401j": "計測工学"}
+    for subject in subjects:
+        if subject["code"] in renamed:
+            subject["name"] = renamed[subject["code"]]
+    return subjects
+
+
+def update_evening_subjects(subjects: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """夜間主課程：2024年度に廃止された「美術」（HSS102s）・「経済学」（HSS104s）を復元し、
+    以降の科目（音楽・社会学・法学・地理学・社会思想史）を2023年度の科目番号（2024年度より
+    2つ若い番号）へ振り直す。開講情報（offerings）は科目そのものに付随する情報なので、
+    番号の振り直しに合わせてそのまま引き継ぐ。
+    """
+    by_code = {subject["code"]: subject for subject in subjects}
+    old102, old103, old104, old105, old106 = (
+        copy.deepcopy(by_code[c]) for c in ("HSS102s", "HSS103s", "HSS104s", "HSS105s", "HSS106s")
+    )
+
+    # 音楽（102→103）：開講情報ごと引き継ぐ。
+    by_code["HSS103s"].clear()
+    by_code["HSS103s"].update(old102, code="HSS103s")
+    # 社会学（103→105）。
+    by_code["HSS105s"].clear()
+    by_code["HSS105s"].update(old103, code="HSS105s")
+    # 法学（104→106）。
+    by_code["HSS106s"].clear()
+    by_code["HSS106s"].update(old104, code="HSS106s")
+    # 地理学（105→107、新規追加）。
+    subjects.append({**old105, "code": "HSS107s"})
+    # 社会思想史（106→108、新規追加）。
+    subjects.append({**old106, "code": "HSS108s"})
+    # 美術（102、2024年度に廃止されたため開講情報は無い）。
+    by_code["HSS102s"].clear()
+    by_code["HSS102s"].update(
+        code="HSS102s", name="美術", credits=2, field="HSS",
+        standardSemester=1, standardYear=1, termType="前学期",
+        eveningAllowed=True, forInternational=False, graduateLinked=False, groups=["hss"],
+    )
+    # 経済学（104、2024年度に廃止されたため開講情報は無い）。
+    by_code["HSS104s"].clear()
+    by_code["HSS104s"].update(
+        code="HSS104s", name="経済学", credits=2, field="HSS",
+        standardSemester=1, standardYear=1, termType="前学期",
+        eveningAllowed=True, forInternational=False, graduateLinked=False, groups=["hss"],
+    )
+    return subjects
+
+
 def copy_subject_master() -> int:
     """2024年度と共通の科目マスタを複製し、出典年度とデザイン思考・データサイエンスの
     COM50Xe（データサイエンス演習の追加による番号ずれ）を2023年度向けに直す。
@@ -138,6 +252,8 @@ def copy_subject_master() -> int:
     document["note"] = "2024年度版を土台に学修要覧2023との差分を反映。開講情報は原則2026年度シラバス基準"
 
     subjects = update_first_cluster_subjects(document["subjects"])
+    subjects = update_second_third_cluster_subjects(subjects)
+    subjects = update_evening_subjects(subjects)
     by_code = {subject["code"]: subject for subject in subjects}
     old502, old503, old504, old505 = (copy.deepcopy(by_code[c]) for c in ("COM502e", "COM503e", "COM504e", "COM505e"))
 
@@ -169,6 +285,8 @@ def main() -> None:
     """2023年度の要件JSONと科目マスタを生成して件数を表示する。"""
     requirement_paths = copy_requirement_files()
     update_first_cluster_requirements()
+    update_second_third_cluster_requirements()
+    update_evening_requirement()
     update_designds_requirement()
     subject_count = copy_subject_master()
     print(f"2023年度データを生成しました: requirements={len(requirement_paths)} subjects={subject_count}")

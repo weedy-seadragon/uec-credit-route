@@ -264,6 +264,41 @@ def check_known_2023_values(
     if not {"MTHb02b", "MTHb03b"} <= set(media_free["subjects"]):
         add_error(2023, "メディア情報学の自由科目にMTHb02b/MTHb03b（経営・社会情報学の番号）が無い")
 
+    # Ⅱ類5・Ⅲ類5プログラム共通：GLTPラボワークは2024年度新設で2023年度には無い。
+    for suffix in ("f", "g", "h", "i", "j", "k", "m", "n", "p", "r"):
+        code = f"LAB501{suffix}"
+        if code in subjects:
+            add_error(2023, f"2024年度に新設された科目が2023年度マスタに残っている: {code}")
+    # プログラム固有の2024年度新設科目も同様に無いはず。
+    for code in (
+        "ELEa02m", "PHYb03p", "PHYb04p",
+        "PHYb01r", "CHMb01r", "BCHa02r", "BCHa03r", "CHMb02r", "CHMb03r", "BIOb02r",
+    ):
+        if code in subjects:
+            add_error(2023, f"2024年度に新設された科目が2023年度マスタに残っている: {code}")
+    # 情報通信工学・電子情報学の「量子力学」、計測制御システム・先端ロボティクスの
+    # 「計測工学」は2024年度に改称される前の名称のはず。
+    for code, expected_name in {
+        "PHY502g": "量子力学", "PHY502h": "量子力学",
+        "GSE401i": "計測工学", "GSE401j": "計測工学",
+    }.items():
+        actual = subjects.get(code, {}).get("name")
+        if actual != expected_name:
+            add_error(2023, f"{code} の科目名が期待と異なる: {actual!r} != {expected_name!r}")
+
+    # 夜間主課程：2024年度に廃止された「美術」（HSS102s）・「経済学」（HSS104s）が選択候補に無い。
+    evening = load("requirements/2023-evening.json")
+    hss = next(group for group in walk(evening["groups"]) if group["id"] == "hss")
+    if not {"HSS102s", "HSS104s", "HSS107s", "HSS108s"} <= set(hss["subjects"]):
+        add_error(2023, "夜間主課程の人文・社会科学科目にHSS102s/104s/107s/108sが揃っていない")
+    for code, expected_name in {
+        "HSS102s": "美術", "HSS103s": "音楽", "HSS104s": "経済学",
+        "HSS105s": "社会学", "HSS106s": "法学", "HSS107s": "地理学", "HSS108s": "社会思想史",
+    }.items():
+        actual = subjects.get(code, {}).get("name")
+        if actual != expected_name:
+            add_error(2023, f"{code} の科目名が期待と異なる: {actual!r} != {expected_name!r}")
+
 
 def validate_year(year: int) -> tuple[int, int]:
     """1年度分の科目マスタ・共通要件・全プログラム要件をまとめて検証する。"""
