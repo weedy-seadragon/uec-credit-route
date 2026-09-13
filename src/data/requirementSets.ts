@@ -113,6 +113,12 @@ function applyCommonOverrides(groups: readonly RequirementGroup[], overrides: Re
   return groups.map((g) => {
     const override = overrides[g.id]
     const children = g.children ? applyCommonOverrides(g.children, overrides) : undefined
+    // overrideがchildrenを指定する場合は、元の葉グループ（kind・subjects）を子グループへの
+    // 積み上げに置き換える上書きとみなし、元のkind・subjectsを引きずらないようにする
+    // （例: 特定プログラムだけ「キャリア単位」の一部科目を必修に分離する場合）。
+    if (override?.children) {
+      return { ...g, kind: undefined, subjects: undefined, ...(children ? { children } : {}), ...override }
+    }
     return { ...g, ...(children ? { children } : {}), ...override }
   })
 }

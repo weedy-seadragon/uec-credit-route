@@ -16,6 +16,29 @@
     "specialized": 77,
     "common": 7
   },
+  "commonOverrides": {
+    "career": {
+      "children": [
+        {
+          "id": "career-req",
+          "name": "必修",
+          "label": "キャリア単位（必修）",
+          "required": 2,
+          "kind": "required",
+          "subjects": ["CAR503z"]
+        },
+        {
+          "id": "career-elective",
+          "name": "選択",
+          "label": "キャリア単位（選択）",
+          "required": 2,
+          "kind": "elective",
+          "subjects": ["CAR101z", "CAR201z", "CAR501z", "CAR401z", "CAR402z", "CAR502z", "CAR601z", "CAR504z", "CAR602z", "CAR603z", "CAR604z"]
+        }
+      ],
+      "note": "デザイン思考・データサイエンスプログラムのみインターンシップ（CAR503z）が必修（学修要覧2025 C.2実践教育科目 注5）"
+    }
+  },
   "groups": [
     {
       "id": "specialized",

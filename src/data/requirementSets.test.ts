@@ -92,6 +92,38 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(elective?.subjects).not.toContain('COM502a')
   })
 
+  it('デザイン思考・データサイエンスプログラムはインターンシップが必修', () => {
+    // 学修要覧の注記により、この課程だけキャリア単位の一部（CAR503z）が必修になる。
+    function findRequirementGroupById(groups: readonly import('../domain/requirements').RequirementGroup[], id: string): import('../domain/requirements').RequirementGroup | undefined {
+      for (const group of groups) {
+        if (group.id === id) return group
+        const child = group.children ? findRequirementGroupById(group.children, id) : undefined
+        if (child) return child
+      }
+      return undefined
+    }
+
+    const requirementSet = getRequirementSet(2025, 'day', 'I', 'designds')
+    const career = findRequirementGroupById(requirementSet?.groups ?? [], 'career')
+
+    expect(career?.children?.find((group) => group.id === 'career-req')?.subjects).toEqual(['CAR503z'])
+    expect(career?.kind).toBeUndefined()
+
+    const otherSet = getRequirementSet(2025, 'day', 'I', 'media')
+    const other = findRequirementGroupById(otherSet?.groups ?? [], 'career')
+    expect(other?.subjects).toContain('CAR503z')
+    expect(other?.children).toBeUndefined()
+  })
+
+  it('デザイン思考・データサイエンスのインターンシップ未修得では必修キャリア単位が不足する', () => {
+    const requirementSet = getRequirementSet(2025, 'day', 'I', 'designds')
+    expect(requirementSet).toBeDefined()
+    const result = evaluateRequirements(requirementSet!, new Map(), getSubjectCredits(2025))
+
+    expect(findGroupById(result.groups, 'career-req')?.shortfall).toBe(2)
+    expect(findGroupById(result.groups, 'career')?.shortfall).toBe(4)
+  })
+
   it('CSの同名OS科目を両方修得としても、必修の2単位だけを算入する', () => {
     // COM501d（CS必修）とCOM502a（他プログラム番号）を同時に渡しても、要件計算で4単位にしない。
     const requirementSet = getRequirementSet(2025, 'day', 'I', 'cs')
