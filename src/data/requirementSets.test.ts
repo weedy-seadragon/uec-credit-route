@@ -93,6 +93,18 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(getRequirementSet(2022, 'day', 'I', 'designds')).toBeUndefined()
   })
 
+  it('2021年度はデータサイエンス区分なしの初年次導入8単位を参照する', () => {
+    // 2021年度の実践教育は初年次導入8・倫理キャリア4・技術英語4単位の構成である。
+    const media2021 = getRequirementSet(2021, 'day', 'I', 'media')
+    const practical = media2021?.groups.find((group) => group.id === 'practical')
+
+    expect(entryYearLabel(2021)).toBe('2021年度')
+    expect(practical?.required).toBe(16)
+    expect(practical?.children?.find((group) => group.id === 'intro')?.required).toBe(8)
+    expect(practical?.children?.find((group) => group.id === 'datasci')).toBeUndefined()
+    expect(getSubjectsByCode(2021).get('UEC101z')?.credits).toBe(2)
+  })
+
   it('2024年度は2025年度と別の要件・科目マスタを参照する（学修要覧2024との差分を反映済み）', () => {
     // デザイン思考・データサイエンスプログラムは2024→2025で必修/選択の配分と科目名が変わっている。
     const media2024 = getSubjectsByCode(2024).get('COM603a')

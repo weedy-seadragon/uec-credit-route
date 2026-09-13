@@ -13,6 +13,22 @@
 
 import type { GroupKind, RequirementGroup, RequirementSet, ReviewDef } from '../domain/requirements'
 import { isSameClusterOtherProgramSubject } from '../domain/programSuffix'
+import common2021 from '../../data/requirements/2021-day-common.json'
+import media2021 from '../../data/requirements/2021-day-I-media.json'
+import management2021 from '../../data/requirements/2021-day-I-management.json'
+import mathinfo2021 from '../../data/requirements/2021-day-I-mathinfo.json'
+import cs2021 from '../../data/requirements/2021-day-I-cs.json'
+import security2021 from '../../data/requirements/2021-day-II-security.json'
+import netinfo2021 from '../../data/requirements/2021-day-II-netinfo.json'
+import electroinfo2021 from '../../data/requirements/2021-day-II-electroinfo.json'
+import control2021 from '../../data/requirements/2021-day-II-control.json'
+import robotics2021 from '../../data/requirements/2021-day-II-robotics.json'
+import mecha2021 from '../../data/requirements/2021-day-III-mecha.json'
+import electro2021 from '../../data/requirements/2021-day-III-electro.json'
+import optical2021 from '../../data/requirements/2021-day-III-optical.json'
+import physics2021 from '../../data/requirements/2021-day-III-physics.json'
+import chembio2021 from '../../data/requirements/2021-day-III-chembio.json'
+import evening2021 from '../../data/requirements/2021-evening.json'
 import common2022 from '../../data/requirements/2022-day-common.json'
 import media2022 from '../../data/requirements/2022-day-I-media.json'
 import management2022 from '../../data/requirements/2022-day-I-management.json'
@@ -97,6 +113,7 @@ import optical2026 from '../../data/requirements/2026-day-III-optical.json'
 import physics2026 from '../../data/requirements/2026-day-III-physics.json'
 import chembio2026 from '../../data/requirements/2026-day-III-chembio.json'
 import evening2026 from '../../data/requirements/2026-evening.json'
+import subjectsMaster2021 from '../../data/subjects/youran-2021.json'
 import subjectsMaster2022 from '../../data/subjects/youran-2022.json'
 import subjectsMaster2023 from '../../data/subjects/youran-2023.json'
 import subjectsMaster2024 from '../../data/subjects/youran-2024.json'
@@ -110,14 +127,14 @@ import type { ClassAssignmentEntry } from '../domain/classAssignment'
  * 対応済みの年度はそのまま使い、まだデータ化していない年度だけ最も近い対応年度へ読み替える。
  */
 export function getDataEntryYear(entryYear: number): number {
-  if (entryYear >= 2022 && entryYear <= 2026) return entryYear
-  return entryYear < 2022 ? 2022 : 2026
+  if (entryYear >= 2021 && entryYear <= 2026) return entryYear
+  return entryYear < 2021 ? 2021 : 2026
 }
 
 /** プロフィールなどで表示する入学年度の文言を返す。 */
 export function entryYearLabel(entryYear: number): string {
   // 選択できる年度は個別に表示し、未対応年度は実際に参照するデータ年度を添えて誤解を避ける。
-  if (entryYear >= 2022 && entryYear <= 2026) return `${entryYear}年度`
+  if (entryYear >= 2021 && entryYear <= 2026) return `${entryYear}年度`
   return `${entryYear}年度（${getDataEntryYear(entryYear)}年度要件で暫定表示）`
 }
 
@@ -211,6 +228,7 @@ type CommonDoc = { groups: RequirementGroup[]; commonCreditSources?: { alwaysCom
 
 // 昼間コース共通要件は入学年度ごとに内容が異なる可能性があるため、年度をキーにして持つ。
 const commonDocsByYear: ReadonlyMap<number, CommonDoc> = new Map([
+  [2021, common2021 as CommonDoc],
   [2022, common2022 as CommonDoc],
   [2023, common2023 as CommonDoc],
   [2024, common2024 as CommonDoc],
@@ -220,6 +238,8 @@ const commonDocsByYear: ReadonlyMap<number, CommonDoc> = new Map([
 
 // 要件JSONは年度別に読み込み、プロフィールのentryYearで正しい1件を選ぶ。
 const programDocs: ProgramDoc[] = [
+  media2021, management2021, mathinfo2021, cs2021, security2021, netinfo2021, electroinfo2021, control2021, robotics2021,
+  mecha2021, electro2021, optical2021, physics2021, chembio2021, evening2021,
   media2022, management2022, mathinfo2022, cs2022, security2022, netinfo2022, electroinfo2022, control2022, robotics2022,
   mecha2022, electro2022, optical2022, physics2022, chembio2022, evening2022,
   media2023, management2023, mathinfo2023, cs2023, designds2023, security2023, netinfo2023, electroinfo2023, control2023, robotics2023,
@@ -233,6 +253,7 @@ const programDocs: ProgramDoc[] = [
 
 // 科目番号は年度をまたぐと別の科目を指すことがあるため、科目マスタも年度別に切り替える。
 const subjectMastersByYear = new Map([
+  [2021, subjectsMaster2021],
   [2022, subjectsMaster2022],
   [2023, subjectsMaster2023],
   [2024, subjectsMaster2024],

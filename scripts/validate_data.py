@@ -13,7 +13,7 @@ from typing import Any
 
 # このファイルの場所を基準にしてdataディレクトリを参照する。
 DATA_ROOT = Path(__file__).resolve().parents[1] / "data"
-YEARS = (2022, 2023, 2024, 2025, 2026)
+YEARS = (2021, 2022, 2023, 2024, 2025, 2026)
 errors: list[str] = []
 
 # 別表2で検証済みのⅠ類メディア情報学の必要単位を年度共通の基準として持つ。
@@ -27,6 +27,12 @@ MEDIA_EXPECTED = {
 
 # 2022年度は旧カリキュラムで、Ⅰ類の理数基礎と専門小計だけが後年度と異なる。
 MEDIA_EXPECTED_2022 = {**MEDIA_EXPECTED, "math-basic": 20, "specialized": 78}
+# 2021年度は実践教育にデータサイエンス区分がなく、初年次導入が8単位となる。
+MEDIA_EXPECTED_2021 = {
+    **{group_id: value for group_id, value in MEDIA_EXPECTED_2022.items() if group_id != "datasci"},
+    "intro": 8,
+    "practical": 16,
+}
 
 
 def load(relative_path: str) -> dict[str, Any]:
@@ -128,7 +134,7 @@ def check_media_table(year: int, common_groups: list[dict[str, Any]], media_docu
     """Ⅰ類メディア情報学の必要単位を別表2の確認済み数値と照合する。"""
     groups_by_id = {group["id"]: group for group in common_groups + list(walk(media_document["groups"]))}
     # 各区分が存在し、必要単位が別表2の値と一致するかを確認する。
-    expected_values = MEDIA_EXPECTED_2022 if year == 2022 else MEDIA_EXPECTED
+    expected_values = MEDIA_EXPECTED_2021 if year == 2021 else MEDIA_EXPECTED_2022 if year == 2022 else MEDIA_EXPECTED
     for group_id, expected in expected_values.items():
         if group_id not in groups_by_id:
             add_error(year, f"グループが存在しない: {group_id}")
@@ -240,7 +246,7 @@ def validate_year(year: int) -> tuple[int, int]:
         if path.name != f"{year}-day-common.json"
     )
     programs = {path.name: load(f"requirements/{path.name}") for path in program_paths}
-    expected_program_count = 15 if year == 2022 else 16
+    expected_program_count = 15 if year in (2021, 2022) else 16
     if len(programs) != expected_program_count:
         add_error(year, f"プログラム要件ファイル数 {len(programs)} != {expected_program_count}")
 
