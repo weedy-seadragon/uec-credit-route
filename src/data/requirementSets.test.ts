@@ -98,7 +98,7 @@ describe('年度別の要件・科目マスタ選択', () => {
     const media2021 = getRequirementSet(2021, 'day', 'I', 'media')
     const practical = media2021?.groups.find((group) => group.id === 'practical')
 
-    expect(entryYearLabel(2021)).toBe('2021年度')
+    expect(entryYearLabel(2021)).toBe('2021年度以前')
     expect(practical?.required).toBe(16)
     expect(practical?.children?.find((group) => group.id === 'intro')?.required).toBe(8)
     expect(practical?.children?.find((group) => group.id === 'datasci')).toBeUndefined()

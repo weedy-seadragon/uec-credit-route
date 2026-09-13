@@ -134,6 +134,7 @@ export function getDataEntryYear(entryYear: number): number {
 /** プロフィールなどで表示する入学年度の文言を返す。 */
 export function entryYearLabel(entryYear: number): string {
   // 選択できる年度は個別に表示し、未対応年度は実際に参照するデータ年度を添えて誤解を避ける。
+  if (entryYear <= 2021) return '2021年度以前'
   if (entryYear >= 2021 && entryYear <= 2026) return `${entryYear}年度`
   return `${entryYear}年度（${getDataEntryYear(entryYear)}年度要件で暫定表示）`
 }

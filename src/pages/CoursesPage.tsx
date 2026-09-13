@@ -155,7 +155,7 @@ export default function CoursesPage() {
         >
           {CATALOG_YEAR_OPTIONS.map((year) => (
             <option key={year} value={year}>
-              {`${year}年度`}
+              {year === 2021 ? '2021年度以前' : `${year}年度`}
             </option>
           ))}
         </select>
