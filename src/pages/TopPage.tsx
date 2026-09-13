@@ -137,6 +137,8 @@ export default function TopPage() {
             <li>入学年度の選択肢を新しい年度から順に表示するようにしました</li>
           </ul>
         </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（2件）">
         {/* Ver.1.0.2では、同じ授業の二重計上を防ぎ、関連サービスへの導線を追加した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -152,8 +154,6 @@ export default function TopPage() {
             <li>「このサイトについて」に、大学関連サイトへのリンクや時間割機能を利用できる「NEXUS for UEC」のWebサイト・App Store・Google Playへのリンクを追加しました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（2件）">
         {/* Ver.1.0.1では、履修状態の呼び方と画面上部の操作性を利用者の意見に合わせて整えた。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
