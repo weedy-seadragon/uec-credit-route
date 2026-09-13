@@ -40,6 +40,7 @@ import {
   saveOtherClusterMajorSubjectCount,
 } from '../storage/otherClusterMajorCredits'
 import { isSameClusterOtherProgramSubject } from '../domain/programSuffix'
+import { normalizeDuplicateSubjectRecords, preferredSubjectCode, setSubjectStatusWithoutDuplicates } from '../domain/subjectRecords'
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
 
 /** プロフィールのうち、要件セットを引くのに必要な項目が揃っている状態（夜間主はcluster: null） */
@@ -444,6 +445,20 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     classIIIYear2Area: profile.classIIIYear2Area,
     programName,
   }
+  // 同じ類に属する他プログラムの専門科目かどうかを、履修記録の正規化でも使う。
+  function isOtherProgram(code: string): boolean {
+    return isSameClusterOtherProgramSubject(code, requirementSet?.programSuffix, profile.cluster)
+  }
+  // 同名科目の競合では、自分のプログラムの番号を優先して1科目として扱う。
+  function isOwnProgramSubject(code: string): boolean {
+    return requirementSet?.programSuffix !== undefined && code.endsWith(requirementSet.programSuffix)
+  }
+  // 同名でも別の類の科目は別科目なので、同じ類の自プログラム・他プログラム間だけを同一科目候補にする。
+  function isEquivalentProgramSubject(firstCode: string, secondCode: string): boolean {
+    const firstIsSameClassProgram = isOwnProgramSubject(firstCode) || isOtherProgram(firstCode)
+    const secondIsSameClassProgram = isOwnProgramSubject(secondCode) || isOtherProgram(secondCode)
+    return firstIsSameClassProgram && secondIsSameClassProgram
+  }
   // recommend.ts が要求する SubjectInfo 型（必要な項目だけ）に、科目マスタの情報を詰め替える。
   // prerequisites（先修科目）は、シラバスの自由記述テキスト（prerequisitesText）から
   // prerequisites.ts が安全に（完全一致するものだけ）抜き出したコード配列を使う
@@ -466,7 +481,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // committed = 実際に判定に使われている確定済みの記録。draft = プルダウンで編集中の内容。
   // 「更新」ボタンを押すまでは、上の集計（取得単位・残りの必修など）は committed のまま変わらない
   // （docs/SPEC.md F-4「更新ボタン」参照）。
-  const [committed, setCommitted] = useState<ReadonlyMap<string, SubjectStatus>>(() => loadRecords())
+  const [committed, setCommitted] = useState<ReadonlyMap<string, SubjectStatus>>(() => normalizeDuplicateSubjectRecords(loadRecords(), subjectsByCode, isOwnProgramSubject, isEquivalentProgramSubject))
   const [draft, setDraft] = useState<ReadonlyMap<string, SubjectStatus>>(committed)
   // その他単位認定（TOEIC等、科目を介さず共通単位として認定される単位数。0〜8単位、未履修=0）。
   // 科目の記録と同じくdraft/committedに分け、「更新」ボタンを押すまでは反映しない
@@ -693,19 +708,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
   // プルダウンで状態を変えたとき：draftだけを更新する（committedはまだ変えない）
   function handleDraftChange(code: string, status: SubjectStatus | undefined) {
-    const previousStatus = draft.get(code)
+    const effectiveCode = preferredSubjectCode(code, subjectsByCode, isOwnProgramSubject, isEquivalentProgramSubject)
+    const previousStatus = draft.get(effectiveCode)
     setDraft((prev) => {
-      const next = new Map(prev)
-      if (status === undefined) next.delete(code) // 「未履修」に戻す＝記録を消す
-      else next.set(code, status)
-      return next
+      // 同名の他プログラム科目を選んだ場合も、自分のプログラムの科目番号へ1件だけ記録する。
+      return setSubjectStatusWithoutDuplicates(prev, code, status, subjectsByCode, isOwnProgramSubject, isEquivalentProgramSubject)
     })
     // 不合格から修得予定へ直接変えたときだけ、再履修予定として記録する。
     // 修得・未履修・不合格へ変えた場合は、予定ではなくなるため記録を外す。
     setRetakingPlanCodes((prev) => {
       const next = new Set(prev)
-      if (status === 'taking' && previousStatus === 'failed') next.add(code)
-      else if (status !== 'taking') next.delete(code)
+      if (status === 'taking' && previousStatus === 'failed') next.add(effectiveCode)
+      else if (status !== 'taking') next.delete(effectiveCode)
       return next
     })
   }
@@ -802,15 +816,21 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       const json: unknown = JSON.parse(await file.text())
       const imported = parseOwnFormat(json)
       const { merged, added, updated } = mergeRecords(committed, imported.records)
+      const normalizedMerged = normalizeDuplicateSubjectRecords(merged, subjectsByCode, isOwnProgramSubject, isEquivalentProgramSubject)
       // ファイル側の再履修予定を優先しつつ、今回の読み込みで不合格→修得予定になった科目も再履修予定にする。
       const nextRetakingPlanCodes = new Set(retakingPlanCodes)
       for (const record of imported.records) {
-        if (record.status !== 'taking') nextRetakingPlanCodes.delete(record.code)
-        else if (imported.retakingPlanCodes?.includes(record.code) || committed.get(record.code) === 'failed') nextRetakingPlanCodes.add(record.code)
+        const effectiveCode = preferredSubjectCode(record.code, subjectsByCode, isOwnProgramSubject, isEquivalentProgramSubject)
+        if (record.status !== 'taking') nextRetakingPlanCodes.delete(effectiveCode)
+        else if (imported.retakingPlanCodes?.includes(record.code) || committed.get(effectiveCode) === 'failed') nextRetakingPlanCodes.add(effectiveCode)
       }
-      setCommitted(merged)
-      setDraft(merged) // 編集中の内容も、読み込んだ内容に合わせておく
-      saveRecords(merged)
+      // 正規化後の記録に存在しない再履修予定は残さず、不要な時限重複警告を防ぐ。
+      for (const code of nextRetakingPlanCodes) {
+        if (normalizedMerged.get(code) !== 'taking') nextRetakingPlanCodes.delete(code)
+      }
+      setCommitted(normalizedMerged)
+      setDraft(normalizedMerged) // 編集中の内容も、読み込んだ内容に合わせておく
+      saveRecords(normalizedMerged)
       setRetakingPlanCodes(nextRetakingPlanCodes)
       saveRetakingPlanCodes(nextRetakingPlanCodes)
       // その他単位認定は科目コードを持たない単一の数値なので、records のような
@@ -1200,10 +1220,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (standardYear == null) return null
     return <span style={{ marginLeft: '0.4em', fontSize: '0.9em' }}>※{standardYear}年次開講科目</span>
   }
-  // 同じ類に属する他プログラムの専門科目かどうか（他類の科目は原則自由科目）
-  function isOtherProgram(code: string): boolean {
-    return isSameClusterOtherProgramSubject(code, requirementSet?.programSuffix, profile.cluster)
-  }
+  // 同じ類に属する他プログラムの専門科目かどうか（他類の科目は原則自由科目）は上で定義済み。
   // 外国人留学生しか履修できない科目かどうか
   function isInternational(code: string): boolean {
     return subjectsByCode.get(code)?.forInternational ?? false

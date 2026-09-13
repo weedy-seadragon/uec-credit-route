@@ -9,9 +9,9 @@ import { getDataEntryYear, programOptions } from '../data/requirementSets'
 import type { Profile } from '../storage/profile'
 import { loadProfile, saveProfile } from '../storage/profile'
 
-// 2024年以前は2025年度と同じ要件として扱い、選択肢ではまとめて表示する。
+// 学修要覧データを用意できた入学年度だけを、プロフィールで個別に選べるようにする。
 const SHOW_ENTRY_YEAR_INPUT = true
-const ENTRY_YEAR_OPTIONS = [2024, 2025, 2026] as const
+const ENTRY_YEAR_OPTIONS = [2026, 2025, 2024, 2023, 2022, 2021] as const
 
 export default function SetupPage() {
   const navigate = useNavigate()
@@ -142,7 +142,7 @@ export default function SetupPage() {
           <select id="entryYear" value={entryYear} onChange={(e) => handleEntryYearChange(Number(e.target.value))}>
             {ENTRY_YEAR_OPTIONS.map((year) => (
               <option key={year} value={year}>
-                {year === 2024 ? '2024年以前' : `${year}年度`}
+                {year === 2021 ? '2021年度以前' : `${year}年度`}
               </option>
             ))}
           </select>

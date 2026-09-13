@@ -150,7 +150,9 @@
                 "MCE505k",
                 "MCE604k",
                 "MCE506k",
-                "MCE507k"
+                "MCE507k",
+                "MCE605k",
+                "MCE606k"
               ]
             },
             {
@@ -161,8 +163,6 @@
               "kind": "elective",
               "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み",
               "subjects": [
-                "MCE605k",
-                "MCE606k",
                 "MCE508k",
                 "MCE509k",
                 "GSE501k",

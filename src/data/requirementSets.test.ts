@@ -1,6 +1,18 @@
 // 年度別に要件・科目マスタを切り替える入口を検証するテスト。
 import { describe, expect, it } from 'vitest'
+import { evaluateRequirements, type GroupResult } from '../domain/requirements'
 import { entryYearLabel, findSubjectUsages, findSubjectUsagesForProfile, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode } from './requirementSets'
+
+/** 判定結果のグループ木から、指定IDのグループを再帰的に探す。 */
+function findGroupById(groups: readonly GroupResult[], id: string): GroupResult | undefined {
+  // 現在の階層を順に調べ、子グループも同じ関数で探索する。
+  for (const group of groups) {
+    if (group.id === id) return group
+    const child = findGroupById(group.children, id)
+    if (child) return child
+  }
+  return undefined
+}
 
 describe('年度別の要件・科目マスタ選択', () => {
   it('2026年度の情報数理工学には再編後のMTHb01cを返す', () => {
@@ -59,13 +71,111 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(requirementSet?.reviews?.map((review) => review.id)).toEqual(['y2-end'])
   })
 
-  it('2024年度以前は2025年度と同じ要件・科目マスタを参照する', () => {
-    // 旧年度用のJSONを重複保持せず、画面上だけ「2024年以前」とまとめる仕様を検証する。
-    const set2024 = getRequirementSet(2024, 'day', 'I', 'media')
-    const set2025 = getRequirementSet(2025, 'day', 'I', 'media')
+  it('2023年度は年度別データを参照し、照合済みの2024年度と同じ配分を保つ', () => {
+    // 2023・2024年度の付録Cでは同プログラムの類専門が必修19・選択17単位で一致している。
+    const designds2023 = getRequirementSet(2023, 'day', 'I', 'designds')
+    const major2023 = designds2023?.groups.find((g) => g.id === 'specialized')?.children?.find((g) => g.id === 'major')
 
-    expect(entryYearLabel(2024)).toBe('2024年以前')
-    expect(getSubjectsByCode(2024).get('MTHb01c')).toEqual(getSubjectsByCode(2025).get('MTHb01c'))
-    expect(set2024?.totalCredits).toBe(set2025?.totalCredits)
+    expect(entryYearLabel(2023)).toBe('2023年度')
+    expect(major2023?.children?.find((g) => g.id === 'major-req')?.required).toBe(19)
+    expect(major2023?.children?.find((g) => g.id === 'major-sel')?.required).toBe(17)
+    expect(getSubjectsByCode(2023).get('COM603a')).toEqual(getSubjectsByCode(2024).get('COM603a'))
+  })
+
+  it('2022年度は旧カリキュラムのⅠ類単位配分を参照し、後設プログラムを表示しない', () => {
+    // 2022年度は理数基礎20単位・専門78単位であり、デザイン思考・データサイエンスはまだ存在しない。
+    const media2022 = getRequirementSet(2022, 'day', 'I', 'media')
+    const specialized = media2022?.groups.find((group) => group.id === 'specialized')
+
+    expect(entryYearLabel(2022)).toBe('2022年度')
+    expect(specialized?.children?.find((group) => group.id === 'math-basic')?.required).toBe(20)
+    expect(specialized?.required).toBe(78)
+    expect(getRequirementSet(2022, 'day', 'I', 'designds')).toBeUndefined()
+  })
+
+  it('2021年度はデータサイエンス区分なしの初年次導入8単位を参照する', () => {
+    // 2021年度の実践教育は初年次導入8・倫理キャリア4・技術英語4単位の構成である。
+    const media2021 = getRequirementSet(2021, 'day', 'I', 'media')
+    const practical = media2021?.groups.find((group) => group.id === 'practical')
+
+    expect(entryYearLabel(2021)).toBe('2021年度以前')
+    expect(practical?.required).toBe(16)
+    expect(practical?.children?.find((group) => group.id === 'intro')?.required).toBe(8)
+    expect(practical?.children?.find((group) => group.id === 'datasci')).toBeUndefined()
+    expect(getSubjectsByCode(2021).get('UEC101z')?.credits).toBe(2)
+  })
+
+  it('2024年度は2025年度と別の要件・科目マスタを参照する（学修要覧2024との差分を反映済み）', () => {
+    // デザイン思考・データサイエンスプログラムは2024→2025で必修/選択の配分と科目名が変わっている。
+    const media2024 = getSubjectsByCode(2024).get('COM603a')
+    const media2025 = getSubjectsByCode(2025).get('COM603a')
+    expect(media2024?.name).toBe('進化計算論')
+    expect(media2025?.name).toBe('エージェント論')
+
+    const designds2024 = getRequirementSet(2024, 'day', 'I', 'designds')
+    const major2024 = designds2024?.groups.find((g) => g.id === 'specialized')?.children?.find((g) => g.id === 'major')
+    expect(major2024?.children?.find((g) => g.id === 'major-req')?.required).toBe(19)
+    expect(major2024?.children?.find((g) => g.id === 'major-req')?.subjects).toEqual(expect.arrayContaining(['INS601e', 'INS701e']))
+
+    const designds2025 = getRequirementSet(2025, 'day', 'I', 'designds')
+    const major2025 = designds2025?.groups.find((g) => g.id === 'specialized')?.children?.find((g) => g.id === 'major')
+    expect(major2025?.children?.find((g) => g.id === 'major-req')?.required).toBe(15)
+  })
+
+  it('自プログラムの同名科目がある他プログラム科目は選択肢から除く', () => {
+    // CS必修のCOM501dと同じ授業であるCOM502aを、類専門（選択）からも選べる状態にしない。
+    const requirementSet = getRequirementSet(2025, 'day', 'I', 'cs')
+    const major = requirementSet?.groups.find((group) => group.id === 'specialized')?.children?.find((group) => group.id === 'major')
+    const required = major?.children?.find((group) => group.id === 'major-req')
+    const elective = major?.children?.find((group) => group.id === 'major-sel')
+
+    expect(required?.subjects).toContain('COM501d')
+    expect(elective?.subjects).not.toContain('COM502a')
+  })
+
+  it('デザイン思考・データサイエンスプログラムはインターンシップが必修', () => {
+    // 学修要覧の注記により、この課程だけキャリア単位の一部（CAR503z）が必修になる。
+    function findRequirementGroupById(groups: readonly import('../domain/requirements').RequirementGroup[], id: string): import('../domain/requirements').RequirementGroup | undefined {
+      for (const group of groups) {
+        if (group.id === id) return group
+        const child = group.children ? findRequirementGroupById(group.children, id) : undefined
+        if (child) return child
+      }
+      return undefined
+    }
+
+    const requirementSet = getRequirementSet(2025, 'day', 'I', 'designds')
+    const career = findRequirementGroupById(requirementSet?.groups ?? [], 'career')
+
+    expect(career?.children?.find((group) => group.id === 'career-req')?.subjects).toEqual(['CAR503z'])
+    expect(career?.kind).toBeUndefined()
+
+    const otherSet = getRequirementSet(2025, 'day', 'I', 'media')
+    const other = findRequirementGroupById(otherSet?.groups ?? [], 'career')
+    expect(other?.subjects).toContain('CAR503z')
+    expect(other?.children).toBeUndefined()
+  })
+
+  it('デザイン思考・データサイエンスのインターンシップ未修得では必修キャリア単位が不足する', () => {
+    const requirementSet = getRequirementSet(2025, 'day', 'I', 'designds')
+    expect(requirementSet).toBeDefined()
+    const result = evaluateRequirements(requirementSet!, new Map(), getSubjectCredits(2025))
+
+    expect(findGroupById(result.groups, 'career-req')?.shortfall).toBe(2)
+    expect(findGroupById(result.groups, 'career')?.shortfall).toBe(4)
+  })
+
+  it('CSの同名OS科目を両方修得としても、必修の2単位だけを算入する', () => {
+    // COM501d（CS必修）とCOM502a（他プログラム番号）を同時に渡しても、要件計算で4単位にしない。
+    const requirementSet = getRequirementSet(2025, 'day', 'I', 'cs')
+    expect(requirementSet).toBeDefined()
+    const result = evaluateRequirements(
+      requirementSet!,
+      new Map([['COM501d', 'passed' as const], ['COM502a', 'passed' as const]]),
+      getSubjectCredits(2025),
+    )
+
+    expect(findGroupById(result.groups, 'major-req')?.contribution).toBe(2)
+    expect(findGroupById(result.groups, 'major-sel')?.contribution).toBe(0)
   })
 })

@@ -13,8 +13,14 @@ const YEARS = ['1', '2', '3', '4'] as const
 
 // 一度に描画する科目数の上限（絞り込み前・プログラム未選択時に全1000件超を描画すると重いため）
 const MAX_ROWS = 300
-// プロフィールと同様、2024年以前は2025年度の科目データを共用する。
-const CATALOG_YEAR_OPTIONS = [2024, 2025, 2026] as const
+// 学修要覧データを用意できた年度だけを、科目一覧で個別に選べるようにする。
+const CATALOG_YEAR_OPTIONS = [2026, 2025, 2024, 2023, 2022, 2021] as const
+
+/** 科目一覧として選べる年度かを判定する。 */
+function isCatalogYear(year: number): year is (typeof CATALOG_YEAR_OPTIONS)[number] {
+  // URLや保存済みプロフィールから来た値が、選択肢に含まれるかを確認する。
+  return CATALOG_YEAR_OPTIONS.includes(year as (typeof CATALOG_YEAR_OPTIONS)[number])
+}
 
 // kindから見出しに添える読みやすい呼び方（groupのlabelが無いときのフォールバック用）
 const KIND_LABEL: Record<string, string> = {
@@ -36,10 +42,11 @@ export default function CoursesPage() {
   const profile = useMemo(() => loadProfile(), [])
   // 詳細ページから戻った場合はURLのyearを優先し、それ以外はプロフィールの入学年度を初期値にする。
   const requestedYear = Number(searchParams.get('year'))
-  const initialYear = requestedYear === 2024 || requestedYear === 2026
+  const profileEntryYear = profile?.entryYear ?? Number.NaN
+  const initialYear = isCatalogYear(requestedYear)
     ? requestedYear
-    : profile?.entryYear === 2024 || profile?.entryYear === 2026
-      ? profile.entryYear
+    : isCatalogYear(profileEntryYear)
+      ? profileEntryYear
       : 2025
   const [keyword, setKeyword] = useState('')
   const [yearFilter, setYearFilter] = useState('')
@@ -54,7 +61,7 @@ export default function CoursesPage() {
 
   // 表示する科目名・単位数・開講情報は、選択中の年度の科目マスタから取得する。
   const subjectsByCode = useMemo(() => getSubjectsByCode(catalogYear), [catalogYear])
-  // 選択肢上の2024年以前と、実データの2025年度を分けて持つ。
+  // 選択中の年度から、実際に読み込む科目データ年度を求める。
   const dataCatalogYear = getDataEntryYear(catalogYear)
 
   const selectedProgram = useMemo(
@@ -88,6 +95,8 @@ export default function CoursesPage() {
 
   // 年度を切り替えたときは、前年度のプログラムIDを残さず未選択へ戻す。
   function handleCatalogYearChange(year: number) {
+    // select以外から不正な値が渡ったとき、年度型ではない値をstateへ保存しない。
+    if (!isCatalogYear(year)) return
     setCatalogYear(year)
     setProgramValue('')
   }
@@ -146,7 +155,7 @@ export default function CoursesPage() {
         >
           {CATALOG_YEAR_OPTIONS.map((year) => (
             <option key={year} value={year}>
-              {year === 2024 ? '2024年以前' : `${year}年度`}
+              {year === 2021 ? '2021年度以前' : `${year}年度`}
             </option>
           ))}
         </select>

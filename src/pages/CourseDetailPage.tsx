@@ -22,7 +22,7 @@ export default function CourseDetailPage() {
   const [searchParams] = useSearchParams()
   // 同じ科目番号でも年度で別科目になるため、URLのyearを優先して年度別マスタを引く。
   const requestedYear = Number(searchParams.get('year'))
-  const entryYear = requestedYear === 2024 || requestedYear === 2026 ? requestedYear : 2025
+  const entryYear = requestedYear >= 2021 && requestedYear <= 2026 ? requestedYear : 2025
   const subject = id ? getSubjectsByCode(entryYear).get(id) : undefined
   // プロフィールがあれば、その学生に適用される課程だけを位置づけとして表示する。
   const profile = loadProfile()

@@ -8,7 +8,7 @@ import { loadProfile } from '../storage/profile'
  * 過去の更新履歴を開いて読み進めたとき、画面上部から閉じられる入れ子。
  * 見出しが画面外にある間だけボタンを出し、普段は通常のsummaryだけを使う。
  */
-function ReleaseNoteHistory({ children }: { children: ReactNode }) {
+function ReleaseNoteHistory({ summary, children }: { summary: string; children: ReactNode }) {
   // detailsとsummaryの画面上での位置を読むため、DOM要素をrefで保持する。
   const detailsRef = useRef<HTMLDetailsElement>(null)
   const [isStickyCloseVisible, setIsStickyCloseVisible] = useState(false)
@@ -41,7 +41,7 @@ function ReleaseNoteHistory({ children }: { children: ReactNode }) {
 
   return (
     <details ref={detailsRef} className="release-note-history">
-      <summary>過去のアップデートを見る（11件）</summary>
+      <summary>{summary}</summary>
       {children}
       {isStickyCloseVisible && (
         <button
@@ -70,7 +70,7 @@ export default function TopPage() {
   return (
     <main>
       <h1>
-        電通大 単位取得ルートナビ(Ver.1.0.0) <small>最終更新日: {__BUILD_DATE__}</small>
+        電通大 単位取得ルートナビ(Ver.1.1.0) <small>最終更新日: {__BUILD_DATE__}</small>
       </h1>
       <p>
         電気通信大学 情報理工学域の学生向けに、「学年・類・プログラム・取得済み科目」を入力するだけで、
@@ -119,6 +119,41 @@ export default function TopPage() {
       {/* 利用者が今回の見た目の変更をトップページだけで確認できるよう、最新の更新内容を載せる。 */}
       <section className="release-notes-section">
         <h2>リリースノート</h2>
+        {/* Ver.1.1.0では、より前の入学年度の卒業要件を確認できるようにした。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(ver.1.0.2→1.1.0)</span>
+            <span className="release-note-date">アップデート日 2026/9/13</span>
+          </p>
+          <h3 className="release-note-category">入学年度対応</h3>
+          <ul className="release-note-items">
+            <li>2021年度以前・2022年度・2023年度入学生向けの卒業要件と科目データに対応しました</li>
+            <li>プロフィール設定と科目一覧で、2026年度から2021年度以前まで入学年度を選べるようにしました</li>
+            <li>2021・2022年度の旧カリキュラムについて、当時の実践教育科目・専門科目の必要単位を反映しました</li>
+          </ul>
+          <h3 className="release-note-category">入力・表示の改善</h3>
+          <ul className="release-note-items">
+            <li>入学年度の選択肢に、2023年度・2022年度・2021年度以前を追加しました</li>
+            <li>入学年度の選択肢を新しい年度から順に表示するようにしました</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（2件）">
+        {/* Ver.1.0.2では、同じ授業の二重計上を防ぎ、関連サービスへの導線を追加した。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(ver.1.0.1→1.0.2)</span>
+            <span className="release-note-date">アップデート日 2026/9/12</span>
+          </p>
+          <h3 className="release-note-category">不具合修正</h3>
+          <ul className="release-note-items">
+            <li>同じ授業が「プログラム必修」と「類選択」などの複数箇所に表示される場合に、単位数が二重計上される不具合を修正しました</li>
+          </ul>
+          <h3 className="release-note-category">サイト情報の追加</h3>
+          <ul className="release-note-items">
+            <li>「このサイトについて」に、大学関連サイトへのリンクや時間割機能を利用できる「NEXUS for UEC」のWebサイト・App Store・Google Playへのリンクを追加しました</li>
+          </ul>
+        </div>
         {/* Ver.1.0.1では、履修状態の呼び方と画面上部の操作性を利用者の意見に合わせて整えた。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -131,10 +166,11 @@ export default function TopPage() {
             <li>画面上部のナビゲーションをコンパクトなタブ表示に変更し、ライト／ダークモードそれぞれの配色になじむようにしました</li>
           </ul>
         </div>
-        {/* 正式版の公開日は、通常の更新内容と区別して独立した記念プレートで示す。 */}
+        </ReleaseNoteHistory>
+        {/* 正式版の公開日は、更新履歴と区別して独立した記念プレートで示す。 */}
         <p className="release-note-formal">正式版リリース 2026/9/9</p>
-        {/* 以前の更新は正式版への移行を含め、必要なときだけ開ける履歴にまとめる。 */}
-        <ReleaseNoteHistory>
+        {/* β版の更新履歴は、正式版の過去更新とは別の折りたたみとして正式版リリースの下に置く。 */}
+        <ReleaseNoteHistory summary="β版のアップデートを見る（11件）">
         {/* 正式版では、β版で行った判定・表示・操作性の改善をまとめて公開した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
