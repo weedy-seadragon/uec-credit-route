@@ -13,6 +13,23 @@
 
 import type { GroupKind, RequirementGroup, RequirementSet, ReviewDef } from '../domain/requirements'
 import { isSameClusterOtherProgramSubject } from '../domain/programSuffix'
+import common2024 from '../../data/requirements/2024-day-common.json'
+import media2024 from '../../data/requirements/2024-day-I-media.json'
+import management2024 from '../../data/requirements/2024-day-I-management.json'
+import mathinfo2024 from '../../data/requirements/2024-day-I-mathinfo.json'
+import cs2024 from '../../data/requirements/2024-day-I-cs.json'
+import designds2024 from '../../data/requirements/2024-day-I-designds.json'
+import security2024 from '../../data/requirements/2024-day-II-security.json'
+import netinfo2024 from '../../data/requirements/2024-day-II-netinfo.json'
+import electroinfo2024 from '../../data/requirements/2024-day-II-electroinfo.json'
+import control2024 from '../../data/requirements/2024-day-II-control.json'
+import robotics2024 from '../../data/requirements/2024-day-II-robotics.json'
+import mecha2024 from '../../data/requirements/2024-day-III-mecha.json'
+import electro2024 from '../../data/requirements/2024-day-III-electro.json'
+import optical2024 from '../../data/requirements/2024-day-III-optical.json'
+import physics2024 from '../../data/requirements/2024-day-III-physics.json'
+import chembio2024 from '../../data/requirements/2024-day-III-chembio.json'
+import evening2024 from '../../data/requirements/2024-evening.json'
 import common from '../../data/requirements/2025-day-common.json'
 import media from '../../data/requirements/2025-day-I-media.json'
 import management from '../../data/requirements/2025-day-I-management.json'
@@ -47,6 +64,7 @@ import optical2026 from '../../data/requirements/2026-day-III-optical.json'
 import physics2026 from '../../data/requirements/2026-day-III-physics.json'
 import chembio2026 from '../../data/requirements/2026-day-III-chembio.json'
 import evening2026 from '../../data/requirements/2026-evening.json'
+import subjectsMaster2024 from '../../data/subjects/youran-2024.json'
 import subjectsMaster2025 from '../../data/subjects/youran-2025.json'
 import subjectsMaster2026 from '../../data/subjects/youran-2026.json'
 import classAssignmentData from '../../data/timetable/class_assignment.json'
@@ -54,11 +72,10 @@ import type { ClassAssignmentEntry } from '../domain/classAssignment'
 
 /**
  * プロフィール上の入学年度を、実際に参照するデータ年度へ読み替える。
- * 2024年度以前は学修要覧2025と同じ要件として扱うため、2025年度データを共有する。
+ * 2023年度以前は学修要覧2024と同じ要件として扱う（検証済みの最も古い年度のデータへまとめる）。
  */
 export function getDataEntryYear(entryYear: number): number {
-  // 2024以前を別JSONに複製せず、検証済みの2025年度データへまとめる。
-  return entryYear <= 2024 ? 2025 : entryYear
+  return entryYear <= 2024 ? 2024 : entryYear
 }
 
 /** プロフィールなどで表示する入学年度の文言を返す。 */
@@ -157,12 +174,15 @@ type CommonDoc = { groups: RequirementGroup[]; commonCreditSources?: { alwaysCom
 
 // 昼間コース共通要件は入学年度ごとに内容が異なる可能性があるため、年度をキーにして持つ。
 const commonDocsByYear: ReadonlyMap<number, CommonDoc> = new Map([
+  [2024, common2024 as CommonDoc],
   [2025, common as CommonDoc],
   [2026, common2026 as CommonDoc],
 ])
 
 // 要件JSONは年度別に読み込み、プロフィールのentryYearで正しい1件を選ぶ。
 const programDocs: ProgramDoc[] = [
+  media2024, management2024, mathinfo2024, cs2024, designds2024, security2024, netinfo2024, electroinfo2024, control2024, robotics2024,
+  mecha2024, electro2024, optical2024, physics2024, chembio2024, evening2024,
   media, management, mathinfo, cs, designds, security, netinfo, electroinfo, control, robotics, mecha, electro, optical, physics, chembio, evening,
   media2026, management2026, mathinfo2026, cs2026, designds2026, security2026, netinfo2026, electroinfo2026, control2026, robotics2026,
   mecha2026, electro2026, optical2026, physics2026, chembio2026, evening2026,
@@ -170,6 +190,7 @@ const programDocs: ProgramDoc[] = [
 
 // 科目番号は年度をまたぐと別の科目を指すことがあるため、科目マスタも年度別に切り替える。
 const subjectMastersByYear = new Map([
+  [2024, subjectsMaster2024],
   [2025, subjectsMaster2025],
   [2026, subjectsMaster2026],
 ])
@@ -189,7 +210,7 @@ export const programOptions: ProgramOption[] = programDocs.map((p) => ({
  * ここで合体させる（`extends` の解決）。データが無ければ undefined を返す。
  */
 export function getRequirementSet(entryYear: number, course: string, cluster: string | null, program: string): RequirementSet | undefined {
-  // 2024年度以前のプロフィールは、同一要件である2025年度のデータを参照する。
+  // 2023年度以前のプロフィールは、検証済みの最も古い年度である2024年度のデータを参照する。
   const dataEntryYear = getDataEntryYear(entryYear)
   // 4つの条件すべてに一致するプログラムファイルを探す
   const doc = programDocs.find(
@@ -225,7 +246,7 @@ export function getRequirementSet(entryYear: number, course: string, cluster: st
 
 /** プログラム配属前に、総合文化・実践教育と類共通の専門基礎だけを返す。 */
 export function getRequirementSetWithoutProgram(entryYear: number, cluster: 'I' | 'II' | 'III'): RequirementSet | undefined {
-  // プログラム配属前も、2024年度以前は2025年度の共通・類共通要件を利用する。
+  // プログラム配属前も、2023年度以前は2024年度の共通・類共通要件を利用する。
   const dataEntryYear = getDataEntryYear(entryYear)
   const commonDoc = commonDocsByYear.get(dataEntryYear)
   const representative = programDocs.find((p) => p.entryYear === dataEntryYear && p.course === 'day' && p.cluster === cluster)
@@ -364,7 +385,7 @@ function collectSubjectUsagesFromSet(requirementSet: RequirementSet, programName
  * 選択科目としての展開分と本来の区分、など）見つかることもあるので、区分ごとに別の行として返す
  */
 export function findSubjectUsages(entryYear: number, code: string): SubjectUsage[] {
-  // 2024年度以前の科目詳細も、共有している2025年度要件内から利用箇所を探す。
+  // 2023年度以前の科目詳細も、共有している2024年度要件内から利用箇所を探す。
   const dataEntryYear = getDataEntryYear(entryYear)
   const usages: SubjectUsage[] = []
   // 同じコードが別年度に別の科目を指すため、表示中の年度のプログラムだけを調べる。
@@ -439,7 +460,7 @@ export function getCourseListSections(
   program: string | null,
 ): CourseListSection[] {
   const out: CourseListSection[] = []
-  // 2024年度以前を選んだ科目一覧も、共有先の2025年度共通要件から組み立てる。
+  // 2023年度以前を選んだ科目一覧も、共有先の2024年度共通要件から組み立てる。
   const dataEntryYear = getDataEntryYear(entryYear)
   if (!program) {
     const commonDoc = commonDocsByYear.get(dataEntryYear)

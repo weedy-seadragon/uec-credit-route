@@ -71,14 +71,31 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(requirementSet?.reviews?.map((review) => review.id)).toEqual(['y2-end'])
   })
 
-  it('2024年度以前は2025年度と同じ要件・科目マスタを参照する', () => {
-    // 旧年度用のJSONを重複保持せず、画面上だけ「2024年以前」とまとめる仕様を検証する。
+  it('2023年度以前は2024年度と同じ要件・科目マスタを参照する', () => {
+    // 2024年度より前は個別のJSONを持たず、画面上も「2024年以前」とまとめる仕様を検証する。
+    const set2023 = getRequirementSet(2023, 'day', 'I', 'media')
     const set2024 = getRequirementSet(2024, 'day', 'I', 'media')
-    const set2025 = getRequirementSet(2025, 'day', 'I', 'media')
 
     expect(entryYearLabel(2024)).toBe('2024年以前')
-    expect(getSubjectsByCode(2024).get('MTHb01c')).toEqual(getSubjectsByCode(2025).get('MTHb01c'))
-    expect(set2024?.totalCredits).toBe(set2025?.totalCredits)
+    expect(getSubjectsByCode(2023).get('COM603a')).toEqual(getSubjectsByCode(2024).get('COM603a'))
+    expect(set2023?.totalCredits).toBe(set2024?.totalCredits)
+  })
+
+  it('2024年度は2025年度と別の要件・科目マスタを参照する（学修要覧2024との差分を反映済み）', () => {
+    // デザイン思考・データサイエンスプログラムは2024→2025で必修/選択の配分と科目名が変わっている。
+    const media2024 = getSubjectsByCode(2024).get('COM603a')
+    const media2025 = getSubjectsByCode(2025).get('COM603a')
+    expect(media2024?.name).toBe('進化計算論')
+    expect(media2025?.name).toBe('エージェント論')
+
+    const designds2024 = getRequirementSet(2024, 'day', 'I', 'designds')
+    const major2024 = designds2024?.groups.find((g) => g.id === 'specialized')?.children?.find((g) => g.id === 'major')
+    expect(major2024?.children?.find((g) => g.id === 'major-req')?.required).toBe(19)
+    expect(major2024?.children?.find((g) => g.id === 'major-req')?.subjects).toEqual(expect.arrayContaining(['INS601e', 'INS701e']))
+
+    const designds2025 = getRequirementSet(2025, 'day', 'I', 'designds')
+    const major2025 = designds2025?.groups.find((g) => g.id === 'specialized')?.children?.find((g) => g.id === 'major')
+    expect(major2025?.children?.find((g) => g.id === 'major-req')?.required).toBe(15)
   })
 
   it('自プログラムの同名科目がある他プログラム科目は選択肢から除く', () => {

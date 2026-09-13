@@ -13,7 +13,7 @@ from typing import Any
 
 # このファイルの場所を基準にしてdataディレクトリを参照する。
 DATA_ROOT = Path(__file__).resolve().parents[1] / "data"
-YEARS = (2025, 2026)
+YEARS = (2024, 2025, 2026)
 errors: list[str] = []
 
 # 別表2で検証済みのⅠ類メディア情報学の必要単位を年度共通の基準として持つ。
@@ -166,6 +166,46 @@ def check_known_2026_differences(
             add_error(2026, f"{filename} のサイエンス工房が不足: {sorted(missing)}")
 
 
+def check_known_2024_differences(
+    subjects: dict[str, dict[str, Any]],
+    programs: dict[str, dict[str, Any]],
+) -> None:
+    """PDF比較で確定した2024固有差分（2025年度との相違点）が生成後も保たれているか検査する。"""
+    # 2025年度に新設され、2024年度にはまだ存在しない科目番号。
+    required_absent = {
+        "CAR402z", "INS503c", "INS503d", "MCEb13i", "MCEb13j", "MCEb13k",
+        "MSS502e", "MSS602e",
+    }
+    for code in sorted(required_absent):
+        if code in subjects:
+            add_error(2024, f"2025年度に新設された科目が2024年度マスタに残っている: {code}")
+
+    # 同じ科目番号でも2025年度と名称・意味が異なる科目（コード再利用・改称）。
+    expected_names = {
+        "HSS601z": "現代の世界政治",  # 2025年度は新設の「計算と論理の哲学」
+        "HSS609z": "日本語読解法",  # 2025年度はHSS610z
+        "COM603a": "進化計算論",  # 2025年度は「エージェント論」
+        "ENG503z": "English for Intercultural Communication",
+        "COM502e": "データサイエンス実践演習１",  # 2025年度は「デザイン思考・」が付く
+        "COM601e": "データサイエンス実験",
+        "INS601e": "デザイン思考概論",  # 2025年度はINS601e＝システム思考概論
+    }
+    for code, expected_name in expected_names.items():
+        actual = subjects.get(code, {}).get("name")
+        if actual != expected_name:
+            add_error(2024, f"{code} の科目名が期待と異なる: {actual!r} != {expected_name!r}")
+
+    if "INS701e" not in subjects:
+        add_error(2024, "2024年度固有科目がマスタにない: INS701e（システム思考概論）")
+
+    designds = programs["2024-day-I-designds.json"]
+    major_req = next(group for group in walk(designds["groups"]) if group["id"] == "major-req")
+    if major_req["required"] != 19:
+        add_error(2024, f"デザイン思考・データサイエンスの必修required={major_req['required']} 期待=19")
+    if {"INS601e", "INS701e"} - set(major_req["subjects"]):
+        add_error(2024, "デザイン思考・データサイエンスの必修にデザイン思考概論・システム思考概論が無い")
+
+
 def validate_year(year: int) -> tuple[int, int]:
     """1年度分の科目マスタ・共通要件・全プログラム要件をまとめて検証する。"""
     subject_document = load(f"subjects/youran-{year}.json")
@@ -220,7 +260,9 @@ def validate_year(year: int) -> tuple[int, int]:
         semester = subject.get("standardSemester")
         if semester is not None and not 1 <= semester <= 8:
             add_error(year, f"standardSemesterが範囲外: {subject['code']}")
-    # 2026年度だけは今回確定した差分そのものも回帰検査する。
+    # 確定済みの年度固有差分をそれぞれ回帰検査する。
+    if year == 2024:
+        check_known_2024_differences(subjects, programs)
     if year == 2026:
         check_known_2026_differences(subjects, programs)
     return len(subjects), len(programs)
