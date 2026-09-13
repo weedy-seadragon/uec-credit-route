@@ -13,7 +13,7 @@ from typing import Any
 
 # このファイルの場所を基準にしてdataディレクトリを参照する。
 DATA_ROOT = Path(__file__).resolve().parents[1] / "data"
-YEARS = (2024, 2025, 2026)
+YEARS = (2022, 2023, 2024, 2025, 2026)
 errors: list[str] = []
 
 # 別表2で検証済みのⅠ類メディア情報学の必要単位を年度共通の基準として持つ。
@@ -24,6 +24,9 @@ MEDIA_EXPECTED = {
     "practical": 17, "math-basic": 18, "cluster-basic-req": 15,
     "cluster-basic-sel": 8, "major-req": 13, "major-sel": 22, "specialized": 76,
 }
+
+# 2022年度は旧カリキュラムで、Ⅰ類の理数基礎と専門小計だけが後年度と異なる。
+MEDIA_EXPECTED_2022 = {**MEDIA_EXPECTED, "math-basic": 20, "specialized": 78}
 
 
 def load(relative_path: str) -> dict[str, Any]:
@@ -125,7 +128,8 @@ def check_media_table(year: int, common_groups: list[dict[str, Any]], media_docu
     """Ⅰ類メディア情報学の必要単位を別表2の確認済み数値と照合する。"""
     groups_by_id = {group["id"]: group for group in common_groups + list(walk(media_document["groups"]))}
     # 各区分が存在し、必要単位が別表2の値と一致するかを確認する。
-    for group_id, expected in MEDIA_EXPECTED.items():
+    expected_values = MEDIA_EXPECTED_2022 if year == 2022 else MEDIA_EXPECTED
+    for group_id, expected in expected_values.items():
         if group_id not in groups_by_id:
             add_error(year, f"グループが存在しない: {group_id}")
         elif groups_by_id[group_id]["required"] != expected:
@@ -206,6 +210,19 @@ def check_known_2024_differences(
         add_error(2024, "デザイン思考・データサイエンスの必修にデザイン思考概論・システム思考概論が無い")
 
 
+def check_known_2023_values(programs: dict[str, dict[str, Any]]) -> None:
+    """PDF照合した2023年度のデザイン思考・データサイエンスの単位配分を検査する。"""
+    designds = programs["2023-day-I-designds.json"]
+    groups = {group["id"]: group for group in walk(designds["groups"])}
+    # 別表2・付録Cどおり、類専門は必修19・選択17で合計36単位になる必要がある。
+    if groups["major-req"]["required"] != 19:
+        add_error(2023, f"デザイン思考・データサイエンスの必修required={groups['major-req']['required']} 期待=19")
+    if groups["major-sel"]["required"] != 17:
+        add_error(2023, f"デザイン思考・データサイエンスの選択required={groups['major-sel']['required']} 期待=17")
+    if designds["subtotals"]["specialized"] != 77:
+        add_error(2023, f"デザイン思考・データサイエンスの専門小計={designds['subtotals']['specialized']} 期待=77")
+
+
 def validate_year(year: int) -> tuple[int, int]:
     """1年度分の科目マスタ・共通要件・全プログラム要件をまとめて検証する。"""
     subject_document = load(f"subjects/youran-{year}.json")
@@ -223,8 +240,9 @@ def validate_year(year: int) -> tuple[int, int]:
         if path.name != f"{year}-day-common.json"
     )
     programs = {path.name: load(f"requirements/{path.name}") for path in program_paths}
-    if len(programs) != 16:
-        add_error(year, f"プログラム要件ファイル数 {len(programs)} != 16")
+    expected_program_count = 15 if year == 2022 else 16
+    if len(programs) != expected_program_count:
+        add_error(year, f"プログラム要件ファイル数 {len(programs)} != {expected_program_count}")
 
     common_groups = list(walk(common["groups"]))
     check_group_subjects(year, "共通要件", common["groups"], subjects)
@@ -261,6 +279,8 @@ def validate_year(year: int) -> tuple[int, int]:
         if semester is not None and not 1 <= semester <= 8:
             add_error(year, f"standardSemesterが範囲外: {subject['code']}")
     # 確定済みの年度固有差分をそれぞれ回帰検査する。
+    if year == 2023:
+        check_known_2023_values(programs)
     if year == 2024:
         check_known_2024_differences(subjects, programs)
     if year == 2026:

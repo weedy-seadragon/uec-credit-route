@@ -86,11 +86,11 @@
 
 ### データ
 
-- 昼間コース Ⅰ類5・Ⅱ類5・Ⅲ類5プログラム＋夜間主課程、計16課程 ×（2024・2025・2026年度）の計48要件ファイルが完成。全課程・全年度で必修単位・審査条件の単位数を学修要覧原本（`PDF/`配下、リポジトリには含めない）と照合済み
-  - 「2024年度以前は2025年度と同一」という前提は誤りだったと判明し（2026-09-13）、2024年度専用データを新設した。年度間の差分は`docs/YOURAN_2024_COMPARISON.md`（2024↔2025）・`docs/YOURAN_2026_COMPARISON.md`（2025↔2026）に記録している。プロフィールの入学年度が2023年度以前なら2024年度データ、2027年度以降の新規データはまだ無い
-- 科目マスタは年度ごとに別ファイル（`youran-2024.json`1,390科目・`youran-2025.json`1,396科目・`youran-2026.json`1,392科目）。曜日時限・担当教員・シラバスURL（`offerings`）は原則2026年度の公式シラバスを基準に取得済み。大学院連携科目・卒業研究など性質上シラバスに出ない科目、原因未特定の少数は未取得のまま
+- 2022〜2026年度の要件データが完成。2022年度はデザイン思考・データサイエンスプログラム新設前のため15課程、2023〜2026年度は昼間15プログラム＋夜間主課程の16課程。必修単位・審査条件の単位数は学修要覧原本（`PDF/`配下、リポジトリには含めない）と照合する
+  - 年度間の差分は`docs/YOURAN_2024_COMPARISON.md`（2024↔2025）・`docs/YOURAN_2026_COMPARISON.md`（2025↔2026）に記録している。2021年度以前・2027年度以降の新規データはまだ無い
+- 科目マスタは年度ごとに別ファイル（`youran-2022.json`〜`youran-2024.json`各1,390科目・`youran-2025.json`1,396科目・`youran-2026.json`1,392科目）。曜日時限・担当教員・シラバスURL（`offerings`）は原則2026年度の公式シラバスを基準に取得済み。大学院連携科目・卒業研究など性質上シラバスに出ない科目、原因未特定の少数は未取得のまま
 - 複数セクション（クラスごとに教員・時限が違う）科目は、`data/timetable/class_assignment_filled.csv`→`class_assignment.json`で、プロフィールのクラス情報と突き合わせて一意に解決する。未記入の`class_id`はない
-- データ生成パイプラインの実行順序：`python scripts/gen_data.py`（科目マスタ・2025年度要件JSONを再構築。**offerings・prerequisitesTextを消してしまう**）→`python scripts/fetch_syllabus.py`（シラバスから曜日時限等を再取得）→`python scripts/build_class_assignment.py`→`python scripts/build_class_assignment_json.py`→`python scripts/build_2024_data.py`・`python scripts/build_2026_data.py`（2025年度データから確定差分だけを反映して2024・2026年度データを再生成）→`python scripts/validate_data.py`（整合性チェック）
+- データ生成パイプラインの実行順序：`python scripts/gen_data.py`（科目マスタ・2025年度要件JSONを再構築。**offerings・prerequisitesTextを消してしまう**）→`python scripts/fetch_syllabus.py`（シラバスから曜日時限等を再取得）→`python scripts/build_class_assignment.py`→`python scripts/build_class_assignment_json.py`→`python scripts/build_2022_data.py`・`python scripts/build_2023_data.py`・`python scripts/build_2024_data.py`・`python scripts/build_2026_data.py`（年度別データを再生成）→`python scripts/validate_data.py`（整合性チェック）
 
 ### 実装済みの画面・機能
 

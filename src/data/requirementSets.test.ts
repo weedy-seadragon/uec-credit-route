@@ -71,14 +71,26 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(requirementSet?.reviews?.map((review) => review.id)).toEqual(['y2-end'])
   })
 
-  it('2023年度以前は2024年度と同じ要件・科目マスタを参照する', () => {
-    // 2024年度より前は個別のJSONを持たず、画面上も「2024年以前」とまとめる仕様を検証する。
-    const set2023 = getRequirementSet(2023, 'day', 'I', 'media')
-    const set2024 = getRequirementSet(2024, 'day', 'I', 'media')
+  it('2023年度は年度別データを参照し、照合済みの2024年度と同じ配分を保つ', () => {
+    // 2023・2024年度の付録Cでは同プログラムの類専門が必修19・選択17単位で一致している。
+    const designds2023 = getRequirementSet(2023, 'day', 'I', 'designds')
+    const major2023 = designds2023?.groups.find((g) => g.id === 'specialized')?.children?.find((g) => g.id === 'major')
 
-    expect(entryYearLabel(2024)).toBe('2024年以前')
+    expect(entryYearLabel(2023)).toBe('2023年度')
+    expect(major2023?.children?.find((g) => g.id === 'major-req')?.required).toBe(19)
+    expect(major2023?.children?.find((g) => g.id === 'major-sel')?.required).toBe(17)
     expect(getSubjectsByCode(2023).get('COM603a')).toEqual(getSubjectsByCode(2024).get('COM603a'))
-    expect(set2023?.totalCredits).toBe(set2024?.totalCredits)
+  })
+
+  it('2022年度は旧カリキュラムのⅠ類単位配分を参照し、後設プログラムを表示しない', () => {
+    // 2022年度は理数基礎20単位・専門78単位であり、デザイン思考・データサイエンスはまだ存在しない。
+    const media2022 = getRequirementSet(2022, 'day', 'I', 'media')
+    const specialized = media2022?.groups.find((group) => group.id === 'specialized')
+
+    expect(entryYearLabel(2022)).toBe('2022年度')
+    expect(specialized?.children?.find((group) => group.id === 'math-basic')?.required).toBe(20)
+    expect(specialized?.required).toBe(78)
+    expect(getRequirementSet(2022, 'day', 'I', 'designds')).toBeUndefined()
   })
 
   it('2024年度は2025年度と別の要件・科目マスタを参照する（学修要覧2024との差分を反映済み）', () => {
