@@ -133,7 +133,7 @@ export default function TopPage() {
           </ul>
           <h3 className="release-note-category">入力・表示の改善</h3>
           <ul className="release-note-items">
-            <li>入学年度を後から変更しても、入力済みの履修記録や単位認定を引き継ぐようにしました</li>
+            <li>入学年度の選択肢に、2023年度・2022年度・2021年度以前を追加しました</li>
             <li>入学年度の選択肢を新しい年度から順に表示するようにしました</li>
           </ul>
         </div>
