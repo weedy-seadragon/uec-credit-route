@@ -50,7 +50,7 @@
                 "MTH103z",
                 "MTH204z",
                 "PHY102z",
-                "PHY202z",
+                "PHY201z",
                 "CHM102z",
                 "COM201z"
               ]
@@ -65,8 +65,7 @@
               "note": "修得した単位は共通単位とする",
               "subjects": [
                 "PHY103z",
-                "PHY203z",
-                "CHM203z"
+                "CHM202z"
               ]
             }
           ]

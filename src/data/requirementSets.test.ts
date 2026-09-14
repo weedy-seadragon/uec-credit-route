@@ -151,6 +151,33 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(getRequirementSet(2022, 'day', 'I', 'designds')).toBeUndefined()
   })
 
+  it('2022年度のⅠ類はデザイン思考・データサイエンスの展開科目が混入しておらず、独自の選択科目を含む', () => {
+    // 2026-09-14追加：2022年度データは2024年度をほぼそのまま複製したもので、まだ存在しない
+    // デザイン思考・データサイエンス（サフィックスe）の展開科目が他4プログラムに混入していた。
+    // メディア情報学には2024年度には無い選択科目「形式言語理論」（COM406a）もある
+    // （docs/YOURAN_2022_COMPARISON.md参照）。
+    const media2022 = getRequirementSet(2022, 'day', 'I', 'media')
+    const major2022 = media2022?.groups.find((g) => g.id === 'specialized')?.children?.find((g) => g.id === 'major')
+    const majorSel2022 = major2022?.children?.find((g) => g.id === 'major-sel')
+
+    expect(majorSel2022?.subjects?.some((code) => code.endsWith('e'))).toBe(false)
+    expect(majorSel2022?.subjects).toContain('COM406a')
+    expect(getSubjectsByCode(2022).get('COM406a')?.name).toBe('形式言語理論')
+    expect(getSubjectsByCode(2022).get('COM001a')?.name).toBe('情報工学工房')
+  })
+
+  it('2022年度のⅡ類はデザイン思考・データサイエンスがeを占めていないためプログラム記号が1つ若い', () => {
+    // 2026-09-14追加：セキュリティ情報学は2024年度のf ではなく、2022年度時点はeを名乗る
+    // （docs/YOURAN_2022_COMPARISON.md参照）。GLTPラボワークは2024年度新設のため2022年度には無い。
+    const security2022 = getRequirementSet(2022, 'day', 'II', 'security')
+    const majorReq2022 = security2022?.groups.find((g) => g.id === 'specialized')?.children
+      ?.find((g) => g.id === 'major')?.children?.find((g) => g.id === 'major-req')
+
+    expect(majorReq2022?.subjects).toContain('COM501e')
+    expect(getSubjectsByCode(2022).get('COM501e')?.name).toBe('プログラミング言語実験')
+    expect(getSubjectsByCode(2022).get('LAB501e')).toBeUndefined()
+  })
+
   it('2021年度はデータサイエンス区分なしの初年次導入8単位を参照する', () => {
     // 2021年度の実践教育は初年次導入8・倫理キャリア4・技術英語4単位の構成である。
     const media2021 = getRequirementSet(2021, 'day', 'I', 'media')

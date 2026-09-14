@@ -302,6 +302,68 @@ def check_known_2023_values(
             add_error(2023, f"{code} の科目名が期待と異なる: {actual!r} != {expected_name!r}")
 
 
+def check_known_2022_values(
+    subjects: dict[str, dict[str, Any]],
+    programs: dict[str, dict[str, Any]],
+) -> None:
+    """PDF画像で照合した2022年度Ⅰ類・Ⅱ類の差分を検査する（2026-09-14、docs/YOURAN_2022_COMPARISON.md参照）。
+
+    2022年度データはCodeXが2024年度データをほぼそのまま複製したもので、次のような
+    根本的な誤りがあった。
+    - 理数基礎科目：基礎科学実験A・BをA1/A2・B1/B2の分割後の姿で複製していた
+    - Ⅰ類：まだ存在しないデザイン思考・データサイエンス（サフィックスe）の展開科目が
+      他の4プログラムに混入していた
+    - Ⅱ類：デザイン思考・データサイエンスがサフィックスeを占めていないため、
+      セキュリティ情報学以下5プログラムの記号が2024年度より1つ後ろにずれていた
+    """
+    # 理数基礎科目：基礎科学実験A・Bは2022年度は分割前の1科目2単位。
+    for code, expected_name in {
+        "PHY101z": "基礎科学実験A", "CHM101z": "基礎科学実験B",
+        "PHY201z": "物理学概論第二", "PHY202z": "物理学演習第二", "CHM202z": "化学概論第二",
+    }.items():
+        subject = subjects.get(code, {})
+        if subject.get("name") != expected_name:
+            add_error(2022, f"{code} の科目名が期待と異なる: {subject.get('name')!r} != {expected_name!r}")
+        if subject.get("credits") != 2 and code != "PHY202z":
+            add_error(2022, f"{code} の単位数が期待と異なる: {subject.get('credits')} != 2")
+    if subjects.get("PHY202z", {}).get("credits") != 1:
+        add_error(2022, "PHY202z（物理学演習第二）の単位数が1ではない")
+    for code in ("PHY203z", "CHM203z"):
+        if code in subjects:
+            add_error(2022, f"2024年度以降の番号が2022年度マスタに残っている: {code}")
+
+    # Ⅰ類：デザイン思考・データサイエンスの展開科目（サフィックスe）が混入していないか。
+    for program in ("media", "management", "mathinfo", "cs"):
+        document = programs[f"2022-day-I-{program}.json"]
+        for group in walk(document["groups"]):
+            if any(code.endswith("e") for code in group.get("subjects", [])):
+                add_error(2022, f"{program}：デザイン思考・データサイエンスの展開科目が残っている（{group['id']}）")
+    if subjects.get("COM001a", {}).get("name") != "情報工学工房":
+        add_error(2022, "情報工学工房（COM001a）は2024年度の名称「情報工学工房A」のはずがない")
+    media = programs["2022-day-I-media.json"]
+    media_sel = next(group for group in walk(media["groups"]) if group["id"] == "major-sel")
+    if "COM406a" not in media_sel["subjects"]:
+        add_error(2022, "メディア情報学の選択科目に形式言語理論（COM406a）が無い")
+
+    # Ⅱ類：デザイン思考・データサイエンスが「e」を占めていないため、プログラム記号が1つ若い。
+    expected_suffix = {"security": "e", "netinfo": "f", "electroinfo": "g", "control": "h", "robotics": "i"}
+    for program, suffix in expected_suffix.items():
+        document = programs[f"2022-day-II-{program}.json"]
+        if document.get("programSuffix") != suffix:
+            add_error(2022, f"{program}のprogramSuffixが{suffix!r}ではない: {document.get('programSuffix')!r}")
+        major_free = next(group for group in walk(document["groups"]) if group["id"] == "major-free")
+        if f"LAB501{suffix}" in major_free["subjects"]:
+            add_error(2022, f"{program}：2024年度新設のGLTPラボワークが残っている")
+    control = programs["2022-day-II-control.json"]
+    control_free = next(group for group in walk(control["groups"]) if group["id"] == "major-free")
+    if "MCEb13h" not in control_free["subjects"]:
+        add_error(2022, "計測制御システムにAdvanced Robotics and Mechatronics Engineering（MCEb13h）が無い")
+    robotics = programs["2022-day-II-robotics.json"]
+    robotics_free = next(group for group in walk(robotics["groups"]) if group["id"] == "major-free")
+    if "MCEb13i" not in robotics_free["subjects"]:
+        add_error(2022, "先端ロボティクスにAdvanced Robotics and Mechatronics Engineering（MCEb13i）が無い")
+
+
 def validate_year(year: int) -> tuple[int, int]:
     """1年度分の科目マスタ・共通要件・全プログラム要件をまとめて検証する。"""
     subject_document = load(f"subjects/youran-{year}.json")
@@ -358,6 +420,8 @@ def validate_year(year: int) -> tuple[int, int]:
         if semester is not None and not 1 <= semester <= 8:
             add_error(year, f"standardSemesterが範囲外: {subject['code']}")
     # 確定済みの年度固有差分をそれぞれ回帰検査する。
+    if year == 2022:
+        check_known_2022_values(subjects, programs)
     if year == 2023:
         check_known_2023_values(subjects, programs)
     if year == 2024:

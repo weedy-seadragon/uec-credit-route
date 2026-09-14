@@ -3,12 +3,27 @@
 2022年度はデザイン思考・データサイエンスプログラムがまだ無いため、2024年度の対応する
 要件ファイルを土台にして当該プログラムを除く。別表2で確認できるⅠ類の単位配分もここで反映する。
 
+付録Cを画像で照合したところ、単なる単位配分の差ではなく、次の根本的な差分が見つかった
+（2026-09-14、docs/YOURAN_2022_COMPARISON.md参照）。
+
+- 理数基礎科目：基礎科学実験A・Bは2022年度にはA1/A2・B1/B2に分かれておらず、それぞれ
+  1科目2単位（PHY101z・CHM101z）。現行のPHY201z・CHM202z（後半科目扱い）は2022年度には
+  存在せず、それぞれ物理学概論第二・化学概論第二という別科目を指す
+- Ⅰ類（メディア情報学・経営社会情報学・情報数理工学・コンピュータサイエンス）：
+  デザイン思考・データサイエンスがまだ無いため、他プログラムからの展開先にeサフィックスの
+  科目が混入してはいけない。また類共通基礎科目・専門選択科目の一部科目番号が2024年度と異なる
+- Ⅱ類（セキュリティ情報学〜先端ロボティクス）：デザイン思考・データサイエンスが「e」を
+  占めていないため、プログラム記号自体が2024年度より1つ若い（セキュリティ情報学はf→e、
+  情報通信工学はg→f、電子情報学はh→g、計測制御システムはi→h、先端ロボティクスはj→i）
+
 実行: python scripts/build_2022_data.py
 """
 
 from __future__ import annotations
 
+import copy
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -71,7 +86,9 @@ def update_class_i_requirements() -> None:
         path = REQUIREMENTS_DIR / f"2022-day-I-{program}.json"
         document = load_json(path)
         groups = groups_by_id(document)
-        # 別表2ではⅠ類の理数基礎は20単位。基礎科学実験A2を必修として加える。
+        # 別表2ではⅠ類の理数基礎は20単位。2022年度のPHY201z（物理学概論第二）は
+        # 2024年度の同名グループには含まれていないため、必修として加える必要がある
+        # （2026-09-14訂正：基礎科学実験A2ではなく物理学概論第二。update_basic_science_subjects参照）。
         groups["math-basic"]["required"] = 20
         groups["math-basic-req"]["required"] = 20
         if "PHY201z" not in groups["math-basic-req"]["subjects"]:
@@ -83,22 +100,304 @@ def update_class_i_requirements() -> None:
 
 
 def update_common_requirements() -> None:
-    """2022年度の共通要件へ、理数基礎へ移っていた実験科目の所属を反映する。"""
+    """2022年度の共通要件から、まだ存在しない基礎科学実験A2・B2への参照を外す。
+
+    2026-09-14訂正：2022年度は基礎科学実験A・Bがそれぞれ1科目2単位のみで、A1/A2・B1/B2の
+    分割は無い（docs/YOURAN_2022_COMPARISON.md参照）。
+    """
     path = REQUIREMENTS_DIR / "2022-day-common.json"
     document = load_json(path)
     groups = groups_by_id(document)
-    # 基礎科学実験A2は2022年度には初年次導入ではなく理数基礎へ算入される。
-    groups["intro"]["subjects"] = [code for code in groups["intro"]["subjects"] if code != "PHY201z"]
+    groups["intro"]["subjects"] = [
+        code for code in groups["intro"]["subjects"] if code not in ("PHY201z", "CHM202z")
+    ]
     write_json(path, document)
 
 
+def update_math_basic_requirements() -> None:
+    """全プログラム共通：理数基礎科目の必修・選択科目一覧を2022年度時点の科目番号に直す。
+
+    2024年度以降は物理学概論第二がPHY202z、物理学演習第二がPHY203z、化学概論第二がCHM203z
+    という番号だが、2022年度時点ではそれぞれPHY201z・PHY202z・CHM202zだった（画像で確認済み。
+    update_basic_science_subjectsで科目マスタ側の実体もこの2022年度時点の番号へ入れ替えている）。
+    Ⅰ類はもともと物理学概論第二が理数基礎の必修に含まれていない（update_class_i_requirementsで
+    別途PHY201zを必修へ追加済み）ため、ここでのPHY202z→PHY201z置換はⅡ類・Ⅲ類・夜間主にのみ効く。
+    """
+    for path in sorted(REQUIREMENTS_DIR.glob("2022-day-*.json")):
+        if path.name == "2022-day-common.json":
+            continue
+        document = load_json(path)
+        groups = groups_by_id(document)
+        req = groups.get("math-basic-req")
+        if req is not None:
+            req["subjects"] = ["PHY201z" if code == "PHY202z" else code for code in req["subjects"]]
+        sel = groups.get("math-basic-sel")
+        if sel is not None:
+            subjects = [code for code in sel["subjects"] if code != "PHY203z"]
+            sel["subjects"] = ["CHM202z" if code == "CHM203z" else code for code in subjects]
+        write_json(path, document)
+
+
+DESIGNDS_ABSENT_SUFFIX = "e"
+
+
+def remove_designds_crosslisting(document: dict[str, Any]) -> None:
+    """2022年度にはまだ存在しないデザイン思考・データサイエンス（サフィックスe）の
+    展開科目を、他のⅠ類プログラムの要件から取り除く。
+    """
+    for group in walk_groups(document["groups"]):
+        subjects = group.get("subjects")
+        if subjects:
+            group["subjects"] = [code for code in subjects if not code.endswith(DESIGNDS_ABSENT_SUFFIX)]
+
+
+FIRST_CLUSTER_BASIC_RENUMBER = {
+    suffix: {f"MTH303{suffix}": f"MTH301{suffix}", f"MTH304{suffix}": f"MTH302{suffix}"}
+    for suffix in ("a", "b", "c", "d")
+}
+# 情報数理工学・コンピュータサイエンスは、2024年度にかけて選択科目のMTH60X系列が
+# 1つずつ後ろへずれている（数理計画法・離散数理工学・知的情報処理・ハイパフォーマンス
+# コンピューティングの4科目が連鎖的にずれる）。
+FIRST_CLUSTER_MAJOR_RENUMBER = {
+    suffix: {
+        f"MTH602{suffix}": f"MTH601{suffix}",
+        f"MTH603{suffix}": f"MTH602{suffix}",
+        f"MTH604{suffix}": f"MTH603{suffix}",
+        f"MTH605{suffix}": f"MTH604{suffix}",
+    }
+    for suffix in ("c", "d")
+}
+
+
+def rename_codes_everywhere(document: dict[str, Any], rename: dict[str, str]) -> None:
+    """要件JSON内のどのグループに出現していても、指定の科目番号を一括で置き換える。"""
+    for group in walk_groups(document["groups"]):
+        subjects = group.get("subjects")
+        if subjects:
+            group["subjects"] = [rename.get(code, code) for code in subjects]
+
+
+def update_first_cluster_requirements() -> None:
+    """Ⅰ類4プログラム：デザイン思考・データサイエンス展開分の除去、類共通基礎・
+    専門選択科目の番号ずれの是正、メディア情報学固有の差分を反映する。
+
+    番号ずれは「他プログラムの類専門科目選択も選択科目とできる」規定（付録C注1）により
+    4ファイルすべてに展開されているため、どの科目の番号ずれも全ファイル共通で適用する。
+    """
+    all_renames: dict[str, str] = {}
+    for mapping in FIRST_CLUSTER_BASIC_RENUMBER.values():
+        all_renames.update(mapping)
+    for mapping in FIRST_CLUSTER_MAJOR_RENUMBER.values():
+        all_renames.update(mapping)
+
+    for suffix, program in (("a", "media"), ("b", "management"), ("c", "mathinfo"), ("d", "cs")):
+        path = REQUIREMENTS_DIR / f"2022-day-I-{program}.json"
+        document = load_json(path)
+        remove_designds_crosslisting(document)
+        rename_codes_everywhere(document, all_renames)
+        groups = groups_by_id(document)
+        removed_2024_only = {f"COM002{suffix}", f"COM003{suffix}", f"LAB501{suffix}"}
+        groups["major-free"]["subjects"] = [
+            code for code in groups["major-free"]["subjects"] if code not in removed_2024_only
+        ]
+        write_json(path, document)
+
+    # メディア情報学固有：現代代数学・数理解析学は経営・社会情報学の番号を参照する。
+    # また、2024年度には無い選択科目「形式言語理論」（COM406a）が存在する。
+    path = REQUIREMENTS_DIR / "2022-day-I-media.json"
+    document = load_json(path)
+    groups = groups_by_id(document)
+    rename = {"MTHb02a": "MTHb02b", "MTHb03a": "MTHb03b"}
+    groups["major-free"]["subjects"] = [rename.get(code, code) for code in groups["major-free"]["subjects"]]
+    major_sel = groups["major-sel"]
+    if "COM406a" not in major_sel["subjects"]:
+        index = major_sel["subjects"].index("MSS402a")
+        major_sel["subjects"].insert(index + 1, "COM406a")
+    write_json(path, document)
+
+
+# Ⅱ類5プログラム：デザイン思考・データサイエンスが「e」を占めていないため、
+# プログラム記号自体が2024年度より1つ若い（画像で確認済み、docs/YOURAN_2022_COMPARISON.md参照）。
+SECOND_CLUSTER_PROGRAMS = [
+    ("e", "f", "security"),
+    ("f", "g", "netinfo"),
+    ("g", "h", "electroinfo"),
+    ("h", "i", "control"),
+    ("i", "j", "robotics"),
+]
+SECOND_CLUSTER_SUFFIX_2024_TO_2022 = {new: old for old, new, _ in SECOND_CLUSTER_PROGRAMS}
+CODE_SUFFIX_RE = re.compile(r"^(.+\d)([a-z])$")
+
+# 確率統計・力学・応用数学Ａ・離散数学・複素関数論は、プログラム記号のずれとは別に
+# 科目番号自体も2024年度にかけて後ろへずれている（画像で確認済み、5プログラム共通）。
+SECOND_CLUSTER_MTH_NUMBER_SHIFT = {205: 301, 301: 302, 302: 303, 303: 304}
+SECOND_CLUSTER_PHY_NUMBER_SHIFT = {203: 204}
+
+
+def build_second_cluster_rename_map() -> dict[str, str]:
+    """2024年度時点の科目番号（サフィックス込み）から2022年度時点の科目番号への変換表を作る。"""
+    rename: dict[str, str] = {}
+    for old_suffix, new_suffix, _ in SECOND_CLUSTER_PROGRAMS:
+        for old_number, new_number in SECOND_CLUSTER_MTH_NUMBER_SHIFT.items():
+            rename[f"MTH{new_number}{new_suffix}"] = f"MTH{old_number}{old_suffix}"
+        for old_number, new_number in SECOND_CLUSTER_PHY_NUMBER_SHIFT.items():
+            rename[f"PHY{new_number}{new_suffix}"] = f"PHY{old_number}{old_suffix}"
+    return rename
+
+
+def rename_second_cluster_code(code: str, special: dict[str, str]) -> str:
+    """1つの科目番号を2024年度時点から2022年度時点へ変換する。特殊な番号ずれを優先し、
+    それ以外はプログラム記号を1つ若返らせるだけの一般則を適用する。
+    """
+    if code in special:
+        return special[code]
+    match = CODE_SUFFIX_RE.match(code)
+    if not match:
+        return code
+    base, suffix = match.groups()
+    old_suffix = SECOND_CLUSTER_SUFFIX_2024_TO_2022.get(suffix)
+    if old_suffix is None:
+        return code
+    return base + old_suffix
+
+
+def rename_codes_deep(value: Any, rename_fn) -> Any:
+    """JSON構造全体（要件グループだけでなく審査条件のcodes・onFail等も含む）を再帰的に
+    走査し、科目番号らしき文字列をすべて変換関数にかける。
+    """
+    if isinstance(value, list):
+        return [
+            rename_fn(item) if isinstance(item, str) else rename_codes_deep(item, rename_fn)
+            for item in value
+        ]
+    if isinstance(value, dict):
+        return {key: rename_codes_deep(val, rename_fn) for key, val in value.items()}
+    return value
+
+
+def update_second_cluster_requirements() -> None:
+    """Ⅱ類5プログラム：プログラム記号のずれ・科目番号のずれ・GLTPラボワークの2024年度
+    新設分を2022年度時点へ是正する。審査条件（reviews）のcodes・onFail.blockedSubjectsにも
+    旧サフィックスの科目番号が残っているため、要件グループだけでなく文書全体を走査する。
+    計測制御システム・先端ロボティクスには2024年度データから誤って除かれている
+    Advanced Robotics and Mechatronics Engineering（大学院連携科目）を復元する
+    （副次的に見つかった2024年度データの不具合。docs/YOURAN_2022_COMPARISON.md参照）。
+    """
+    special = build_second_cluster_rename_map()
+    for old_suffix, _new_suffix, program in SECOND_CLUSTER_PROGRAMS:
+        path = REQUIREMENTS_DIR / f"2022-day-II-{program}.json"
+        document = load_json(path)
+        document["programSuffix"] = old_suffix
+        document["groups"] = rename_codes_deep(
+            document["groups"], lambda code: rename_second_cluster_code(code, special)
+        )
+        document["reviews"] = rename_codes_deep(
+            document.get("reviews", []), lambda code: rename_second_cluster_code(code, special)
+        )
+        groups = groups_by_id(document)
+        groups["major-free"]["subjects"] = [
+            code for code in groups["major-free"]["subjects"] if code != f"LAB501{old_suffix}"
+        ]
+        write_json(path, document)
+
+    for path_suffix, program in (("h", "control"), ("i", "robotics")):
+        path = REQUIREMENTS_DIR / f"2022-day-II-{program}.json"
+        document = load_json(path)
+        groups = groups_by_id(document)
+        code = f"MCEb13{path_suffix}"
+        if code not in groups["major-free"]["subjects"]:
+            groups["major-free"]["subjects"].append(code)
+        write_json(path, document)
+
+
+def update_second_cluster_subjects(subjects: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Ⅱ類5プログラムの科目マスタを2022年度時点の科目番号へ入れ替え、GLTPラボワークの
+    2024年度新設分を除く。計測制御システム・先端ロボティクスのAdvanced Robotics and
+    Mechatronics Engineeringは2024年度データに存在しないため、2025年度マスタから復元する。
+    """
+    special = build_second_cluster_rename_map()
+    for subject in subjects:
+        subject["code"] = rename_second_cluster_code(subject["code"], special)
+
+    removed = {f"LAB501{old_suffix}" for old_suffix, _new_suffix, _program in SECOND_CLUSTER_PROGRAMS}
+    subjects = [subject for subject in subjects if subject["code"] not in removed]
+
+    mce_template = json.loads((SUBJECTS_DIR / "youran-2025.json").read_text(encoding="utf-8"))
+    mce_source = next(s for s in mce_template["subjects"] if s["code"] == "MCEb13i")
+    for path_suffix in ("h", "i"):
+        subjects.append({**copy.deepcopy(mce_source), "code": f"MCEb13{path_suffix}"})
+    return subjects
+
+
+def update_basic_science_subjects(subjects: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """理数基礎科目のうち、2022年度にはA1/A2・B1/B2の分割が無かった基礎科学実験A・Bと、
+    番号がずれている物理学概論第二・物理学演習第二・化学概論第二を2022年度時点へ戻す。
+
+    2026-09-14訂正：PHY201z・CHM202zは「基礎科学実験A2・B2」ではなく、それぞれ
+    物理学概論第二・化学概論第二という別科目を指す（画像で確認済み）。開講情報
+    （offerings）は科目そのものに付随する情報なので、正しい2022年度の科目番号へ
+    実体ごと付け替える。
+    """
+    by_code = {subject["code"]: subject for subject in subjects}
+    old_phy202, old_phy203, old_chm203 = (
+        copy.deepcopy(by_code[c]) for c in ("PHY202z", "PHY203z", "CHM203z")
+    )
+
+    # 物理学概論第二（202→201、理数基礎必修）。
+    by_code["PHY201z"].clear()
+    by_code["PHY201z"].update(old_phy202, code="PHY201z", groups=["math-basic-req"])
+    # 物理学演習第二（203→202、理数基礎選択）。
+    by_code["PHY202z"].clear()
+    by_code["PHY202z"].update(old_phy203, code="PHY202z", groups=["math-basic-sel"])
+    # 化学概論第二（現CHM203z→CHM202z、理数基礎選択）。
+    by_code["CHM202z"].clear()
+    by_code["CHM202z"].update(old_chm203, code="CHM202z", groups=["math-basic-sel"])
+
+    subjects = [subject for subject in subjects if subject["code"] not in ("PHY203z", "CHM203z")]
+    by_code["PHY101z"]["name"] = "基礎科学実験A"
+    by_code["PHY101z"]["credits"] = 2
+    by_code["CHM101z"]["name"] = "基礎科学実験B"
+    by_code["CHM101z"]["credits"] = 2
+    return subjects
+
+
 def copy_subject_master() -> int:
-    """旧体系と共通する科目情報を2022年度マスタとして複製し、年度参照を分離する。"""
+    """旧体系と共通する科目情報を2022年度マスタとして複製し、年度参照を分離する。
+
+    デザイン思考・データサイエンス（サフィックスe）はまだ存在しないため科目ごと除く。
+    """
     document = load_json(SUBJECTS_DIR / "youran-2024.json")
-    # 付録Cでは基礎科学実験A1/A2は2022年度に各2単位として掲載されている。
-    for subject in document["subjects"]:
-        if subject["code"] in {"PHY101z", "PHY201z"}:
-            subject["credits"] = 2
+    subjects = [s for s in document["subjects"] if not s["code"].endswith(DESIGNDS_ABSENT_SUFFIX)]
+    subjects = update_basic_science_subjects(subjects)
+
+    # Ⅰ類：類共通基礎・専門選択科目の番号ずれ（同じ科目の番号違いのみで、名称・単位数は
+    # 変わらない）を科目マスタ側にも反映する。要件JSON側はupdate_first_cluster_requirementsで調整済み。
+    code_renames: dict[str, str] = {}
+    for mapping in FIRST_CLUSTER_BASIC_RENUMBER.values():
+        code_renames.update(mapping)
+    for mapping in FIRST_CLUSTER_MAJOR_RENUMBER.values():
+        code_renames.update(mapping)
+    for subject in subjects:
+        if subject["code"] in code_renames:
+            subject["code"] = code_renames[subject["code"]]
+
+    by_code = {subject["code"]: subject for subject in subjects}
+    for code in ("COM001a", "COM001b", "COM001c", "COM001d"):
+        by_code[code]["name"] = "情報工学工房"
+
+    subjects = update_second_cluster_subjects(subjects)
+
+    # メディア情報学固有：2024年度には無い選択科目「形式言語理論」（画像で確認済み）。
+    subjects.append(
+        {
+            "code": "COM406a", "name": "形式言語理論", "credits": 2, "field": "COM",
+            "standardSemester": 4, "standardYear": 2, "termType": "後学期",
+            "eveningAllowed": True, "forInternational": False, "graduateLinked": False,
+            "groups": ["major-sel"],
+        }
+    )
+
+    document["subjects"] = sorted(subjects, key=lambda subject: subject["code"])
     document["source"] = "学修要覧2022（情報理工学域）付録Cを基準にした年度別科目マスタ。開講情報は原則2026年度シラバス基準"
     document["note"] = "2022年度の旧カリキュラム用。年度ごとに科目番号・単位数が異なる可能性があるため、他年度のマスタと分けて参照する"
     write_json(SUBJECTS_DIR / "youran-2022.json", document)
@@ -110,6 +409,9 @@ def main() -> None:
     requirement_paths = copy_requirement_files()
     update_common_requirements()
     update_class_i_requirements()
+    update_math_basic_requirements()
+    update_first_cluster_requirements()
+    update_second_cluster_requirements()
     subject_count = copy_subject_master()
     print(f"2022年度データを生成しました: requirements={len(requirement_paths)} subjects={subject_count}")
 

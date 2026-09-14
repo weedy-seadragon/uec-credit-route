@@ -332,7 +332,6 @@
           "subjects": [
             "PHY101z",
             "CHM101z",
-            "CHM202z",
             "COM101z"
           ],
           "kind": "required"
