@@ -178,6 +178,36 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(getSubjectsByCode(2022).get('LAB501e')).toBeUndefined()
   })
 
+  it('2022年度のⅢ類も同様にプログラム記号が1つ若く、Modern Engineering and Scienceを含む', () => {
+    // 2026-09-14追加：機械システムは2024年度のkではなく、2022年度時点はjを名乗る。
+    // 2024年度には無い選択科目「Modern Engineering and Science」（GSE701j）が存在し、
+    // 2024年度データから誤って除かれているAdvanced Robotics and Mechatronics Engineering
+    // （MCEb13j）も2022年度には存在する（docs/YOURAN_2022_COMPARISON.md参照）。
+    const mecha2022 = getRequirementSet(2022, 'day', 'III', 'mecha')
+    const major2022 = mecha2022?.groups.find((g) => g.id === 'specialized')?.children?.find((g) => g.id === 'major')
+    const majorSel2022 = major2022?.children?.find((g) => g.id === 'major-sel')
+    const majorFree2022 = major2022?.children?.find((g) => g.id === 'major-free')
+
+    expect(majorSel2022?.subjects).toContain('GSE701j')
+    expect(majorFree2022?.subjects).toContain('MCEb13j')
+    expect(getSubjectsByCode(2022).get('GSE701j')?.name).toBe('Modern Engineering and Science')
+    expect(getSubjectsByCode(2022).get('LAB501j')).toBeUndefined()
+  })
+
+  it('2022年度の夜間主は美術・経済学・政治学が選択科目にあり、以降の科目は番号が若い', () => {
+    // 2026-09-14追加：夜間主の人文・社会科学科目にあった「美術」「経済学」「政治学」は
+    // 2024年度に廃止され、音楽・社会学・法学・地理学・社会思想史の番号が後ろへずれた
+    // （docs/YOURAN_2022_COMPARISON.md参照）。
+    const evening2022 = getRequirementSet(2022, 'evening', null, 'evening')
+    const hss2022 = evening2022?.groups.find((g) => g.id === 'general')?.children?.find((g) => g.id === 'hss')
+
+    expect(hss2022?.subjects).toContain('HSS102r')
+    expect(hss2022?.subjects).toContain('HSS206r')
+    expect(getSubjectsByCode(2022).get('HSS102r')?.name).toBe('美術')
+    expect(getSubjectsByCode(2022).get('HSS206r')?.name).toBe('政治学')
+    expect(getSubjectsByCode(2022).get('UEC401r')?.name).toBe('総合コミュニケーション科学')
+  })
+
   it('2021年度はデータサイエンス区分なしの初年次導入8単位を参照する', () => {
     // 2021年度の実践教育は初年次導入8・倫理キャリア4・技術英語4単位の構成である。
     const media2021 = getRequirementSet(2021, 'day', 'I', 'media')

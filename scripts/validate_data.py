@@ -396,6 +396,43 @@ def check_known_2022_values(
     if "MCEb13i" not in robotics_free["subjects"]:
         add_error(2022, "先端ロボティクスにAdvanced Robotics and Mechatronics Engineering（MCEb13i）が無い")
 
+    # Ⅲ類：Ⅱ類が1つ前へ詰まった分、Ⅲ類のプログラム記号も2024年度より1つ若い。
+    expected_suffix_iii = {"mecha": "j", "electro": "k", "optical": "m", "physics": "n", "chembio": "p"}
+    for program, suffix in expected_suffix_iii.items():
+        document = programs[f"2022-day-III-{program}.json"]
+        if document.get("programSuffix") != suffix:
+            add_error(2022, f"{program}のprogramSuffixが{suffix!r}ではない: {document.get('programSuffix')!r}")
+        major_free = next(group for group in walk(document["groups"]) if group["id"] == "major-free")
+        if f"LAB501{suffix}" in major_free["subjects"]:
+            add_error(2022, f"{program}：2024年度新設のGLTPラボワークが残っている")
+        major_sel = next(group for group in walk(document["groups"]) if group["id"] == "major-sel")
+        if f"GSE701{suffix}" not in major_sel["subjects"]:
+            add_error(2022, f"{program}の選択科目にModern Engineering and Science（GSE701{suffix}）が無い")
+    mecha_free = next(group for group in walk(programs["2022-day-III-mecha.json"]["groups"]) if group["id"] == "major-free")
+    if "MCEb13j" not in mecha_free["subjects"]:
+        add_error(2022, "機械システムにAdvanced Robotics and Mechatronics Engineering（MCEb13j）が無い")
+    optical_free = next(group for group in walk(programs["2022-day-III-optical.json"]["groups"]) if group["id"] == "major-free")
+    if "ELEa02m" not in optical_free["subjects"]:
+        add_error(2022, "光工学に画像情報学基礎（ELEa02m）が無い")
+    for code in ("PHYb03n", "PHYb04n", "PHYb01r", "CHMb01r", "BCHa02r", "BCHa03r", "CHMb02r", "CHMb03r", "BIOb02r"):
+        if code in subjects:
+            add_error(2022, f"2024年度に新設された科目が2022年度マスタに残っている: {code}")
+
+    # 夜間主課程：Ⅲ類が1つ前へ詰まった分、夜間主独自のプログラム記号も2024年度より1つ若い。
+    evening = programs["2022-evening.json"]
+    hss = next(group for group in walk(evening["groups"]) if group["id"] == "hss")
+    if not {"HSS102r", "HSS104r", "HSS206r"} <= set(hss["subjects"]):
+        add_error(2022, "夜間主課程の人文・社会科学科目に美術・経済学・政治学（HSS102r/104r/206r）が揃っていない")
+    for code, expected_name in {
+        "HSS102r": "美術", "HSS104r": "経済学", "HSS206r": "政治学",
+        "HSS103r": "音楽", "HSS107r": "地理学", "HSS108r": "社会思想史",
+    }.items():
+        actual = subjects.get(code, {}).get("name")
+        if actual != expected_name:
+            add_error(2022, f"{code} の科目名が期待と異なる: {actual!r} != {expected_name!r}")
+    if "UEC401r" not in subjects:
+        add_error(2022, "夜間主課程に総合コミュニケーション科学（UEC401r）が無い")
+
 
 def validate_year(year: int) -> tuple[int, int]:
     """1年度分の科目マスタ・共通要件・全プログラム要件をまとめて検証する。"""
