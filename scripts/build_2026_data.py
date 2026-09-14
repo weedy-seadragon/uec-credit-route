@@ -148,20 +148,6 @@ def update_mathinfo_requirement() -> None:
     write_json(path, document)
 
 
-def update_second_cluster_requirements() -> None:
-    """Ⅱ類で重複番号から分離されたマルチメディア処理を自由科目へ加える。"""
-    targets = {
-        "2026-day-II-netinfo.json": "ELE506g",
-        "2026-day-II-electroinfo.json": "ELE506h",
-    }
-    # それぞれのプログラム固有番号を対応する自由科目一覧へ加える。
-    for filename, code in targets.items():
-        path = REQUIREMENTS_DIR / filename
-        document = load_json(path)
-        append_unique(find_group(document, "major-free")["subjects"], [code])
-        write_json(path, document)
-
-
 def update_third_cluster_requirements() -> None:
     """Ⅲ類のサイエンス工房追加とUECパスポート廃止を全プログラムへ反映する。"""
     workshop_codes = [
@@ -245,8 +231,6 @@ def build_subject_master() -> int:
         make_subject("MTHb01c", "シミュレーション理工学基礎論", 2, 8, ["major-free"], graduate_linked=True, evening_allowed=True),
         make_subject("MTHb02c", "離散最適化基礎論", 2, 8, ["major-free"], graduate_linked=True, evening_allowed=True),
         make_subject("MTHb03c", "連続最適化基礎論", 2, 8, ["major-free"], graduate_linked=True, evening_allowed=True),
-        make_subject("ELE506g", "マルチメディア処理", 2, 5, ["major-free"], graduate_linked=True),
-        make_subject("ELE506h", "マルチメディア処理", 2, 5, ["major-free"], graduate_linked=True),
         make_subject("BCHa03r", "化学生命工学特論A", 1, None, ["major-free"], graduate_linked=True, note="集中"),
         make_subject("BCHa04r", "化学生命工学特論B", 1, None, ["major-free"], graduate_linked=True, note="集中"),
     ]
@@ -290,7 +274,6 @@ def main() -> None:
     requirement_paths = copy_requirement_files()
     update_common_requirement()
     update_mathinfo_requirement()
-    update_second_cluster_requirements()
     update_third_cluster_requirements()
     update_mechanical_requirement()
     update_chembio_requirement()

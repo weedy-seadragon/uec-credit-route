@@ -11130,36 +11130,6 @@
       "prerequisitesText": "特になし"
     },
     {
-      "code": "COM507g",
-      "name": "マルチメディア処理",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-sel"
-      ]
-    },
-    {
-      "code": "COM507h",
-      "name": "マルチメディア処理",
-      "credits": 2,
-      "field": "COM",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-sel"
-      ]
-    },
-    {
       "code": "COM508c",
       "name": "マルチメディア処理",
       "credits": 2,
@@ -16198,6 +16168,36 @@
         }
       ],
       "prerequisitesText": "物理学概論第一・第二，波動と光"
+    },
+    {
+      "code": "ELE506g",
+      "name": "マルチメディア処理",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "ELE506h",
+      "name": "マルチメディア処理",
+      "credits": 2,
+      "field": "ELE",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-free"
+      ]
     },
     {
       "code": "ELE601a",
