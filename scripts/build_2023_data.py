@@ -13,9 +13,11 @@ docs/YOURAN_2023_COMPARISON.md参照）。
 Ⅱ類5・Ⅲ類5プログラムと夜間主課程についても同様に照合した（2026-09-14追加）。
 
 - Ⅱ類5・Ⅲ類5プログラム共通：GLTPラボワーク（LAB501x）は2024年度新設でⅠ類同様2023年度には無い
-- 情報通信工学（g）・電子情報学（h）：「量子力学」（PHY502g/h）が2024年度に「量子と情報」へ改称
-- 計測制御システム（i）・先端ロボティクス（j）：「計測工学」（GSE401i/j）が2024年度に
-  「機械計測工学」へ改称
+- 情報通信工学（g）・電子情報学（h）：「量子と情報」（PHY502g/h）は2024年度に「量子力学」から
+  改称された科目。プロジェクトの方針（開発者確認済み、2026-09-14）で、同じ科目番号のまま名前だけ
+  変わった科目は現行名（シラバス基準）に統一するため、2023年度データも現行名のままにする
+- 計測制御システム（i）・先端ロボティクス（j）：「機械計測工学」（GSE401i/j）も同様に2024年度に
+  「計測工学」から改称された科目だが、現行名のまま統一する
 - 電子工学（m）：「画像情報学基礎」（ELEa02m）は2024年度新設
 - 物理工学（p）：「凝縮体量子工学特論」（PHYb03p）・「ナノトライボロジー特論」（PHYb04p）は
   2024年度新設
@@ -185,8 +187,11 @@ def update_first_cluster_subjects(subjects: list[dict[str, Any]]) -> list[dict[s
 
 def update_second_third_cluster_subjects(subjects: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Ⅱ類5・Ⅲ類5プログラム共通のGLTPラボワーク・プログラム固有の2024年度新設科目を
-    2023年度マスタから除き、名称が変わった科目を2023年度時点の名称に戻す（要件JSON側の
-    参照はupdate_second_third_cluster_requirementsで調整済み）。
+    2023年度マスタから除く（要件JSON側の参照はupdate_second_third_cluster_requirementsで
+    調整済み）。「量子と情報」（PHY502g/h、2024年度改称）・「機械計測工学」（GSE401i/j、
+    2024年度改称）は、同じ科目番号のまま名前だけ変わった科目は現行名に統一するという
+    プロジェクトの方針（開発者確認済み、2026-09-14）により、2023年度データでもあえて
+    改称前の名前へは戻さない。
     """
     removed = {
         "LAB501f", "LAB501g", "LAB501h", "LAB501i", "LAB501j",
@@ -194,12 +199,7 @@ def update_second_third_cluster_subjects(subjects: list[dict[str, Any]]) -> list
         "ELEa02m", "PHYb03p", "PHYb04p",
         "PHYb01r", "CHMb01r", "BCHa02r", "BCHa03r", "CHMb02r", "CHMb03r", "BIOb02r",
     }
-    subjects = [subject for subject in subjects if subject["code"] not in removed]
-    renamed = {"PHY502g": "量子力学", "PHY502h": "量子力学", "GSE401i": "計測工学", "GSE401j": "計測工学"}
-    for subject in subjects:
-        if subject["code"] in renamed:
-            subject["name"] = renamed[subject["code"]]
-    return subjects
+    return [subject for subject in subjects if subject["code"] not in removed]
 
 
 def update_evening_subjects(subjects: list[dict[str, Any]]) -> list[dict[str, Any]]:

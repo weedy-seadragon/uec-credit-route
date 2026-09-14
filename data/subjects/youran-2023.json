@@ -29356,7 +29356,7 @@
     },
     {
       "code": "GSE401i",
-      "name": "計測工学",
+      "name": "機械計測工学",
       "credits": 2,
       "field": "GSE",
       "standardSemester": 4,
@@ -29390,7 +29390,7 @@
     },
     {
       "code": "GSE401j",
-      "name": "計測工学",
+      "name": "機械計測工学",
       "credits": 2,
       "field": "GSE",
       "standardSemester": 6,
@@ -56580,7 +56580,7 @@
     },
     {
       "code": "PHY502g",
-      "name": "量子力学",
+      "name": "量子と情報",
       "credits": 2,
       "field": "PHY",
       "standardSemester": 5,
@@ -56614,7 +56614,7 @@
     },
     {
       "code": "PHY502h",
-      "name": "量子力学",
+      "name": "量子と情報",
       "credits": 2,
       "field": "PHY",
       "standardSemester": 5,

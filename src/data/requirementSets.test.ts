@@ -105,18 +105,19 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(free2024?.subjects).toContain('MTHb02a')
   })
 
-  it('2023年度のⅡ類・Ⅲ類はGLTPラボワークが無く、一部科目は2024年度と別名で改称前', () => {
+  it('2023年度のⅡ類・Ⅲ類はGLTPラボワークが無く、改称科目は現行名のまま統一する', () => {
     // 2026-09-14追加：GLTPラボワーク（LAB501x）はⅡ類・Ⅲ類の10プログラム共通で2024年度新設。
-    // 「量子力学」（PHY502g）は2024年度に「量子と情報」へ、「計測工学」（GSE401i）は
-    // 2024年度に「機械計測工学」へ改称された（docs/YOURAN_2023_COMPARISON.md参照）。
+    // 「量子力学→量子と情報」（PHY502g）・「計測工学→機械計測工学」（GSE401i）のように
+    // 同じ科目番号のまま名前だけ変わった科目は、現行名に統一する方針（開発者確認済み）のため
+    // 2023年度データでも現行名のままにする（docs/YOURAN_2023_COMPARISON.md参照）。
     const security2023 = getRequirementSet(2023, 'day', 'II', 'security')
     const free2023 = security2023?.groups.find((g) => g.id === 'specialized')?.children
       ?.find((g) => g.id === 'major')?.children?.find((g) => g.id === 'major-free')
 
     expect(free2023?.subjects).not.toContain('LAB501f')
     expect(getSubjectsByCode(2023).get('LAB501g')).toBeUndefined()
-    expect(getSubjectsByCode(2023).get('PHY502g')?.name).toBe('量子力学')
-    expect(getSubjectsByCode(2023).get('GSE401i')?.name).toBe('計測工学')
+    expect(getSubjectsByCode(2023).get('PHY502g')?.name).toBe('量子と情報')
+    expect(getSubjectsByCode(2023).get('GSE401i')?.name).toBe('機械計測工学')
     expect(getSubjectsByCode(2024).get('PHY502g')?.name).toBe('量子と情報')
     expect(getSubjectsByCode(2024).get('GSE401i')?.name).toBe('機械計測工学')
   })
