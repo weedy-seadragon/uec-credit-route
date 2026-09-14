@@ -190,6 +190,20 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(getSubjectsByCode(2021).get('UEC101z')?.credits).toBe(2)
   })
 
+  it('2021年度の経営・社会情報学はソーシャルコンピューティングがまだ選択科目にある', () => {
+    // 2026-09-14追加：2022年度に廃止された選択科目「ソーシャルコンピューティング」（INS601b）が
+    // 2021年度にはまだあり、以降の科目番号（人間工学・言語認知工学等）が1つ後ろにずれる
+    // （docs/YOURAN_2022_COMPARISON.md参照）。
+    const mgmt2021 = getRequirementSet(2021, 'day', 'I', 'management')
+    const majorSel2021 = mgmt2021?.groups.find((g) => g.id === 'specialized')?.children
+      ?.find((g) => g.id === 'major')?.children?.find((g) => g.id === 'major-sel')
+
+    expect(majorSel2021?.subjects).toContain('INS601b')
+    expect(getSubjectsByCode(2021).get('INS601b')?.name).toBe('ソーシャルコンピューティング')
+    expect(getSubjectsByCode(2021).get('MSS502b')?.name).toBe('人間工学')
+    expect(getSubjectsByCode(2022).get('INS601b')?.name).toBe('言語認知工学')
+  })
+
   it('2024年度は2025年度と別の要件・科目マスタを参照する（学修要覧2024との差分を反映済み）', () => {
     // デザイン思考・データサイエンスプログラムは2024→2025で必修/選択の配分と科目名が変わっている。
     const media2024 = getSubjectsByCode(2024).get('COM603a')

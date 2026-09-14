@@ -302,6 +302,39 @@ def check_known_2023_values(
             add_error(2023, f"{code} の科目名が期待と異なる: {actual!r} != {expected_name!r}")
 
 
+def check_known_2021_values(
+    subjects: dict[str, dict[str, Any]],
+    programs: dict[str, dict[str, Any]],
+) -> None:
+    """PDF画像で照合した2021年度Ⅰ類の差分を検査する（2026-09-14、docs/YOURAN_2022_COMPARISON.md参照）。
+
+    2021年度は2022年度データを土台にしているため大半は共通だが、次の差分がある。
+    - 経営・社会情報学：2022年度に廃止された選択科目「ソーシャルコンピューティング」
+      （INS601b）がまだ存在し、以降の科目番号（人間工学・オペレーションズ・リサーチ第一・
+      言語認知工学）が2022年度より1つ後ろにずれている
+    - 情報数理工学・コンピュータサイエンス：選択科目「情報通信システム」「データサイエンス」
+      （INS501x/INS502x）は2022年度新設でまだ無い
+    """
+    management = programs["2021-day-I-management.json"]
+    major_sel = next(group for group in walk(management["groups"]) if group["id"] == "major-sel")
+    if not {"MSS502b", "MSS503b", "INS601b", "INS602b"} <= set(major_sel["subjects"]):
+        add_error(2021, "経営・社会情報学の選択科目にソーシャルコンピューティング関連の科目番号が揃っていない")
+    for code, expected_name in {
+        "INS601b": "ソーシャルコンピューティング", "MSS502b": "人間工学",
+        "MSS503b": "オペレーションズ・リサーチ第一", "INS602b": "言語認知工学",
+    }.items():
+        actual = subjects.get(code, {}).get("name")
+        if actual != expected_name:
+            add_error(2021, f"{code} の科目名が期待と異なる: {actual!r} != {expected_name!r}")
+
+    for program in ("media", "management", "mathinfo", "cs"):
+        document = programs[f"2021-day-I-{program}.json"]
+        for group in walk(document["groups"]):
+            for code in ("INS501c", "INS502c", "INS501d", "INS502d"):
+                if code in group.get("subjects", []):
+                    add_error(2021, f"{program}：2022年度新設の{code}が残っている（{group['id']}）")
+
+
 def check_known_2022_values(
     subjects: dict[str, dict[str, Any]],
     programs: dict[str, dict[str, Any]],
@@ -420,6 +453,8 @@ def validate_year(year: int) -> tuple[int, int]:
         if semester is not None and not 1 <= semester <= 8:
             add_error(year, f"standardSemesterが範囲外: {subject['code']}")
     # 確定済みの年度固有差分をそれぞれ回帰検査する。
+    if year == 2021:
+        check_known_2021_values(subjects, programs)
     if year == 2022:
         check_known_2022_values(subjects, programs)
     if year == 2023:
