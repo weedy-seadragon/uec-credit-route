@@ -5,6 +5,15 @@
 学修要覧2025を全ページ突き合わせたところ、実際には下記の差分があることが判明した（詳細は
 docs/YOURAN_2024_COMPARISON.md参照）。
 
+2026-09-14訂正：計測制御システム・先端ロボティクス・機械システムの大学院連携科目
+「Advanced Robotics and Mechatronics Engineering」（MCEb13i/j/k）を「2025年度新設」と
+誤認して除いていたが、2022年度の時点で既に存在していた科目だった（docs/YOURAN_2022_COMPARISON.md
+参照）。卒業要件・審査条件は入学年度の学修要覧原本にマストで従い、科目自体の属性（名前・
+時間・単位区分）は2026年度シラバス基準に統一するという原則（CLAUDE.md参照）に基づき、
+これらは2024年度データにも残すよう修正した。一方、光工学の「画像情報学基礎」（ELEa02n）は
+科目マスタには存在してよいが、2024年度入学者の卒業要件（原本の付録Cに掲載が無い）としては
+認められないため、要件ファイルからのみ除く（`update_optical_requirement`参照）。
+
 実行: python scripts/build_2024_data.py
 """
 
@@ -183,30 +192,16 @@ def update_cs_requirement() -> None:
     write_json(path, document)
 
 
-def update_control_requirement() -> None:
-    """計測・制御システム：2025年度新設の大学院連携科目（MCEb13i）を自由科目から外す。"""
-    path = REQUIREMENTS_DIR / "2024-day-II-control.json"
+def update_optical_requirement() -> None:
+    """光工学：「画像情報学基礎」（ELEa02n）は学修要覧2024の原本付録Cに掲載が無い。
+    科目自体はシラバス基準で存在してよいため科目マスタからは外さないが、2024年度入学者の
+    卒業要件は入学年度原本にマストで従うべきところ、この科目を自由科目として認めてよい
+    根拠が原本に無い（2026-09-14、docs/YOURAN_2023_COMPARISON.md参照）。
+    """
+    path = REQUIREMENTS_DIR / "2024-day-III-optical.json"
     document = load_json(path)
     free_group = find_group(document, "major-free")
-    free_group["subjects"] = remove_codes(free_group["subjects"], {"MCEb13i"})
-    write_json(path, document)
-
-
-def update_robotics_requirement() -> None:
-    """先端ロボティクス：2025年度新設の大学院連携科目（MCEb13j）を自由科目から外す。"""
-    path = REQUIREMENTS_DIR / "2024-day-II-robotics.json"
-    document = load_json(path)
-    free_group = find_group(document, "major-free")
-    free_group["subjects"] = remove_codes(free_group["subjects"], {"MCEb13j"})
-    write_json(path, document)
-
-
-def update_mecha_requirement() -> None:
-    """機械システム：2025年度新設の大学院連携科目（MCEb13k）を自由科目から外す。"""
-    path = REQUIREMENTS_DIR / "2024-day-III-mecha.json"
-    document = load_json(path)
-    free_group = find_group(document, "major-free")
-    free_group["subjects"] = remove_codes(free_group["subjects"], {"MCEb13k"})
+    free_group["subjects"] = remove_codes(free_group["subjects"], {"ELEa02n"})
     write_json(path, document)
 
 
@@ -281,7 +276,6 @@ def build_subject_master() -> int:
         "CAR402z",  # ビジネスPBL
         "INS503c",  # 囲碁とゲームAI（情報数理工学）
         "INS503d",  # 囲碁とゲームAI（コンピュータサイエンス）
-        "MCEb13i", "MCEb13j", "MCEb13k",  # Advanced Robotics and Mechatronics Engineering
     }
     # HSS602z〜610zは番号を1つ戻すため、いったん削除して新番号で作り直す。
     removed_codes.update(f"HSS6{n:02d}z" for n in range(2, 11))
@@ -360,9 +354,7 @@ def main() -> None:
     update_common_requirement()
     update_mathinfo_requirement()
     update_cs_requirement()
-    update_control_requirement()
-    update_robotics_requirement()
-    update_mecha_requirement()
+    update_optical_requirement()
     update_designds_requirement()
     update_first_cluster_cross_listed_electives()
     subject_count = build_subject_master()

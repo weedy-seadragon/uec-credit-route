@@ -25,7 +25,9 @@
           "label": "キャリア単位（必修）",
           "required": 2,
           "kind": "required",
-          "subjects": ["CAR503z"]
+          "subjects": [
+            "CAR503z"
+          ]
         },
         {
           "id": "career-elective",
@@ -33,7 +35,19 @@
           "label": "キャリア単位（選択）",
           "required": 2,
           "kind": "elective",
-          "subjects": ["CAR101z", "CAR201z", "CAR501z", "CAR401z", "CAR402z", "CAR502z", "CAR601z", "CAR504z", "CAR602z", "CAR603z", "CAR604z"]
+          "subjects": [
+            "CAR101z",
+            "CAR201z",
+            "CAR501z",
+            "CAR401z",
+            "CAR402z",
+            "CAR502z",
+            "CAR601z",
+            "CAR504z",
+            "CAR602z",
+            "CAR603z",
+            "CAR604z"
+          ]
         }
       ],
       "note": "デザイン思考・データサイエンスプログラムのみインターンシップ（CAR503z）が必修（学修要覧2025 C.2実践教育科目 注5）"
@@ -189,6 +203,7 @@
                 "FGN301e",
                 "FGN401e",
                 "MSS402a",
+                "COM406a",
                 "COM502a",
                 "MTH501a",
                 "ELE501a",
@@ -228,6 +243,7 @@
                 "INS601b",
                 "MSS604b",
                 "MSS605b",
+                "MSS606b",
                 "COM001b",
                 "FGN101b",
                 "FGN201b",

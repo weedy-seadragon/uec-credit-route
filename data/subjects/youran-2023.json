@@ -9111,6 +9111,21 @@
       ]
     },
     {
+      "code": "COM406a",
+      "name": "形式言語理論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
       "code": "COM406e",
       "name": "形式言語理論",
       "credits": 2,
@@ -42359,6 +42374,51 @@
       ]
     },
     {
+      "code": "MCEb13i",
+      "name": "Advanced Robotics and Mechatronics Engineering",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb13j",
+      "name": "Advanced Robotics and Mechatronics Engineering",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MCEb13k",
+      "name": "Advanced Robotics and Mechatronics Engineering",
+      "credits": 2,
+      "field": "MCE",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
       "code": "MSS401a",
       "name": "オペレーションズ・リサーチ基礎",
       "credits": 2,
@@ -43098,6 +43158,21 @@
       "prerequisitesText": "確率論・統計学"
     },
     {
+      "code": "MSS606b",
+      "name": "金融工学",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
       "code": "MSSa01b",
       "name": "会計情報システム",
       "credits": 2,
@@ -43129,6 +43204,21 @@
     },
     {
       "code": "MSSa03b",
+      "name": "サービス・サイエンス特論",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MSSa04b",
       "name": "サービス・サイエンス特論",
       "credits": 2,
       "field": "MSS",

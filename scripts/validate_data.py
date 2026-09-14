@@ -182,13 +182,29 @@ def check_known_2024_differences(
 ) -> None:
     """PDF比較で確定した2024固有差分（2025年度との相違点）が生成後も保たれているか検査する。"""
     # 2025年度に新設され、2024年度にはまだ存在しない科目番号。
+    # 2026-09-14訂正：MCEb13i/j/kは以前ここで「2025年度新設」としていたが、2022年度の時点で
+    # 既に存在していた科目と判明した（docs/YOURAN_2022_COMPARISON.md参照）。科目自体は
+    # シラバス基準で存在してよいため、2024年度マスタからは外さない（CLAUDE.md参照）。
     required_absent = {
-        "CAR402z", "INS503c", "INS503d", "MCEb13i", "MCEb13j", "MCEb13k",
+        "CAR402z", "INS503c", "INS503d",
         "MSS502e", "MSS602e",
     }
     for code in sorted(required_absent):
         if code in subjects:
             add_error(2024, f"2025年度に新設された科目が2024年度マスタに残っている: {code}")
+
+    # 計測制御システム・先端ロボティクス・機械システムの大学院連携科目「Advanced Robotics and
+    # Mechatronics Engineering」は2022年度から存在するため、2024年度マスタにも必要。
+    for code in ("MCEb13i", "MCEb13j", "MCEb13k"):
+        if code not in subjects:
+            add_error(2024, f"2022年度から存在する科目が2024年度マスタに無い: {code}")
+
+    # 光工学の「画像情報学基礎」（ELEa02n）は学修要覧2024の原本付録Cに掲載が無いため、
+    # 2024年度入学者の要件ファイルは自由科目として参照してはならない（科目マスタには残してよい）。
+    optical = programs["2024-day-III-optical.json"]
+    optical_free = next(group for group in walk(optical["groups"]) if group["id"] == "major-free")
+    if "ELEa02n" in optical_free["subjects"]:
+        add_error(2024, "光工学の要件ファイルが原本に掲載の無い画像情報学基礎（ELEa02n）を参照している")
 
     # 同じ科目番号でも2025年度と名称・意味が異なる科目（コード再利用・改称）。
     expected_names = {

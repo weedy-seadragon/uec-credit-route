@@ -41571,6 +41571,21 @@
       "prerequisitesText": "確率論・統計学"
     },
     {
+      "code": "MSS606b",
+      "name": "金融工学",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
       "code": "MSSa01b",
       "name": "会計情報システム",
       "credits": 2,
@@ -41602,6 +41617,21 @@
     },
     {
       "code": "MSSa03b",
+      "name": "サービス・サイエンス特論",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MSSa04b",
       "name": "サービス・サイエンス特論",
       "credits": 2,
       "field": "MSS",

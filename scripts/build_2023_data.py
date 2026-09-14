@@ -127,6 +127,17 @@ def update_second_third_cluster_requirements() -> None:
         free_group["subjects"] = [code for code in free_group["subjects"] if code not in removed]
         write_json(path, document)
 
+    # 光工学：画像情報学基礎（ELEa02n）の復元。2024年度の要件ファイルは原本に掲載の無い
+    # ELEa02nを参照しないよう修正済みのため（docs/YOURAN_2023_COMPARISON.md参照）、単純な
+    # 複製では引き継がれない。2023年度は自分自身の原本に掲載があるため個別に復元する
+    # （2026-09-14追加）。
+    path = REQUIREMENTS_DIR / "2023-day-III-optical.json"
+    document = load_json(path)
+    free_group = find_group(document, "major-free")
+    if "ELEa02n" not in free_group["subjects"]:
+        free_group["subjects"].append("ELEa02n")
+    write_json(path, document)
+
 
 def update_evening_requirement() -> None:
     """夜間主課程：2024年度に廃止された「美術」（HSS102s）・「経済学」（HSS104s）を

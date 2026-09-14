@@ -202,17 +202,14 @@ def update_first_cluster_requirements() -> None:
         ]
         write_json(path, document)
 
-    # メディア情報学固有：現代代数学・数理解析学は経営・社会情報学の番号を参照する。
-    # また、2024年度には無い選択科目「形式言語理論」（COM406a）が存在する。
+    # メディア情報学固有：現代代数学・数理解析学は経営・社会情報学の番号を参照する
+    # （「形式言語理論」COM406aは2025年度の要件ファイルに追加済みのため、2024年度経由で
+    # ここまで自然に引き継がれる）。
     path = REQUIREMENTS_DIR / "2022-day-I-media.json"
     document = load_json(path)
     groups = groups_by_id(document)
     rename = {"MTHb02a": "MTHb02b", "MTHb03a": "MTHb03b"}
     groups["major-free"]["subjects"] = [rename.get(code, code) for code in groups["major-free"]["subjects"]]
-    major_sel = groups["major-sel"]
-    if "COM406a" not in major_sel["subjects"]:
-        index = major_sel["subjects"].index("MSS402a")
-        major_sel["subjects"].insert(index + 1, "COM406a")
     write_json(path, document)
 
 
@@ -279,9 +276,10 @@ def update_second_cluster_requirements() -> None:
     """Ⅱ類5プログラム：プログラム記号のずれ・科目番号のずれ・GLTPラボワークの2024年度
     新設分を2022年度時点へ是正する。審査条件（reviews）のcodes・onFail.blockedSubjectsにも
     旧サフィックスの科目番号が残っているため、要件グループだけでなく文書全体を走査する。
-    計測制御システム・先端ロボティクスには2024年度データから誤って除かれている
-    Advanced Robotics and Mechatronics Engineering（大学院連携科目）を復元する
-    （副次的に見つかった2024年度データの不具合。docs/YOURAN_2022_COMPARISON.md参照）。
+    計測制御システム・先端ロボティクスのAdvanced Robotics and Mechatronics Engineering
+    （大学院連携科目）は、2024年度データが同科目を保持するよう修正済みのため
+    （docs/YOURAN_2022_COMPARISON.md参照）、一般則の科目番号変換だけで自然に2022年度
+    時点の番号へ戻る（個別の復元処理は不要）。
     """
     special = build_second_cluster_rename_map()
     for old_suffix, _new_suffix, program in SECOND_CLUSTER_PROGRAMS:
@@ -300,20 +298,13 @@ def update_second_cluster_requirements() -> None:
         ]
         write_json(path, document)
 
-    for path_suffix, program in (("h", "control"), ("i", "robotics")):
-        path = REQUIREMENTS_DIR / f"2022-day-II-{program}.json"
-        document = load_json(path)
-        groups = groups_by_id(document)
-        code = f"MCEb13{path_suffix}"
-        if code not in groups["major-free"]["subjects"]:
-            groups["major-free"]["subjects"].append(code)
-        write_json(path, document)
-
 
 def update_second_cluster_subjects(subjects: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Ⅱ類5プログラムの科目マスタを2022年度時点の科目番号へ入れ替え、GLTPラボワークの
     2024年度新設分を除く。計測制御システム・先端ロボティクスのAdvanced Robotics and
-    Mechatronics Engineeringは2024年度データに存在しないため、2025年度マスタから復元する。
+    Mechatronics Engineering（MCEb13h/i）は、2024年度マスタが同科目を保持するよう修正済み
+    のため（docs/YOURAN_2022_COMPARISON.md参照）、一般則の科目番号変換だけで自然に
+    2022年度時点の番号へ戻る（個別の復元処理は不要）。
     """
     special = build_second_cluster_rename_map()
     for subject in subjects:
@@ -321,11 +312,6 @@ def update_second_cluster_subjects(subjects: list[dict[str, Any]]) -> list[dict[
 
     removed = {f"LAB501{old_suffix}" for old_suffix, _new_suffix, _program in SECOND_CLUSTER_PROGRAMS}
     subjects = [subject for subject in subjects if subject["code"] not in removed]
-
-    mce_template = json.loads((SUBJECTS_DIR / "youran-2025.json").read_text(encoding="utf-8"))
-    mce_source = next(s for s in mce_template["subjects"] if s["code"] == "MCEb13i")
-    for path_suffix in ("h", "i"):
-        subjects.append({**copy.deepcopy(mce_source), "code": f"MCEb13{path_suffix}"})
     return subjects
 
 
@@ -377,9 +363,12 @@ def update_third_cluster_requirements() -> None:
     """Ⅲ類5プログラム：プログラム記号のずれ・科目番号のずれ・GLTPラボワークの2024年度
     新設分を2022年度時点へ是正する。2024年度には無い選択科目「Modern Engineering and
     Science」（GSE701x）を復元し、物理工学・化学生命工学の2024年度新設科目を除く。
-    機械システムには2024年度データから誤って除かれているAdvanced Robotics and
-    Mechatronics Engineeringを、光工学には2024年度データに欠けている「画像情報学基礎」
-    （ELEa02x、docs/YOURAN_2023_COMPARISON.md参照）を復元する。
+    機械システムのAdvanced Robotics and Mechatronics Engineering（MCEb13j）は、2024年度
+    データが同科目を保持しているため（docs/YOURAN_2022_COMPARISON.md参照）、一般則の
+    科目番号変換だけで自然に2022年度時点の番号へ戻る。光工学の「画像情報学基礎」
+    （ELEa02m）は、2024年度の要件ファイルが原本に掲載の無いELEa02nを参照しないよう
+    修正済みのため（docs/YOURAN_2023_COMPARISON.md参照）一般則では引き継がれず、個別に
+    復元する（科目マスタ側は2024年度がELEa02nを保持したままのため、一般則で自然に戻る）。
     """
     special = build_third_cluster_rename_map()
     removed_2024_only = {
@@ -406,22 +395,24 @@ def update_third_cluster_requirements() -> None:
             major_sel["subjects"].append(gse_code)
         write_json(path, document)
 
-    # 機械システム：Advanced Robotics and Mechatronics Engineeringの復元（副次的に見つかった
-    # 2024年度データの不具合。docs/YOURAN_2022_COMPARISON.md参照）。
-    path = REQUIREMENTS_DIR / "2022-day-III-mecha.json"
+    # 光工学：画像情報学基礎（ELEa02m）の復元。2024年度の要件ファイルは原本に掲載の無い
+    # ELEa02nを参照しないよう修正済みのため（docs/YOURAN_2023_COMPARISON.md参照）、一般則の
+    # 科目番号変換では引き継がれない。2022年度は自分自身の原本に掲載があるため個別に復元する。
+    path = REQUIREMENTS_DIR / "2022-day-III-optical.json"
     document = load_json(path)
     groups = groups_by_id(document)
-    if "MCEb13j" not in groups["major-free"]["subjects"]:
-        groups["major-free"]["subjects"].append("MCEb13j")
+    if "ELEa02m" not in groups["major-free"]["subjects"]:
+        groups["major-free"]["subjects"].append("ELEa02m")
     write_json(path, document)
 
 
 def update_third_cluster_subjects(subjects: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Ⅲ類5プログラムの科目マスタを2022年度時点の科目番号へ入れ替え、GLTPラボワーク・
-    2024年度新設科目を除き、Modern Engineering and Science・Advanced Robotics and
-    Mechatronics Engineeringを復元する。光工学の画像情報学基礎（ELEa02m）は、2024年度の
-    科目マスタが原本には無いELEa02nを誤って保持しているため（docs/YOURAN_2023_COMPARISON.md
-    参照）、一般則の科目番号変換だけで自然に2022年度時点の番号へ戻る。
+    2024年度新設科目を除き、Modern Engineering and Scienceを復元する。機械システムの
+    Advanced Robotics and Mechatronics Engineering（MCEb13j）・光工学の画像情報学基礎
+    （ELEa02m）は、2024年度の科目マスタが同科目を保持しているため（docs/YOURAN_2022_
+    COMPARISON.md・YOURAN_2023_COMPARISON.md参照）、一般則の科目番号変換だけで自然に
+    2022年度時点の番号へ戻る（個別の復元処理は不要）。
     """
     special = build_third_cluster_rename_map()
     for subject in subjects:
@@ -440,10 +431,6 @@ def update_third_cluster_subjects(subjects: list[dict[str, Any]]) -> list[dict[s
                 "groups": ["major-sel"],
             }
         )
-
-    mce_template = json.loads((SUBJECTS_DIR / "youran-2025.json").read_text(encoding="utf-8"))
-    mce_source = next(s for s in mce_template["subjects"] if s["code"] == "MCEb13i")
-    subjects.append({**copy.deepcopy(mce_source), "code": "MCEb13j"})
     return subjects
 
 
@@ -575,15 +562,9 @@ def copy_subject_master() -> int:
     subjects = update_third_cluster_subjects(subjects)
     subjects = update_evening_subjects(subjects)
 
-    # メディア情報学固有：2024年度には無い選択科目「形式言語理論」（画像で確認済み）。
-    subjects.append(
-        {
-            "code": "COM406a", "name": "形式言語理論", "credits": 2, "field": "COM",
-            "standardSemester": 4, "standardYear": 2, "termType": "後学期",
-            "eveningAllowed": True, "forInternational": False, "graduateLinked": False,
-            "groups": ["major-sel"],
-        }
-    )
+    # メディア情報学の「形式言語理論」（COM406a）は2025年度マスタに追加済みのため、
+    # 2024年度経由でここまで自然に引き継がれる（2026-09-14訂正：以前はここで個別に追加
+    # していたが、2025年度マスタへの追加により科目マスタ側の重複原因になっていた）。
 
     document["subjects"] = sorted(subjects, key=lambda subject: subject["code"])
     document["source"] = "学修要覧2022（情報理工学域）付録Cを基準にした年度別科目マスタ。開講情報は原則2026年度シラバス基準"

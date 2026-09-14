@@ -247,10 +247,10 @@
                 "PHYa01n",
                 "PHYa02n",
                 "ELEa01n",
-                "ELEa02n",
                 "CHMa01n",
                 "PHYb01n",
-                "PHYb02n"
+                "PHYb02n",
+                "ELEa02n"
               ]
             },
             {
