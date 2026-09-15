@@ -300,12 +300,6 @@
               "groupId": "intro"
             },
             {
-              "type": "subjects",
-              "codes": [
-                "UEC301z"
-              ]
-            },
-            {
               "type": "allPassed",
               "groupId": "math-basic-req"
             },
@@ -360,12 +354,6 @@
         {
           "type": "allPassed",
           "groupId": "intro"
-        },
-        {
-          "type": "subjects",
-          "codes": [
-            "UEC301z"
-          ]
         },
         {
           "type": "allPassed",

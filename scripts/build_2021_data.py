@@ -98,6 +98,47 @@ def update_common_requirements() -> None:
     write_json(path, document)
 
 
+def remove_condition_deep(node: Any, is_target) -> Any:
+    """審査条件の木（allOf/anyOf）から、is_target(leaf)がTrueになる葉条件を取り除く。"""
+    if "allOf" in node:
+        node["allOf"] = [
+            remove_condition_deep(child, is_target)
+            for child in node["allOf"]
+            if not ("allOf" not in child and "anyOf" not in child and is_target(child))
+        ]
+        return node
+    if "anyOf" in node:
+        node["anyOf"] = [
+            remove_condition_deep(child, is_target)
+            for child in node["anyOf"]
+            if not ("allOf" not in child and "anyOf" not in child and is_target(child))
+        ]
+        return node
+    return node
+
+
+def fix_y2end_uec_reference_2021() -> None:
+    """昼間14プログラムの「2年次終了時審査」（y2-end）・「卒業研究着手審査」（thesis-start）は、
+    総合コミュニケーション科学の単位を`subjects: ["UEC301z"]`として個別にチェックしているが、
+    2021年度はこの科目が「初年次導入科目」に統合されコード自体もUEC101zへ変わっている
+    （`update_common_requirements`・`copy_subject_master`参照）ため、2021年度の学生はUEC301z
+    という科目番号を一切履修しない。このままでは`allPassed(intro)`は満たせてもこの条件だけが
+    永久に不合格のままになり、2年次終了時審査・卒業研究着手審査のどちらも2021年度入学者は
+    絶対に合格できなくなってしまう不具合だった（2026-09-15発見。両方の審査に同じ条件が別々に
+    重複して書かれているため、両方から取り除く必要がある）。UEC101zは既に`intro`グループに
+    含まれ`allPassed(intro)`でカバーされているため、この条件は単純に削除する。
+    """
+    is_uec301z = lambda cond: cond.get("type") == "subjects" and cond.get("codes") == ["UEC301z"]
+    for path in sorted(REQUIREMENTS_DIR.glob("2021-day-*.json")):
+        if path.name == "2021-day-common.json":
+            continue
+        document = load_json(path)
+        for review in document.get("reviews", []):
+            if review["id"] in ("y2-end", "thesis-start"):
+                remove_condition_deep(review, is_uec301z)
+        write_json(path, document)
+
+
 def update_program_subtotals() -> None:
     """別表2に合わせ、実践教育の減少分を該当課程の共通単位へ配分する。"""
     common_credits = {
@@ -322,6 +363,7 @@ def main() -> None:
     """2021年度の要件JSONと科目マスタを生成して件数を表示する。"""
     requirement_paths = copy_requirement_files()
     update_common_requirements()
+    fix_y2end_uec_reference_2021()
     update_program_subtotals()
     update_first_cluster_2021_requirements()
     update_third_cluster_2021_requirements()
