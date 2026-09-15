@@ -81,7 +81,14 @@ def copy_requirement_files() -> list[Path]:
 
 
 def update_class_i_requirements() -> None:
-    """別表2の2022年度Ⅰ類の理数基礎・専門・共通単位の値へ合わせる。"""
+    """別表2の2022年度Ⅰ類の理数基礎・専門・共通単位の値へ合わせる。
+
+    2026-09-15追加：卒業審査（reviews内の"graduation"）のcommonCredits条件は、
+    2025年度の値（media=8, 他=7）が2022年度分もそのまま残っており、subtotals.commonを
+    ここで書き換えても同期されていなかった（2021年度のⅡ類・Ⅲ類・夜間主の卒研着手条件を
+    別表4と照合していた際に発見。docs/YOURAN_2021_COMPARISON.md参照）。common変数と
+    同じ値を明示的に書き込む。
+    """
     expected = {
         "media": (78, 6),
         "management": (79, 5),
@@ -102,6 +109,9 @@ def update_class_i_requirements() -> None:
         groups["specialized"]["required"] = specialized
         document["subtotals"]["specialized"] = specialized
         document["subtotals"]["common"] = common
+        graduation = next(review for review in document["reviews"] if review["id"] == "graduation")
+        common_condition = next(cond for cond in graduation["allOf"] if cond.get("type") == "commonCredits")
+        common_condition["min"] = common
         write_json(path, document)
 
 

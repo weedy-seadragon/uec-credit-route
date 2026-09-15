@@ -122,6 +122,28 @@ def groups_by_id(document: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {group["id"]: group for group in walk_groups(document["groups"])}
 
 
+def sync_graduation_common_credits() -> None:
+    """卒業審査（reviews内の"graduation"）のcommonCredits条件を、その課程自身の
+    subtotals.commonへ同期する。`update_program_subtotals`はsubtotals.commonだけを
+    書き換えており、reviews側は2024年度の値（2025年度から継承）のまま取り残されていた
+    （2026-09-15、2021年度のⅡ類・Ⅲ類・夜間主を別表4と照合していた際に発見。
+    docs/YOURAN_2021_COMPARISON.md参照）。全プログラムのファイルを対象に最後に実行する。
+    """
+    for path in sorted(REQUIREMENTS_DIR.glob("2021-*.json")):
+        document = load_json(path)
+        common = document.get("subtotals", {}).get("common")
+        reviews = document.get("reviews")
+        if common is None or not reviews:
+            continue
+        graduation = next((review for review in reviews if review["id"] == "graduation"), None)
+        if graduation is None:
+            continue
+        common_condition = next(cond for cond in graduation["allOf"] if cond.get("type") == "commonCredits")
+        if common_condition["min"] != common:
+            common_condition["min"] = common
+            write_json(path, document)
+
+
 def rename_codes_deep(value: Any, rename_fn) -> Any:
     """JSON構造全体（要件グループだけでなく審査条件のcodes・onFail等も含む）を再帰的に
     走査し、科目番号らしき文字列をすべて変換関数にかける。
@@ -176,6 +198,10 @@ def update_evening_2021_requirements() -> None:
     また「電磁気学および演習」・「基礎物理学第三」（PHY301s/PHY302s）の科目番号が2022年度に
     かけて入れ替わっているため、要件区分（選択必修⇔必修）ごと2021年度原本の値へ戻す
     （画像照合済み、docs/YOURAN_2021_COMPARISON.md参照）。
+
+    別表4 4.2（夜間主コース）卒業研究着手審査基準のうち「初年次導入科目」の必要単位数も
+    2022年度にかけて6単位から4単位へ変更されている（画像照合済み）。2022年度以降のデータは
+    正しく4単位のままでよいが、2021年度は原本どおり6単位へ戻す。
     """
     path = REQUIREMENTS_DIR / "2021-evening.json"
     document = load_json(path)
@@ -187,6 +213,11 @@ def update_evening_2021_requirements() -> None:
     prof_req = groups["prof-basic-req"]
     math_elec["subjects"] = ["PHY302s" if code == "PHY301s" else code for code in math_elec["subjects"]]
     prof_req["subjects"] = ["PHY301s" if code == "PHY302s" else code for code in prof_req["subjects"]]
+
+    thesis_start = next(review for review in document["reviews"] if review["id"] == "thesis-start")
+    intro_condition = next(cond for cond in thesis_start["allOf"] if cond.get("groupId") == "intro")
+    intro_condition["min"] = 6
+
     write_json(path, document)
 
 
@@ -295,6 +326,7 @@ def main() -> None:
     update_first_cluster_2021_requirements()
     update_third_cluster_2021_requirements()
     update_evening_2021_requirements()
+    sync_graduation_common_credits()
     subject_count = copy_subject_master()
     print(f"2021年度データを生成しました: requirements={len(requirement_paths)} subjects={subject_count}")
 

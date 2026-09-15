@@ -328,7 +328,7 @@
         {
           "type": "groupMin",
           "groupId": "intro",
-          "min": 4
+          "min": 6
         },
         {
           "type": "subjects",
