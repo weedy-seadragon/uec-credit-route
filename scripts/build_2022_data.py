@@ -16,6 +16,12 @@
   占めていないため、プログラム記号自体が2024年度より1つ若い（セキュリティ情報学はf→e、
   情報通信工学はg→f、電子情報学はh→g、計測制御システムはi→h、先端ロボティクスはj→i）
 
+2026-09-15、2022〜2026年度の横断デバッグ（docs/YOURAN_CROSS_YEAR_AUDIT.md参照）でⅢ類の
+2件の不具合を追加修正した。electro（電子工学）に光工学専用の「画像情報学基礎」
+（ELEa02k）が一般則の科目番号変換で誤って混入していたため要件ファイルの参照から除外し、
+chembio（化学生命工学）の2024年度新設科目除外リストがrename前のサフィックスで指定されて
+いて実際には機能していなかったバグを修正した。
+
 実行: python scripts/build_2022_data.py
 """
 
@@ -369,11 +375,20 @@ def update_third_cluster_requirements() -> None:
     （ELEa02m）は、2024年度の要件ファイルが原本に掲載の無いELEa02nを参照しないよう
     修正済みのため（docs/YOURAN_2023_COMPARISON.md参照）一般則では引き継がれず、個別に
     復元する（科目マスタ側は2024年度がELEa02nを保持したままのため、一般則で自然に戻る）。
+
+    2026-09-15追加：electro（電子工学）の「画像情報学基礎」（2024年度時点コードELEa02m）は、
+    一般則の科目番号変換で2022年度時点コードELEa02kへ変換されるが、2022年度の原本付録Cには
+    電子工学向けのこの科目が掲載されていない（光工学向けのELEa02mのみ掲載）ため、要件ファイル
+    の参照からは除く（docs/YOURAN_CROSS_YEAR_AUDIT.md参照。科目マスタ側は現行シラバスに実在
+    するため残す）。また、chembio（化学生命工学）の2024年度新設科目除外リストは、rename後
+    （2022年度時点のサフィックスp）ではなくrename前（2024年度時点のサフィックスr）のコード
+    で指定されていたため、実際には一件も除外されていなかったバグを修正する。
     """
     special = build_third_cluster_rename_map()
     removed_2024_only = {
         "physics": {"PHYb03n", "PHYb04n"},
-        "chembio": {"PHYb01r", "CHMb01r", "BCHa02r", "BCHa03r", "CHMb02r", "CHMb03r", "BIOb02r"},
+        "electro": {"ELEa02k"},
+        "chembio": {"PHYb01p", "CHMb01p", "BCHa02p", "BCHa03p", "CHMb02p", "CHMb03p", "BIOb02p"},
     }
     for old_suffix, _new_suffix, program in THIRD_CLUSTER_PROGRAMS:
         path = REQUIREMENTS_DIR / f"2022-day-III-{program}.json"
@@ -412,14 +427,20 @@ def update_third_cluster_subjects(subjects: list[dict[str, Any]]) -> list[dict[s
     Advanced Robotics and Mechatronics Engineering（MCEb13j）・光工学の画像情報学基礎
     （ELEa02m）は、2024年度の科目マスタが同科目を保持しているため（docs/YOURAN_2022_
     COMPARISON.md・YOURAN_2023_COMPARISON.md参照）、一般則の科目番号変換だけで自然に
-    2022年度時点の番号へ戻る（個別の復元処理は不要）。
+    2022年度時点の番号へ戻る（個別の復元処理は不要）。electro自身の画像情報学基礎
+    （ELEa02k、2024年度時点コードELEa02m）は、科目自体はシラバス基準で実在するため科目
+    マスタからは外さず、要件ファイルの参照だけを`update_third_cluster_requirements`側で
+    除く（docs/YOURAN_CROSS_YEAR_AUDIT.md参照）。
     """
     special = build_third_cluster_rename_map()
     for subject in subjects:
         subject["code"] = rename_third_cluster_code(subject["code"], special)
 
     removed = {f"LAB501{old_suffix}" for old_suffix, _new_suffix, _program in THIRD_CLUSTER_PROGRAMS}
-    removed |= {"PHYb03n", "PHYb04n", "PHYb01r", "CHMb01r", "BCHa02r", "BCHa03r", "CHMb02r", "CHMb03r", "BIOb02r"}
+    # 2026-09-15修正：化学生命工学の2024年度新設科目除外は、rename後（2022年度時点の
+    # サフィックスp）ではなくrename前（2024年度時点のサフィックスr）で指定されていたため、
+    # 実際には一件も除外されていなかった。
+    removed |= {"PHYb03n", "PHYb04n", "PHYb01p", "CHMb01p", "BCHa02p", "BCHa03p", "CHMb02p", "CHMb03p", "BIOb02p"}
     subjects = [subject for subject in subjects if subject["code"] not in removed]
 
     for old_suffix, _new_suffix, _program in THIRD_CLUSTER_PROGRAMS:

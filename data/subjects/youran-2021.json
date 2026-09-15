@@ -191,36 +191,6 @@
       ]
     },
     {
-      "code": "BCHa02p",
-      "name": "生命分子化学特論",
-      "credits": 2,
-      "field": "BCH",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "BCHa03p",
-      "name": "化学生命工学特論",
-      "credits": 2,
-      "field": "BCH",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
       "code": "BIO201h",
       "name": "生物学概論",
       "credits": 2,
@@ -994,21 +964,6 @@
     {
       "code": "BIOb01p",
       "name": "生体機能システム学基礎",
-      "credits": 2,
-      "field": "BIO",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "BIOb02p",
-      "name": "ゲノム生物学特論",
       "credits": 2,
       "field": "BIO",
       "standardSemester": 8,
@@ -3472,51 +3427,6 @@
     {
       "code": "CHMa01p",
       "name": "光化学",
-      "credits": 2,
-      "field": "CHM",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "CHMb01p",
-      "name": "固体物性化学特論",
-      "credits": 2,
-      "field": "CHM",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "CHMb02p",
-      "name": "無機物質化学特論",
-      "credits": 2,
-      "field": "CHM",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "CHMb03p",
-      "name": "物理化学特論",
       "credits": 2,
       "field": "CHM",
       "standardSemester": 8,
@@ -13736,7 +13646,7 @@
     },
     {
       "code": "ELE403g",
-      "name": "基礎情報通信",
+      "name": "情報通信と符号化",
       "credits": 2,
       "field": "ELE",
       "standardSemester": 4,
@@ -52280,8 +52190,8 @@
     },
     {
       "code": "PHY301s",
-      "name": "基礎物理学第三",
-      "credits": 2,
+      "name": "電磁気学および演習",
+      "credits": 3,
       "field": "PHY",
       "standardSemester": 3,
       "standardYear": 2,
@@ -52290,26 +52200,32 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "math-basic-elec"
+        "prof-basic-req"
       ],
       "offerings": [
         {
-          "timetableCode": "22019107",
+          "timetableCode": "22021104",
           "faculty": "32",
           "term": "前学期",
           "slots": [
             {
               "day": "土",
-              "period": 1
+              "period": 2
+            },
+            {
+              "day": "土",
+              "period": 3
             }
           ],
           "instructors": [
-            "跡部　隆"
+            "中村(淳)",
+            "谷口"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22019107.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22021104.html",
           "updatedAt": "2026-09-07"
         }
-      ]
+      ],
+      "prerequisitesText": "ベクトル、微分積分学など"
     },
     {
       "code": "PHY301z",
@@ -53059,8 +52975,8 @@
     },
     {
       "code": "PHY302s",
-      "name": "電磁気学および演習",
-      "credits": 3,
+      "name": "基礎物理学第三",
+      "credits": 2,
       "field": "PHY",
       "standardSemester": 3,
       "standardYear": 2,
@@ -53069,32 +52985,26 @@
       "forInternational": false,
       "graduateLinked": false,
       "groups": [
-        "prof-basic-req"
+        "math-basic-elec"
       ],
       "offerings": [
         {
-          "timetableCode": "22021104",
+          "timetableCode": "22019107",
           "faculty": "32",
           "term": "前学期",
           "slots": [
             {
               "day": "土",
-              "period": 2
-            },
-            {
-              "day": "土",
-              "period": 3
+              "period": 1
             }
           ],
           "instructors": [
-            "中村(淳)",
-            "谷口"
+            "跡部　隆"
           ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22021104.html",
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/32/32_22019107.html",
           "updatedAt": "2026-09-07"
         }
-      ],
-      "prerequisitesText": "ベクトル、微分積分学など"
+      ]
     },
     {
       "code": "PHY303e",
@@ -54676,35 +54586,6 @@
       "prerequisitesText": "これまでの物理、数学全必修科目"
     },
     {
-      "code": "PHY504k",
-      "name": "回折結晶学",
-      "credits": 2,
-      "field": "PHY",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-sel"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21324238",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "大石　一城"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324238.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "波動と波，線形代数学，微積分学，解析学"
-    },
-    {
       "code": "PHY504n",
       "name": "量子力学第一演習",
       "credits": 1,
@@ -54775,35 +54656,6 @@
     },
     {
       "code": "PHY506n",
-      "name": "回折結晶学",
-      "credits": 2,
-      "field": "PHY",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "major-elecreq"
-      ],
-      "offerings": [
-        {
-          "timetableCode": "21324238",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [],
-          "instructors": [
-            "大石　一城"
-          ],
-          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324238.html",
-          "updatedAt": "2026-09-07"
-        }
-      ],
-      "prerequisitesText": "波動と波，線形代数学，微積分学，解析学"
-    },
-    {
-      "code": "PHY507n",
       "name": "固体電子論",
       "credits": 2,
       "field": "PHY",
@@ -55560,7 +55412,65 @@
       "prerequisitesText": "量子力学第二に同じ"
     },
     {
+      "code": "PHY607k",
+      "name": "回折結晶学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21324238",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "大石　一城"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324238.html",
+          "updatedAt": "2026-09-07"
+        }
+      ],
+      "prerequisitesText": "波動と波，線形代数学，微積分学，解析学"
+    },
+    {
       "code": "PHY607n",
+      "name": "回折結晶学",
+      "credits": 2,
+      "field": "PHY",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-elecreq"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21324238",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "大石　一城"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324238.html",
+          "updatedAt": "2026-09-07"
+        }
+      ],
+      "prerequisitesText": "波動と波，線形代数学，微積分学，解析学"
+    },
+    {
+      "code": "PHY608n",
       "name": "半導体工学",
       "credits": 2,
       "field": "PHY",
@@ -55594,7 +55504,7 @@
       "prerequisitesText": "とくになし"
     },
     {
-      "code": "PHY608n",
+      "code": "PHY609n",
       "name": "計算数理工学",
       "credits": 2,
       "field": "PHY",
@@ -55628,7 +55538,7 @@
       "prerequisitesText": "コンピュータリテラシー、基礎プログラミングおよび演習　 微分積分学、線形代数学"
     },
     {
-      "code": "PHY609n",
+      "code": "PHY610n",
       "name": "電子デバイス",
       "credits": 2,
       "field": "PHY",
@@ -55860,21 +55770,6 @@
     {
       "code": "PHYb01n",
       "name": "先端半導体デバイス基礎",
-      "credits": 2,
-      "field": "PHY",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "PHYb01p",
-      "name": "X線結晶学特論",
       "credits": 2,
       "field": "PHY",
       "standardSemester": 8,

@@ -16,6 +16,24 @@
 2026-09-15に2025年度マスタ側を修正し、2022年度・2021年度も再生成でこの修正を引き継いだ
 （docs/YOURAN_CROSS_YEAR_AUDIT.md参照）。
 
+2026-09-15、Ⅱ類・Ⅲ類・夜間主を学修要覧2021原本と画像照合し、次の差分を追加で修正した
+（docs/YOURAN_2021_COMPARISON.md参照）。
+
+- 電子工学「回折結晶学」・物理工学5科目（回折結晶学・固体電子論・半導体工学・計算数理工学・
+  電子デバイス）は、2022年度にかけて科目番号が変わっている（2022年度データはこの一連の
+  科目だけが原本どおりに変更済みで、他は変更なし）
+- 夜間主「データサイエンス演習」（UEC501r）は2022年度新設のため2021年度には無い
+- 夜間主「電磁気学および演習」・「基礎物理学第三」（PHY301s/PHY302s）は、2022年度にかけて
+  科目番号が入れ替わっている
+- セキュリティ情報学「マルチメディア処理」は2021年度原本ではデータベース論と同じ番号
+  （COM506e）で印字されており、2022年度以降の原本にある distinct な番号（COM507e）と
+  食い違うが、これは2021年度原本側の印刷重複（他プログラムのマルチメディア処理で見つかった
+  ものと同種）と判断し、現行の値（COM507e、2022年度から継承）を変更していない
+
+なお、電子工学に光工学専用の「画像情報学基礎」（ELEa02k）が誤って混入していた不具合と、
+化学生命工学の2024年度新設科目除外が機能していなかった不具合は、いずれも2022年度側
+（`build_2022_data.py`）の問題だったため、そちらを修正して2021年度へ再生成で継承した。
+
 実行: python scripts/build_2021_data.py
 """
 
@@ -104,6 +122,88 @@ def groups_by_id(document: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {group["id"]: group for group in walk_groups(document["groups"])}
 
 
+def rename_codes_deep(value: Any, rename_fn) -> Any:
+    """JSON構造全体（要件グループだけでなく審査条件のcodes・onFail等も含む）を再帰的に
+    走査し、科目番号らしき文字列をすべて変換関数にかける。
+    """
+    if isinstance(value, list):
+        return [
+            rename_fn(item) if isinstance(item, str) else rename_codes_deep(item, rename_fn)
+            for item in value
+        ]
+    if isinstance(value, dict):
+        return {key: rename_codes_deep(val, rename_fn) for key, val in value.items()}
+    return value
+
+
+# Ⅲ類：電子工学「回折結晶学」・物理工学5科目の番号が2022年度にかけて変わっている
+# （画像照合済み、docs/YOURAN_2021_COMPARISON.md参照）。物理工学は単純な1対1リネームでは
+# 衝突するため、循環的な入れ替えを1つの辞書で表す。
+THIRD_CLUSTER_2021_RENAME = {
+    "PHY504k": "PHY607k",  # 電子工学：回折結晶学
+    "PHY506n": "PHY607n",  # 物理工学：回折結晶学
+    "PHY507n": "PHY506n",  # 物理工学：固体電子論
+    "PHY607n": "PHY608n",  # 物理工学：半導体工学
+    "PHY608n": "PHY609n",  # 物理工学：計算数理工学
+    "PHY609n": "PHY610n",  # 物理工学：電子デバイス
+}
+
+
+def update_third_cluster_2021_requirements() -> None:
+    """Ⅲ類5プログラム：電子工学・物理工学の科目番号を2021年度原本の値へ戻す。他プログラム
+    の自由科目区分でも同じ科目番号を選択科目として展開しているため、5ファイルすべてを走査
+    する。
+    """
+    rename = lambda code: THIRD_CLUSTER_2021_RENAME.get(code, code)
+    for program in ("mecha", "electro", "optical", "physics", "chembio"):
+        path = REQUIREMENTS_DIR / f"2021-day-III-{program}.json"
+        document = load_json(path)
+        document["groups"] = rename_codes_deep(document["groups"], rename)
+        document["reviews"] = rename_codes_deep(document.get("reviews", []), rename)
+        write_json(path, document)
+
+
+def update_third_cluster_2021_subjects(subjects: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """科目マスタ側も電子工学・物理工学の科目番号を2021年度原本の値へ戻す。"""
+    rename = lambda code: THIRD_CLUSTER_2021_RENAME.get(code, code)
+    for subject in subjects:
+        subject["code"] = rename(subject["code"])
+    return subjects
+
+
+def update_evening_2021_requirements() -> None:
+    """夜間主：データサイエンス演習（UEC501r）は2022年度新設のため2021年度には無いので除く。
+    また「電磁気学および演習」・「基礎物理学第三」（PHY301s/PHY302s）の科目番号が2022年度に
+    かけて入れ替わっているため、要件区分（選択必修⇔必修）ごと2021年度原本の値へ戻す
+    （画像照合済み、docs/YOURAN_2021_COMPARISON.md参照）。
+    """
+    path = REQUIREMENTS_DIR / "2021-evening.json"
+    document = load_json(path)
+    groups = groups_by_id(document)
+    datasci = groups["datasci"]
+    datasci["children"] = [child for child in datasci["children"] if child["id"] != "datasci-ex"]
+
+    math_elec = groups["math-basic-elec"]
+    prof_req = groups["prof-basic-req"]
+    math_elec["subjects"] = ["PHY302s" if code == "PHY301s" else code for code in math_elec["subjects"]]
+    prof_req["subjects"] = ["PHY301s" if code == "PHY302s" else code for code in prof_req["subjects"]]
+    write_json(path, document)
+
+
+def update_evening_2021_subjects(subjects: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """科目マスタ側も「電磁気学および演習」・「基礎物理学第三」の内容（科目名・単位数・
+    開講情報など）ごと2021年度原本の科目番号へ入れ替える。
+    """
+    by_code = {subject["code"]: subject for subject in subjects}
+    old_301s = copy.deepcopy(by_code["PHY301s"])
+    old_302s = copy.deepcopy(by_code["PHY302s"])
+    by_code["PHY301s"].clear()
+    by_code["PHY301s"].update(old_302s, code="PHY301s")
+    by_code["PHY302s"].clear()
+    by_code["PHY302s"].update(old_301s, code="PHY302s")
+    return subjects
+
+
 def update_first_cluster_2021_requirements() -> None:
     """Ⅰ類：2022年度にかけて新設・廃止された選択科目の差分を2021年度時点へ戻す。
 
@@ -177,6 +277,8 @@ def copy_subject_master() -> int:
     document["subjects"] = [subject for subject in document["subjects"] if subject["code"] != "UEC101z"] + [legacy_subject]
 
     subjects = update_first_cluster_2021_subjects(document["subjects"])
+    subjects = update_third_cluster_2021_subjects(subjects)
+    subjects = update_evening_2021_subjects(subjects)
     document["subjects"] = sorted(subjects, key=lambda subject: subject["code"])
 
     document["source"] = "学修要覧2021（情報理工学域）付録Cを基準にした年度別科目マスタ。開講情報は原則2026年度シラバス基準"
@@ -191,6 +293,8 @@ def main() -> None:
     update_common_requirements()
     update_program_subtotals()
     update_first_cluster_2021_requirements()
+    update_third_cluster_2021_requirements()
+    update_evening_2021_requirements()
     subject_count = copy_subject_master()
     print(f"2021年度データを生成しました: requirements={len(requirement_paths)} subjects={subject_count}")
 

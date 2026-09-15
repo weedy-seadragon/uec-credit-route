@@ -191,36 +191,6 @@
       ]
     },
     {
-      "code": "BCHa02p",
-      "name": "生命分子化学特論",
-      "credits": 2,
-      "field": "BCH",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "BCHa03p",
-      "name": "化学生命工学特論",
-      "credits": 2,
-      "field": "BCH",
-      "standardSemester": 6,
-      "standardYear": 3,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
       "code": "BIO201h",
       "name": "生物学概論",
       "credits": 2,
@@ -994,21 +964,6 @@
     {
       "code": "BIOb01p",
       "name": "生体機能システム学基礎",
-      "credits": 2,
-      "field": "BIO",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "BIOb02p",
-      "name": "ゲノム生物学特論",
       "credits": 2,
       "field": "BIO",
       "standardSemester": 8,
@@ -3472,51 +3427,6 @@
     {
       "code": "CHMa01p",
       "name": "光化学",
-      "credits": 2,
-      "field": "CHM",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "CHMb01p",
-      "name": "固体物性化学特論",
-      "credits": 2,
-      "field": "CHM",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "CHMb02p",
-      "name": "無機物質化学特論",
-      "credits": 2,
-      "field": "CHM",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "CHMb03p",
-      "name": "物理化学特論",
       "credits": 2,
       "field": "CHM",
       "standardSemester": 8,
@@ -13736,7 +13646,7 @@
     },
     {
       "code": "ELE403g",
-      "name": "基礎情報通信",
+      "name": "情報通信と符号化",
       "credits": 2,
       "field": "ELE",
       "standardSemester": 4,
@@ -55978,21 +55888,6 @@
     {
       "code": "PHYb01n",
       "name": "先端半導体デバイス基礎",
-      "credits": 2,
-      "field": "PHY",
-      "standardSemester": 8,
-      "standardYear": 4,
-      "termType": "後学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": true,
-      "groups": [
-        "major-free"
-      ]
-    },
-    {
-      "code": "PHYb01p",
-      "name": "X線結晶学特論",
       "credits": 2,
       "field": "PHY",
       "standardSemester": 8,

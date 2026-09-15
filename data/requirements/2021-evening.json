@@ -141,17 +141,6 @@
               "subjects": [
                 "UEC401r"
               ]
-            },
-            {
-              "id": "datasci-ex",
-              "name": "データサイエンス演習",
-              "label": "DS演習",
-              "required": 0,
-              "kind": "elective",
-              "note": "総合コミュニケーション科学のみで2単位を満たすため選択（超過分は共通単位）",
-              "subjects": [
-                "UEC501r"
-              ]
             }
           ]
         },
@@ -219,7 +208,7 @@
               "subjects": [
                 "CHM101s",
                 "MTH301s",
-                "PHY301s"
+                "PHY302s"
               ]
             }
           ]
@@ -243,7 +232,7 @@
                 "MTH402s",
                 "COM301s",
                 "COM302s",
-                "PHY302s",
+                "PHY301s",
                 "ELE401s",
                 "ELE402s",
                 "ELE501s",

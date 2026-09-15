@@ -159,7 +159,7 @@
                 "PHY605n",
                 "PHY606n",
                 "PHO601n",
-                "PHY506n"
+                "PHY607n"
               ]
             },
             {
@@ -172,11 +172,11 @@
               "subjects": [
                 "CHM401n",
                 "CHM402n",
-                "PHY507n",
-                "PHY607n",
-                "ELE601n",
+                "PHY506n",
                 "PHY608n",
+                "ELE601n",
                 "PHY609n",
+                "PHY610n",
                 "FGN101n",
                 "FGN201n",
                 "FGN102n",
@@ -207,7 +207,7 @@
                 "PHY605k",
                 "PHY606k",
                 "PHO601k",
-                "PHY504k",
+                "PHY607k",
                 "ELE603k",
                 "ELE604k",
                 "ELE605k",
