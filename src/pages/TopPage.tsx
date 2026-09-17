@@ -140,6 +140,8 @@ export default function TopPage() {
             <li>2021・2022年度のⅡ類・Ⅲ類・夜間主課程について、卒業要件データを学修要覧原本と1件ずつ照合し、科目番号や必要単位数の誤りを修正しました</li>
           </ul>
         </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（3件）">
         {/* Ver.1.1.0では、より前の入学年度の卒業要件を確認できるようにした。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -158,8 +160,6 @@ export default function TopPage() {
             <li>入学年度の選択肢を新しい年度から順に表示するようにしました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（3件）">
         {/* Ver.1.0.2では、同じ授業の二重計上を防ぎ、関連サービスへの導線を追加した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
