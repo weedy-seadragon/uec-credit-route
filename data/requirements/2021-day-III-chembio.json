@@ -5,7 +5,7 @@
   "cluster": "III",
   "program": "chembio",
   "programName": "化学生命工学プログラム",
-  "programSuffix": "r",
+  "programSuffix": "p",
   "source": "学修要覧2021（情報理工学域）別表2, 別表3, 別表3の2, 別表4, 付録C C.3.3⑤",
   "extends": "2021-day-common.json",
   "totalCredits": 133,
@@ -50,7 +50,7 @@
                 "MTH103z",
                 "MTH204z",
                 "PHY102z",
-                "PHY202z",
+                "PHY201z",
                 "CHM102z",
                 "COM201z"
               ]
@@ -65,8 +65,7 @@
               "note": "修得した単位は共通単位とする",
               "subjects": [
                 "PHY103z",
-                "PHY203z",
-                "CHM203z"
+                "CHM202z"
               ]
             }
           ]
@@ -83,13 +82,13 @@
               "required": 15,
               "kind": "required",
               "subjects": [
-                "PHY204r",
-                "PHY205r",
-                "MTH301r",
-                "PHY301r",
-                "PHY302r",
-                "ELE301r",
-                "BIO401r"
+                "PHY203p",
+                "PHY204p",
+                "MTH301p",
+                "PHY301p",
+                "PHY302p",
+                "ELE301p",
+                "BIO401p"
               ]
             },
             {
@@ -99,13 +98,13 @@
               "required": 6,
               "kind": "elective-required",
               "subjects": [
-                "MTH302r",
-                "MTH303r",
-                "GSE301r",
-                "COM301r",
-                "PHY401r",
-                "ELE401r",
-                "COM401r"
+                "MTH302p",
+                "MTH303p",
+                "GSE301p",
+                "COM301p",
+                "PHY401p",
+                "ELE401p",
+                "COM401p"
               ]
             },
             {
@@ -116,7 +115,7 @@
               "kind": "elective",
               "note": "修得した単位は共通単位とする",
               "subjects": [
-                "COM402r"
+                "COM402p"
               ]
             }
           ]
@@ -133,22 +132,22 @@
               "required": 32,
               "kind": "required",
               "subjects": [
-                "CHM401r",
-                "CHM402r",
-                "ELE402r",
-                "BCH501r",
-                "BCH601r",
-                "BCH502r",
-                "BCH602r",
-                "CHM501r",
-                "CHM502r",
-                "BIO501r",
-                "BIO502r",
-                "BIO601r",
-                "LAB701r",
-                "LAB801r",
-                "LAB702r",
-                "LAB802r"
+                "CHM401p",
+                "CHM402p",
+                "ELE402p",
+                "BCH501p",
+                "BCH601p",
+                "BCH502p",
+                "BCH602p",
+                "CHM501p",
+                "CHM502p",
+                "BIO501p",
+                "BIO502p",
+                "BIO601p",
+                "LAB701p",
+                "LAB801p",
+                "LAB702p",
+                "LAB802p"
               ]
             },
             {
@@ -158,13 +157,13 @@
               "required": 8,
               "kind": "elective-required",
               "subjects": [
-                "PHY402r",
-                "CHM503r",
-                "BIO503r",
-                "CHM601r",
-                "CHM602r",
-                "CHM603r",
-                "BIO602r"
+                "PHY402p",
+                "CHM503p",
+                "BIO503p",
+                "CHM601p",
+                "CHM602p",
+                "CHM603p",
+                "BIO602p"
               ]
             },
             {
@@ -175,24 +174,45 @@
               "kind": "elective",
               "note": "他プログラムの類専門科目選択も選択として算入可（実験科目を除く。付録C 注1）。このJSONのsubjectsには他プログラム分もあらかじめ展開済み",
               "subjects": [
-                "ELE601r",
-                "BIO603r",
-                "CHM701r",
-                "FGN101r",
-                "FGN201r",
-                "FGN102r",
-                "FGN202r",
-                "FGN301r",
-                "FGN401r",
-                "MCE508k",
-                "MCE509k",
-                "GSE501k",
-                "MCE607k",
-                "MCE608k",
-                "GSE601k",
-                "MCE609k",
-                "MCE701k",
-                "MCE702k",
+                "ELE601p",
+                "BIO603p",
+                "CHM701p",
+                "FGN101p",
+                "FGN201p",
+                "FGN102p",
+                "FGN202p",
+                "FGN301p",
+                "FGN401p",
+                "MCE508j",
+                "MCE509j",
+                "GSE501j",
+                "MCE607j",
+                "MCE608j",
+                "GSE601j",
+                "MCE609j",
+                "MCE701j",
+                "MCE702j",
+                "FGN101j",
+                "FGN201j",
+                "FGN102j",
+                "FGN202j",
+                "FGN301j",
+                "FGN401j",
+                "CHM401k",
+                "CHM402k",
+                "PHY502k",
+                "PHY503k",
+                "PHY603k",
+                "PHY604k",
+                "PHY605k",
+                "PHY606k",
+                "PHO601k",
+                "PHY607k",
+                "ELE603k",
+                "ELE604k",
+                "ELE605k",
+                "ELE701k",
+                "CHM701k",
                 "FGN101k",
                 "FGN201k",
                 "FGN102k",
@@ -201,19 +221,14 @@
                 "FGN401k",
                 "CHM401m",
                 "CHM402m",
-                "PHY502m",
-                "PHY503m",
+                "BIO501m",
+                "PHY602m",
                 "PHY603m",
                 "PHY604m",
+                "ELE602m",
                 "PHY605m",
-                "PHY606m",
-                "PHO601m",
-                "PHY504m",
                 "ELE603m",
-                "ELE604m",
-                "ELE605m",
-                "ELE701m",
-                "CHM701m",
+                "CHM601m",
                 "FGN101m",
                 "FGN201m",
                 "FGN102m",
@@ -222,33 +237,18 @@
                 "FGN401m",
                 "CHM401n",
                 "CHM402n",
-                "BIO501n",
-                "PHY602n",
-                "PHY603n",
-                "PHY604n",
-                "ELE602n",
-                "PHY605n",
-                "ELE603n",
-                "CHM601n",
+                "PHY506n",
+                "PHY608n",
+                "ELE601n",
+                "PHY609n",
+                "PHY610n",
                 "FGN101n",
                 "FGN201n",
                 "FGN102n",
                 "FGN202n",
                 "FGN301n",
                 "FGN401n",
-                "CHM401p",
-                "CHM402p",
-                "PHY507p",
-                "PHY607p",
-                "ELE601p",
-                "PHY608p",
-                "PHY609p",
-                "FGN101p",
-                "FGN201p",
-                "FGN102p",
-                "FGN202p",
-                "FGN301p",
-                "FGN401p"
+                "GSE701p"
               ]
             },
             {
@@ -260,28 +260,20 @@
               "countsTowardGraduation": false,
               "note": "地学・生物学関連科目、UECパスポートプログラム、大学院連携科目など。卒業要件に含まれない",
               "subjects": [
-                "GEO201r",
-                "GEO501r",
-                "BIO504r",
-                "UEC302r",
-                "UEC501r",
-                "UEC701r",
-                "COM501r",
-                "PHYa01r",
-                "CHMa01r",
-                "BCHa01r",
-                "BIOa01r",
-                "BIOa02r",
-                "GSEb01r",
-                "BIOb01r",
-                "PHYb01r",
-                "CHMb01r",
-                "BCHa02r",
-                "BCHa03r",
-                "CHMb02r",
-                "CHMb03r",
-                "BIOb02r",
-                "LAB501r"
+                "GEO201p",
+                "GEO501p",
+                "BIO504p",
+                "UEC301p",
+                "UEC501p",
+                "UEC701p",
+                "COM501p",
+                "PHYa01p",
+                "CHMa01p",
+                "BCHa01p",
+                "BIOa01p",
+                "BIOa02p",
+                "GSEb01p",
+                "BIOb01p"
               ]
             },
             {
@@ -292,10 +284,10 @@
               "kind": "international",
               "note": "単位の扱いは年度ごとの科目一覧表による",
               "subjects": [
-                "INT401r",
-                "INT001r",
-                "INT002r",
-                "INT003r"
+                "INT401p",
+                "INT001p",
+                "INT002p",
+                "INT003p"
               ]
             }
           ]
@@ -331,20 +323,14 @@
               "groupId": "intro"
             },
             {
-              "type": "subjects",
-              "codes": [
-                "UEC301z"
-              ]
-            },
-            {
               "type": "allPassed",
               "groupId": "math-basic-req"
             },
             {
               "type": "subjects",
               "codes": [
-                "PHY204r",
-                "PHY205r"
+                "PHY203p",
+                "PHY204p"
               ],
               "note": "別表3: 類共通基礎科目のうち力学・力学演習（1年次開講の必修科目2科目、計3単位）"
             }
@@ -358,8 +344,8 @@
       ],
       "onFail": {
         "blockedSubjects": [
-          "BCH501r",
-          "BCH601r"
+          "BCH501p",
+          "BCH601p"
         ],
         "note": "不合格時はBCH501r・BCH601rを履修できない"
       }
@@ -393,28 +379,22 @@
           "groupId": "intro"
         },
         {
-          "type": "subjects",
-          "codes": [
-            "UEC301z"
-          ]
-        },
-        {
           "type": "allPassed",
           "groupId": "math-basic-req"
         },
         {
           "type": "subjectsCreditMin",
           "codes": [
-            "PHY204r",
-            "PHY205r",
-            "MTH301r",
-            "PHY301r",
-            "PHY302r",
-            "ELE301r",
-            "BIO401r",
-            "CHM401r",
-            "CHM402r",
-            "ELE402r"
+            "PHY203p",
+            "PHY204p",
+            "MTH301p",
+            "PHY301p",
+            "PHY302p",
+            "ELE301p",
+            "BIO401p",
+            "CHM401p",
+            "CHM402p",
+            "ELE402p"
           ],
           "min": 16,
           "note": "別表4: 2年次までの類共通基礎科目及び類専門科目の必修科目のうち規定単位数以上"
@@ -422,9 +402,9 @@
         {
           "type": "subjects",
           "codes": [
-            "ELE402r",
-            "BCH501r",
-            "BCH601r"
+            "ELE402p",
+            "BCH501p",
+            "BCH601p"
           ],
           "note": "別表4: 類専門科目の指定科目"
         },

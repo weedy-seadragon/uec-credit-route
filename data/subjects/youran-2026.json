@@ -9537,6 +9537,21 @@
       ]
     },
     {
+      "code": "COM406a",
+      "name": "形式言語理論",
+      "credits": 2,
+      "field": "COM",
+      "standardSemester": 4,
+      "standardYear": 2,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
       "code": "COM501a",
       "name": "プログラミング言語実験",
       "credits": 2,
@@ -15007,7 +15022,7 @@
     },
     {
       "code": "ELE403h",
-      "name": "基礎情報通信",
+      "name": "情報通信と符号化",
       "credits": 2,
       "field": "ELE",
       "standardSemester": 4,
@@ -16146,12 +16161,12 @@
       "name": "マルチメディア処理",
       "credits": 2,
       "field": "ELE",
-      "standardSemester": 5,
+      "standardSemester": 6,
       "standardYear": 3,
-      "termType": "前学期",
+      "termType": "後学期",
       "eveningAllowed": false,
       "forInternational": false,
-      "graduateLinked": true,
+      "graduateLinked": false,
       "groups": [
         "major-free"
       ]
@@ -16161,12 +16176,12 @@
       "name": "マルチメディア処理",
       "credits": 2,
       "field": "ELE",
-      "standardSemester": 5,
+      "standardSemester": 6,
       "standardYear": 3,
-      "termType": "前学期",
+      "termType": "後学期",
       "eveningAllowed": false,
       "forInternational": false,
-      "graduateLinked": true,
+      "graduateLinked": false,
       "groups": [
         "major-free"
       ]
@@ -16989,8 +17004,15 @@
           "timetableCode": "21224235",
           "faculty": "31",
           "term": "後学期",
-          "slots": [{ "day": "月", "period": 4 }],
-          "instructors": ["八木　秀樹"],
+          "slots": [
+            {
+              "day": "月",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "八木　秀樹"
+          ],
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224235.html",
           "updatedAt": "2026-09-08"
         }
@@ -17083,8 +17105,15 @@
           "timetableCode": "21224236",
           "faculty": "31",
           "term": "後学期",
-          "slots": [{ "day": "火", "period": 2 }],
-          "instructors": ["和田　光司"],
+          "slots": [
+            {
+              "day": "火",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "和田　光司"
+          ],
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224236.html",
           "updatedAt": "2026-09-08"
         }
@@ -17193,8 +17222,15 @@
           "timetableCode": "21224237",
           "faculty": "31",
           "term": "後学期",
-          "slots": [{ "day": "月", "period": 3 }],
-          "instructors": ["安藤　芳晃"],
+          "slots": [
+            {
+              "day": "月",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "安藤　芳晃"
+          ],
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224237.html",
           "updatedAt": "2026-09-08"
         }
@@ -17253,8 +17289,15 @@
           "timetableCode": "21224239",
           "faculty": "31",
           "term": "後学期",
-          "slots": [{ "day": "木", "period": 3 }],
-          "instructors": ["石橋　功至"],
+          "slots": [
+            {
+              "day": "木",
+              "period": 3
+            }
+          ],
+          "instructors": [
+            "石橋　功至"
+          ],
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224239.html",
           "updatedAt": "2026-09-08"
         }
@@ -22237,8 +22280,16 @@
           "timetableCode": "21016236",
           "faculty": "31",
           "term": "後学期",
-          "slots": [{ "day": "月", "period": 5 }],
-          "instructors": ["Shi", "上原"],
+          "slots": [
+            {
+              "day": "月",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "Shi",
+            "上原"
+          ],
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016236.html",
           "updatedAt": "2026-09-08"
         }
@@ -35496,10 +35547,70 @@
       ],
       "note": "1・2年次修得分は言語文化演習科目、3・4年次修得分は上級科目",
       "offerings": [
-        { "timetableCode": "21017101", "faculty": "31", "term": "前学期", "slots": [{ "day": "火", "period": 1 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017101.html", "updatedAt": "2026-09-08" },
-        { "timetableCode": "21017105", "faculty": "31", "term": "前学期", "slots": [{ "day": "火", "period": 1 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017105.html", "updatedAt": "2026-09-08" },
-        { "timetableCode": "21017201", "faculty": "31", "term": "後学期", "slots": [{ "day": "火", "period": 1 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017201.html", "updatedAt": "2026-09-08" },
-        { "timetableCode": "21017205", "faculty": "31", "term": "後学期", "slots": [{ "day": "火", "period": 1 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017205.html", "updatedAt": "2026-09-08" }
+        {
+          "timetableCode": "21017101",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "Choo　Cheow　Keong"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017101.html",
+          "updatedAt": "2026-09-08"
+        },
+        {
+          "timetableCode": "21017105",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "Choo　Cheow　Keong"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017105.html",
+          "updatedAt": "2026-09-08"
+        },
+        {
+          "timetableCode": "21017201",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "Choo　Cheow　Keong"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017201.html",
+          "updatedAt": "2026-09-08"
+        },
+        {
+          "timetableCode": "21017205",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "Choo　Cheow　Keong"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017205.html",
+          "updatedAt": "2026-09-08"
+        }
       ]
     },
     {
@@ -35951,10 +36062,70 @@
       ],
       "note": "1・2年次修得分は言語文化演習科目、3・4年次修得分は上級科目",
       "offerings": [
-        { "timetableCode": "21017102", "faculty": "31", "term": "前学期", "slots": [{ "day": "火", "period": 2 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017102.html", "updatedAt": "2026-09-08" },
-        { "timetableCode": "21017106", "faculty": "31", "term": "前学期", "slots": [{ "day": "火", "period": 2 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017106.html", "updatedAt": "2026-09-08" },
-        { "timetableCode": "21017202", "faculty": "31", "term": "後学期", "slots": [{ "day": "火", "period": 2 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017202.html", "updatedAt": "2026-09-08" },
-        { "timetableCode": "21017206", "faculty": "31", "term": "後学期", "slots": [{ "day": "火", "period": 2 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017206.html", "updatedAt": "2026-09-08" }
+        {
+          "timetableCode": "21017102",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "Choo　Cheow　Keong"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017102.html",
+          "updatedAt": "2026-09-08"
+        },
+        {
+          "timetableCode": "21017106",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "Choo　Cheow　Keong"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017106.html",
+          "updatedAt": "2026-09-08"
+        },
+        {
+          "timetableCode": "21017202",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "Choo　Cheow　Keong"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017202.html",
+          "updatedAt": "2026-09-08"
+        },
+        {
+          "timetableCode": "21017206",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "Choo　Cheow　Keong"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017206.html",
+          "updatedAt": "2026-09-08"
+        }
       ]
     },
     {
@@ -36229,8 +36400,38 @@
       ],
       "note": "3・4年次のみ。上級科目扱い",
       "offerings": [
-        { "timetableCode": "21017107", "faculty": "31", "term": "前学期", "slots": [{ "day": "木", "period": 1 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017107.html", "updatedAt": "2026-09-08" },
-        { "timetableCode": "21017207", "faculty": "31", "term": "後学期", "slots": [{ "day": "木", "period": 1 }], "instructors": ["Choo　Cheow　Keong"], "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017207.html", "updatedAt": "2026-09-08" }
+        {
+          "timetableCode": "21017107",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "Choo　Cheow　Keong"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017107.html",
+          "updatedAt": "2026-09-08"
+        },
+        {
+          "timetableCode": "21017207",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "Choo　Cheow　Keong"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017207.html",
+          "updatedAt": "2026-09-08"
+        }
       ]
     },
     {
@@ -36659,8 +36860,16 @@
           "timetableCode": "21016236",
           "faculty": "31",
           "term": "後学期",
-          "slots": [{ "day": "月", "period": 5 }],
-          "instructors": ["Shi", "上原"],
+          "slots": [
+            {
+              "day": "月",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "Shi",
+            "上原"
+          ],
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016236.html",
           "updatedAt": "2026-09-08"
         }
@@ -36804,8 +37013,16 @@
           "timetableCode": "21016236",
           "faculty": "31",
           "term": "後学期",
-          "slots": [{ "day": "月", "period": 5 }],
-          "instructors": ["Shi", "上原"],
+          "slots": [
+            {
+              "day": "月",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "Shi",
+            "上原"
+          ],
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016236.html",
           "updatedAt": "2026-09-08"
         }
@@ -44408,6 +44625,21 @@
       "prerequisitesText": "確率論・統計学"
     },
     {
+      "code": "MSS606b",
+      "name": "金融工学",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": 6,
+      "standardYear": 3,
+      "termType": "後学期",
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "major-sel"
+      ]
+    },
+    {
       "code": "MSSa01b",
       "name": "会計情報システム",
       "credits": 2,
@@ -44439,6 +44671,21 @@
     },
     {
       "code": "MSSa03b",
+      "name": "サービス・サイエンス特論",
+      "credits": 2,
+      "field": "MSS",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": null,
+      "eveningAllowed": true,
+      "forInternational": false,
+      "graduateLinked": true,
+      "groups": [
+        "major-free"
+      ]
+    },
+    {
+      "code": "MSSa04b",
       "name": "サービス・サイエンス特論",
       "credits": 2,
       "field": "MSS",
@@ -52225,8 +52472,15 @@
           "timetableCode": "21224238",
           "faculty": "31",
           "term": "後学期",
-          "slots": [{ "day": "木", "period": 1 }],
-          "instructors": ["松浦　基晴"],
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "松浦　基晴"
+          ],
           "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21224238.html",
           "updatedAt": "2026-09-08"
         }

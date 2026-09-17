@@ -169,6 +169,7 @@
                 "FGN301c",
                 "FGN401c",
                 "MSS402a",
+                "COM406a",
                 "COM502a",
                 "MTH501a",
                 "ELE501a",
@@ -208,6 +209,7 @@
                 "INS601b",
                 "MSS604b",
                 "MSS605b",
+                "MSS606b",
                 "COM001b",
                 "FGN101b",
                 "FGN201b",
@@ -278,8 +280,6 @@
               "required": 0,
               "subjects": [
                 "COM508c",
-                "COM002c",
-                "COM003c",
                 "COMa01c",
                 "COMa02c",
                 "MTHa01c",
@@ -290,8 +290,7 @@
                 "MTHb01c",
                 "MTHb02c",
                 "MTHb03c",
-                "MTHb04c",
-                "LAB501c"
+                "MTHb04c"
               ],
               "kind": "free",
               "countsTowardGraduation": false,

@@ -84,6 +84,62 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(getSubjectsByCode(2023).get('COM603a')).toEqual(getSubjectsByCode(2024).get('COM603a'))
   })
 
+  it('2023年度のⅠ類は情報工学工房が分割されておらず、メディア情報学は経営・社会情報学の番号を参照する', () => {
+    // 2026-09-14訂正：情報工学工房B・C（COM002x/COM003x）とGLTPラボワーク（LAB501x）は2024年度新設。
+    // メディア情報学の現代代数学・数理解析学は自分専用の番号を持たず、経営・社会情報学の番号（MTHb02b/03b）を使う。
+    const media2023 = getRequirementSet(2023, 'day', 'I', 'media')
+    const free2023 = media2023?.groups.find((g) => g.id === 'specialized')?.children
+      ?.find((g) => g.id === 'major')?.children?.find((g) => g.id === 'major-free')
+
+    expect(getSubjectsByCode(2023).get('COM001a')?.name).toBe('情報工学工房')
+    expect(free2023?.subjects).not.toContain('COM002a')
+    expect(free2023?.subjects).not.toContain('LAB501a')
+    expect(free2023?.subjects).toContain('MTHb02b')
+    expect(getSubjectsByCode(2023).get('MTHb02a')).toBeUndefined()
+
+    const media2024 = getRequirementSet(2024, 'day', 'I', 'media')
+    const free2024 = media2024?.groups.find((g) => g.id === 'specialized')?.children
+      ?.find((g) => g.id === 'major')?.children?.find((g) => g.id === 'major-free')
+    expect(getSubjectsByCode(2024).get('COM001a')?.name).toBe('情報工学工房A')
+    expect(free2024?.subjects).toContain('COM002a')
+    expect(free2024?.subjects).toContain('MTHb02a')
+  })
+
+  it('2023年度のⅡ類・Ⅲ類はGLTPラボワークが無く、改称科目は現行名のまま統一する', () => {
+    // 2026-09-14追加：GLTPラボワーク（LAB501x）はⅡ類・Ⅲ類の10プログラム共通で2024年度新設。
+    // 「量子力学→量子と情報」（PHY502g）・「計測工学→機械計測工学」（GSE401i）のように
+    // 同じ科目番号のまま名前だけ変わった科目は、現行名に統一する方針（開発者確認済み）のため
+    // 2023年度データでも現行名のままにする（docs/YOURAN_2023_COMPARISON.md参照）。
+    const security2023 = getRequirementSet(2023, 'day', 'II', 'security')
+    const free2023 = security2023?.groups.find((g) => g.id === 'specialized')?.children
+      ?.find((g) => g.id === 'major')?.children?.find((g) => g.id === 'major-free')
+
+    expect(free2023?.subjects).not.toContain('LAB501f')
+    expect(getSubjectsByCode(2023).get('LAB501g')).toBeUndefined()
+    expect(getSubjectsByCode(2023).get('PHY502g')?.name).toBe('量子と情報')
+    expect(getSubjectsByCode(2023).get('GSE401i')?.name).toBe('機械計測工学')
+    expect(getSubjectsByCode(2024).get('PHY502g')?.name).toBe('量子と情報')
+    expect(getSubjectsByCode(2024).get('GSE401i')?.name).toBe('機械計測工学')
+  })
+
+  it('2023年度の夜間主は「美術」「経済学」が選択候補にあり、以降の科目は番号が2つ若い', () => {
+    // 2026-09-14追加：夜間主の人文・社会科学科目にあった「美術」（HSS102s）・「経済学」（HSS104s）は
+    // 2024年度に廃止され、音楽・社会学・法学・地理学・社会思想史の番号が2つずつ若返った。
+    const evening2023 = getRequirementSet(2023, 'evening', null, 'evening')
+    const hss2023 = evening2023?.groups.find((g) => g.id === 'general')?.children?.find((g) => g.id === 'hss')
+
+    expect(hss2023?.subjects).toContain('HSS102s')
+    expect(hss2023?.subjects).toContain('HSS104s')
+    expect(getSubjectsByCode(2023).get('HSS102s')?.name).toBe('美術')
+    expect(getSubjectsByCode(2023).get('HSS103s')?.name).toBe('音楽')
+    expect(getSubjectsByCode(2023).get('HSS104s')?.name).toBe('経済学')
+    expect(getSubjectsByCode(2023).get('HSS107s')?.name).toBe('地理学')
+    expect(getSubjectsByCode(2023).get('HSS108s')?.name).toBe('社会思想史')
+
+    expect(getSubjectsByCode(2024).get('HSS102s')?.name).toBe('音楽')
+    expect(getSubjectsByCode(2024).get('HSS107s')).toBeUndefined()
+  })
+
   it('2022年度は旧カリキュラムのⅠ類単位配分を参照し、後設プログラムを表示しない', () => {
     // 2022年度は理数基礎20単位・専門78単位であり、デザイン思考・データサイエンスはまだ存在しない。
     const media2022 = getRequirementSet(2022, 'day', 'I', 'media')
@@ -93,6 +149,63 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(specialized?.children?.find((group) => group.id === 'math-basic')?.required).toBe(20)
     expect(specialized?.required).toBe(78)
     expect(getRequirementSet(2022, 'day', 'I', 'designds')).toBeUndefined()
+  })
+
+  it('2022年度のⅠ類はデザイン思考・データサイエンスの展開科目が混入しておらず、独自の選択科目を含む', () => {
+    // 2026-09-14追加：2022年度データは2024年度をほぼそのまま複製したもので、まだ存在しない
+    // デザイン思考・データサイエンス（サフィックスe）の展開科目が他4プログラムに混入していた。
+    // メディア情報学には2024年度には無い選択科目「形式言語理論」（COM406a）もある
+    // （docs/YOURAN_2022_COMPARISON.md参照）。
+    const media2022 = getRequirementSet(2022, 'day', 'I', 'media')
+    const major2022 = media2022?.groups.find((g) => g.id === 'specialized')?.children?.find((g) => g.id === 'major')
+    const majorSel2022 = major2022?.children?.find((g) => g.id === 'major-sel')
+
+    expect(majorSel2022?.subjects?.some((code) => code.endsWith('e'))).toBe(false)
+    expect(majorSel2022?.subjects).toContain('COM406a')
+    expect(getSubjectsByCode(2022).get('COM406a')?.name).toBe('形式言語理論')
+    expect(getSubjectsByCode(2022).get('COM001a')?.name).toBe('情報工学工房')
+  })
+
+  it('2022年度のⅡ類はデザイン思考・データサイエンスがeを占めていないためプログラム記号が1つ若い', () => {
+    // 2026-09-14追加：セキュリティ情報学は2024年度のf ではなく、2022年度時点はeを名乗る
+    // （docs/YOURAN_2022_COMPARISON.md参照）。GLTPラボワークは2024年度新設のため2022年度には無い。
+    const security2022 = getRequirementSet(2022, 'day', 'II', 'security')
+    const majorReq2022 = security2022?.groups.find((g) => g.id === 'specialized')?.children
+      ?.find((g) => g.id === 'major')?.children?.find((g) => g.id === 'major-req')
+
+    expect(majorReq2022?.subjects).toContain('COM501e')
+    expect(getSubjectsByCode(2022).get('COM501e')?.name).toBe('プログラミング言語実験')
+    expect(getSubjectsByCode(2022).get('LAB501e')).toBeUndefined()
+  })
+
+  it('2022年度のⅢ類も同様にプログラム記号が1つ若く、Modern Engineering and Scienceを含む', () => {
+    // 2026-09-14追加：機械システムは2024年度のkではなく、2022年度時点はjを名乗る。
+    // 2024年度には無い選択科目「Modern Engineering and Science」（GSE701j）が存在し、
+    // 2024年度データから誤って除かれているAdvanced Robotics and Mechatronics Engineering
+    // （MCEb13j）も2022年度には存在する（docs/YOURAN_2022_COMPARISON.md参照）。
+    const mecha2022 = getRequirementSet(2022, 'day', 'III', 'mecha')
+    const major2022 = mecha2022?.groups.find((g) => g.id === 'specialized')?.children?.find((g) => g.id === 'major')
+    const majorSel2022 = major2022?.children?.find((g) => g.id === 'major-sel')
+    const majorFree2022 = major2022?.children?.find((g) => g.id === 'major-free')
+
+    expect(majorSel2022?.subjects).toContain('GSE701j')
+    expect(majorFree2022?.subjects).toContain('MCEb13j')
+    expect(getSubjectsByCode(2022).get('GSE701j')?.name).toBe('Modern Engineering and Science')
+    expect(getSubjectsByCode(2022).get('LAB501j')).toBeUndefined()
+  })
+
+  it('2022年度の夜間主は美術・経済学・政治学が選択科目にあり、以降の科目は番号が若い', () => {
+    // 2026-09-14追加：夜間主の人文・社会科学科目にあった「美術」「経済学」「政治学」は
+    // 2024年度に廃止され、音楽・社会学・法学・地理学・社会思想史の番号が後ろへずれた
+    // （docs/YOURAN_2022_COMPARISON.md参照）。
+    const evening2022 = getRequirementSet(2022, 'evening', null, 'evening')
+    const hss2022 = evening2022?.groups.find((g) => g.id === 'general')?.children?.find((g) => g.id === 'hss')
+
+    expect(hss2022?.subjects).toContain('HSS102r')
+    expect(hss2022?.subjects).toContain('HSS206r')
+    expect(getSubjectsByCode(2022).get('HSS102r')?.name).toBe('美術')
+    expect(getSubjectsByCode(2022).get('HSS206r')?.name).toBe('政治学')
+    expect(getSubjectsByCode(2022).get('UEC401r')?.name).toBe('総合コミュニケーション科学')
   })
 
   it('2021年度はデータサイエンス区分なしの初年次導入8単位を参照する', () => {
@@ -105,6 +218,20 @@ describe('年度別の要件・科目マスタ選択', () => {
     expect(practical?.children?.find((group) => group.id === 'intro')?.required).toBe(8)
     expect(practical?.children?.find((group) => group.id === 'datasci')).toBeUndefined()
     expect(getSubjectsByCode(2021).get('UEC101z')?.credits).toBe(2)
+  })
+
+  it('2021年度の経営・社会情報学はソーシャルコンピューティングがまだ選択科目にある', () => {
+    // 2026-09-14追加：2022年度に廃止された選択科目「ソーシャルコンピューティング」（INS601b）が
+    // 2021年度にはまだあり、以降の科目番号（人間工学・言語認知工学等）が1つ後ろにずれる
+    // （docs/YOURAN_2022_COMPARISON.md参照）。
+    const mgmt2021 = getRequirementSet(2021, 'day', 'I', 'management')
+    const majorSel2021 = mgmt2021?.groups.find((g) => g.id === 'specialized')?.children
+      ?.find((g) => g.id === 'major')?.children?.find((g) => g.id === 'major-sel')
+
+    expect(majorSel2021?.subjects).toContain('INS601b')
+    expect(getSubjectsByCode(2021).get('INS601b')?.name).toBe('ソーシャルコンピューティング')
+    expect(getSubjectsByCode(2021).get('MSS502b')?.name).toBe('人間工学')
+    expect(getSubjectsByCode(2022).get('INS601b')?.name).toBe('言語認知工学')
   })
 
   it('2024年度は2025年度と別の要件・科目マスタを参照する（学修要覧2024との差分を反映済み）', () => {

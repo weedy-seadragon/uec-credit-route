@@ -58,8 +58,7 @@
               "subjects": [
                 "PHY103z",
                 "PHY202z",
-                "PHY203z",
-                "CHM203z"
+                "CHM202z"
               ],
               "kind": "elective",
               "countAs": "common",
@@ -81,7 +80,7 @@
               "required": 15,
               "subjects": [
                 "MTH205d",
-                "MTH303d",
+                "MTH301d",
                 "COM301d",
                 "COM302d",
                 "COM303d",
@@ -99,7 +98,7 @@
               "required": 8,
               "subjects": [
                 "ELE301d",
-                "MTH304d",
+                "MTH302d",
                 "MTH401d",
                 "MSS401d",
                 "MTH402d",
@@ -152,16 +151,14 @@
                 "MTH503d",
                 "MTH504d",
                 "MTH505d",
-                "INS501d",
-                "INS502d",
                 "COM603d",
-                "MTH602d",
+                "MTH601d",
                 "COM604d",
+                "MTH602d",
                 "MTH603d",
-                "MTH604d",
                 "COM605d",
                 "COM606d",
-                "MTH605d",
+                "MTH604d",
                 "COM001d",
                 "FGN101d",
                 "FGN201d",
@@ -170,6 +167,7 @@
                 "FGN301d",
                 "FGN401d",
                 "MSS402a",
+                "COM406a",
                 "COM502a",
                 "MTH501a",
                 "ELE501a",
@@ -209,6 +207,7 @@
                 "INS601b",
                 "MSS604b",
                 "MSS605b",
+                "MSS606b",
                 "COM001b",
                 "FGN101b",
                 "FGN201b",
@@ -227,46 +226,21 @@
                 "MTH503c",
                 "MTH504c",
                 "MTH505c",
-                "INS501c",
-                "INS502c",
                 "COM603c",
-                "MTH602c",
+                "MTH601c",
                 "COM604c",
+                "MTH602c",
                 "MTH603c",
-                "MTH604c",
                 "COM605c",
                 "COM606c",
-                "MTH605c",
+                "MTH604c",
                 "COM001c",
                 "FGN101c",
                 "FGN201c",
                 "FGN102c",
                 "FGN202c",
                 "FGN301c",
-                "FGN401c",
-                "INS501e",
-                "INS601e",
-                "MSS402e",
-                "COM503e",
-                "MTH501e",
-                "ELE501e",
-                "MSS501e",
-                "INS502e",
-                "INS503e",
-                "INS504e",
-                "MSS601e",
-                "INS602e",
-                "COM602e",
-                "COM603e",
-                "INS603e",
-                "INS505e",
-                "COM001e",
-                "FGN101e",
-                "FGN201e",
-                "FGN102e",
-                "FGN202e",
-                "FGN301e",
-                "FGN401e"
+                "FGN401c"
               ],
               "kind": "elective",
               "alsoAccepts": "sameClusterOtherPrograms",
@@ -279,8 +253,6 @@
               "required": 0,
               "subjects": [
                 "COM508d",
-                "COM002d",
-                "COM003d",
                 "COMa01d",
                 "COMa02d",
                 "MTHa01d",
@@ -291,8 +263,7 @@
                 "MTHb01d",
                 "MTHb02d",
                 "MTHb03d",
-                "MTHb04d",
-                "LAB501d"
+                "MTHb04d"
               ],
               "kind": "free",
               "countsTowardGraduation": false,
@@ -343,12 +314,6 @@
             {
               "type": "allPassed",
               "groupId": "intro"
-            },
-            {
-              "type": "subjects",
-              "codes": [
-                "UEC301z"
-              ]
             },
             {
               "type": "allPassed",
@@ -408,12 +373,6 @@
           "groupId": "intro"
         },
         {
-          "type": "subjects",
-          "codes": [
-            "UEC301z"
-          ]
-        },
-        {
           "type": "allPassed",
           "groupId": "math-basic-req"
         },
@@ -446,7 +405,7 @@
         },
         {
           "type": "commonCredits",
-          "min": 7
+          "min": 6
         },
         {
           "type": "totalCredits",
