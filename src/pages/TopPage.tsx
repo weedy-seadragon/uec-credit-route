@@ -70,7 +70,7 @@ export default function TopPage() {
   return (
     <main>
       <h1>
-        電通大 単位取得ルートナビ(Ver.1.1.1) <small>最終更新日: {__BUILD_DATE__}</small>
+        電通大 単位取得ルートナビ(Ver.{__SITE_VERSION__}) <small>最終更新日: {__BUILD_DATE__}</small>
       </h1>
       <p>
         電気通信大学 情報理工学域の学生向けに、「学年・類・プログラム・取得済み科目」を入力するだけで、
@@ -123,6 +123,24 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
+        {/* Ver.1.1.2では、学期別の修得推奨科目に修得見込を反映した。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(Ver.1.1.1→Ver.1.1.2)</span>
+            <span className="release-note-date">アップデート日 2026/9/17</span>
+          </p>
+          <h3 className="release-note-category">不具合修正</h3>
+          <ul className="release-note-items">
+            <li>学期別の修得推奨科目「不足区分ごとの候補」で、修得見込にした単位が不足単位数に反映されない不具合を修正しました</li>
+            <li>同じ一覧で、修得見込にした科目が候補から消えてしまう不具合を修正しました（「※修得見込」と添えて表示するようにしました）</li>
+          </ul>
+          <h3 className="release-note-category">表示の改善</h3>
+          <ul className="release-note-items">
+            <li>「不足区分ごとの候補」でも、他の一覧と同じく留学生のみ履修できる科目を「留学生のみ履修可」としてまとめるようにしました</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（4件）">
         {/* Ver.1.1.1では、履修状態を未履修へ戻せない不具合と、2021・2022年度の卒業要件データの
             誤りを修正した。 */}
         <div className="release-note-entry">
@@ -140,8 +158,6 @@ export default function TopPage() {
             <li>2021・2022年度のⅡ類・Ⅲ類・夜間主課程について、卒業要件データを学修要覧原本と1件ずつ照合し、科目番号や必要単位数の誤りを修正しました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（3件）">
         {/* Ver.1.1.0では、より前の入学年度の卒業要件を確認できるようにした。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
