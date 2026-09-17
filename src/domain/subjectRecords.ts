@@ -65,7 +65,15 @@ export function setSubjectStatusWithoutDuplicates(
   const target = subjectsByCode.get(code)
   const next = new Map(records)
   const effectiveCode = preferredSubjectCode(code, subjectsByCode, isPreferred, areEquivalent)
-  // 同名科目は、これから設定する1件だけを残すために先に古い記録を消す。
+  // 自分自身（と記録先のeffectiveCode）は、areEquivalentの判定結果によらず必ず古い記録を消す。
+  // areEquivalentは「同じ類の他プログラム科目どうしか」を見る述語であり、言語文化科目や
+  // 理数基礎科目のような1つの科目番号しか持たない科目ではareEquivalent(code, code)が
+  // falseになる（isOwnProgramSubject・isOtherProgramのどちらにも該当しないため）。
+  // このためこれらの科目を「未履修」へ戻そうとしても、下の重複削除ループが自分自身を
+  // 対象外と判断してしまい、古い状態が消えずに残ってしまう不具合があった（2026-09-17発見）。
+  next.delete(code)
+  next.delete(effectiveCode)
+  // 同名の他プログラム科目がある場合は、それらの古い記録もあわせて消す。
   if (target) {
     for (const [candidateCode, candidate] of subjectsByCode) {
       if (candidate.name === target.name && areEquivalent(code, candidateCode)) next.delete(candidateCode)

@@ -55,4 +55,39 @@ describe('同名科目の履修記録の正規化', () => {
 
     expect(result).toEqual(new Map([['COM501d', 'passed'], ['ELE501g', 'passed']]))
   })
+
+  it('プログラム固有ではない科目（言語文化科目など）を未履修に戻すと記録が消える', () => {
+    // ENG101zはisOwnProgramSubject（末尾d）にもisSameClassProgramSubject（末尾a/d）にも
+    // 該当しないため、areEquivalent('ENG101z', 'ENG101z')はfalseになる。この場合でも
+    // 自分自身の古い記録は必ず消えなければならない（2026-09-17、修得見込→未履修に戻せない
+    // 不具合として発覚）。
+    const generalSubjects = new Map([['ENG101z', { name: 'Academic Written EnglishⅠ' }]])
+    const result = setSubjectStatusWithoutDuplicates(
+      new Map<string, SubjectStatus>([['ENG101z', 'taking']]),
+      'ENG101z',
+      undefined,
+      generalSubjects,
+      isOwnProgramSubject,
+      isSameClassProgramSubject,
+    )
+
+    expect(result).toEqual(new Map())
+  })
+
+  it('プログラム固有ではない科目は、状態を変更しても他の記録に影響しない', () => {
+    const generalSubjects = new Map([
+      ['ENG101z', { name: 'Academic Written EnglishⅠ' }],
+      ['COM503d', { name: '別の科目' }],
+    ])
+    const result = setSubjectStatusWithoutDuplicates(
+      new Map<string, SubjectStatus>([['ENG101z', 'taking'], ['COM503d', 'passed']]),
+      'ENG101z',
+      'passed',
+      generalSubjects,
+      isOwnProgramSubject,
+      isSameClassProgramSubject,
+    )
+
+    expect(result).toEqual(new Map([['ENG101z', 'passed'], ['COM503d', 'passed']]))
+  })
 })
