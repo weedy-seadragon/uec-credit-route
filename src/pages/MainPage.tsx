@@ -243,7 +243,8 @@ function StickyGroupClose({
   level = 'parent',
 }: {
   detailsRef: RefObject<HTMLDetailsElement | null>
-  title: string
+  /** 見出しに単位数の見込み表示（黄色部分）を含む場合があるため、文字列だけでなくReactNodeも許す。 */
+  title: ReactNode
   /** 親区分と子入れ子を上下に並べるための表示位置。 */
   level?: 'parent' | 'nested'
 }) {
@@ -314,6 +315,23 @@ function ReviewDetails({ title, children }: { title: string; children: ReactNode
 }
 
 /**
+ * 「不足区分ごとの候補」の見出し用に、「あとN単位」を組み立てる。
+ * 修得見込を反映すると不足が減る場合だけ、その先の単位数を黄色で「→n単位」と添える
+ * （修得見込を選んでも見出しの数字が変わらないという指摘を受けて追加、2026-09-18）。
+ */
+function shortfallHeading(label: ReactNode, shortfall: number, projectedShortfall: number): ReactNode {
+  return (
+    <>
+      {label}（あと{shortfall}単位
+      {projectedShortfall < shortfall && (
+        <>→<span className="planned-credit">{projectedShortfall}単位</span></>
+      )}
+      ）
+    </>
+  )
+}
+
+/**
  * 学期別の候補区分を開いたまま読み進めたとき、上端から閉じられる入れ子。
  * mapで複数表示する区分ごとにrefを独立させるため、専用の部品にしている。
  */
@@ -322,7 +340,8 @@ function TermRecommendationDetails({
   countLabel,
   children,
 }: {
-  title: string
+  /** 不足単位数のうち、修得見込を反映した分を黄色で添えるためReactNodeを許す。 */
+  title: ReactNode
   countLabel: string
   children: ReactNode
 }) {
@@ -663,15 +682,23 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       && !hasDedicatedRetakeClass(r.code, classAssignments),
   )
   // 選択区分は「今学期に候補があるか」も含めてすべて出す。候補の中身は画面で折りたたんで確認する。
+  // 修得見込（taking）の科目も、まだ確定していない以上は候補として出したままにし、
+  // 一覧側で「※修得見込」と分かるようにする（不合格だけは再履修候補として別枠にあるためここでは除く）。
   const termElectiveRecommendations = boundaryGroups
     .filter((group) => group.kind === 'elective' && group.shortfall > 0)
     .map((group) => ({
       group,
-      candidates: recommendationCandidates.filter((r) => committed.get(r.code) == null && group.subjects.includes(r.code)),
+      candidates: recommendationCandidates.filter((r) => committed.get(r.code) !== 'failed' && group.subjects.includes(r.code)),
     }))
   // 共通単位は通常の選択区分と別計算なので、共通単位として直接算入される科目だけを専用の候補にする。
+  // commonOnlyRemainingは選択科目一覧（プルダウン表示）用に修得見込を除いているため、ここでは
+  // 修得見込も含めた別の一覧を使う。
+  const commonOnlyRemainingIncludingPlanned = [
+    ...commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed')),
+    ...(requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed'),
+  ]
   const termCommonRecommendations = evaluation.commonCredits.shortfall > 0
-    ? recommendationCandidates.filter((r) => committed.get(r.code) == null && commonOnlyRemaining.includes(r.code))
+    ? recommendationCandidates.filter((r) => committed.get(r.code) !== 'failed' && commonOnlyRemainingIncludingPlanned.includes(r.code))
     : []
   // 選択区分と共通単位を取り切ったときは、候補が空の入れ子そのものを表示しない。
   const hasOutstandingTermRecommendationGroups = termElectiveRecommendations.length > 0
@@ -1219,6 +1246,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     const standardYear = subjectsByCode.get(code)?.standardYear
     if (standardYear == null) return null
     return <span style={{ marginLeft: '0.4em', fontSize: '0.9em' }}>※{standardYear}年次開講科目</span>
+  }
+  // 既に修得見込にした科目も候補一覧からは外さず、選び直す必要が無いことが分かるよう添える。
+  function recommendationPlannedNote(code: string) {
+    if (committed.get(code) !== 'taking') return null
+    return <span className="planned-credit"> ※修得見込</span>
+  }
+  // 「不足区分ごとの候補」でも、他の一覧と同じく留学生のみ履修できる科目は入れ子にまとめる。
+  function splitInternationalCandidates<T extends { code: string }>(items: readonly T[]): { regular: T[]; international: T[] } {
+    const regular: T[] = []
+    const international: T[] = []
+    for (const item of items) (isInternational(item.code) ? international : regular).push(item)
+    return { regular, international }
   }
   // 同じ類に属する他プログラムの専門科目かどうか（他類の科目は原則自由科目）は上で定義済み。
   // 外国人留学生しか履修できない科目かどうか
@@ -1862,47 +1901,59 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               <>
                 <h3>不足区分ごとの候補</h3>
                 <ul className="term-recommendation-groups">
-                  {termElectiveRecommendations.map(({ group, candidates }) => (
+                  {termElectiveRecommendations.map(({ group, candidates }) => {
+                    const { regular, international } = splitInternationalCandidates(candidates)
+                    return (
                     <li key={group.id} style={{ listStyleType: 'none' }}>
                       <TermRecommendationDetails
-                        title={`${group.label ?? group.name}（あと${group.shortfall}単位）`}
+                        title={shortfallHeading(group.label ?? group.name, group.shortfall, group.projectedShortfall)}
                         countLabel={`選択した学期${candidates.length}科目`}
                       >
                         {candidates.length > 0 ? (
                           <ul>
-                            {candidates.map(({ code }) => (
+                            {regular.map(({ code }) => (
                               <li key={code}>
-                                {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
+                                {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}{recommendationPlannedNote(code)}
                               </li>
                             ))}
+                            <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(r) => r.code} renderRow={(r) => (
+                              <>{recommendationNameLink(r.code)}（{creditsLabel(r.code)}） {recommendationDayPeriodTag(r.code)}{recommendationPastCourseNote(r.code)}{recommendationPlannedNote(r.code)}</>
+                            )} />
                           </ul>
                         ) : (
                           <p className="term-recommendation-note">選択した学期に表示できる候補はありません。以降の学期も含めて履修計画を立ててください。</p>
                         )}
                       </TermRecommendationDetails>
                     </li>
-                  ))}
-                  {evaluation.commonCredits.shortfall > 0 && (
+                    )
+                  })}
+                  {evaluation.commonCredits.shortfall > 0 && (() => {
+                    const { regular, international } = splitInternationalCandidates(termCommonRecommendations)
+                    return (
                     <li style={{ listStyleType: 'none' }}>
                       <TermRecommendationDetails
-                        title={`共通単位（あと${evaluation.commonCredits.shortfall}単位）`}
+                        title={shortfallHeading('共通単位', evaluation.commonCredits.shortfall, evaluation.commonCredits.projected.shortfall)}
                         countLabel={`選択した学期${termCommonRecommendations.length}科目`}
                       >
                         <p className="term-recommendation-note">区分の超過分やその他単位認定も共通単位に算入されるため、取得状況も確認してください。</p>
                         {termCommonRecommendations.length > 0 ? (
                           <ul>
-                            {termCommonRecommendations.map(({ code }) => (
+                            {regular.map(({ code }) => (
                               <li key={code}>
-                                {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}
+                                {recommendationNameLink(code)}（{creditsLabel(code)}） {recommendationDayPeriodTag(code)}{recommendationPastCourseNote(code)}{recommendationPlannedNote(code)}
                               </li>
                             ))}
+                            <CollapsedSubjectGroup title="留学生のみ履修可" items={international} codeOf={(r) => r.code} renderRow={(r) => (
+                              <>{recommendationNameLink(r.code)}（{creditsLabel(r.code)}） {recommendationDayPeriodTag(r.code)}{recommendationPastCourseNote(r.code)}{recommendationPlannedNote(r.code)}</>
+                            )} />
                           </ul>
                         ) : (
                           <p className="term-recommendation-note">選択した学期に表示できる共通単位の候補はありません。</p>
                         )}
                       </TermRecommendationDetails>
                     </li>
-                  )}
+                    )
+                  })()}
                 </ul>
               </>
             )}
