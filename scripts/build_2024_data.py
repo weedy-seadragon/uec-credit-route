@@ -330,7 +330,8 @@ def build_subject_master() -> int:
             make_subject("INS601e", "デザイン思考概論", 2, 6, ["major-req"]),
             make_subject("INS701e", "システム思考概論", 2, 7, ["major-req"]),
             make_subject("COM406e", "形式言語理論", 2, 4, ["major-sel"], note="外国人留学生のみ履修可"),
-            make_subject("INS501e", "社会シミュレーション", 2, 5, ["major-sel"]),
+            # シラバス上は「前学期集中」（8月上旬）。noteが無いと「オンデマンド」と誤表示される（2026-09-24）。
+            make_subject("INS501e", "社会シミュレーション", 2, 5, ["major-sel"], note="夏期集中講義"),
             make_subject("INS502e", "コミュニケーション論", 2, 5, ["major-sel"], note="外国人留学生のみ履修可"),
             make_subject("INS503e", "多変量解析", 2, 5, ["major-sel"], note="外国人留学生のみ履修可"),
             make_subject("COM504e", "メディア分析法", 2, 5, ["major-sel"], note="外国人留学生のみ履修可"),
