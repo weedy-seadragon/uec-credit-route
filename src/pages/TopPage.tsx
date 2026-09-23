@@ -123,6 +123,20 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
+        {/* Ver.1.1.4では、同じ学年学期の科目を曜日時限順に並べるようにした。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(Ver.1.1.3→Ver.1.1.4)</span>
+            <span className="release-note-date">アップデート日 2026/9/24</span>
+          </p>
+          <h3 className="release-note-category">表示の改善</h3>
+          <ul className="release-note-items">
+            <li>各区分の科目一覧で、同じ学年学期の科目を曜日時限の早い順（月・1限→金・5限）に並べるようにしました。集中講義・オンデマンドなど時限の決まっていない科目は、その学期の最後に表示します</li>
+            <li>「修得見込の単位」「不合格になった科目」の一覧も、他の一覧と同じく学年学期順・曜日時限順に並べるようにしました</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（6件）">
         {/* Ver.1.1.3では、同名科目の二重表示と、集中講義の誤ったオンデマンド表示を修正した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -135,8 +149,6 @@ export default function TopPage() {
             <li>集中講義である「社会シミュレーション」が「オンデマンド」と表示されていたのを、「夏期集中」と表示するように修正しました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（5件）">
         {/* Ver.1.1.2では、学期別の修得推奨科目に修得見込を反映した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">

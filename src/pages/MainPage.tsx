@@ -1247,6 +1247,19 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </span>
     )
   }
+  // 一覧の並べ替え用に、曜日時限を「月・1限=最小、金・5限=大」の数値にする。
+  // dayPeriodTagと同じ方法でクラス別の開講を絞り、複数コマある科目は一番早いコマで比べる。
+  // 時限が分からない科目は Infinity を返し、同じ学年学期の中で最後に並ぶようにする。
+  function slotRankOf(code: string): number {
+    const offerings = subjectsByCode.get(code)?.offerings
+    if (!offerings || offerings.length === 0) return Number.POSITIVE_INFINITY
+    const slots =
+      offerings.length === 1
+        ? offerings[0].slots
+        : resolveSlotsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, committed.get(code) === 'failed')
+    if (!slots || slots.length === 0) return Number.POSITIVE_INFINITY
+    return Math.min(...slots.map((s) => (DAY_RANK[s.day] ?? DAY_RANK_UNKNOWN) * 100 + s.period))
+  }
   // 修得推奨では、選択した学期より前の標準開講科目は曜日時限に縛られないため、時限を添えない。
   // 同じ年の前学期から後学期へ進んだ場合も、既に終わった前学期として扱う。
   function recommendationDayPeriodTag(code: string) {
@@ -1458,7 +1471,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           // 履修記録を付けた順ではなく、その区分の科目定義順に並べる。
           const sortedItems = group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
             ? sortByGroupSubjectOrder(items, ([code]) => code, group.subjects)
-            : sortByYearTermWithJapaneseCultureOrder(items, ([code]) => code, standardYearOf, termTypeOf, nameOf)
+            : sortByYearTermWithJapaneseCultureOrder(items, ([code]) => code, standardYearOf, termTypeOf, nameOf, slotRankOf)
           const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, ([code]) => code)
           const row = (code: string) => (
             <SubjectRow
@@ -1510,7 +1523,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           <div key={group?.id ?? label}>
             <h3>{label}</h3>
             <ul>
-              {items.map(([code]) => (
+              {/* 他の一覧と同じく、学年学期順（同じなら曜日時限順）に並べる。第二外国語などは要件データの順。 */}
+              {(group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
+                ? sortByGroupSubjectOrder(items, ([code]) => code, group.subjects)
+                : sortByYearTermWithJapaneseCultureOrder(items, ([code]) => code, standardYearOf, termTypeOf, nameOf, slotRankOf)
+              ).map(([code]) => (
                 <li key={code}>
                   <SubjectRow
                     name={nameLink(code)}
@@ -1534,7 +1551,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         </p>
         {/* 不合格科目を要件区分ごとに置くことで、「理数基礎（必修）」等の不足と結び付けて確認できる。 */}
         {failedByCategory.map(({ label, group, items }) => {
-          const { regular, otherProgram, international } = splitSpecialSubjects(items, ([code]) => code)
+          // 他の一覧と同じく、学年学期順（同じなら曜日時限順）に並べる。第二外国語などは要件データの順。
+          const sortedItems = group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
+            ? sortByGroupSubjectOrder(items, ([code]) => code, group.subjects)
+            : sortByYearTermWithJapaneseCultureOrder(items, ([code]) => code, standardYearOf, termTypeOf, nameOf, slotRankOf)
+          const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, ([code]) => code)
           // 不合格科目の曜日時限表示。複数offeringなら再履修向けの枠だけを調べ、誤った通常枠は出さない。
           const row = (code: string) => {
             const offerings = subjectsByCode.get(code)?.offerings
@@ -1600,7 +1621,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           // 標準年次・学期順（早い順）に並べる。
           const sortedItems = group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
             ? sortByGroupSubjectOrder(items, (item) => item.code, group.subjects)
-            : sortByYearTermWithJapaneseCultureOrder(items, (item) => item.code, standardYearOf, termTypeOf, nameOf)
+            : sortByYearTermWithJapaneseCultureOrder(items, (item) => item.code, standardYearOf, termTypeOf, nameOf, slotRankOf)
           const { regular, otherProgram, international } = splitSpecialSubjects(sortedItems, (r) => r.code)
           const row = (code: string) => (
             <SubjectRow
@@ -1781,6 +1802,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 isUnavailableIn2026={isUnavailableIn2026}
                 isVisibleForTerm={isVisibleForTermFilter}
                 isRecordedUnderOtherCode={isRecordedUnderOtherCode}
+                slotRankOf={slotRankOf}
                 showTermCollapses={!isEveningCourse}
                 showOtherProgramSection={!isEveningCourse}
                 otherClusterMajorCredits={otherClusterMajorCreditsDraft}
@@ -2016,6 +2038,10 @@ const QUARTER_LABELS: Record<string, string> = {
   '冬ﾀｰﾑ': '冬ターム',
 }
 
+// 曜日時限で並べ替えるときの曜日の順番（月曜が最も早い）。想定外の表記は平日の後ろに回す。
+const DAY_RANK: Record<string, number> = { 月: 0, 火: 1, 水: 2, 木: 3, 金: 4, 土: 5, 日: 6 }
+const DAY_RANK_UNKNOWN = 7
+
 // 第二外国語（第一・第二がセットの言語ペア）と生涯スポーツは、元の並び順（言語ごと・科目のまとまり）
 // を崩したくないので、学年学期順への並べ替えの対象から外す
 const GROUPS_KEEP_ORIGINAL_ORDER = new Set(['lang-basic-2', 'health-sel'])
@@ -2025,16 +2051,33 @@ const GROUPS_KEEP_ORIGINAL_ORDER = new Set(['lang-basic-2', 'health-sel'])
  * codeOfで科目コードの取り出し方を指定できるので、コードそのものの配列でも[コード, 状態]のような
  * タプルの配列でも、どちらの並び替えにも使える
  */
-function sortByYearTerm<T>(items: readonly T[], codeOf: (item: T) => string, standardYearOf: (code: string) => number | null, termTypeOf: (code: string) => string | null): T[] {
+function sortByYearTerm<T>(
+  items: readonly T[],
+  codeOf: (item: T) => string,
+  standardYearOf: (code: string) => number | null,
+  termTypeOf: (code: string) => string | null,
+  slotRankOf?: (code: string) => number,
+): T[] {
   const termRank = (t: string | null) => (t === '前学期' ? 0 : t === '後学期' ? 1 : 2)
+  // 同じ区分・同じ学年学期の科目は、曜日時限が早い順（月・1限→金・5限）に並べる（2026-09-24）。
+  // 時限が分からない科目（集中講義・オンデマンド等）は、その学年学期の最後に回す。
+  const bySlot = (a: T, b: T) => {
+    if (!slotRankOf) return 0
+    const rankA = slotRankOf(codeOf(a))
+    const rankB = slotRankOf(codeOf(b))
+    if (rankA === rankB) return 0
+    return rankA < rankB ? -1 : 1
+  }
   return [...items].sort((a, b) => {
     const yearA = standardYearOf(codeOf(a))
     const yearB = standardYearOf(codeOf(b))
-    if (yearA === null && yearB === null) return 0
+    if (yearA === null && yearB === null) return bySlot(a, b)
     if (yearA === null) return 1 // 年次不明は最後に回す
     if (yearB === null) return -1
     if (yearA !== yearB) return yearA - yearB
-    return termRank(termTypeOf(codeOf(a))) - termRank(termTypeOf(codeOf(b)))
+    const termDiff = termRank(termTypeOf(codeOf(a))) - termRank(termTypeOf(codeOf(b)))
+    if (termDiff !== 0) return termDiff
+    return bySlot(a, b)
   })
 }
 
@@ -2042,10 +2085,17 @@ function sortByYearTerm<T>(items: readonly T[], codeOf: (item: T) => string, sta
  * 基本は標準年次・学期順のままにし、日本文化Ａ〜Ｅだけは科目名末尾の英字順に並べる。
  * 日本文化は開講学期が入り混じるため、Ａ・Ｂ・Ｃ・Ｄ・Ｅの系列として続けて読める方が分かりやすい。
  */
-function sortByYearTermWithJapaneseCultureOrder<T>(items: readonly T[], codeOf: (item: T) => string, standardYearOf: (code: string) => number | null, termTypeOf: (code: string) => string | null, nameOf: (code: string) => string): T[] {
-  // 先に通常の学年学期順へ並べ、日本文化の位置だけをＡ〜Ｅに入れ替える。
+function sortByYearTermWithJapaneseCultureOrder<T>(
+  items: readonly T[],
+  codeOf: (item: T) => string,
+  standardYearOf: (code: string) => number | null,
+  termTypeOf: (code: string) => string | null,
+  nameOf: (code: string) => string,
+  slotRankOf?: (code: string) => number,
+): T[] {
+  // 先に通常の学年学期（同じなら曜日時限）順へ並べ、日本文化の位置だけをＡ〜Ｅに入れ替える。
   // こうすると、同じ区分にある他の科目の位置は変えずに済む。
-  const yearTermSorted = sortByYearTerm(items, codeOf, standardYearOf, termTypeOf)
+  const yearTermSorted = sortByYearTerm(items, codeOf, standardYearOf, termTypeOf, slotRankOf)
   const japaneseCultureSorted = yearTermSorted
     .filter((item) => /^日本文化[Ａ-Ｅ]$/.test(nameOf(codeOf(item))))
     .sort((a, b) => nameOf(codeOf(a)).localeCompare(nameOf(codeOf(b)), 'ja'))
@@ -2091,6 +2141,7 @@ function GroupProgress({
   isUnavailableIn2026,
   isVisibleForTerm,
   isRecordedUnderOtherCode,
+  slotRankOf,
   showTermCollapses,
   showOtherProgramSection,
   otherClusterMajorCredits,
@@ -2119,6 +2170,8 @@ function GroupProgress({
   isVisibleForTerm: (code: string) => boolean
   /** 同名の同じ類の科目が別の科目番号で既に記録されているか（その番号で記録済みなら同じ授業として一覧から外す） */
   isRecordedUnderOtherCode: (code: string) => boolean
+  /** 同じ学年学期の科目を曜日時限順（月・1限→金・5限）に並べるための数値 */
+  slotRankOf: (code: string) => number
   /** 前学期・後学期などの子入れ子を使うかどうか。夜間主では科目を直接並べる。 */
   showTermCollapses: boolean
   /** 昼間コースだけにある、同じ類の他プログラム専門科目の入れ子を表示するかどうか。 */
@@ -2154,7 +2207,7 @@ function GroupProgress({
   // 元の順番を保つので、ここで並べ替えておけば下流にもそのまま反映される）
   const remaining = GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
     ? dedupedRemaining
-    : sortByYearTermWithJapaneseCultureOrder(dedupedRemaining, (code) => code, standardYearOf, termTypeOf, nameOf)
+    : sortByYearTermWithJapaneseCultureOrder(dedupedRemaining, (code) => code, standardYearOf, termTypeOf, nameOf, slotRankOf)
   // 他プログラム専門科目・留学生のみ履修できる科目は、下の折りたたみにまとめる（他の一覧と同じ扱い）。
   // 両方に該当する科目は留学生のみの方に入れる
   const international = remaining.filter((code) => isInternational(code))
