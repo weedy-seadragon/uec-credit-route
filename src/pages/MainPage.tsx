@@ -882,11 +882,15 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     try {
       const json: unknown = JSON.parse(await file.text())
       const imported = parseOwnFormat(json)
-      const { merged, added, updated } = mergeRecords(committed, imported.records)
+      // 今の入学年度の科目マスタに無い科目番号（打ち間違い・存在しない番号）は、集計に混ざらないよう
+      // 読み込まず、未登録のままにする。形式がおかしい記録（parseOwnFormat側で除外済み）と合わせて数える。
+      const knownRecords = imported.records.filter((record) => subjectsByCode.has(record.code))
+      const ignoredCount = imported.ignoredCount + (imported.records.length - knownRecords.length)
+      const { merged, added, updated } = mergeRecords(committed, knownRecords)
       const normalizedMerged = normalizeDuplicateSubjectRecords(merged, subjectsByCode, isOwnProgramSubject, isEquivalentProgramSubject)
       // ファイル側の再履修予定を優先しつつ、今回の読み込みで不合格→修得予定になった科目も再履修予定にする。
       const nextRetakingPlanCodes = new Set(retakingPlanCodes)
-      for (const record of imported.records) {
+      for (const record of knownRecords) {
         const effectiveCode = preferredSubjectCode(record.code, subjectsByCode, isOwnProgramSubject, isEquivalentProgramSubject)
         if (record.status !== 'taking') nextRetakingPlanCodes.delete(effectiveCode)
         else if (imported.retakingPlanCodes?.includes(record.code) || committed.get(effectiveCode) === 'failed') nextRetakingPlanCodes.add(effectiveCode)
@@ -925,7 +929,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         setOtherClusterMajorSubjectCountDraft(imported.otherClusterMajorSubjectCount)
         saveOtherClusterMajorSubjectCount(imported.otherClusterMajorSubjectCount)
       }
-      setDataMessage(`${added}件追加、${updated}件更新しました。`)
+      // 読み飛ばした項目がある場合だけ、その件数を添えて知らせる。
+      setDataMessage(
+        `${added}件追加、${updated}件更新しました。`
+          + (ignoredCount > 0 ? `科目番号や数値が正しくない${ignoredCount}件は読み込まず、未登録のままにしました。` : ''),
+      )
     } catch (err) {
       setDataMessage(`読み込みに失敗しました: ${err instanceof Error ? err.message : String(err)}`)
     }

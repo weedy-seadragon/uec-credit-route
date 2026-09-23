@@ -91,6 +91,65 @@ describe('parseOwnFormat', () => {
   })
 })
 
+// 手で編集されたり壊れたりしたファイルでも、おかしな値だけを未登録扱いにして集計を壊さないことを確認する
+describe('parseOwnFormat の値の検証', () => {
+  it('状態や科目番号がおかしい記録は読み込まず、正しい記録だけを残す', () => {
+    // 状態の打ち間違い・科目番号が数値や空文字・記録自体がnull、はどれも「書かれていない」扱い。
+    const json = {
+      schemaVersion: 5,
+      exportedAt: '2026-09-24',
+      records: [
+        { code: 'COM401a', status: 'passed' },
+        { code: 'COM402a', status: 'done' },
+        { code: 123, status: 'passed' },
+        { code: '', status: 'taking' },
+        null,
+        { code: 'COM405a', status: 'taking' },
+      ],
+    }
+    const result = parseOwnFormat(json)
+    expect(result.records).toEqual([
+      { code: 'COM401a', status: 'passed' },
+      { code: 'COM405a', status: 'taking' },
+    ])
+    expect(result.ignoredCount).toBe(4)
+  })
+
+  it('範囲外・整数でない単位数と科目数は、ファイルに書かれていないのと同じ扱い（undefined）にする', () => {
+    // 画面のプルダウンで選べない値（負の数・小数・文字列・上限超え）は、今の値を変えないようにする。
+    const json = {
+      schemaVersion: 5,
+      exportedAt: '2026-09-24',
+      records: [],
+      otherCommonCredits: -2,
+      otherCommonSubjectCount: 1.5,
+      otherClusterMajorCredits: '4',
+      otherClusterMajorSubjectCount: 5,
+    }
+    const result = parseOwnFormat(json)
+    expect(result.otherCommonCredits).toBeUndefined()
+    expect(result.otherCommonSubjectCount).toBeUndefined()
+    expect(result.otherClusterMajorCredits).toBeUndefined()
+    expect(result.otherClusterMajorSubjectCount).toBeUndefined()
+    expect(result.ignoredCount).toBe(4)
+  })
+
+  it('正しい値だけのファイルでは、読み飛ばした件数は0になる', () => {
+    // 範囲の上限ちょうど（単位数8・科目数4）も正しい値として読み込む。
+    const json = {
+      schemaVersion: 5,
+      exportedAt: '2026-09-24',
+      records: [{ code: 'COM401a', status: 'failed' }],
+      otherCommonCredits: 8,
+      otherClusterMajorSubjectCount: 4,
+    }
+    const result = parseOwnFormat(json)
+    expect(result.otherCommonCredits).toBe(8)
+    expect(result.otherClusterMajorSubjectCount).toBe(4)
+    expect(result.ignoredCount).toBe(0)
+  })
+})
+
 // 既存の記録とファイルから読み込んだ記録を合体させるルール
 // （上書きはしない・同じ科目はファイル側で更新・新規は追加）を確認する
 describe('mergeRecords', () => {

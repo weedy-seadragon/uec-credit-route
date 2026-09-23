@@ -59,6 +59,31 @@ export interface ImportResult {
   otherClusterMajorCredits?: number
   /** ファイルに記載が無かった場合は undefined */
   otherClusterMajorSubjectCount?: number
+  /**
+   * 値がおかしかったため読み込まなかった項目の件数（科目番号・状態が不正な記録、範囲外の単位数など）。
+   * これらは「ファイルに書かれていなかった」のと同じ扱い（未登録のまま）にする。
+   */
+  ignoredCount: number
+}
+
+/** 読み込める履修状態。これ以外の値は未登録（未履修）と同じ扱いにする */
+const VALID_STATUSES: readonly SubjectStatus[] = ['passed', 'taking', 'failed']
+
+/**
+ * 値が min〜max の整数ならその値、そうでなければ undefined を返す。
+ * 画面のプルダウンで選べる範囲外の数値（負の数・小数・文字列など）で集計が壊れないようにする。
+ */
+function integerInRange(value: unknown, min: number, max: number): number | undefined {
+  return typeof value === 'number' && Number.isInteger(value) && value >= min && value <= max ? value : undefined
+}
+
+/** 記録1件が「文字列の科目番号」と「正しい履修状態」を持っているか */
+function isValidRecord(value: unknown): value is ExportedRecord {
+  if (typeof value !== 'object' || value === null) return false
+  const record = value as { code?: unknown; status?: unknown }
+  return typeof record.code === 'string'
+    && record.code.trim() !== ''
+    && VALID_STATUSES.includes(record.status as SubjectStatus)
 }
 
 /** 今書き出すファイルにセットするバージョン番号 */
@@ -91,20 +116,43 @@ export function parseOwnFormat(json: unknown): ImportResult {
   if (!Array.isArray(data.records)) {
     throw new Error('records が見つかりません')
   }
+  // 値がおかしい項目は1件ずつ数えながら読み飛ばし、ファイル全体は読み込みを続ける
+  // （1件のミスでバックアップ全体を読み込めなくなるのを避ける。2026-09-24）。
+  let ignoredCount = 0
+  // 記録は、科目番号が文字列で状態が修得・修得見込・不合格のどれかのものだけを採用する。
+  // それ以外（状態が "done" や数値、科目番号が空など）は、未登録（未履修）のままにする。
+  const records = data.records.filter((record) => {
+    const valid = isValidRecord(record)
+    if (!valid) ignoredCount++
+    return valid
+  })
   // 再履修予定は文字列の配列だけを採用し、壊れた要素は読み込み対象から外す。
   const retakingPlanCodes = Array.isArray(data.retakingPlanCodes)
     ? data.retakingPlanCodes.filter((code): code is string => typeof code === 'string')
     : undefined
+  // 単位数・科目数は、画面のプルダウンで選べる範囲の整数だけを採用する。範囲外の値は
+  // 「ファイルに書かれていなかった」のと同じ扱いにし、今の値を変えない。
+  function readInteger(value: unknown, max: number): number | undefined {
+    if (value === undefined) return undefined
+    const parsed = integerInRange(value, 0, max)
+    if (parsed === undefined) ignoredCount++
+    return parsed
+  }
+  const otherCommonCredits = readInteger(data.otherCommonCredits, 8)
+  const otherCommonSubjectCount = readInteger(data.otherCommonSubjectCount, 8)
+  const otherClusterMajorCredits = readInteger(data.otherClusterMajorCredits, 8)
+  const otherClusterMajorSubjectCount = readInteger(data.otherClusterMajorSubjectCount, 4)
   // ここまで来れば形は正しいので、そのまま呼び出し側が使いやすい形にして返す
   return {
     profile: data.profile,
-    records: data.records,
-    planned: Array.isArray(data.planned) ? data.planned : [],
-    otherCommonCredits: typeof data.otherCommonCredits === 'number' ? data.otherCommonCredits : undefined,
-    otherCommonSubjectCount: typeof data.otherCommonSubjectCount === 'number' ? data.otherCommonSubjectCount : undefined,
+    records,
+    planned: Array.isArray(data.planned) ? data.planned.filter((code): code is string => typeof code === 'string') : [],
+    otherCommonCredits,
+    otherCommonSubjectCount,
     retakingPlanCodes,
-    otherClusterMajorCredits: Number.isInteger(data.otherClusterMajorCredits) && (data.otherClusterMajorCredits ?? -1) >= 0 && (data.otherClusterMajorCredits ?? 9) <= 8 ? data.otherClusterMajorCredits : undefined,
-    otherClusterMajorSubjectCount: Number.isInteger(data.otherClusterMajorSubjectCount) && (data.otherClusterMajorSubjectCount ?? -1) >= 0 && (data.otherClusterMajorSubjectCount ?? 5) <= 4 ? data.otherClusterMajorSubjectCount : undefined,
+    otherClusterMajorCredits,
+    otherClusterMajorSubjectCount,
+    ignoredCount,
   }
 }
 
