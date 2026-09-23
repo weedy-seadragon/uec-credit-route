@@ -123,6 +123,21 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
+        {/* Ver.1.1.5では、修得見込の単位に区分ごとの見込み合計と共通単位へのあぶれ分を表示した。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(Ver.1.1.4→Ver.1.1.5)</span>
+            <span className="release-note-date">アップデート日 2026/9/24</span>
+          </p>
+          <h3 className="release-note-category">表示の改善</h3>
+          <ul className="release-note-items">
+            <li>「修得見込の単位」の各区分の見出しに、修得見込の単位数と、修得済みと合わせた見込み合計を「（+4単位／見込み合計 8/8単位）」の形で表示するようにしました</li>
+            <li>「修得見込の単位」に共通単位の欄を追加し、修得見込で区分の必要単位を超えて共通単位に繰り入れられる分（「上級科目から2単位」など）を表示するようにしました</li>
+            <li>選択科目の共通単位の見出しで、見込みの表記を他の区分と同じ「（修得見込）」にそろえました</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（7件）">
         {/* Ver.1.1.4では、同じ学年学期の科目を曜日時限順に並べるようにした。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -135,8 +150,6 @@ export default function TopPage() {
             <li>「修得見込の単位」「不合格になった科目」の一覧も、他の一覧と同じく学年学期順・曜日時限順に並べるようにしました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（6件）">
         {/* Ver.1.1.3では、同名科目の二重表示と、集中講義の誤ったオンデマンド表示を修正した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
