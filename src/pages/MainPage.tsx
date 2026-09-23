@@ -82,6 +82,8 @@ interface BoundaryGroup {
   projectedShortfall: number
   /** 修得予定を反映した場合に区分を満たすか */
   projectedSatisfied: boolean
+  /** 修得予定もすべて修得できた場合に、required を超える単位数（確定分を含む合計） */
+  projectedOverflow: number
   /** 修得予定もすべて修得できた場合に、共通単位へ繰り入れられる分（確定分を含む合計） */
   projectedOverflowToCommon: number
   subjects: string[]
@@ -134,6 +136,7 @@ function collectBoundaryGroups(reqGroups: readonly RequirementGroup[], evalGroup
           shortfall: eg.shortfall, satisfied: eg.satisfied,
           projectedContribution: eg.projected.contribution, projectedShortfall: eg.projected.shortfall,
           projectedSatisfied: eg.projected.satisfied,
+          projectedOverflow: eg.projectedOverflow,
           projectedOverflowToCommon: eg.projectedOverflowToCommon,
           subjects: flattenLeafSubjects(rg),
         })
@@ -631,8 +634,6 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const commonOverflowTotal = overflowToCommonGroups.reduce((sum, g) => sum + g.overflowToCommon, 0)
   const commonDirectTotal = directCommonSubjects.reduce((sum, code) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
   const commonEarnedTotal = commonOverflowTotal + commonDirectTotal + commonCreditsWithTransferBucket
-  // 共通単位のうち、修得予定がすべて修得できたときに新たに算入される分。
-  const commonPlannedCredits = Math.max(0, evaluation.commonCredits.projected.contribution - evaluation.commonCredits.contribution)
   // 「修得見込の単位」の共通単位の内訳（2026-09-24、修得見込のあぶれが表示されないという指摘で追加）：
   // ①あぶれ分＝修得見込もすべて修得できた場合に、区分の必要単位を超えて新たに共通単位へ繰り入れられる分
   //   （確定済みのあぶれ分は「修得した単位」側に出すので、見込みで増える差分だけを出す）
@@ -1791,7 +1792,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 <span className="elective-group-title">共通単位</span>
                 <span className="elective-group-progress">
                   {commonEarnedTotal}/{requirementSet.commonCredits}単位
-                  {commonPlannedCredits > 0 && <span className="planned-credit"> → {evaluation.commonCredits.projected.contribution}/{requirementSet.commonCredits}単位（修得見込）</span>}
+                  {/* 区分の見出しと同じく、必要単位で頭打ちにしない見込み合計を出す。 */}
+                  {commonPlannedTotal > 0 && <span className="planned-credit"> → {commonEarnedTotal + commonPlannedTotal}/{requirementSet.commonCredits}単位（修得見込）</span>}
                 </span>
                 <span className="elective-group-status">
                   {commonEarnedTotal >= requirementSet.commonCredits ? '充足済み' : `あと${requirementSet.commonCredits - commonEarnedTotal}単位`}
@@ -2345,9 +2347,11 @@ function GroupProgress({
       <summary>
         <span className="elective-group-title">{group.label ?? group.name}</span>
         <span className="elective-group-progress">
-          {group.contribution}/{group.required}単位
-          {group.projectedContribution > group.contribution && (
-            <span className="planned-credit"> → {group.projectedContribution}/{group.required}単位（修得見込）</span>
+          {/* 必要単位で頭打ちにせず、超過分（overflow）も足した実際の単位数を出す。こうしないと、
+              修得見込で必要単位を超えたとき「24/22」ではなく「22/22」と表示されてしまう（2026-09-24）。 */}
+          {group.contribution + group.overflow}/{group.required}単位
+          {group.projectedContribution + group.projectedOverflow > group.contribution + group.overflow && (
+            <span className="planned-credit"> → {group.projectedContribution + group.projectedOverflow}/{group.required}単位（修得見込）</span>
           )}
         </span>
         <span className="elective-group-status">
