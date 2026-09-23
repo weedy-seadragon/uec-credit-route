@@ -82,6 +82,8 @@ interface BoundaryGroup {
   projectedShortfall: number
   /** 修得予定を反映した場合に区分を満たすか */
   projectedSatisfied: boolean
+  /** 修得予定もすべて修得できた場合に、共通単位へ繰り入れられる分（確定分を含む合計） */
+  projectedOverflowToCommon: number
   subjects: string[]
 }
 
@@ -132,6 +134,7 @@ function collectBoundaryGroups(reqGroups: readonly RequirementGroup[], evalGroup
           shortfall: eg.shortfall, satisfied: eg.satisfied,
           projectedContribution: eg.projected.contribution, projectedShortfall: eg.projected.shortfall,
           projectedSatisfied: eg.projected.satisfied,
+          projectedOverflowToCommon: eg.projectedOverflowToCommon,
           subjects: flattenLeafSubjects(rg),
         })
       }
@@ -630,6 +633,23 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const commonEarnedTotal = commonOverflowTotal + commonDirectTotal + commonCreditsWithTransferBucket
   // 共通単位のうち、修得予定がすべて修得できたときに新たに算入される分。
   const commonPlannedCredits = Math.max(0, evaluation.commonCredits.projected.contribution - evaluation.commonCredits.contribution)
+  // 「修得見込の単位」の共通単位の内訳（2026-09-24、修得見込のあぶれが表示されないという指摘で追加）：
+  // ①あぶれ分＝修得見込もすべて修得できた場合に、区分の必要単位を超えて新たに共通単位へ繰り入れられる分
+  //   （確定済みのあぶれ分は「修得した単位」側に出すので、見込みで増える差分だけを出す）
+  // ②最初から共通単位として数える科目（理数基礎（選択）・選択第二外国語など）のうち修得見込のもの
+  const plannedOverflowToCommonGroups = boundaryGroups
+    .filter((g) => !g.countAsCommon)
+    .map((g) => ({ group: g, credits: g.projectedOverflowToCommon - g.overflowToCommon }))
+    .filter(({ credits }) => credits > 0)
+  const plannedDirectCommonSubjects = [
+    ...commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) === 'taking')),
+    ...(requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) === 'taking'),
+  ]
+  const plannedDirectCommonCodes = new Set(plannedDirectCommonSubjects)
+  const plannedTransferBucketItems = [...clusterTransferBucket, ...programTransferBucket].filter((item) => committed.get(item.code) === 'taking')
+  const commonPlannedTotal = plannedOverflowToCommonGroups.reduce((sum, { credits }) => sum + credits, 0)
+    + plannedDirectCommonSubjects.reduce((sum, code) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
+    + plannedTransferBucketItems.reduce((sum, item) => sum + item.credits, 0)
   // 「選択科目」の共通単位の入れ子に出す、まだ修得していない常時共通単位科目
   // （理数基礎（選択）などcountAsCommonの区分の残り科目＋選択第二外国語などalwaysCommonSubjectsの残り）。
   // required=0の区分やalwaysCommonSubjectsはGroupProgressの対象外（required>0で絞っている）なので、
@@ -740,7 +760,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     categoryLookup,
     boundaryGroups,
   )
-  const plannedByCategory = groupByCategory(plannedSubjects, ([code]) => code, categoryLookup, boundaryGroups)
+  // 最初から共通単位になる科目は、修得した単位と同じく区分ではなく共通単位の内訳の側に出す。
+  const plannedByCategory = groupByCategory(
+    plannedSubjects.filter(([code]) => !plannedDirectCommonCodes.has(code)),
+    ([code]) => code,
+    categoryLookup,
+    boundaryGroups,
+  )
   const remainingRequiredByCategory = groupByCategory(remainingRequired, (r) => r.code, categoryLookup, boundaryGroups)
   // 不合格科目も、修得済み・残りの必修と同じ要件区分でまとめる。
   // どの区分の不足に関係する科目かを、不合格一覧だけで追えるようにするための対応表である。
@@ -1519,28 +1545,62 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <section className="requirement-section planned-section">
         <h2>修得見込の単位（{plannedCredits}単位）</h2>
         <p className="section-guidance">修得見込の科目をすべて修得できた場合、黄色で示した見込単位が各区分・審査の計算に反映されます。</p>
-        {plannedByCategory.map(({ label, group, items }) => (
-          <div key={group?.id ?? label}>
-            <h3>{label}</h3>
-            <ul>
-              {/* 他の一覧と同じく、学年学期順（同じなら曜日時限順）に並べる。第二外国語などは要件データの順。 */}
-              {(group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
-                ? sortByGroupSubjectOrder(items, ([code]) => code, group.subjects)
-                : sortByYearTermWithJapaneseCultureOrder(items, ([code]) => code, standardYearOf, termTypeOf, nameOf, slotRankOf)
-              ).map(([code]) => (
-                <li key={code}>
-                  <SubjectRow
-                    name={nameLink(code)}
-                    credits={creditsLabel(code)}
-                    term={yearTermTag(code)}
-                    status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
-                    schedule={dayPeriodTag(code)}
-                  />
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        {(() => {
+          // 修得見込の科目1行ぶん。区分の一覧と共通単位の内訳の両方で同じ見た目・操作にする。
+          const plannedRow = (code: string) => (
+            <SubjectRow
+              name={nameLink(code)}
+              credits={creditsLabel(code)}
+              term={yearTermTag(code)}
+              status={<SubjectStatusSelect code={code} value={draft.get(code)} onChange={handleDraftChange} />}
+              schedule={dayPeriodTag(code)}
+            />
+          )
+          // 修得した単位の欄と同じく、修得見込で増える共通単位（あぶれ分・最初から共通単位になる科目）の
+          // 内訳をまとめて示す。見出しには、確定分と合わせた見込みの合計も添える。
+          const plannedCommonElement = commonPlannedTotal > 0 ? (
+            <div key="planned-common-credits">
+              <h3>
+                共通単位（<span className="planned-credit">+{commonPlannedTotal}単位</span>
+                ／見込み合計 {commonEarnedTotal + commonPlannedTotal}/{requirementSet.commonCredits}単位）
+              </h3>
+              <ul>
+                {sortByYearTermWithJapaneseCultureOrder(plannedDirectCommonSubjects, (code) => code, standardYearOf, termTypeOf, nameOf, slotRankOf).map((code) => (
+                  <li key={code}>{plannedRow(code)}</li>
+                ))}
+                {plannedOverflowToCommonGroups.map(({ group, credits }) => (
+                  <li key={group.id}>
+                    {group.label ?? group.name}から<span className="planned-credit">{credits}単位</span>
+                    （必要単位を超えた分）
+                  </li>
+                ))}
+                {plannedTransferBucketItems.map((item) => (
+                  <li key={item.code}>{item.name}として{item.credits}単位</li>
+                ))}
+              </ul>
+            </div>
+          ) : null
+          const hasMajorSel = plannedByCategory.some(({ group }) => group?.id === 'major-sel')
+          const rendered = plannedByCategory.flatMap(({ label, group, items }) => {
+            const categoryElement = (
+              <div key={group?.id ?? label}>
+                <h3>{label}</h3>
+                <ul>
+                  {/* 他の一覧と同じく、学年学期順（同じなら曜日時限順）に並べる。第二外国語などは要件データの順。 */}
+                  {(group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
+                    ? sortByGroupSubjectOrder(items, ([code]) => code, group.subjects)
+                    : sortByYearTermWithJapaneseCultureOrder(items, ([code]) => code, standardYearOf, termTypeOf, nameOf, slotRankOf)
+                  ).map(([code]) => (
+                    <li key={code}>{plannedRow(code)}</li>
+                  ))}
+                </ul>
+              </div>
+            )
+            // 修得した単位の欄と同じく、共通単位の内訳は類専門（選択）の直後に置く。
+            return group?.id === 'major-sel' ? [categoryElement, plannedCommonElement] : [categoryElement]
+          })
+          return hasMajorSel ? rendered : [...rendered, plannedCommonElement]
+        })()}
         {plannedSubjects.length === 0 && <p>・（ありません）</p>}
       </section>
 
@@ -1718,7 +1778,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 <span className="elective-group-title">共通単位</span>
                 <span className="elective-group-progress">
                   {commonEarnedTotal}/{requirementSet.commonCredits}単位
-                  {commonPlannedCredits > 0 && <span className="planned-credit"> → {evaluation.commonCredits.projected.contribution}/{requirementSet.commonCredits}単位（予定）</span>}
+                  {commonPlannedCredits > 0 && <span className="planned-credit"> → {evaluation.commonCredits.projected.contribution}/{requirementSet.commonCredits}単位（修得見込）</span>}
                 </span>
                 <span className="elective-group-status">
                   {commonEarnedTotal >= requirementSet.commonCredits ? '充足済み' : `あと${requirementSet.commonCredits - commonEarnedTotal}単位`}
