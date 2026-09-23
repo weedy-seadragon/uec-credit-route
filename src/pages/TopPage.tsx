@@ -123,6 +123,20 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
+        {/* Ver.1.1.3では、同名科目の二重表示と、集中講義の誤ったオンデマンド表示を修正した。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(Ver.1.1.2→Ver.1.1.3)</span>
+            <span className="release-note-date">アップデート日 2026/9/24</span>
+          </p>
+          <h3 className="release-note-category">不具合修正</h3>
+          <ul className="release-note-items">
+            <li>複数のプログラムに同じ名前で載っている科目（ヒューマンインタフェースなど）を修得見込・修得にしても、選択科目の一覧に同じ科目が未履修のまま残ってしまう不具合を修正しました</li>
+            <li>集中講義である「社会シミュレーション」が「オンデマンド」と表示されていたのを、「夏期集中」と表示するように修正しました</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（5件）">
         {/* Ver.1.1.2では、学期別の修得推奨科目に修得見込を反映した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -139,8 +153,6 @@ export default function TopPage() {
             <li>「不足区分ごとの候補」でも、他の一覧と同じく留学生のみ履修できる科目を「留学生のみ履修可」としてまとめるようにしました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（4件）">
         {/* Ver.1.1.1では、履修状態を未履修へ戻せない不具合と、2021・2022年度の卒業要件データの
             誤りを修正した。 */}
         <div className="release-note-entry">
