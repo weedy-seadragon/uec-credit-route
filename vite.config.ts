@@ -7,7 +7,7 @@ const buildDateInJapan = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Toky
 // サイトのバージョン表記はここ1箇所だけを書き換えれば、トップ画面の見出し・タブのタイトル・
 // SNS共有カードの3箇所すべてに反映される（以前はindex.htmlとTopPage.tsxに別々に書いていて、
 // index.html側の更新を忘れて古いバージョンのまま放置されていたことがあった。2026-09-17）。
-const SITE_VERSION = '1.1.5'
+const SITE_VERSION = '1.1.6'
 
 // index.htmlの中の %SITE_VERSION% という文字列を、上のSITE_VERSIONへ置き換えるだけの
 // 小さなプラグイン。defineはJS/TSXの中でしか使えない（index.htmlはJSとして処理されない）ため、
