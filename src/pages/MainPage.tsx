@@ -501,6 +501,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 「更新」ボタンを押すまでは、上の集計（取得単位・残りの必修など）は committed のまま変わらない
   // （docs/SPEC.md F-4「更新ボタン」参照）。
   const [committed, setCommitted] = useState<ReadonlyMap<string, SubjectStatus>>(() => normalizeDuplicateSubjectRecords(loadRecords(), subjectsByCode, isOwnProgramSubject, isEquivalentProgramSubject))
+  // 同名・同じ類の別の科目番号で確定済みの記録があるか。記録は1件に正規化されるため、
+  // 記録されなかった側の番号を一覧から外し、同じ授業が二重に表示されないようにする。
+  function isRecordedUnderOtherCode(code: string): boolean {
+    const name = subjectsByCode.get(code)?.name
+    if (!name) return false
+    for (const otherCode of committed.keys()) {
+      if (otherCode !== code && subjectsByCode.get(otherCode)?.name === name && isEquivalentProgramSubject(code, otherCode)) return true
+    }
+    return false
+  }
   const [draft, setDraft] = useState<ReadonlyMap<string, SubjectStatus>>(committed)
   // その他単位認定（TOEIC等、科目を介さず共通単位として認定される単位数。0〜8単位、未履修=0）。
   // 科目の記録と同じくdraft/committedに分け、「更新」ボタンを押すまでは反映しない
@@ -688,7 +698,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     .filter((group) => group.kind === 'elective' && group.shortfall > 0)
     .map((group) => ({
       group,
-      candidates: recommendationCandidates.filter((r) => committed.get(r.code) !== 'failed' && group.subjects.includes(r.code)),
+      // 同名の科目を別の番号で記録済みなら、記録した方の番号だけを候補に残す（同じ授業の二重表示を防ぐ）。
+      candidates: recommendationCandidates.filter(
+        (r) => committed.get(r.code) !== 'failed' && !isRecordedUnderOtherCode(r.code) && group.subjects.includes(r.code),
+      ),
     }))
   // 共通単位は通常の選択区分と別計算なので、共通単位として直接算入される科目だけを専用の候補にする。
   // commonOnlyRemainingは選択科目一覧（プルダウン表示）用に修得見込を除いているため、ここでは
@@ -1767,6 +1780,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                 isInternational={isInternational}
                 isUnavailableIn2026={isUnavailableIn2026}
                 isVisibleForTerm={isVisibleForTermFilter}
+                isRecordedUnderOtherCode={isRecordedUnderOtherCode}
                 showTermCollapses={!isEveningCourse}
                 showOtherProgramSection={!isEveningCourse}
                 otherClusterMajorCredits={otherClusterMajorCreditsDraft}
@@ -2076,6 +2090,7 @@ function GroupProgress({
   isInternational,
   isUnavailableIn2026,
   isVisibleForTerm,
+  isRecordedUnderOtherCode,
   showTermCollapses,
   showOtherProgramSection,
   otherClusterMajorCredits,
@@ -2102,6 +2117,8 @@ function GroupProgress({
   isUnavailableIn2026: (code: string) => boolean
   /** 表示フィルタ（学期）で、この科目を一覧に出すかどうか（MainPage.tsxのisVisibleForTermFilter） */
   isVisibleForTerm: (code: string) => boolean
+  /** 同名の同じ類の科目が別の科目番号で既に記録されているか（その番号で記録済みなら同じ授業として一覧から外す） */
+  isRecordedUnderOtherCode: (code: string) => boolean
   /** 前学期・後学期などの子入れ子を使うかどうか。夜間主では科目を直接並べる。 */
   showTermCollapses: boolean
   /** 昼間コースだけにある、同じ類の他プログラム専門科目の入れ子を表示するかどうか。 */
@@ -2121,7 +2138,11 @@ function GroupProgress({
   // こうしないと、「更新」を押す前にプルダウンを触っただけで行が消えてしまい、
   // 「残りの必修」など他のセクションと表示の整合性が取れなくなる。
   // 不合格の科目は「不可の単位」に既に出るので、ここでは重複して出さない（2026-09-08、開発者の指摘）
-  const remainingAll = group.subjects.filter((code) => committed.get(code) == null && isVisibleForTerm(code))
+  // 同名科目を別プログラムの番号（例: ヒューマンインタフェースのCOM505c）で記録した場合も、
+  // もう一方の番号（COM505d）が未履修のまま残って同じ授業が再表示されないよう除外する（2026-09-24）。
+  const remainingAll = group.subjects.filter(
+    (code) => committed.get(code) == null && !isRecordedUnderOtherCode(code) && isVisibleForTerm(code),
+  )
   // 「幾何学概論」のように、実質同じ科目が他プログラムの科目コードとして重複して選択肢に
   // 入ってしまうことがあるので、科目名が同じものは1つにまとめる（自分のプログラムの科目が
   // あればそちらを優先し、他プログラム専門科目としては出さない）
