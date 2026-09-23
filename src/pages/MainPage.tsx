@@ -1582,9 +1582,22 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           ) : null
           const hasMajorSel = plannedByCategory.some(({ group }) => group?.id === 'major-sel')
           const rendered = plannedByCategory.flatMap(({ label, group, items }) => {
+            // 共通単位の見出しと同じく「（+修得見込の単位／見込み合計 確定分+見込み/必要単位）」の形にする。
+            // 確定分は「修得した単位」の見出しと同じく、必要単位で頭打ちにしない実際の修得単位を使う。
+            // 要件区分に属さない科目（自由科目など）や必要単位0の区分は、比べる相手が無いので増分だけ出す。
+            const plannedInCategory = items.reduce((sum, [code]) => sum + (subjectsByCode.get(code)?.credits ?? 0), 0)
+            const heading = (
+              <>
+                {label}（<span className="planned-credit">+{plannedInCategory}単位</span>
+                {group && group.required > 0 && (
+                  <>／見込み合計 {group.contribution + group.overflow + plannedInCategory}/{group.required}単位</>
+                )}
+                ）
+              </>
+            )
             const categoryElement = (
               <div key={group?.id ?? label}>
-                <h3>{label}</h3>
+                <h3>{heading}</h3>
                 <ul>
                   {/* 他の一覧と同じく、学年学期順（同じなら曜日時限順）に並べる。第二外国語などは要件データの順。 */}
                   {(group && GROUPS_KEEP_ORIGINAL_ORDER.has(group.id)
