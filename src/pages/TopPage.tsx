@@ -123,6 +123,19 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
+        {/* Ver.1.1.7では、共通単位が足りないのに卒業審査で「達成予定」と出る不具合を修正した。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(Ver.1.1.6→Ver.1.1.7)</span>
+            <span className="release-note-date">アップデート日 2026/9/24</span>
+          </p>
+          <h3 className="release-note-category">不具合修正</h3>
+          <ul className="release-note-items">
+            <li>共通単位が足りていないのに、卒業審査の「すべての区分の必要単位を満たす」に「（達成予定）」と表示される不具合を修正しました（共通単位も区分の1つとして判定します）</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（9件）">
         {/* Ver.1.1.6では、選択科目の単位表示が必要単位で頭打ちにされる不具合を修正した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -134,8 +147,6 @@ export default function TopPage() {
             <li>「選択科目」の各区分・共通単位の単位数が、必要単位を超えても「22/22単位」のように必要単位で止まって表示される不具合を修正しました（超えた分も含めて「24/22単位」のように表示します）</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（8件）">
         {/* Ver.1.1.5では、修得見込の単位に区分ごとの見込み合計と共通単位へのあぶれ分を表示した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
