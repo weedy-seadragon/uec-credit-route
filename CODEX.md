@@ -23,6 +23,11 @@ python scripts/gen_data.py
 python scripts/fetch_syllabus.py
 python scripts/build_class_assignment.py
 python scripts/build_class_assignment_json.py
+python scripts/build_2024_data.py   # 2025年度が土台
+python scripts/build_2026_data.py   # 2025年度が土台
+python scripts/build_2023_data.py   # 2024年度が土台
+python scripts/build_2022_data.py   # 2024年度が土台
+python scripts/build_2021_data.py   # 2022年度が土台
 python scripts/validate_data.py
 ```
 
