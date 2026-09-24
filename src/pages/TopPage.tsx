@@ -123,7 +123,8 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
-        {/* Ver.1.1.7では、共通単位が足りないのに卒業審査で「達成予定」と出る不具合を修正した。 */}
+        {/* Ver.1.1.7では、共通単位が足りないのに卒業審査で「達成予定」と出る不具合の修正、
+            ELE403hの科目名の修正、読み込むJSONの値の検証を行った。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
             <span>・アップデート(Ver.1.1.6→Ver.1.1.7)</span>
@@ -132,6 +133,11 @@ export default function TopPage() {
           <h3 className="release-note-category">不具合修正</h3>
           <ul className="release-note-items">
             <li>共通単位が足りていないのに、卒業審査の「すべての区分の必要単位を満たす」に「（達成予定）」と表示される不具合を修正しました（共通単位も区分の1つとして判定します）</li>
+            <li>電子情報学プログラムの科目「ELE403h」の科目名を、現行シラバスの「基礎情報通信」に修正しました</li>
+          </ul>
+          <h3 className="release-note-category">機能変更</h3>
+          <ul className="release-note-items">
+            <li>読み込んだJSONファイルに、科目番号や数値が正しくない項目があった場合は、その項目を読み込まずに未登録のままにし、件数をお知らせするようにしました</li>
           </ul>
         </div>
         {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
