@@ -1068,6 +1068,19 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     const g = findGroupResult(evaluation.groups, groupId)
     return g ? (g.label ?? g.name) : groupId
   }
+  // 卒業審査の不足条件のうち、共通単位の条件を「すべての区分」の条件にまとめる。
+  // 共通単位だけが不足している場合でも「すべての区分」の行を出して、不足していることが分かるようにする。
+  function foldCommonIntoAllGroups(conds: readonly ReviewCondition[]): ReviewCondition[] {
+    const commonIndex = conds.findIndex((cond) => cond.type === 'commonCredits')
+    // 共通単位が不足していなければ、そのまま返す
+    if (commonIndex === -1) return [...conds]
+    const rest = conds.filter((cond) => cond.type !== 'commonCredits')
+    // 「すべての区分」が既に不足条件にあれば、共通単位の行を消すだけでよい
+    if (rest.some((cond) => cond.type === 'allGroups')) return rest
+    // 無ければ、共通単位があった位置に「すべての区分」の行を差し込む
+    // （[...a, x, ...b] はスプレッド構文。配列を展開して新しい配列を作る）
+    return [...conds.slice(0, commonIndex), { type: 'allGroups' }, ...conds.slice(commonIndex + 1)]
+  }
   // 審査の不足条件（ReviewCondition）を、人が読める文章・補足にして表示する。
   function describeCondition(cond: ReviewCondition): ReactNode {
     // 条件ごとに、修得予定をすべて修得できた場合に達成できるかを調べる。
@@ -1084,7 +1097,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         case 'commonCredits':
           return evaluation.commonCredits.projected.contribution >= cond.min
         case 'allGroups':
-          return boundaryGroups.every((g) => g.projectedSatisfied)
+          // 画面上では共通単位も区分の1つとして並べているので、「すべての区分」には共通単位も含めて判定する
+          // （卒業審査の共通単位条件は表示上この行にまとめているため。2026-09-24、共通単位不足なのに
+          // 「達成予定」と出ていた不具合の修正）
+          return boundaryGroups.every((g) => g.projectedSatisfied) && evaluation.commonCredits.projected.shortfall === 0
         case 'review':
           return reviewStatuses.find((status) => status.id === cond.id)?.projectedSatisfied ?? false
         case 'subjectsCountMin':
@@ -1900,10 +1916,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、卒業研究着手審査や卒業審査が表示されていません。</p>}
           <ul>
             {reviewStatuses.map((r) => {
-              // 卒業審査の共通単位条件は、画面上部の審査用総単位の説明と重複するため詳細から省く。
-              // 判定自体（r.satisfied）はdomain側で済んでおり、この表示用フィルタでは変わらない。
+              // 卒業審査の共通単位条件は、画面上部の審査用総単位の説明と重複するため単独の行としては出さず、
+              // 「すべての区分の必要単位を満たす」の行にまとめる（画面上では共通単位も区分の1つとして並べているため）。
+              // 判定自体（r.satisfied）はdomain側で済んでおり、この表示用の並べ替えでは変わらない。
               const visibleUnsatisfied = r.id === 'graduation'
-                ? r.unsatisfied.filter((cond) => cond.type !== 'commonCredits')
+                ? foldCommonIntoAllGroups(r.unsatisfied)
                 : r.unsatisfied
               // 2年次終了時・卒業審査と、夜間主の輪講履修条件は不足条件が少ないため、
               // 詳細を開かず本文へそのまま出す。
