@@ -15,7 +15,7 @@
     不十分と指摘された（2026-09-04）。`*.test.ts`のdescribe/itブロックも対象（describeには
     「何を検証する分類か」、itには「なぜこの結果になるか」を一言）
 - TypeScript や React で初めて出てくる構文・概念は、コード中のコメントか作業後の説明で一言補足する
-- 一度に大量のファイルを生成しない。`docs/SPEC.md` §11 のフェーズ単位で進め、各フェーズの終わりに何を作ったか要約する
+- 一度に大量のファイルを生成しない。変更は小さな単位（修正1件・機能1つ）で進め、区切りごとに何を作ったか要約する
 - **チャット上（コンソール）で「Ⅰ類」「Ⅱ類」「Ⅲ類」と書くときは、ローマ数字と「類」の間に半角スペースを入れる（「Ⅰ 類」「Ⅱ 類」「Ⅲ 類」）**。詰まって見えるとの開発者の指摘（2026-09-06、複数回指摘済み）。**サイトのコード・表示・コミットメッセージ等はこの限りでなく、従来通りスペース無しでよい**。あくまでClaudeが会話で表記するときだけのルール
 
 ## 技術構成（docs/SPEC.md §9）
@@ -34,15 +34,13 @@
   - `importers.ts` … JSON 取り込み（SPEC §7.4, §7.5）
 - `data/` の JSON が唯一のデータソース。コード中に科目名や単位数をハードコードしない
 - `data/` を変更したら `python scripts/validate_data.py` が通ることを確認する
-- 科目の主キーは**末尾記号を含むフルコード**（例 `COM405a`）。以前は末尾記号を除いて名寄せしていたが、類専門科目の選択科目のようにプログラムごとに独自採番されている科目では、末尾を除くと番号が一致しても別科目になるケースがあると判明したため撤回した（2026-09-04）。`COM405a`/`COM405e`のように複数プログラムで本当に共有されている科目は、単純に別エントリとして重複して持つ
+- 科目の主キーは**末尾記号を含むフルコード**（例 `COM405a`）。類専門の選択科目はプログラムごとに独自採番されており、末尾記号を除くと番号が一致しても別科目になることがあるため。`COM405a`/`COM405e`のように複数プログラムで本当に共有されている科目は、単純に別エントリとして重複して持つ
 
 ## データについて（docs/SPEC.md §3, §7）
 
-- `data/requirements/2025-day-common.json` … 総合文化・実践教育科目の要件（昼間コース共通）
-- `data/requirements/2025-day-I-media.json` … Ⅰ類メディア情報学プログラムの専門科目要件と審査条件。`extends` で common を参照
-- `data/subjects/youran-2025.json` … 学修要覧2025 付録C から起こした科目マスタ（曜日時限・シラバスURLは未収録。シラバスから取る）
-- これらは学修要覧2025の原本と突き合わせて検証済み。**数値を勝手に変えない**。疑問があれば開発者に確認する
-- 他のプログラム・他年度の要件ファイルは、同じ形式で後から追加する
+- `data/requirements/{年度}-day-common.json` … 総合文化・実践教育科目の要件（昼間コース共通）。各プログラムの`{年度}-day-{類}-{プログラム}.json`が`extends`でこれを参照する
+- `data/subjects/youran-{年度}.json` … 各年度の学修要覧 付録C から起こした科目マスタ。曜日時限・シラバスURL（`offerings`）はシラバスから取得して付ける
+- 要件データは入学年度の学修要覧原本と突き合わせて検証済み。**数値を勝手に変えない**。疑問があれば開発者に確認する
 - **`scripts/fetch_syllabus.py`は科目名が科目マスタ（`gen_data.py`のハードコードした表）と完全一致する
   行しか個別ページを取得しない**（全件を舐めるとサーバー負荷が大きいため）。つまり、シラバスに
   実在する科目でも科目マスタに載っていなければ絶対に自動取得されない。「シラバスにはあるのにサイトに
@@ -62,7 +60,7 @@
 
 ## 作業の進め方
 
-- フェーズが終わるごとに `git commit`。コミットメッセージは日本語で「何をしたか」を1行
+- 作業の区切り（修正1件・機能1つ）ごとに `git commit`。コミットメッセージは日本語で「何をしたか」を1行
 - 仕様と違うことをする必要が出たら、勝手に変えずに理由を説明して開発者に確認する
 - 外部サイト（`kyoumu.office.uec.ac.jp`）へアクセスするスクリプトは、1秒以上の間隔を空け、User-Agent に連絡先を入れる
 - `scripts/fetch_syllabus.py`は昼間・夜間主あわせて数百件の個別ページを1.2秒間隔で取得するため、
@@ -81,7 +79,7 @@
 
 ### 公開状況
 
-- `main`でVer.1.0.2を公開中（2026-09-09に正式版リリース、以降Ver.1.0.1・1.0.2をリリース）
+- `main`で公開中（2026-09-09に正式版リリース）。現在のバージョンは`vite.config.ts`の`SITE_VERSION`、各版の内容はトップ画面のリリースノート（`src/pages/TopPage.tsx`）を参照
 - 通常の開発は`dev`ブランチで行い、`main`へのマージ（＝公開サイト更新）は都度開発者に確認する
 
 ### データ
@@ -102,7 +100,7 @@
     「情報工学工房」、独立科目の追加で番号がずれる場合）や、現行の科目マスタに存在しない廃止科目（例:
     夜間主の「美術」「経済学」）だけにする。判断に迷ったら`docs/YOURAN_2023_COMPARISON.md`の該当箇所を参照
 - 複数セクション（クラスごとに教員・時限が違う）科目は、`data/timetable/class_assignment_filled.csv`→`class_assignment.json`で、プロフィールのクラス情報と突き合わせて一意に解決する。未記入の`class_id`はない
-- データ生成パイプラインの実行順序：`python scripts/gen_data.py`（科目マスタ・2025年度要件JSONを再構築。**offerings・prerequisitesTextを消してしまう**）→`python scripts/fetch_syllabus.py`（シラバスから曜日時限等を再取得）→`python scripts/build_class_assignment.py`→`python scripts/build_class_assignment_json.py`→`python scripts/build_2021_data.py`・`python scripts/build_2022_data.py`・`python scripts/build_2023_data.py`・`python scripts/build_2024_data.py`・`python scripts/build_2026_data.py`（年度別データを再生成）→`python scripts/validate_data.py`（整合性チェック）
+- データ生成パイプラインの実行順序：`python scripts/gen_data.py`（科目マスタ・2025年度要件JSONを再構築。**offerings・prerequisitesTextを消してしまう**）→`python scripts/fetch_syllabus.py`（シラバスから曜日時限等を再取得）→`python scripts/build_class_assignment.py`→`python scripts/build_class_assignment_json.py`→年度別データを土台の年度から順に再生成（`python scripts/build_2024_data.py`・`python scripts/build_2026_data.py`は2025年度が土台→`python scripts/build_2023_data.py`・`python scripts/build_2022_data.py`は2024年度が土台→`python scripts/build_2021_data.py`は2022年度が土台）→`python scripts/validate_data.py`（整合性チェック）
 
 ### 実装済みの画面・機能
 
