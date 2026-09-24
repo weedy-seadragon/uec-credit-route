@@ -133,7 +133,7 @@ export type ReviewCondition =
   | { type: 'totalCredits'; min: number; note?: string }
   /** 共通単位の修得単位数がmin以上か */
   | { type: 'commonCredits'; min: number; note?: string }
-  /** すべての判定境界グループを満たしているか（卒業審査で使う） */
+  /** すべての判定境界グループと共通単位を満たしているか（卒業審査で使う。共通単位も区分の1つとして含める） */
   | { type: 'allGroups'; note?: string }
   /** 別の審査（idで指定）に合格しているか */
   | { type: 'review'; id: string; note?: string }

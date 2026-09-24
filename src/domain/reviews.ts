@@ -79,8 +79,14 @@ function isConditionSatisfied(cond: ReviewCondition, ctx: Context): boolean {
       return (ctx.projected ? ctx.evaluation.totalCredits.projected.contribution : ctx.evaluation.totalCredits.contribution) >= cond.min
     case 'commonCredits':
       return (ctx.projected ? ctx.evaluation.commonCredits.projected.contribution : ctx.evaluation.commonCredits.contribution) >= cond.min
-    case 'allGroups':
-      return allBoundaryGroupsSatisfied(ctx.evaluation.groups, ctx.projected)
+    case 'allGroups': {
+      // 「すべての区分」には共通単位も含める。共通単位は内部では超過分から後で計算するため
+      // evaluation.groups とは別の場所（commonCredits）にあるが、学修要覧の別表2では他の区分と
+      // 並ぶ区分の1つなので、ここで一緒に判定する（2026-09-24、開発者判断）
+      const common = ctx.evaluation.commonCredits
+      const commonSatisfied = ctx.projected ? common.projected.shortfall === 0 : common.satisfied
+      return allBoundaryGroupsSatisfied(ctx.evaluation.groups, ctx.projected) && commonSatisfied
+    }
     case 'review':
       return evaluateReviewSatisfied(cond.id, ctx)
     case 'subjectsCountMin':

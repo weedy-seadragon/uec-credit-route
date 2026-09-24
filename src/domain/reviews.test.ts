@@ -63,12 +63,29 @@ describe('evaluateReviews（葉の条件タイプごとの判定）', () => {
     expect(result.at(0)?.satisfied).toBe(true)
   })
 
-  it('allGroups：すべての判定境界グループが満たされているかで判定する（卒業審査想定）', () => {
+  it('allGroups：すべての判定境界グループと共通単位が満たされているかで判定する（卒業審査想定）', () => {
     const review: ReviewDef = { id: 'r', name: '卒業審査', allOf: [{ type: 'allGroups' }] }
-    const allPassed = evaluate({ R1: 'passed', R2: 'passed', S1: 'passed', S2: 'passed' })
+    // G3の超過分（S3の2単位）が共通単位に回り、共通単位の必要数2単位も満たすので合格
+    const allPassed = evaluate({ R1: 'passed', R2: 'passed', S1: 'passed', S2: 'passed', S3: 'passed' })
     expect(evaluateReviews([review], allPassed, records(), subjectCredits).at(0)?.satisfied).toBe(true)
+    // G2・G3が足りないので不合格
     const partial = evaluate({ R1: 'passed' })
     expect(evaluateReviews([review], partial, records(), subjectCredits).at(0)?.satisfied).toBe(false)
+  })
+
+  it('allGroups：区分グループがすべて足りていても、共通単位が足りなければ不合格（見込みも同様）', () => {
+    const review: ReviewDef = { id: 'r', name: '卒業審査', allOf: [{ type: 'allGroups' }] }
+    // G1〜G3はちょうど必要数なので超過が無く、共通単位は0/2。共通単位も区分の1つなので不合格になる
+    const noCommon = evaluate({ R1: 'passed', R2: 'passed', S1: 'passed', S2: 'passed' })
+    const status = evaluateReviews([review], noCommon, records(), subjectCredits).at(0)
+    expect(status?.satisfied).toBe(false)
+    expect(status?.projectedSatisfied).toBe(false)
+    expect(status?.unsatisfied).toEqual([{ type: 'allGroups' }])
+    // S3を履修中（修得見込）にすると、見込みでは共通単位2単位を満たすので「修得したら合格」になる
+    const takingS3 = evaluate({ R1: 'passed', R2: 'passed', S1: 'passed', S2: 'passed', S3: 'taking' })
+    const projectedStatus = evaluateReviews([review], takingS3, records(), subjectCredits).at(0)
+    expect(projectedStatus?.satisfied).toBe(false)
+    expect(projectedStatus?.projectedSatisfied).toBe(true)
   })
 
   it('subjectsCountMin：指定科目のうち修得済みがmin科目以上かで判定する（単位数ではなく科目数）', () => {
