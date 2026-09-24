@@ -1323,6 +1323,17 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (!slots || slots.length === 0) return subject?.note ?? null
     return slots.map((s) => `${s.day}・${s.period}限`).join('/')
   }
+  // 同名で同じ類のプログラム科目（画面上で同一科目として扱う番号）に付いている確定済みの状態を探す。
+  // 見つからなければ undefined（呼び出し側で未履修として扱う）。
+  function recordedStatusUnderEquivalentCode(code: string): SubjectStatus | undefined {
+    const name = subjectsByCode.get(code)?.name
+    if (name == null) return undefined
+    // 確定済みの記録を1件ずつ見て、同名かつ同一科目として扱える番号のものを返す。
+    for (const [recordedCode, status] of committed) {
+      if (subjectsByCode.get(recordedCode)?.name === name && isEquivalentProgramSubject(code, recordedCode)) return status
+    }
+    return undefined
+  }
   // AIエージェントに返す科目1件ぶんの情報。科目番号だけでなく名前・単位・時限・今の履修状態をまとめる。
   function agentSubjectInfo(code: string) {
     const subject = subjectsByCode.get(code)
@@ -1334,7 +1345,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       term: subject?.termType ?? null,
       schedule: scheduleTextOf(code),
       // 未履修は記録が無いので "none" として返す（set_subject_status の指定値と同じ表記）。
-      status: committed.get(code) ?? 'none',
+      // 同名の科目が別の番号（自分や他のプログラムの番号）で記録されていれば、その状態を返す。
+      status: committed.get(code) ?? recordedStatusUnderEquivalentCode(code) ?? 'none',
       syllabusUrl: syllabusUrlOf(code),
     }
   }

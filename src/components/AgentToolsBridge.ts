@@ -23,7 +23,7 @@ function buildAgentToolDefinitions(call: <K extends keyof AgentHandlers>(key: K,
   return [
     {
       name: 'get_profile',
-      description: '電気通信大学 情報理工学域の利用者のプロフィール（入学年度・コース・類・プログラム・学年）を返す。',
+      description: '電気通信大学 情報理工学域の利用者のプロフィール（入学年度・コース・類・プログラム・学年）を返す。卒業要件は入学年度の学修要覧で決まる。夜間主コースは類・プログラムの区分が無いため cluster と program が null、昼間コースでプログラム未定の場合は program が null になる。',
       inputSchema: { type: 'object', properties: {} },
       readOnly: true,
       execute: (input) => call('getProfile', input),
@@ -31,7 +31,7 @@ function buildAgentToolDefinitions(call: <K extends keyof AgentHandlers>(key: K,
     {
       name: 'get_requirement_status',
       description:
-        '卒業要件の区分ごとの修得状況を返す。earned は確定した修得単位、projected は修得見込の科目もすべて修得できた場合の単位、shortfall/projectedShortfall は不足単位。reviews は2年次終了時・卒業研究着手・卒業の各審査の判定。画面に未確定の変更がある場合 hasPendingChanges が true になる（判定は確定済みの記録だけで計算している）。',
+        '卒業要件の区分ごとの修得状況を返す。kind は区分の種類（required=必修, elective=選択, elective-required=選択必修, free=自由, international=留学生向け）。earned は確定した修得単位、projected は修得見込の科目もすべて修得できた場合の単位、shortfall/projectedShortfall は不足単位。reviews は2年次終了時・卒業研究着手・卒業の各審査の判定。画面に未確定の変更がある場合 hasPendingChanges が true になる（判定は確定済みの記録だけで計算している）。',
       inputSchema: { type: 'object', properties: {} },
       readOnly: true,
       execute: (input) => call('getRequirementStatus', input),
@@ -39,7 +39,7 @@ function buildAgentToolDefinitions(call: <K extends keyof AgentHandlers>(key: K,
     {
       name: 'get_term_recommendations',
       description:
-        '指定した学年・学期に修得を推奨する科目を返す。required は未修得の必修、requiredRetake/electiveRetake は再履修が必要な不合格科目、electiveGroups は単位が不足している選択区分ごとの候補、commonCredits は共通単位の不足を埋める候補。各科目の status は現在の履修状態（passed=修得, taking=修得見込, failed=不合格, none=未履修）。',
+        '指定した学年・学期に履修できる、修得を推奨する科目を返す。その学期の科目に加え、指定した学年より前に標準開講された未修得の科目も含む。確定済みの履修記録だけで計算し、画面の未確定の変更は反映しない。required は未修得の必修、requiredRetake/electiveRetake は再履修が必要な不合格科目、electiveGroups は単位が不足している選択区分ごとの候補、commonCredits は共通単位の不足を埋める候補。各科目の status は現在の履修状態（passed=修得, taking=修得見込, failed=不合格, none=未履修）。',
       inputSchema: {
         type: 'object',
         properties: {
@@ -53,7 +53,7 @@ function buildAgentToolDefinitions(call: <K extends keyof AgentHandlers>(key: K,
     },
     {
       name: 'search_subjects',
-      description: '科目名または科目番号の一部で、この利用者の入学年度の科目を最大20件検索する。科目番号（例 COM405a）は set_subject_status で使う。',
+      description: '科目名または科目番号の一部で、この利用者の入学年度の科目を最大20件検索する（全角・半角、大文字・小文字、空白の違いは無視。空の検索語では何も返さない）。同じ授業が複数のプログラムに別の科目番号で載っていることがあり（例: ヒューマンインタフェース）、その場合は同名の科目が複数件返る。科目番号（例 COM405a）は set_subject_status で使う。',
       inputSchema: {
         type: 'object',
         properties: { query: { type: 'string', description: '科目名または科目番号の一部' } },
@@ -65,7 +65,7 @@ function buildAgentToolDefinitions(call: <K extends keyof AgentHandlers>(key: K,
     {
       name: 'set_subject_status',
       description:
-        '科目の履修状態を変更する（passed=修得, taking=修得見込, failed=不合格, none=未履修に戻す）。変更は画面上の未確定の変更として入るだけで、利用者が画面の「更新する」ボタンを押すまで保存・判定には反映されない。変更後は、利用者に内容を確認して「更新する」を押すよう伝えること。',
+        '科目の履修状態を変更する（passed=修得, taking=修得見込, failed=不合格, none=未履修に戻す）。同名の科目が複数の番号で検索された場合はどれを指定してもよく、同一科目として1件だけ記録される（利用者のプログラムの科目番号があればその番号に記録する）。変更は画面上の未確定の変更として入るだけで、利用者が画面の「更新する」ボタンを押すまで保存されず、他のツールの結果（修得状況・推奨科目）にも反映されない。変更後は、利用者に内容を確認して「更新する」を押すよう伝えること。',
       inputSchema: {
         type: 'object',
         properties: {
