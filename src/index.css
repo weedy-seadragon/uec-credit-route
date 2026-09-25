@@ -820,7 +820,6 @@ select {
 /* 月曜から金曜までの授業を、曜日ごとに同じ幅で表示する。 */
 .timetable-grid {
   width: 100%;
-  min-width: 48rem;
   border-collapse: collapse;
   table-layout: fixed;
 }
@@ -909,14 +908,8 @@ select {
   }
 }
 
-/* スマホでは平日5列を画面内に収め、科目名は各セルの中で折り返す。 */
+/* スマホでは余白と文字を詰め、科目名を各セルの中で折り返す。 */
 @media (max-width: 767px) {
-  .timetable-grid {
-    width: 100%;
-    min-width: 0;
-    table-layout: fixed;
-  }
-
   /* 時限列を細くし、授業の5列へ横幅を渡す。 */
   .timetable-grid th:first-child {
     width: 2rem;
