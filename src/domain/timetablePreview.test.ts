@@ -1,6 +1,24 @@
 // 時間割プレビューが、曜日時限を断定できる科目だけを配置することを確かめる。
 import { describe, expect, it } from 'vitest'
-import { buildTimetablePreview } from './timetablePreview'
+import { buildTimetablePreview, maxConcurrentOfferingCount, offeringTermsOverlap } from './timetablePreview'
+
+// 学期全体と個別タームの授業が、同じ週に行われるかを検証する。
+describe('開講期間の重複判定', () => {
+  // 春と夏は交代で開講し、前学期の授業は春の授業と並行する。
+  it('春と夏は重複せず、前学期と春は重複する', () => {
+    expect(offeringTermsOverlap('春ﾀｰﾑ', '夏ﾀｰﾑ')).toBe(false)
+    expect(offeringTermsOverlap('前学期', '春ﾀｰﾑ')).toBe(true)
+    expect(offeringTermsOverlap('後学期', '秋ﾀｰﾑ')).toBe(true)
+    expect(offeringTermsOverlap('秋ﾀｰﾑ', '冬ﾀｰﾑ')).toBe(false)
+  })
+
+  // 春と夏の実験を同じコマに置いても同時に受講するのは1科目だけ。
+  it('同じコマに並ぶ科目の同時開講数を数える', () => {
+    expect(maxConcurrentOfferingCount(['春ﾀｰﾑ', '夏ﾀｰﾑ'])).toBe(1)
+    expect(maxConcurrentOfferingCount(['前学期', '春ﾀｰﾑ'])).toBe(2)
+    expect(maxConcurrentOfferingCount(['前学期', '春ﾀｰﾑ', '夏ﾀｰﾑ'])).toBe(2)
+  })
+})
 
 // 学期の選別、クラス候補の確定、欄外表示の理由をまとめて検証する。
 describe('buildTimetablePreview（修得見込の時間割）', () => {
@@ -77,6 +95,20 @@ describe('buildTimetablePreview（修得見込の時間割）', () => {
     expect(buildTimetablePreview(courses, '前学期').slots.map((slot) => [slot.code, slot.offeringTerm]))
       .toEqual([['CHM101z', '春ﾀｰﾑ'], ['CAR201z', '夏ﾀｰﾑ']])
     expect(buildTimetablePreview(courses, '後学期').slots.map((slot) => slot.code)).toEqual(['C'])
+  })
+
+  // 春の物理実験と夏の化学実験は同じ金3限でも別期間に受講する。
+  it('春と夏の基礎科学実験を同じコマに置いても重複としない', () => {
+    const result = buildTimetablePreview([
+      { code: 'PHY101z', name: '基礎科学実験A1', termType: '前学期', offeredTerms: ['春ﾀｰﾑ'], options: [
+        { term: '春ﾀｰﾑ', slots: [{ day: '金', period: 3 }] },
+      ] },
+      { code: 'CHM101z', name: '基礎科学実験B1', termType: '前学期', offeredTerms: ['夏ﾀｰﾑ'], options: [
+        { term: '夏ﾀｰﾑ', slots: [{ day: '金', period: 3 }] },
+      ] },
+    ], '前学期')
+    expect(result.slots.map((slot) => slot.code)).toEqual(['PHY101z', 'CHM101z'])
+    expect(maxConcurrentOfferingCount(result.slots.map((slot) => slot.offeringTerm))).toBe(1)
   })
 
   // 春と夏の両方に候補が残るなら、同時限でも実際の開講期間は決められない。

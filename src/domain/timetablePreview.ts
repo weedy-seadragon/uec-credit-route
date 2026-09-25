@@ -41,6 +41,36 @@ const SEMESTER_BY_TERM: Readonly<Record<string, string>> = {
   '冬ﾀｰﾑ': '後学期',
 }
 
+/** 学期全体の授業は、その中の両タームで開講するものとして期間を表す。 */
+const PERIODS_BY_TERM: Readonly<Record<string, readonly string[]>> = {
+  '前学期': ['春ﾀｰﾑ', '夏ﾀｰﾑ'],
+  '後学期': ['秋ﾀｰﾑ', '冬ﾀｰﾑ'],
+}
+
+/** 開講期を、実際に授業が行われるタームの一覧にする。 */
+function periodsOf(term: string): readonly string[] {
+  // 個別タームや未知の開講期は、その名前の期間だけに属する。
+  return PERIODS_BY_TERM[term] ?? [term]
+}
+
+/** 同じ曜日時限の2科目について、開講する期間が重なるか判定する。 */
+export function offeringTermsOverlap(first: string, second: string): boolean {
+  // 前学期と春は重なるが、春と夏は別の期間なので重ならない。
+  return periodsOf(first).some((period) => periodsOf(second).includes(period))
+}
+
+/** 同じ曜日時限に置かれる科目のうち、同時期に開講する最大数を返す。 */
+export function maxConcurrentOfferingCount(terms: readonly string[]): number {
+  const periods = new Set(terms.flatMap((term) => periodsOf(term)))
+  let maximum = 0
+  // 各タームに重なる科目数を数え、春と夏など別期間の科目を合算しない。
+  for (const period of periods) {
+    const count = terms.filter((term) => offeringTermsOverlap(term, period)).length
+    maximum = Math.max(maximum, count)
+  }
+  return maximum
+}
+
 /** シラバスの開講期を、プレビューの表示学期へ対応付ける。 */
 export function previewSemesterOf(term: string): string {
   // 前学期・後学期や未知の開講期は、名前をそのまま使う。

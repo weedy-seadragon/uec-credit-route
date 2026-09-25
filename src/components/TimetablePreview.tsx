@@ -1,7 +1,7 @@
 // 修得見込の科目を開講期ごとに並べる週間時間割。表示だけを担当し、記録の保存はしない。
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { buildTimetablePreview, previewSemesterOf } from '../domain/timetablePreview'
+import { buildTimetablePreview, maxConcurrentOfferingCount, previewSemesterOf } from '../domain/timetablePreview'
 import type { TimetablePreviewCourse, TimetablePreviewSlot, UnplacedTimetableCourse } from '../domain/timetablePreview'
 
 /** グリッドに表示する曜日と時限。2026年度の開講情報には土曜・7限まである。 */
@@ -82,11 +82,12 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                   <tr key={period}>
                     <th scope="row">{period}限</th>
                     {DAYS.map((day) => {
-                      // 各コマの科目数から、時間帯が重複しているかを見た目にも示す。
+                      // 同じコマでも春と夏など別期間なら重複扱いにしない。
                       const cellSlots = slotsByCell.get(`${day}:${period}`) ?? []
+                      const concurrentCount = maxConcurrentOfferingCount(cellSlots.map((slot) => slot.offeringTerm))
                       return (
-                        <td key={day} className={cellSlots.length > 1 ? 'timetable-cell-conflict' : undefined}>
-                          {cellSlots.length > 1 && <span className="timetable-conflict-label">同時限に{cellSlots.length}科目</span>}
+                        <td key={day} className={concurrentCount > 1 ? 'timetable-cell-conflict' : undefined}>
+                          {concurrentCount > 1 && <span className="timetable-conflict-label">同時限に{concurrentCount}科目</span>}
                           {cellSlots.map((slot) => <CourseInSlot key={slot.code} slot={slot} entryYear={entryYear} />)}
                         </td>
                       )
