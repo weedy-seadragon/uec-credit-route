@@ -909,6 +909,49 @@ select {
   }
 }
 
+/* スマホでは平日5列を画面内に収め、科目名は各セルの中で折り返す。 */
+@media (max-width: 767px) {
+  .timetable-grid {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  /* 時限列を細くし、授業の5列へ横幅を渡す。 */
+  .timetable-grid th:first-child {
+    width: 2rem;
+  }
+
+  /* 狭いセルでも罫線と文字が重ならない範囲まで余白を詰める。 */
+  .timetable-grid th,
+  .timetable-grid td {
+    padding: 0.2rem 0.1rem;
+    font-size: 0.72rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  /* 英語の長い科目名も列幅を広げず、カード内で折り返す。 */
+  .timetable-course {
+    padding: 0.2rem 0.1rem;
+    font-size: 0.7rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  /* 科目番号は詳細リンクの先で確認できるため、狭い表では隠す。 */
+  .timetable-course small {
+    display: none;
+  }
+
+  /* 重複数の表示もセルの幅の中で改行して読めるようにする。 */
+  .timetable-conflict-label {
+    font-size: 0.65rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+}
+
 /* 土曜などの科目と時限未確定の科目は、表の直下で確認できるようにする。 */
 .timetable-other-days,
 .timetable-unplaced {
