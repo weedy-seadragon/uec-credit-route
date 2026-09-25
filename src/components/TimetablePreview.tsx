@@ -34,19 +34,11 @@ function isEnglishCourseName(name: string): boolean {
   return /[A-Za-z]/.test(name) && /^[\p{Script=Latin}\p{Number}\p{Punctuation}\p{Symbol}\s]+$/u.test(name)
 }
 
-/** 自動ハイフンが使えない環境でも自然な位置で切れるようにする英単語の区切り。 */
-const ENGLISH_WORD_BREAKS: Readonly<Record<string, readonly number[]>> = {
-  academic: [3, 6],
-  intermediate: [2, 5, 7, 9],
-  technical: [4, 6],
-}
-
-/** 長い英単語へ、改行したときだけ見えるソフトハイフンを挿入する。 */
+/** 7文字以上の英単語へ、長さだけで改行用のソフトハイフンを挿入する。 */
 function hyphenateEnglishName(name: string): string {
-  // よく使う語は音節で区切り、その他の長い語は短いまとまりに分ける。
+  // 単語ごとの知識は持たず、最後に3文字以上残る範囲で3文字間隔に区切る。
   return name.replace(/[A-Za-z]{7,}/g, (word) => {
-    const breaks = ENGLISH_WORD_BREAKS[word.toLowerCase()]
-      ?? Array.from({ length: Math.floor((word.length - 3) / 3) }, (_, index) => (index + 1) * 3)
+    const breaks = Array.from({ length: Math.floor((word.length - 3) / 3) }, (_, index) => (index + 1) * 3)
     let start = 0
     const parts: string[] = []
     // 各区切りで元の大文字・小文字を保ったまま単語を分ける。
