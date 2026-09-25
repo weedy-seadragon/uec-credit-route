@@ -63,7 +63,7 @@ npm run build
 
 - 公式シラバスと科目マスタの名称差により開講情報を取得できない科目を、必要時に個別確認する
 - 学期別の修得推奨が、実際の履修計画に十分役立つかを利用者の意見とともに確認する
-- WebMCPによるエージェント操作対応を検討する。対応ブラウザの成熟度、公開する操作の範囲、プロフィール・履修状況などブラウザ内データの読み取り／変更時の確認方法を設計してから着手する
+- WebMCP（AIエージェントからの操作）：`feature/webmcp`ブランチで試作済み（未マージ）。メイン画面を開いている間だけ、`get_profile`・`get_requirement_status`・`get_term_recommendations`・`search_subjects`（読み取り）と`set_subject_status`（書き込み）の5ツールを登録する。書き込みは画面の「未更新の変更」に入るだけで、利用者が「更新する」を押すまで保存・判定に反映しない。WebMCPはChrome 146以降の試験機能（`chrome://flags`の`#enable-webmcp-for-testing`）でだけ動き、非対応ブラウザでは何もしない。公開サイトで一般に使えるようにするにはオリジントライアル登録が必要で、まだ行っていない。実装は`src/webmcp.ts`（ブラウザAPIへの登録）・`src/domain/agentTools.ts`（返す内容の組み立て・入力検証）・`src/components/AgentToolsBridge.ts`（ツール定義と登録のタイミング）・`MainPage.tsx`の`agentHandlers`（各ツールの処理）
 
 ### 運用上の注意（複数セッション併用時）
 

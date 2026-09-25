@@ -42,6 +42,9 @@ import {
 import { isSameClusterOtherProgramSubject } from '../domain/programSuffix'
 import { normalizeDuplicateSubjectRecords, preferredSubjectCode, setSubjectStatusWithoutDuplicates } from '../domain/subjectRecords'
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
+import AgentToolsBridge from '../components/AgentToolsBridge'
+import type { AgentHandlers } from '../components/AgentToolsBridge'
+import { parseAgentStatus, searchSubjects, summarizeRequirementStatus } from '../domain/agentTools'
 
 /** プロフィールのうち、要件セットを引くのに必要な項目が揃っている状態（夜間主はcluster: null） */
 interface LoadedProfile extends Omit<Profile, 'program'> {
@@ -689,41 +692,6 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     (r) => requiredCodes.has(r.code) && committed.get(r.code) == null && isVisibleForTermFilter(r.code),
   )
 
-  // 修得推奨は一覧全体の表示範囲と独立した学年・学期で絞り、必修・再履修・不足選択区分を分けて案内する。
-  const recommendationTermFilter = TERM_OPTIONS.find((t) => t.key === recommendationTermKey)?.filter ?? 'all'
-  const recommendationCandidates = recommend({
-    requirementSet, evaluation, records: committed, subjects: recommendSubjects,
-    currentGrade: profile.grade, termFilter: recommendationTermFilter,
-  })
-  // recommendationCandidatesは既に対象学期で絞り、優先順に並んでいるため、この後の候補にもその順を保つ。
-  const termRequiredRecommendations = recommendationCandidates.filter(
-    (r) => requiredCodes.has(r.code) && committed.get(r.code) == null,
-  )
-  // 必修の不合格は卒業要件上もう一度修得する必要があるため、再履修を明確に推奨する。
-  // 再履修専用のクラスがある科目は、不合格一覧の再履用案内で時限まで確認できるため、ここへ重複して出さない。
-  const termRequiredRetakeRecommendations = recommendationCandidates.filter(
-    (r) => committed.get(r.code) === 'failed'
-      && requiredCodes.has(r.code)
-      && !hasDedicatedRetakeClass(r.code, classAssignments),
-  )
-  // 選択科目の不合格は別の科目で区分を満たす選択肢もあるため、「必修」とは分けて候補として示す。
-  const termElectiveRetakeRecommendations = recommendationCandidates.filter(
-    (r) => committed.get(r.code) === 'failed'
-      && !requiredCodes.has(r.code)
-      && !hasDedicatedRetakeClass(r.code, classAssignments),
-  )
-  // 選択区分は「今学期に候補があるか」も含めてすべて出す。候補の中身は画面で折りたたんで確認する。
-  // 修得見込（taking）の科目も、まだ確定していない以上は候補として出したままにし、
-  // 一覧側で「※修得見込」と分かるようにする（不合格だけは再履修候補として別枠にあるためここでは除く）。
-  const termElectiveRecommendations = boundaryGroups
-    .filter((group) => group.kind === 'elective' && group.shortfall > 0)
-    .map((group) => ({
-      group,
-      // 同名の科目を別の番号で記録済みなら、記録した方の番号だけを候補に残す（同じ授業の二重表示を防ぐ）。
-      candidates: recommendationCandidates.filter(
-        (r) => committed.get(r.code) !== 'failed' && !isRecordedUnderOtherCode(r.code) && group.subjects.includes(r.code),
-      ),
-    }))
   // 共通単位は通常の選択区分と別計算なので、共通単位として直接算入される科目だけを専用の候補にする。
   // commonOnlyRemainingは選択科目一覧（プルダウン表示）用に修得見込を除いているため、ここでは
   // 修得見込も含めた別の一覧を使う。
@@ -731,9 +699,53 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     ...commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed')),
     ...(requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed'),
   ]
-  const termCommonRecommendations = evaluation.commonCredits.shortfall > 0
-    ? recommendationCandidates.filter((r) => committed.get(r.code) !== 'failed' && commonOnlyRemainingIncludingPlanned.includes(r.code))
-    : []
+  /**
+   * 指定した学年・学期の修得推奨を、必修・再履修・不足選択区分・共通単位に分けて求める。
+   * 画面の「学期別の修得推奨科目」と、AIエージェント向けのツール（WebMCP）の両方で同じ結果を使う。
+   */
+  function computeTermRecommendations(termFilter: TermFilter) {
+    const candidates = recommend({
+      requirementSet: requirementSet!, evaluation, records: committed, subjects: recommendSubjects,
+      currentGrade: profile.grade, termFilter,
+    })
+    // candidatesは既に対象学期で絞り、優先順に並んでいるため、この後の候補にもその順を保つ。
+    const required = candidates.filter((r) => requiredCodes.has(r.code) && committed.get(r.code) == null)
+    // 必修の不合格は卒業要件上もう一度修得する必要があるため、再履修を明確に推奨する。
+    // 再履修専用のクラスがある科目は、不合格一覧の再履用案内で時限まで確認できるため、ここへ重複して出さない。
+    const requiredRetake = candidates.filter(
+      (r) => committed.get(r.code) === 'failed' && requiredCodes.has(r.code) && !hasDedicatedRetakeClass(r.code, classAssignments),
+    )
+    // 選択科目の不合格は別の科目で区分を満たす選択肢もあるため、「必修」とは分けて候補として示す。
+    const electiveRetake = candidates.filter(
+      (r) => committed.get(r.code) === 'failed' && !requiredCodes.has(r.code) && !hasDedicatedRetakeClass(r.code, classAssignments),
+    )
+    // 選択区分は「今学期に候補があるか」も含めてすべて出す。候補の中身は画面で折りたたんで確認する。
+    // 修得見込（taking）の科目も、まだ確定していない以上は候補として出したままにし、
+    // 一覧側で「※修得見込」と分かるようにする（不合格だけは再履修候補として別枠にあるためここでは除く）。
+    const electiveGroups = boundaryGroups
+      .filter((group) => group.kind === 'elective' && group.shortfall > 0)
+      .map((group) => ({
+        group,
+        // 同名の科目を別の番号で記録済みなら、記録した方の番号だけを候補に残す（同じ授業の二重表示を防ぐ）。
+        candidates: candidates.filter(
+          (r) => committed.get(r.code) !== 'failed' && !isRecordedUnderOtherCode(r.code) && group.subjects.includes(r.code),
+        ),
+      }))
+    const common = evaluation.commonCredits.shortfall > 0
+      ? candidates.filter((r) => committed.get(r.code) !== 'failed' && commonOnlyRemainingIncludingPlanned.includes(r.code))
+      : []
+    return { required, requiredRetake, electiveRetake, electiveGroups, common }
+  }
+
+  // 修得推奨は一覧全体の表示範囲と独立した学年・学期で絞り、必修・再履修・不足選択区分を分けて案内する。
+  const recommendationTermFilter = TERM_OPTIONS.find((t) => t.key === recommendationTermKey)?.filter ?? 'all'
+  const {
+    required: termRequiredRecommendations,
+    requiredRetake: termRequiredRetakeRecommendations,
+    electiveRetake: termElectiveRetakeRecommendations,
+    electiveGroups: termElectiveRecommendations,
+    common: termCommonRecommendations,
+  } = computeTermRecommendations(recommendationTermFilter)
   // 選択区分と共通単位を取り切ったときは、候補が空の入れ子そのものを表示しない。
   const hasOutstandingTermRecommendationGroups = termElectiveRecommendations.length > 0
     || evaluation.commonCredits.shortfall > 0
@@ -1000,47 +1012,50 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 科目一覧から開く詳細ページと同じ場所へ案内する。
   // （2026-09-07、開発者が「理数基礎・類共通基礎の必修や回路システム学第一第二等がシラバスに
   // 飛べない」と報告して発覚）
-  function nameLink(code: string): ReactNode {
-    const name = nameOf(code)
+  // 科目のシラバスURLを、プロフィールのクラス情報で1つに絞り込んで返す。一意に決まらなければ null。
+  // 画面の科目名リンク（nameLink）とAIエージェント向けツールの両方で使う。
+  function syllabusUrlOf(code: string): string | null {
     const offerings = subjectsByCode.get(code)?.offerings
-    // シラバスが無い場合も、科目詳細への導線は必ず残す。
-    const detailLink = <Link to={`/courses/${code}?year=${profile.entryYear}`}>{name}</Link>
-    if (!offerings || offerings.length === 0) return nameWithAvailability(code, detailLink)
+    if (!offerings || offerings.length === 0) return null
     // 曜日時限だけを補った科目（学域特別講義A/Bなど）は syllabusUrl が空文字になる。
     // 空のhrefは今見ているサイト自身へのリンクになるため、リンク候補として数えない。
     const urls = new Set(offerings.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
-    if (urls.size === 0) return nameWithAvailability(code, detailLink)
-    let target = offerings.filter((offering) => offering.syllabusUrl.length > 0)
+    if (urls.size === 0) return null
+    // URLが1つで、全セクションがそのURLを持つなら絞り込み不要。
+    if (urls.size === 1 && offerings.every((o) => o.syllabusUrl.length > 0)) return offerings[0].syllabusUrl
     // URLが複数ある場合だけ、プロフィールのクラス情報で受講セクションを絞り込む。
-    if (urls.size !== 1 || target.length !== offerings.length) {
-      const isRetaking = committed.get(code) === 'failed'
-      const subjectTermType = subjectsByCode.get(code)?.termType
-      const resolve = (retaking: boolean) =>
-        resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, retaking, subjectTermType)
-      let matched = resolve(isRetaking)
-      let matchedUrls = new Set(matched?.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
-      // 不合格（再履修中）の科目で、再履修向けの枠（class_id「再履生」等）が見つからない・
-      // 複数の候補に分かれて一意に決まらない場合でも、シラバス自体は同じ科目のものなので、
-      // 通常セクションでの絞り込みに落として（時限までは保証しないが）リンクだけは出す
-      // （2026-09-08、開発者の指摘：不可にした科目がシラバスに飛べなくなるのは困る。
-      // 曜日時限の表示＝dayPeriodTag側は、誤った時刻を示すと実害があるのでこのフォールバックはしない）
-      if (isRetaking && matchedUrls.size !== 1) {
-        const fallback = resolve(false)
-        const fallbackUrls = new Set(fallback?.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
-        if (fallbackUrls.size === 1) {
-          matched = fallback
-          matchedUrls = fallbackUrls
-        }
+    const isRetaking = committed.get(code) === 'failed'
+    const subjectTermType = subjectsByCode.get(code)?.termType
+    const resolve = (retaking: boolean) =>
+      resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, retaking, subjectTermType)
+    let matched = resolve(isRetaking)
+    let matchedUrls = new Set(matched?.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
+    // 不合格（再履修中）の科目で、再履修向けの枠（class_id「再履生」等）が見つからない・
+    // 複数の候補に分かれて一意に決まらない場合でも、シラバス自体は同じ科目のものなので、
+    // 通常セクションでの絞り込みに落として（時限までは保証しないが）リンクだけは出す
+    // （2026-09-08、開発者の指摘：不可にした科目がシラバスに飛べなくなるのは困る。
+    // 曜日時限の表示＝dayPeriodTag側は、誤った時刻を示すと実害があるのでこのフォールバックはしない）
+    if (isRetaking && matchedUrls.size !== 1) {
+      const fallback = resolve(false)
+      const fallbackUrls = new Set(fallback?.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
+      if (fallbackUrls.size === 1) {
+        matched = fallback
+        matchedUrls = fallbackUrls
       }
-      // シラバスを一意に選べない場合も、科目詳細には全セクションの候補が載っている。
-      // そこで科目名を詳細ページへの内部リンクにし、利用者が教員を選べるようにする。
-      if (!matched || matched.length === 0 || matchedUrls.size !== 1) {
-        return nameWithAvailability(code, detailLink)
-      }
-      target = matched.filter((offering) => offering.syllabusUrl.length > 0)
     }
+    // 絞り込んでも1つに決まらなければ null（呼び出し側で科目詳細ページへの導線などに切り替える）。
+    if (!matched || matched.length === 0 || matchedUrls.size !== 1) return null
+    return [...matchedUrls][0]
+  }
+  function nameLink(code: string): ReactNode {
+    const name = nameOf(code)
+    // シラバスが無い場合も、科目詳細への導線は必ず残す。
+    // シラバスを一意に選べない場合も、科目詳細には全セクションの候補が載っているので、
+    // 科目名を詳細ページへの内部リンクにし、利用者が教員を選べるようにする。
+    const url = syllabusUrlOf(code)
+    if (url == null) return nameWithAvailability(code, <Link to={`/courses/${code}?year=${profile.entryYear}`}>{name}</Link>)
     return nameWithAvailability(code, (
-      <a href={target[0].syllabusUrl} target="_blank" rel="noopener noreferrer">
+      <a href={url} target="_blank" rel="noopener noreferrer">
         {name}
       </a>
     ))
@@ -1296,6 +1311,99 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (!slots || slots.length === 0) return Number.POSITIVE_INFINITY
     return Math.min(...slots.map((s) => (DAY_RANK[s.day] ?? DAY_RANK_UNKNOWN) * 100 + s.period))
   }
+  // AIエージェント向けに、曜日時限を文字列で返す（dayPeriodTagの文字だけ版）。
+  // クラスで絞り込めない・時限の無い科目は、学修要覧の備考（夏期集中講義など）か null を返す。
+  function scheduleTextOf(code: string): string | null {
+    const subject = subjectsByCode.get(code)
+    const offerings = subject?.offerings
+    if (!offerings || offerings.length === 0) return subject?.note ?? null
+    const slots =
+      offerings.length === 1
+        ? offerings[0].slots
+        : resolveSlotsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, committed.get(code) === 'failed')
+    if (!slots || slots.length === 0) return subject?.note ?? null
+    return slots.map((s) => `${s.day}・${s.period}限`).join('/')
+  }
+  // 同名で同じ類のプログラム科目（画面上で同一科目として扱う番号）に付いている確定済みの状態を探す。
+  // 見つからなければ undefined（呼び出し側で未履修として扱う）。
+  function recordedStatusUnderEquivalentCode(code: string): SubjectStatus | undefined {
+    const name = subjectsByCode.get(code)?.name
+    if (name == null) return undefined
+    // 確定済みの記録を1件ずつ見て、同名かつ同一科目として扱える番号のものを返す。
+    for (const [recordedCode, status] of committed) {
+      if (subjectsByCode.get(recordedCode)?.name === name && isEquivalentProgramSubject(code, recordedCode)) return status
+    }
+    return undefined
+  }
+  // AIエージェントに返す科目1件ぶんの情報。科目番号だけでなく名前・単位・時限・今の履修状態をまとめる。
+  function agentSubjectInfo(code: string) {
+    const subject = subjectsByCode.get(code)
+    return {
+      code,
+      name: nameOf(code),
+      credits: subject?.credits ?? null,
+      standardYear: subject?.standardYear ?? null,
+      term: subject?.termType ?? null,
+      schedule: scheduleTextOf(code),
+      // 未履修は記録が無いので "none" として返す（set_subject_status の指定値と同じ表記）。
+      // 同名の科目が別の番号（自分や他のプログラムの番号）で記録されていれば、その状態を返す。
+      status: committed.get(code) ?? recordedStatusUnderEquivalentCode(code) ?? 'none',
+      syllabusUrl: syllabusUrlOf(code),
+    }
+  }
+  // AIエージェント向けツールの処理を、この描画時点の最新の状態で組み立て直す（AgentToolsBridge に渡す）。
+  // 読み取り系は「確定済み（committed）」の記録を返し、書き込みは画面の下書き（draft）にだけ反映して、
+  // 確定は利用者が「更新する」を押したときに行う（エージェントが勝手に記録を確定させないため）。
+  const agentHandlers: AgentHandlers = {
+    getProfile: () => ({
+      entryYear: profile.entryYear,
+      course: profile.course === 'evening' ? '夜間主コース' : '昼間コース',
+      cluster: profile.cluster,
+      program: programName,
+      grade: profile.grade,
+    }),
+    getRequirementStatus: () => ({
+      ...summarizeRequirementStatus(evaluation, reviewStatuses),
+      hasPendingChanges,
+    }),
+    getTermRecommendations: (input) => {
+      const year = input.year
+      const term = input.term
+      if (typeof year !== 'number' || !Number.isInteger(year) || year < 1 || year > 4) return { error: 'year は1〜4の整数で指定してください' }
+      if (term !== '前学期' && term !== '後学期') return { error: 'term は「前学期」か「後学期」で指定してください' }
+      const result = computeTermRecommendations({ year, half: term })
+      return {
+        required: result.required.map((r) => agentSubjectInfo(r.code)),
+        requiredRetake: result.requiredRetake.map((r) => agentSubjectInfo(r.code)),
+        electiveRetake: result.electiveRetake.map((r) => agentSubjectInfo(r.code)),
+        electiveGroups: result.electiveGroups.map(({ group, candidates }) => ({
+          group: group.label ?? group.name,
+          shortfall: group.shortfall,
+          projectedShortfall: group.projectedShortfall,
+          candidates: candidates.map((r) => agentSubjectInfo(r.code)),
+        })),
+        commonCredits: {
+          shortfall: evaluation.commonCredits.shortfall,
+          candidates: result.common.map((r) => agentSubjectInfo(r.code)),
+        },
+      }
+    },
+    searchSubjects: (input) => {
+      if (typeof input.query !== 'string') return { error: 'query に科目名か科目番号の一部を文字列で指定してください' }
+      return { subjects: searchSubjects(subjectsByCode.values(), input.query, 20).map((s) => agentSubjectInfo(s.code)) }
+    },
+    setSubjectStatus: (input) => {
+      const code = input.code
+      if (typeof code !== 'string' || !subjectsByCode.has(code)) return { error: `科目番号 ${String(code)} は、このプロフィールの科目データにありません` }
+      const parsed = parseAgentStatus(input.status)
+      if (!parsed.ok) return { error: 'status は passed・taking・failed・none のどれかで指定してください' }
+      handleDraftChange(code, parsed.status)
+      return {
+        ok: true,
+        message: `${nameOf(code)}（${code}）を${parsed.status === 'passed' ? '修得' : parsed.status === 'taking' ? '修得見込' : parsed.status === 'failed' ? '不合格' : '未履修'}に変更しました。まだ確定していません。利用者が画面上部の「更新する」を押すと確定します。`,
+      }
+    },
+  }
   // 修得推奨では、選択した学期より前の標準開講科目は曜日時限に縛られないため、時限を添えない。
   // 同じ年の前学期から後学期へ進んだ場合も、既に終わった前学期として扱う。
   function recommendationDayPeriodTag(code: string) {
@@ -1366,6 +1474,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     // 下側に余白を持たせる：最後の区分（類専門など）の<summary>がページ最下端にくっついて
     // クリックしづらくならないようにするため
     <main className={`main-page${hasPendingChanges ? ' main-page--has-pending-changes' : ''}`} style={{ paddingBottom: '6rem' }}>
+      {/* AIエージェント（WebMCP）向けのツール登録。画面には何も表示しない */}
+      <AgentToolsBridge handlers={agentHandlers} />
       {/* 編集中の値が確定済みの判定へまだ反映されていない間だけ、どこからでも更新できる追従バーを出す。 */}
       {hasPendingChanges && (
         <button
