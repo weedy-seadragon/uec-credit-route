@@ -16,18 +16,35 @@ export interface TimetablePreviewCourse {
 export interface TimetablePreviewSlot extends ScheduleSlot {
   code: string
   name: string
+  /** 前学期・後学期以外の開講期なら、科目名に添えて表示する。 */
+  offeringTerm: string
 }
 
 /** 選択した開講期の科目だが、曜日時限を断定できないもの。 */
 export interface UnplacedTimetableCourse {
   code: string
   name: string
+  reason: 'no-offering' | 'no-class' | 'no-slot' | 'ambiguous-term' | 'ambiguous-slot'
 }
 
 /** 時間割グリッドと、その下に表示する未確定科目。 */
 export interface TimetablePreviewResult {
   slots: TimetablePreviewSlot[]
   unplaced: UnplacedTimetableCourse[]
+}
+
+/** 春・夏タームは前学期、秋・冬タームは後学期として扱う。 */
+const SEMESTER_BY_TERM: Readonly<Record<string, string>> = {
+  '春ﾀｰﾑ': '前学期',
+  '夏ﾀｰﾑ': '前学期',
+  '秋ﾀｰﾑ': '後学期',
+  '冬ﾀｰﾑ': '後学期',
+}
+
+/** シラバスの開講期を、プレビューの表示学期へ対応付ける。 */
+export function previewSemesterOf(term: string): string {
+  // 前学期・後学期や未知の開講期は、名前をそのまま使う。
+  return SEMESTER_BY_TERM[term] ?? term
 }
 
 /** 時限の並び順や重複に左右されず、候補どうしのコマを比較するためのキー。 */
@@ -46,16 +63,37 @@ export function buildTimetablePreview(
 
   // 実際のシラバスの開講期を優先し、情報がない科目だけ学修要覧の学期を使う。
   for (const course of courses) {
+    // 例: 学修要覧では後学期でもシラバスが夏タームなら、シラバスを優先して前学期に出す。
     const belongsToTerm = course.offeredTerms.length > 0
-      ? course.offeredTerms.includes(term)
+      ? course.offeredTerms.some((offeringTerm) => previewSemesterOf(offeringTerm) === term)
       : course.termType === null || course.termType === term
+    // 別の学期だけに開講する科目は、この学期のプレビューから外す。
     if (!belongsToTerm) continue
 
-    const options = course.options.filter((option) => option.term === term)
-    // クラスを絞れない、時限が空、または候補間で時限が異なる場合は誤配置を避ける。
-    if (options.length === 0 || options.some((option) => option.slots.length === 0)
-      || options.some((option) => slotKey(option.slots) !== slotKey(options[0].slots))) {
-      unplaced.push({ code: course.code, name: course.name })
+    const options = course.options.filter((option) => previewSemesterOf(option.term) === term)
+    // シラバスの開講情報自体が無い科目は、科目表の学期に基づく欄外表示にする。
+    if (course.offeredTerms.length === 0) {
+      unplaced.push({ code: course.code, name: course.name, reason: 'no-offering' })
+      continue
+    }
+    // 受講クラスを絞れず、その学期の開講候補を得られない場合は配置しない。
+    if (options.length === 0) {
+      unplaced.push({ code: course.code, name: course.name, reason: 'no-class' })
+      continue
+    }
+    // 集中講義など、シラバスに曜日時限が無い科目は配置しない。
+    if (options.some((option) => option.slots.length === 0)) {
+      unplaced.push({ code: course.code, name: course.name, reason: 'no-slot' })
+      continue
+    }
+    // 春・夏など別タームの候補が残る場合は、同じ曜日時限でも期間を断定しない。
+    if (new Set(options.map((option) => option.term)).size > 1) {
+      unplaced.push({ code: course.code, name: course.name, reason: 'ambiguous-term' })
+      continue
+    }
+    // 同じターム内でもクラスごとに曜日時限が異なれば、両方を仮置きしない。
+    if (options.some((option) => slotKey(option.slots) !== slotKey(options[0].slots))) {
+      unplaced.push({ code: course.code, name: course.name, reason: 'ambiguous-slot' })
       continue
     }
 
@@ -63,9 +101,10 @@ export function buildTimetablePreview(
     const seen = new Set<string>()
     for (const slot of options[0].slots) {
       const key = `${slot.day}:${slot.period}`
+      // 同じ科目の同じコマが重複登録されていても、カードは一枚だけにする。
       if (seen.has(key)) continue
       seen.add(key)
-      slots.push({ ...slot, code: course.code, name: course.name })
+      slots.push({ ...slot, code: course.code, name: course.name, offeringTerm: options[0].term })
     }
   }
 

@@ -22,7 +22,7 @@ import { buildNameToCodes, derivePrerequisites } from '../domain/prerequisites'
 import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
 import { entryYearLabel, getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
-import type { TransferBucketItem } from '../data/requirementSets'
+import type { SubjectOffering, TransferBucketItem } from '../data/requirementSets'
 import { hasDedicatedRetakeClass, resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
 import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
 import type { PlannedCourseSchedule } from '../domain/scheduleConflicts'
@@ -42,6 +42,8 @@ import {
 import { isSameClusterOtherProgramSubject } from '../domain/programSuffix'
 import { normalizeDuplicateSubjectRecords, preferredSubjectCode, setSubjectStatusWithoutDuplicates } from '../domain/subjectRecords'
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
+import TimetablePreview from '../components/TimetablePreview'
+import type { TimetablePreviewCourse } from '../domain/timetablePreview'
 import AgentToolsBridge from '../components/AgentToolsBridge'
 import type { AgentHandlers } from '../components/AgentToolsBridge'
 import { parseAgentStatus, searchSubjects, summarizeRequirementStatus } from '../domain/agentTools'
@@ -803,6 +805,22 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     })
   }
 
+  /** 修得予定の1科目について、通常履修・再履修の別に合わせた開講候補を返す。 */
+  function resolvePlannedOfferings(code: string, plannedRetakingCodes: ReadonlySet<string>): SubjectOffering[] {
+    const subject = subjectsByCode.get(code)
+    const offerings = subject?.offerings
+    // 開講情報がない科目は、時限を推測せず候補を空にする。
+    if (!offerings || offerings.length === 0) return []
+    // 再履修は再履修専用の候補だけに絞り、見つからなければ通常の枠へ推測で置かない。
+    if (plannedRetakingCodes.has(code)) {
+      return resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, true, subject.termType) ?? []
+    }
+    // 1セクションしかなければそのまま使い、複数あるときはプロフィールのクラスで絞る。
+    return offerings.length === 1
+      ? offerings
+      : resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, false, subject.termType) ?? []
+  }
+
   /** 修得予定の中から、プロフィールに基づいて曜日時限を比較できる開講候補だけを組み立てる。 */
   function plannedCourseSchedules(
     records: ReadonlyMap<string, SubjectStatus>,
@@ -812,19 +830,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     // 修得予定の各科目について、通常履修または再履修用として選べる開講セクションを解決する。
     for (const [code, status] of records) {
       if (status !== 'taking') continue
-      const subject = subjectsByCode.get(code)
-      const offerings = subject?.offerings
-      if (!offerings || offerings.length === 0) continue
-      const isRetaking = plannedRetakingCodes.has(code)
-      // 再履修予定は、再履用のセクションが見つかる場合だけその時限を使う。
-      // 見つからない再履修は自由な時間に取れる前提として、警告対象から外す。
-      const candidates = isRetaking
-        ? resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, true, subject.termType)
-        : offerings.length === 1
-          ? offerings
-          : resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, false, subject.termType)
+      // 更新時の重複警告とプレビューが、同じクラス判定を使うようにする。
+      const candidates = resolvePlannedOfferings(code, plannedRetakingCodes)
       // クラスを絞れない・オンデマンドでslotsが無い科目は、誤警告を避けるため比較しない。
-      const options = (candidates ?? [])
+      const options = candidates
         .filter((offering) => offering.slots.length > 0)
         .map((offering) => ({ term: offering.term, slots: offering.slots }))
       if (options.length > 0) schedules.push({ code, options })
@@ -1470,6 +1479,24 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // draftは未更新の変更も含むため、科目の選択直後に時間割だけをプレビューできる。
+  // 卒業要件の判定と保存は、従来どおり「更新する」でcommittedへ反映する。
+  const timetablePreviewCourses: TimetablePreviewCourse[] = []
+  for (const [code, status] of draft) {
+    // 修得済み・不合格・未履修は、今回の時間割に入れない。
+    if (status !== 'taking') continue
+    const subject = subjectsByCode.get(code)
+    const offerings = subject?.offerings ?? []
+    const candidates = resolvePlannedOfferings(code, retakingPlanCodes)
+    timetablePreviewCourses.push({
+      code,
+      name: nameOf(code),
+      termType: subject?.termType ?? null,
+      offeredTerms: [...new Set(offerings.map((offering) => offering.term))],
+      options: candidates.map((offering) => ({ term: offering.term, slots: offering.slots })),
+    })
+  }
+
   return (
     // 下側に余白を持たせる：最後の区分（類専門など）の<summary>がページ最下端にくっついて
     // クリックしづらくならないようにするため
@@ -1515,6 +1542,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <p className="quick-section-links-title">目次</p>
         <div className="quick-section-links-grid">
           <button type="button" onClick={() => scrollToSection('earned-credits')} aria-controls="earned-credits"><span className="page-move-icon">▼</span>修得した単位</button>
+          <button type="button" onClick={() => scrollToSection('timetable-preview')} aria-controls="timetable-preview"><span className="page-move-icon">▼</span>時間割プレビュー</button>
           <button type="button" onClick={() => scrollToSection('failed-subjects')} aria-controls="failed-subjects"><span className="page-move-icon">▼</span>不合格</button>
           <button type="button" onClick={() => scrollToSection('remaining-required')} aria-controls="remaining-required"><span className="page-move-icon">▼</span>残りの必修</button>
           <button type="button" onClick={() => scrollToSection('elective-subjects')} aria-controls="elective-subjects"><span className="page-move-icon">▼</span>選択科目</button>
@@ -1736,6 +1764,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         })()}
         {plannedSubjects.length === 0 && <p>・（ありません）</p>}
       </section>
+
+      {/* 修得見込の直後に、編集中の選択を週の曜日時限へ並べた表示だけのプレビューを置く。 */}
+      <TimetablePreview courses={timetablePreviewCourses} entryYear={profile.entryYear} hasPendingChanges={hasPendingChanges} />
 
       <section id="failed-subjects" className="requirement-section failed-section">
         <h2>不合格になった科目（{failedSubjects.length}科目）</h2>

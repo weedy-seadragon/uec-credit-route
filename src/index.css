@@ -688,7 +688,7 @@ select {
   border-right: 0;
 }
 
-.quick-section-links button:nth-child(n + 4) {
+.quick-section-links button:last-child {
   border-bottom: 0;
 }
 
@@ -786,6 +786,137 @@ select {
 .planned-section {
   border: 2px solid #d9d900;
   background: color-mix(in srgb, #d9d900 4%, Canvas);
+}
+
+/* 時間割は科目一覧の続きとして読めるよう、専用の薄い青い枠で示す。 */
+.timetable-preview-section {
+  border-color: #8caacb;
+  background: color-mix(in srgb, #dcecff 12%, Canvas);
+}
+
+/* 学期の選択を表のすぐ上に置き、何を表示中か分かるようにする。 */
+.timetable-term-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.15rem 0 0.75rem;
+  font-weight: 650;
+}
+
+/* 小さい画面では表だけ横に動かし、ページ全体の横スクロールを防ぐ。 */
+.timetable-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-radius: 0.4rem;
+}
+
+/* キーボードで横スクロール領域へ移ったことを見えるようにする。 */
+.timetable-scroll:focus-visible {
+  outline: 3px solid #3168ad;
+  outline-offset: 2px;
+}
+
+/* 土曜と7限を含む一週間を、曜日ごとに同じ幅で表示する。 */
+.timetable-grid {
+  width: 100%;
+  min-width: 48rem;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* 開講期は選択欄にあるため、表内のcaptionは読み上げ専用にして見出しを重複させない。 */
+.timetable-grid caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* 曜日・時限と授業の境界を罫線で明確にする。 */
+.timetable-grid th,
+.timetable-grid td {
+  padding: 0.4rem;
+  border-right: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  overflow-wrap: anywhere;
+}
+
+/* 左端の時限列は授業名より狭くし、表に使える幅を増やす。 */
+.timetable-grid th:first-child {
+  width: 3rem;
+}
+
+/* 見出しには淡い背景を付け、横スクロール中も曜日を読み取りやすくする。 */
+.timetable-grid th {
+  background: color-mix(in srgb, #8caacb 23%, Canvas);
+  text-align: center;
+}
+
+/* 空きコマも同じ高さで示し、曜日ごとの配置を比較しやすくする。 */
+.timetable-grid td {
+  height: 4.5rem;
+  vertical-align: top;
+  background: Canvas;
+}
+
+/* 同じコマに2科目以上あれば淡い注意色を付け、重複を目で見つけられるようにする。 */
+.timetable-grid td.timetable-cell-conflict {
+  background: color-mix(in srgb, #f7bc69 27%, Canvas);
+}
+
+/* 科目名と番号を1枚のカードにまとめ、セル内に複数科目がある場合も分けて表示する。 */
+.timetable-course {
+  display: block;
+  margin-bottom: 0.3rem;
+  padding: 0.35rem 0.4rem;
+  border: 1px solid #7298c0;
+  border-radius: 0.3rem;
+  background: color-mix(in srgb, #b9d7f6 35%, Canvas);
+  color: #174e86;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+/* 科目番号は補助情報として名前の下に小さく置く。 */
+.timetable-course small {
+  display: block;
+  margin-top: 0.1rem;
+  color: CanvasText;
+  font-size: 0.77rem;
+}
+
+/* 時限重複の表示は、カードの前に短い注意として置く。 */
+.timetable-conflict-label {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: #9c4e00;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* ダークモードではリンクと注意の文字を明るくして、科目カード上でも読みやすくする。 */
+@media (prefers-color-scheme: dark) {
+  .timetable-course {
+    color: #d3e7ff;
+  }
+
+  .timetable-conflict-label {
+    color: #ffd290;
+  }
+}
+
+/* 時限が決まらない科目は表の直下で確認できるようにする。 */
+.timetable-unplaced {
+  margin-top: 1rem;
+}
+
+/* 未確定科目の説明が表から離れすぎないよう、見出しの上下を詰める。 */
+.timetable-unplaced h3 {
+  margin: 0 0 0.3rem;
 }
 
 .section-guidance,
