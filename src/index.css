@@ -817,7 +817,7 @@ select {
   outline-offset: 2px;
 }
 
-/* 土曜と7限を含む一週間を、曜日ごとに同じ幅で表示する。 */
+/* 月曜から金曜までの授業を、曜日ごとに同じ幅で表示する。 */
 .timetable-grid {
   width: 100%;
   min-width: 48rem;
@@ -909,12 +909,14 @@ select {
   }
 }
 
-/* 時限が決まらない科目は表の直下で確認できるようにする。 */
+/* 土曜などの科目と時限未確定の科目は、表の直下で確認できるようにする。 */
+.timetable-other-days,
 .timetable-unplaced {
   margin-top: 1rem;
 }
 
-/* 未確定科目の説明が表から離れすぎないよう、見出しの上下を詰める。 */
+/* 表の下に並ぶ科目一覧の見出しを、説明や一覧に近づける。 */
+.timetable-other-days h3,
 .timetable-unplaced h3 {
   margin: 0 0 0.3rem;
 }

@@ -4,9 +4,8 @@ import { Link } from 'react-router-dom'
 import { buildTimetablePreview, maxConcurrentOfferingCount, previewSemesterOf } from '../domain/timetablePreview'
 import type { TimetablePreviewCourse, TimetablePreviewSlot, UnplacedTimetableCourse } from '../domain/timetablePreview'
 
-/** グリッドに表示する曜日と時限。2026年度の開講情報には土曜・7限まである。 */
-const DAYS = ['月', '火', '水', '木', '金', '土'] as const
-const PERIODS = [1, 2, 3, 4, 5, 6, 7] as const
+/** グリッドに表示する平日。土曜などの授業は表の下にまとめる。 */
+const DAYS: readonly string[] = ['月', '火', '水', '木', '金']
 const BASE_TERMS = ['前学期', '後学期'] as const
 
 /** 画面に並べる開講期を、基本の前後学期と修得見込科目の実際の開講期から作る。 */
@@ -48,13 +47,23 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
   const [term, setTerm] = useState('前学期')
   const result = buildTimetablePreview(courses, term)
   const terms = availableTerms(courses)
-  // 同じコマの科目をまとめ、重複した場合も両方の科目名を読めるようにする。
+  // 平日の科目をコマごとに、土曜などの科目を科目番号ごとにまとめる。
   const slotsByCell = new Map<string, TimetablePreviewSlot[]>()
+  const otherDaySlotsByCourse = new Map<string, TimetablePreviewSlot[]>()
+  let lastPeriod = 5
   for (const slot of result.slots) {
-    // 曜日と時限を連結したキーで、同時限の科目を1つのセルに集める。
-    const key = `${slot.day}:${slot.period}`
-    slotsByCell.set(key, [...(slotsByCell.get(key) ?? []), slot])
+    // 平日は最大時限を更新し、同じコマの科目を両方残す。
+    if (DAYS.includes(slot.day)) {
+      lastPeriod = Math.max(lastPeriod, slot.period)
+      const key = `${slot.day}:${slot.period}`
+      slotsByCell.set(key, [...(slotsByCell.get(key) ?? []), slot])
+    } else {
+      // 表にない曜日のコマも科目単位で保持し、画面から消さない。
+      otherDaySlotsByCourse.set(slot.code, [...(otherDaySlotsByCourse.get(slot.code) ?? []), slot])
+    }
   }
+  // 7限の授業だけがあっても、6限を飛ばさず1限から順に表示する。
+  const periods = Array.from({ length: lastPeriod }, (_, index) => index + 1)
 
   return (
     <section id="timetable-preview" className="requirement-section timetable-preview-section">
@@ -78,7 +87,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
               <caption>{term}の週間時間割</caption>
               <thead><tr><th scope="col">時限</th>{DAYS.map((day) => <th key={day} scope="col">{day}</th>)}</tr></thead>
               <tbody>
-                {PERIODS.map((period) => (
+                {periods.map((period) => (
                   <tr key={period}>
                     <th scope="row">{period}限</th>
                     {DAYS.map((day) => {
@@ -97,6 +106,22 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
               </tbody>
             </table>
           </div>
+          {otherDaySlotsByCourse.size > 0 && (
+            <div className="timetable-other-days">
+              <h3>土曜などの授業（{otherDaySlotsByCourse.size}科目）</h3>
+              <ul>
+                {/* 表にない曜日の複数コマを、科目ごとに1行へまとめる。 */}
+                {[...otherDaySlotsByCourse].map(([code, slots]) => (
+                  <li key={code}>
+                    <Link to={`/courses/${encodeURIComponent(code)}?year=${entryYear}`}>
+                      {slots[0].name}{slots[0].offeringTerm !== '前学期' && slots[0].offeringTerm !== '後学期' && `（${slots[0].offeringTerm}）`}
+                    </Link>
+                    {' '}（{code}）：{slots.map((slot) => `${slot.day}${slot.period}限`).join('、')}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           {result.slots.length === 0 && result.unplaced.length === 0 && (
             <p className="section-guidance">この開講期の修得見込科目はありません。</p>
           )}
