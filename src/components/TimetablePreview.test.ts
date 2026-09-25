@@ -39,11 +39,13 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(html).toContain('href="/courses/SAT101?year=2025"')
   })
 
-  // 英語名だけに言語を付け、ハイフン付き改行を使える状態にする。
-  it('英語の科目名だけに英語の言語指定を付ける', () => {
+  // 長い英単語だけに改行用ハイフンを付け、短い英単語と日本語名は変えない。
+  it('英語名の長さだけで改行候補を作り、元の科目名は保つ', () => {
     const names = [
       'Academic English for the Second YearⅡ',
       'Technical English – Intermediate English for Science',
+      'Basic Course',
+      'Abcdefghij',
       '計算機通論',
     ]
     const courses = names.map((name, index) => ({
@@ -53,7 +55,9 @@ describe('TimetablePreview の表と表外一覧', () => {
     const html = renderPreview(courses)
     expect(html).toContain('<span lang="en">Aca\u00ADdemic')
     expect(html).toContain('Tec\u00ADhni\u00ADcal Eng\u00ADlish – Int\u00ADerm\u00ADedi\u00ADate')
-    expect(html).not.toContain('<span lang="en">計算機通論</span>')
+    expect(html).toContain('<span lang="en">Basic Course</span>')
+    expect(html).toContain('<span lang="en">Abc\u00ADdef\u00ADghij</span>')
+    expect(html).toContain('<span><span>計算機通論</span></span>')
     expect(html).toContain('aria-label="Academic English for the Second YearⅡ（A0）"')
     expect(html).toContain('href="/courses/A0?year=2025"')
     expect(courses.map((course) => course.name)).toEqual(names)
