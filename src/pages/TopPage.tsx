@@ -123,6 +123,21 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
+        {/* Ver.1.1.8では、公開済みのWebMCPによるAIエージェント向け操作を案内する。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(Ver.1.1.7→Ver.1.1.8)</span>
+            <span className="release-note-date">アップデート日 2026/9/26</span>
+          </p>
+          <h3 className="release-note-category">機能追加</h3>
+          <ul className="release-note-items">
+            <li>WebMCPに対応し、対応ブラウザでメイン画面を開いている間、AIエージェントからプロフィール・卒業要件の進捗・学期別の推奨科目を確認し、科目を検索できるようにしました</li>
+            <li>AIエージェントから科目の履修状態も変更できます。変更は未更新の入力として画面に表示され、利用者が「更新する」を押すまで保存されません</li>
+            <li>現時点で利用するには、対応ブラウザの試験機能を有効にする必要があります</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（10件）">
         {/* Ver.1.1.7では、共通単位が足りないのに卒業審査で「達成予定」と出る不具合の修正、
             ELE403hの科目名の修正、読み込むJSONの値の検証を行った。 */}
         <div className="release-note-entry">
@@ -140,8 +155,6 @@ export default function TopPage() {
             <li>読み込んだJSONファイルに、科目番号や数値が正しくない項目があった場合は、その項目を読み込まずに未登録のままにし、件数をお知らせするようにしました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（9件）">
         {/* Ver.1.1.6では、選択科目の単位表示が必要単位で頭打ちにされる不具合を修正した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
