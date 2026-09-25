@@ -840,7 +840,8 @@ select {
   padding: 0.4rem;
   border-right: 1px solid color-mix(in srgb, currentColor 25%, transparent);
   border-bottom: 1px solid color-mix(in srgb, currentColor 25%, transparent);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 /* 左端の時限列は授業名より狭くし、表に使える幅を増やす。 */
@@ -878,6 +879,11 @@ select {
   font-size: 0.85rem;
   line-height: 1.3;
   text-decoration: none;
+}
+
+/* 英語だけの科目名は、自動判定とソフトハイフンを使って改行する。 */
+.timetable-course [lang="en"] {
+  hyphens: auto;
 }
 
 /* 科目番号は補助情報として名前の下に小さく置く。 */
@@ -921,7 +927,8 @@ select {
     padding: 0.2rem 0.1rem;
     font-size: 0.72rem;
     line-height: 1.25;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+    word-break: normal;
   }
 
   /* 英語の長い科目名も列幅を広げず、カード内で折り返す。 */
@@ -929,7 +936,8 @@ select {
     padding: 0.2rem 0.1rem;
     font-size: 0.7rem;
     line-height: 1.25;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+    word-break: normal;
   }
 
   /* 科目番号は詳細リンクの先で確認できるため、狭い表では隠す。 */
@@ -941,7 +949,8 @@ select {
   .timetable-conflict-label {
     font-size: 0.65rem;
     line-height: 1.2;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+    word-break: normal;
   }
 }
 

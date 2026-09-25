@@ -14,7 +14,7 @@ function renderPreview(courses: readonly TimetablePreviewCourse[]): string {
   ))
 }
 
-// 平日の行数と、土曜などグリッド外の科目一覧を検証する。
+// 平日の行数、表外の科目、英語名の改行候補を検証する。
 describe('TimetablePreview の表と表外一覧', () => {
   // 平日に7限があれば、授業のない6限も含めて連続した行を出す。
   it('平日の7限に合わせて6・7限を表示し、土曜の列を作らない', () => {
@@ -37,5 +37,21 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(html).toContain('土曜などの授業（1科目）')
     expect(html).toContain('土6限、土7限')
     expect(html).toContain('href="/courses/SAT101?year=2025"')
+  })
+
+  // 英語名だけに言語を付け、ハイフン付き改行を使える状態にする。
+  it('英語の科目名だけに英語の言語指定を付ける', () => {
+    const names = [
+      'Academic English for the Second YearⅡ',
+      'Technical English – Intermediate English for Science',
+      '計算機通論',
+    ]
+    const html = renderPreview(names.map((name, index) => ({
+      code: `A${index}`, name, termType: '前学期', offeredTerms: ['前学期'],
+      options: [{ term: '前学期', slots: [{ day: '月', period: index + 1 }] }],
+    })))
+    expect(html).toContain('<span lang="en">Aca\u00ADdem\u00ADic')
+    expect(html).toContain('Tech\u00ADni\u00ADcal Eng\u00ADlish – In\u00ADter\u00ADme\u00ADdi\u00ADate')
+    expect(html).not.toContain('<span lang="en">計算機通論</span>')
   })
 })

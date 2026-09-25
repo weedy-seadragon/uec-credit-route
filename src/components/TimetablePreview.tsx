@@ -28,11 +28,44 @@ const REASON_LABELS: Record<UnplacedTimetableCourse['reason'], string> = {
   'ambiguous-slot': '曜日時限が複数候補',
 }
 
+/** 科目名が英字・数字・記号だけなら、英語用の改行規則を使う。 */
+function isEnglishCourseName(name: string): boolean {
+  // 英字を含み、日本語を含まない科目名だけ英語の改行規則を使う。
+  return /[A-Za-z]/.test(name) && /^[\p{Script=Latin}\p{Number}\p{Punctuation}\p{Symbol}\s]+$/u.test(name)
+}
+
+/** 自動ハイフンが使えない環境でも自然な位置で切れるようにする英単語の区切り。 */
+const ENGLISH_WORD_BREAKS: Readonly<Record<string, readonly number[]>> = {
+  academic: [3, 6],
+  intermediate: [2, 5, 7, 9],
+  technical: [4, 6],
+}
+
+/** 長い英単語へ、改行したときだけ見えるソフトハイフンを挿入する。 */
+function hyphenateEnglishName(name: string): string {
+  // よく使う語は音節で区切り、その他の長い語は短いまとまりに分ける。
+  return name.replace(/[A-Za-z]{7,}/g, (word) => {
+    const breaks = ENGLISH_WORD_BREAKS[word.toLowerCase()]
+      ?? Array.from({ length: Math.floor((word.length - 3) / 3) }, (_, index) => (index + 1) * 3)
+    let start = 0
+    const parts: string[] = []
+    // 各区切りで元の大文字・小文字を保ったまま単語を分ける。
+    for (const point of breaks) {
+      parts.push(word.slice(start, point))
+      start = point
+    }
+    parts.push(word.slice(start))
+    return parts.join('\u00AD')
+  })
+}
+
 /** 1コマに入る科目名と科目詳細へのリンク。 */
 function CourseInSlot({ slot, entryYear }: { slot: TimetablePreviewSlot; entryYear: number }) {
+  // 英語名だけに言語属性と改行候補を付け、日本語名には手を加えない。
+  const englishName = isEnglishCourseName(slot.name)
   return (
-    <Link className="timetable-course" to={`/courses/${encodeURIComponent(slot.code)}?year=${entryYear}`}>
-      <span>{slot.name}{slot.offeringTerm !== '前学期' && slot.offeringTerm !== '後学期' && `（${slot.offeringTerm}）`}</span>
+    <Link className="timetable-course" aria-label={`${slot.name}（${slot.code}）`} to={`/courses/${encodeURIComponent(slot.code)}?year=${entryYear}`}>
+      <span><span lang={englishName ? 'en' : undefined}>{englishName ? hyphenateEnglishName(slot.name) : slot.name}</span>{slot.offeringTerm !== '前学期' && slot.offeringTerm !== '後学期' && `（${slot.offeringTerm}）`}</span>
       <small>{slot.code}</small>
     </Link>
   )
