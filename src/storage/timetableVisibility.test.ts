@@ -7,18 +7,18 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-// 年度ごとの復元と、ストレージ故障時の扱いを検証する。
+// 年度共通の復元と、ストレージ故障時の扱いを検証する。
 describe('時間割の非表示設定', () => {
-  // 同じブラウザでも年度ごとに別の設定を復元できる。
-  it('入学年度ごとに非表示科目を保存する', () => {
+  // キーを年度で分けないため、保存した設定を共通キーから復元できる。
+  it('非表示科目を年度共通のキーへ保存する', () => {
     const values = new Map<string, string>()
     vi.stubGlobal('window', { localStorage: {
       getItem: (key: string) => values.get(key) ?? null,
       setItem: (key: string, value: string) => { values.set(key, value) },
     } })
-    saveHiddenTimetableCourses(2025, new Set(['A']))
-    expect([...loadHiddenTimetableCourses(2025)]).toEqual(['A'])
-    expect([...loadHiddenTimetableCourses(2026)]).toEqual([])
+    saveHiddenTimetableCourses(new Set(['A']))
+    expect(values.get('uec-credit-route:timetableHiddenCourses')).toBe('["A"]')
+    expect([...loadHiddenTimetableCourses()]).toEqual(['A'])
   })
 
   // localStorage へアクセスできなくても、表示は初期値から続けられる。
@@ -27,7 +27,7 @@ describe('時間割の非表示設定', () => {
       getItem: () => { throw new Error('blocked') },
       setItem: () => { throw new Error('blocked') },
     } })
-    expect([...loadHiddenTimetableCourses(2025)]).toEqual([])
-    expect(() => saveHiddenTimetableCourses(2025, new Set(['A']))).not.toThrow()
+    expect([...loadHiddenTimetableCourses()]).toEqual([])
+    expect(() => saveHiddenTimetableCourses(new Set(['A']))).not.toThrow()
   })
 })

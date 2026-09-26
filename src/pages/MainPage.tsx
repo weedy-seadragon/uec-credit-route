@@ -1773,7 +1773,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </section>
 
       {/* 修得見込の直後に、編集中の選択を週の曜日時限へ並べた表示だけのプレビューを置く。 */}
-      <TimetablePreview key={profile.entryYear} courses={timetablePreviewCourses} entryYear={profile.entryYear} hasPendingChanges={hasPendingChanges} />
+      <TimetablePreview courses={timetablePreviewCourses} entryYear={profile.entryYear} hasPendingChanges={hasPendingChanges} />
 
       <section id="failed-subjects" className="requirement-section failed-section">
         <h2>不合格になった科目（{failedSubjects.length}科目）</h2>

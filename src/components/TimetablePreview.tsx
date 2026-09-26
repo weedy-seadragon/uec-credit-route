@@ -70,7 +70,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
   hasPendingChanges: boolean
 }) {
   const [term, setTerm] = useState('前学期')
-  const [hiddenCodes, setHiddenCodes] = useState<ReadonlySet<string>>(() => loadHiddenTimetableCourses(entryYear))
+  const [hiddenCodes, setHiddenCodes] = useState<ReadonlySet<string>>(() => loadHiddenTimetableCourses())
   const allCoursesResult = buildTimetablePreview(courses, term)
   const result = buildVisibleTimetablePreview(courses, term, hiddenCodes)
   const terms = availableTerms(courses)
@@ -89,7 +89,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
     if (visible) next.delete(code)
     else next.add(code)
     setHiddenCodes(next)
-    saveHiddenTimetableCourses(entryYear, next)
+    saveHiddenTimetableCourses(next)
   }
   // 平日の科目をコマごとに、土曜などの科目を科目番号ごとにまとめる。
   const slotsByCell = new Map<string, TimetablePreviewSlot[]>()
