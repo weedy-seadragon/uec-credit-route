@@ -12,6 +12,8 @@ export interface TimetablePreviewCourse {
   name: string
   /** メイン画面と共通の学年・学期表記。表示切替欄だけで使う。 */
   yearTermLabel?: string
+  /** MainPageの卒業要件判定から受け取る科目区分。プレビューでは再分類しない。 */
+  category?: TimetablePreviewCategory
   termType: string | null
   offeredTerms: readonly string[]
   options: readonly TimetablePreviewOption[]
@@ -21,6 +23,49 @@ export interface TimetablePreviewCourse {
   sections?: readonly TimetablePreviewOption[]
   /** 低学年科目の複数候補を、時限が同じでも明示選択にする。 */
   chooseAmongSections?: boolean
+}
+
+/** 科目カードと凡例で共用する、卒業要件上の区分。 */
+export interface TimetablePreviewCategory {
+  key: string
+  label: string
+  isRequired: boolean
+  /** 要件データでの登場順。色数を超えた分は表示側で循環させる。 */
+  colorIndex: number
+}
+
+/** MainPageが持つ境界グループから、時間割用の色区分を作るための最小構造。 */
+export interface TimetableRequirementGroup {
+  id: string
+  name: string
+  label?: string
+  kind: string
+  subjects: readonly string[]
+}
+
+/** 必修を優先し、それ以外は最初に属する要件区分へ結び付ける。 */
+export function timetableCategoryForCourse(
+  code: string,
+  requiredCodes: ReadonlySet<string>,
+  groups: readonly TimetableRequirementGroup[],
+): TimetablePreviewCategory {
+  // 必修判定はMainPageから渡されたrequiredCodesを唯一の基準にする。
+  if (requiredCodes.has(code)) return { key: 'required', label: '必修', isRequired: true, colorIndex: 0 }
+  const colorGroups = groups.filter((group) => group.kind !== 'required')
+  const colorIndexById = new Map<string, number>()
+  // 区分の色順は、要件データで最初に登場した区分の順に割り当てる。
+  for (const group of colorGroups) {
+    if (!colorIndexById.has(group.id)) colorIndexById.set(group.id, colorIndexById.size)
+  }
+  const group = colorGroups.find((candidate) => candidate.subjects.includes(code))
+  // 所属区分が見つからない科目は、全区分の後ろに「その他」として置く。
+  if (!group) return { key: 'other', label: 'その他', isRequired: false, colorIndex: colorIndexById.size }
+  return {
+    key: group.id,
+    label: group.label ?? group.name,
+    isRequired: false,
+    colorIndex: colorIndexById.get(group.id) ?? colorIndexById.size,
+  }
 }
 
 /** プレビューで選択可能なセクション。 */
@@ -35,6 +80,7 @@ export interface TimetablePreviewOption extends ScheduleOption {
 export interface TimetablePreviewSlot extends ScheduleSlot {
   code: string
   name: string
+  category?: TimetablePreviewCategory
   /** 前学期・後学期以外の開講期なら、科目名に添えて表示する。 */
   offeringTerm: string
 }
@@ -67,6 +113,20 @@ export interface TimetablePreviewResult {
   unplaced: UnplacedTimetableCourse[]
   onDemand: { code: string; name: string }[]
   intensive: { code: string; name: string; kind: Extract<TimelessCourseKind, 'summer-intensive' | 'winter-intensive' | 'intensive'> }[]
+}
+
+/** 表示中のコマだけから、必修と科目区分の凡例を要件データ順に作る。 */
+export function timetableLegendForSlots(slots: readonly TimetablePreviewSlot[]): TimetablePreviewCategory[] {
+  const categories = new Map<string, TimetablePreviewCategory>()
+  // 同じ区分のカードが複数あっても、凡例には一度だけ追加する。
+  for (const slot of slots) {
+    if (slot.category && !categories.has(slot.category.key)) categories.set(slot.category.key, slot.category)
+  }
+  // 必修を先頭に置き、残りはMainPageから受け取った要件データ順に並べる。
+  return [...categories.values()].sort((first, second) => {
+    if (first.isRequired !== second.isRequired) return first.isRequired ? -1 : 1
+    return first.colorIndex - second.colorIndex
+  })
 }
 
 /** 春・夏タームは前学期、秋・冬タームは後学期として扱う。 */
@@ -233,7 +293,7 @@ export function buildTimetablePreview(
       // 同じ科目の同じコマが重複登録されていても、カードは一枚だけにする。
       if (seen.has(key)) continue
       seen.add(key)
-      slots.push({ ...slot, code: course.code, name: course.name, offeringTerm: options[0].term })
+      slots.push({ ...slot, code: course.code, name: course.name, category: course.category, offeringTerm: options[0].term })
     }
   }
 
@@ -251,7 +311,7 @@ function findSelectedOption(options: readonly TimetablePreviewOption[], savedCod
 function appendSelectedOption(slots: TimetablePreviewSlot[], course: TimetablePreviewCourse, option: TimetablePreviewOption): void {
   // 1つのセクションに複数コマがあれば、そのすべてを重複判定へ渡す。
   for (const slot of option.slots) {
-    slots.push({ ...slot, code: course.code, name: course.name, offeringTerm: option.term })
+    slots.push({ ...slot, code: course.code, name: course.name, category: course.category, offeringTerm: option.term })
   }
 }
 

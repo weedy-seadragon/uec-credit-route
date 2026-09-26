@@ -45,6 +45,7 @@ import { sortByYearTerm } from '../domain/sortByYearTerm'
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
 import TimetablePreview from '../components/TimetablePreview'
 import type { TimetablePreviewCourse } from '../domain/timetablePreview'
+import { timetableCategoryForCourse } from '../domain/timetablePreview'
 import { classifyTimelessCourse, TIMELESS_COURSE_LABELS } from '../domain/onDemand'
 import AgentToolsBridge from '../components/AgentToolsBridge'
 import type { AgentHandlers } from '../components/AgentToolsBridge'
@@ -1513,6 +1514,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       code,
       name: nameOf(code),
       yearTermLabel: yearTermOf(code),
+      category: timetableCategoryForCourse(code, requiredCodes, boundaryGroups),
       termType: subject?.termType ?? null,
       offeredTerms: [...new Set(offerings.map((offering) => offering.term))],
       options: previewOfferings.map((offering) => ({

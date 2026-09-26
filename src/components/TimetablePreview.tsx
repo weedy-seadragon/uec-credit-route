@@ -1,7 +1,7 @@
 // 修得見込の科目を開講期ごとに並べる週間時間割。表示設定だけを保存し、履修記録は変更しない。
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, previewSemesterOf, splitUnplacedTimetableCourses } from '../domain/timetablePreview'
+import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, previewSemesterOf, splitUnplacedTimetableCourses, timetableLegendForSlots } from '../domain/timetablePreview'
 import type { TimetablePreviewCourse, TimetablePreviewSlot, UnplacedTimetableCourse } from '../domain/timetablePreview'
 import { TIMELESS_COURSE_LABELS } from '../domain/onDemand'
 import { loadHiddenTimetableCourses, saveHiddenTimetableCourses } from '../storage/timetableVisibility'
@@ -65,8 +65,16 @@ function hyphenateEnglishName(name: string): string {
 function CourseInSlot({ slot, entryYear }: { slot: TimetablePreviewSlot; entryYear: number }) {
   // 英語名だけに言語属性と改行候補を付け、日本語名には手を加えない。
   const englishName = isEnglishCourseName(slot.name)
+  const category = slot.category
+  const colorIndex = category ? ((category.colorIndex % 8) + 8) % 8 : 0
   return (
-    <Link className="timetable-course" aria-label={slot.name} to={`/courses/${encodeURIComponent(slot.code)}?year=${entryYear}`}>
+    <Link
+      className={`timetable-course${category?.isRequired ? ' timetable-course--required' : ''}`}
+      data-category-color={category && !category.isRequired ? colorIndex : undefined}
+      aria-label={slot.name}
+      to={`/courses/${encodeURIComponent(slot.code)}?year=${entryYear}`}
+    >
+      {category?.isRequired && <span className="timetable-required-badge" aria-hidden="true">必修</span>}
       <span><span lang={englishName ? 'en' : undefined}>{englishName ? hyphenateEnglishName(slot.name) : slot.name}</span>{slot.offeringTerm !== '前学期' && slot.offeringTerm !== '後学期' && `（${slot.offeringTerm}）`}</span>
     </Link>
   )
@@ -84,6 +92,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
   const allCoursesResult = buildTimetablePreview(courses, term, selectedTimetableCodes)
   const result = buildVisibleTimetablePreview(courses, term, hiddenCodes, selectedTimetableCodes)
   const { selectable: selectableCourses, timeless: timelessCourses } = splitUnplacedTimetableCourses(result.unplaced)
+  const categoryLegend = timetableLegendForSlots(result.slots.filter((slot) => DAYS.includes(slot.day)))
   const terms = availableTerms(courses)
   // 選択した開講期の科目を、非表示中のものも含めて設定欄へ残す。
   const termCourseCodes = new Set([
@@ -143,6 +152,27 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
           {terms.map((option) => <option key={option} value={option}>{option}</option>)}
         </select>
       </label>
+      {categoryLegend.length > 0 && (
+        <div className="timetable-legend" aria-label="時間割カードの色分け">
+          <span className="timetable-legend-title">科目区分</span>
+          <ul>
+            {categoryLegend.map((category) => {
+              // 表示色は科目カードと同じCSS変数・色番号を使う。
+              const colorIndex = ((category.colorIndex % 8) + 8) % 8
+              return (
+                <li key={category.key}>
+                  <span
+                    className={`timetable-legend-swatch${category.isRequired ? ' timetable-course--required' : ''}`}
+                    data-category-color={category.isRequired ? undefined : colorIndex}
+                    aria-hidden="true"
+                  />
+                  {category.label}
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      )}
       {courses.length === 0 ? (
         <p className="section-guidance">科目の状態を「修得見込」にすると、ここに時間割が表示されます。</p>
       ) : (

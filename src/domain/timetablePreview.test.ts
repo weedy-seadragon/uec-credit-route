@@ -1,6 +1,6 @@
 // 時間割プレビューが、曜日時限を断定できる科目だけを配置することを確かめる。
 import { describe, expect, it } from 'vitest'
-import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, offeringTermsOverlap, splitUnplacedTimetableCourses } from './timetablePreview'
+import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, offeringTermsOverlap, splitUnplacedTimetableCourses, timetableCategoryForCourse, timetableLegendForSlots } from './timetablePreview'
 
 // 学期全体と個別タームの授業が、同じ週に行われるかを検証する。
 describe('開講期間の重複判定', () => {
@@ -187,6 +187,37 @@ describe('splitUnplacedTimetableCourses（欄外科目の分類）', () => {
       ['LAB', 'lab'],
       ['WORK', 'instructor-dependent'],
       ['MISSING', 'no-offering'],
+    ])
+  })
+})
+
+// メイン画面から渡された要件区分をカードの色と凡例に使うことを確かめる。
+describe('時間割カードの科目区分', () => {
+  it('必修は必修表示を優先し、選択科目は所属区分と要件データ順の色番号を使う', () => {
+    const groups = [
+      { id: 'required-group', name: '必修区分', kind: 'required', subjects: ['REQ'] },
+      { id: 'humanities', name: '人文・社会', label: '人文・社会', kind: 'elective', subjects: ['REQ', 'HUM'] },
+      { id: 'advanced', name: '上級科目', kind: 'elective', subjects: ['ADV'] },
+    ]
+    expect(timetableCategoryForCourse('REQ', new Set(['REQ']), groups)).toEqual({
+      key: 'required', label: '必修', isRequired: true, colorIndex: 0,
+    })
+    expect(timetableCategoryForCourse('HUM', new Set(), groups)).toEqual({
+      key: 'humanities', label: '人文・社会', isRequired: false, colorIndex: 0,
+    })
+    expect(timetableCategoryForCourse('ADV', new Set(), groups).colorIndex).toBe(1)
+  })
+
+  it('凡例には指定した学期のコマに現れる区分だけを一度ずつ並べる', () => {
+    const courses = [
+      { code: 'REQ', name: '必修科目', category: { key: 'required', label: '必修', isRequired: true, colorIndex: 0 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '月', period: 1 }] }] },
+      { code: 'HUM', name: '人文科目', category: { key: 'humanities', label: '人文・社会', isRequired: false, colorIndex: 0 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '火', period: 2 }] }] },
+      { code: 'ADV', name: '後期科目', category: { key: 'advanced', label: '上級科目', isRequired: false, colorIndex: 1 }, termType: '後学期', offeredTerms: ['後学期'], options: [{ term: '後学期', slots: [{ day: '水', period: 3 }] }] },
+    ]
+    const frontSlots = buildTimetablePreview(courses, '前学期').slots
+    expect(timetableLegendForSlots(frontSlots)).toEqual([
+      { key: 'required', label: '必修', isRequired: true, colorIndex: 0 },
+      { key: 'humanities', label: '人文・社会', isRequired: false, colorIndex: 0 },
     ])
   })
 })

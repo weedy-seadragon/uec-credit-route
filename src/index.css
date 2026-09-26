@@ -2,6 +2,33 @@
 :root {
   color-scheme: light dark;
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --timetable-required-bg: #ffe0e4;
+  --timetable-required-text: #711d28;
+  --timetable-required-border: #c6757e;
+  --timetable-category-0-bg: #dceeff;
+  --timetable-category-0-text: #163f60;
+  --timetable-category-0-border: #6897b8;
+  --timetable-category-1-bg: #d9efe7;
+  --timetable-category-1-text: #1c4b3c;
+  --timetable-category-1-border: #659986;
+  --timetable-category-2-bg: #ece3fb;
+  --timetable-category-2-text: #48366e;
+  --timetable-category-2-border: #8e79b8;
+  --timetable-category-3-bg: #f7eccb;
+  --timetable-category-3-text: #59460c;
+  --timetable-category-3-border: #a8924c;
+  --timetable-category-4-bg: #e3efd6;
+  --timetable-category-4-text: #3b542d;
+  --timetable-category-4-border: #809b67;
+  --timetable-category-5-bg: #e8e8ed;
+  --timetable-category-5-text: #40424d;
+  --timetable-category-5-border: #90929e;
+  --timetable-category-6-bg: #d9eef2;
+  --timetable-category-6-text: #1b4a53;
+  --timetable-category-6-border: #6999a2;
+  --timetable-category-7-bg: #e3e8f1;
+  --timetable-category-7-text: #3c4a60;
+  --timetable-category-7-border: #8391a7;
 }
 
 body {
@@ -869,16 +896,83 @@ select {
 
 /* 科目名を1枚のカードにまとめ、セル内に複数科目がある場合も分けて表示する。 */
 .timetable-course {
+  --timetable-card-bg: var(--timetable-category-0-bg);
+  --timetable-card-text: var(--timetable-category-0-text);
+  --timetable-card-border: var(--timetable-category-0-border);
   display: block;
   margin-bottom: 0.3rem;
   padding: 0.35rem 0.4rem;
-  border: 1px solid #7298c0;
+  border: 1px solid var(--timetable-card-border);
   border-radius: 0.3rem;
-  background: color-mix(in srgb, #b9d7f6 35%, Canvas);
-  color: #174e86;
+  background: var(--timetable-card-bg);
+  color: var(--timetable-card-text);
   font-size: 0.85rem;
   line-height: 1.3;
   text-decoration: none;
+}
+
+/* 科目区分ごとの色はMainPageから渡された順番でCSS変数へ対応付ける。 */
+[data-category-color="0"] { --timetable-card-bg: var(--timetable-category-0-bg); --timetable-card-text: var(--timetable-category-0-text); --timetable-card-border: var(--timetable-category-0-border); }
+[data-category-color="1"] { --timetable-card-bg: var(--timetable-category-1-bg); --timetable-card-text: var(--timetable-category-1-text); --timetable-card-border: var(--timetable-category-1-border); }
+[data-category-color="2"] { --timetable-card-bg: var(--timetable-category-2-bg); --timetable-card-text: var(--timetable-category-2-text); --timetable-card-border: var(--timetable-category-2-border); }
+[data-category-color="3"] { --timetable-card-bg: var(--timetable-category-3-bg); --timetable-card-text: var(--timetable-category-3-text); --timetable-card-border: var(--timetable-category-3-border); }
+[data-category-color="4"] { --timetable-card-bg: var(--timetable-category-4-bg); --timetable-card-text: var(--timetable-category-4-text); --timetable-card-border: var(--timetable-category-4-border); }
+[data-category-color="5"] { --timetable-card-bg: var(--timetable-category-5-bg); --timetable-card-text: var(--timetable-category-5-text); --timetable-card-border: var(--timetable-category-5-border); }
+[data-category-color="6"] { --timetable-card-bg: var(--timetable-category-6-bg); --timetable-card-text: var(--timetable-category-6-text); --timetable-card-border: var(--timetable-category-6-border); }
+[data-category-color="7"] { --timetable-card-bg: var(--timetable-category-7-bg); --timetable-card-text: var(--timetable-category-7-text); --timetable-card-border: var(--timetable-category-7-border); }
+
+/* 色だけで必修と分かれるよう、カード内にも短いラベルを添える。 */
+.timetable-course--required {
+  --timetable-card-bg: var(--timetable-required-bg);
+  --timetable-card-text: var(--timetable-required-text);
+  --timetable-card-border: var(--timetable-required-border);
+}
+
+.timetable-required-badge {
+  display: block;
+  margin-bottom: 0.1rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+/* いま表にある科目区分だけを、カードの色順で案内する。 */
+.timetable-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.65rem;
+  margin: 0 0 0.65rem;
+  font-size: 0.82rem;
+}
+
+.timetable-legend-title {
+  font-weight: 700;
+}
+
+.timetable-legend ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timetable-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.timetable-legend-swatch {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  flex: 0 0 auto;
+  border: 1px solid var(--timetable-card-border, var(--timetable-category-0-border));
+  border-radius: 0.2rem;
+  background: var(--timetable-card-bg, var(--timetable-category-0-bg));
 }
 
 /* 英語だけの科目名は、自動判定とソフトハイフンを使って改行する。 */
@@ -895,10 +989,36 @@ select {
   font-weight: 700;
 }
 
-/* ダークモードではリンクと注意の文字を明るくして、科目カード上でも読みやすくする。 */
+/* ダークモードでは明るい文字と濃い背景の組み合わせでカードのコントラストを保つ。 */
 @media (prefers-color-scheme: dark) {
-  .timetable-course {
-    color: #d3e7ff;
+  :root {
+    --timetable-required-bg: #622832;
+    --timetable-required-text: #fff0f2;
+    --timetable-required-border: #d2838d;
+    --timetable-category-0-bg: #18364c;
+    --timetable-category-0-text: #e0f0ff;
+    --timetable-category-0-border: #6d9abc;
+    --timetable-category-1-bg: #193b32;
+    --timetable-category-1-text: #e0f6ed;
+    --timetable-category-1-border: #72aa96;
+    --timetable-category-2-bg: #33284f;
+    --timetable-category-2-text: #f0e9ff;
+    --timetable-category-2-border: #a38acb;
+    --timetable-category-3-bg: #493a18;
+    --timetable-category-3-text: #fff4d4;
+    --timetable-category-3-border: #c1a65b;
+    --timetable-category-4-bg: #2d3d24;
+    --timetable-category-4-text: #eff9e5;
+    --timetable-category-4-border: #91ad74;
+    --timetable-category-5-bg: #363943;
+    --timetable-category-5-text: #f0f0f5;
+    --timetable-category-5-border: #a6a8b5;
+    --timetable-category-6-bg: #1e3c43;
+    --timetable-category-6-text: #e2f8fb;
+    --timetable-category-6-border: #77aeb7;
+    --timetable-category-7-bg: #303a4b;
+    --timetable-category-7-text: #eef2fa;
+    --timetable-category-7-border: #94a2ba;
   }
 
   .timetable-conflict-label {
@@ -930,6 +1050,11 @@ select {
     line-height: 1.25;
     overflow-wrap: break-word;
     word-break: normal;
+  }
+
+  /* 狭いセルでも必修ラベルを科目名より小さく保つ。 */
+  .timetable-required-badge {
+    font-size: 0.58rem;
   }
 
   /* 重複数の表示もセルの幅の中で改行して読めるようにする。 */
