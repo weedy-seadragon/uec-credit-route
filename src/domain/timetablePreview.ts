@@ -28,7 +28,7 @@ export interface TimetablePreviewSlot extends ScheduleSlot {
 export interface UnplacedTimetableCourse {
   code: string
   name: string
-  reason: 'no-offering' | 'no-class' | 'no-slot' | 'ambiguous-term' | 'ambiguous-slot'
+  reason: 'no-offering' | 'no-class' | 'no-slot' | 'instructor-varies' | 'ambiguous-term' | 'ambiguous-slot'
 }
 
 /** 時間割グリッドと、その下に表示する未確定科目。 */
@@ -102,9 +102,12 @@ export function buildTimetablePreview(
   // 実際のシラバスの開講期を優先し、情報がない科目だけ学修要覧の学期を使う。
   for (const course of courses) {
     // 例: 学修要覧では後学期でもシラバスが夏タームなら、シラバスを優先して前学期に出す。
-    const belongsToTerm = course.offeredTerms.length > 0
-      ? course.offeredTerms.some((offeringTerm) => previewSemesterOf(offeringTerm) === term)
-      : course.termType === null || course.termType === term
+    const isYearRound = course.note?.includes('通年') ?? false
+    const belongsToTerm = isYearRound && (term === '前学期' || term === '後学期')
+      ? true
+      : course.offeredTerms.length > 0
+        ? course.offeredTerms.some((offeringTerm) => previewSemesterOf(offeringTerm) === term)
+        : course.termType === null || course.termType === term
     // 別の学期だけに開講する科目は、この学期のプレビューから外す。
     if (!belongsToTerm) continue
 
@@ -124,6 +127,11 @@ export function buildTimetablePreview(
     // シラバスの開講情報自体が無い科目は、科目表の学期に基づく欄外表示にする。
     if (course.offeredTerms.length === 0) {
       unplaced.push({ code: course.code, name: course.name, reason: 'no-offering' })
+      continue
+    }
+    // 通年注記があり時限候補を示せない科目は、両学期に残して担当教員への確認を促す。
+    if (isYearRound && (options.length === 0 || options.every((option) => option.slots.length === 0))) {
+      unplaced.push({ code: course.code, name: course.name, reason: 'instructor-varies' })
       continue
     }
     // 受講クラスを絞れず、その学期の開講候補を得られない場合は配置しない。

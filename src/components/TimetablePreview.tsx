@@ -30,6 +30,7 @@ const REASON_LABELS: Record<UnplacedTimetableCourse['reason'], string> = {
   'no-offering': 'シラバスの開講情報なし',
   'no-class': '受講クラスを特定できません',
   'no-slot': '曜日時限の記載なし',
+  'instructor-varies': '担当教員により開講時限が異なります',
   'ambiguous-term': '開講タームが複数候補',
   'ambiguous-slot': '曜日時限が複数候補',
 }

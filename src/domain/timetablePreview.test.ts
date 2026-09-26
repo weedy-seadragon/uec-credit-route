@@ -98,6 +98,23 @@ describe('buildTimetablePreview（修得見込の時間割）', () => {
     expect(buildTimetablePreview(courses, '後学期').unplaced[0].reason).toBe('no-offering')
   })
 
+  // 通年注記のある時限未確定科目は両学期に表示し、注記の無い前学期科目は後学期に出さない。
+  it('通年注記を両学期に含め、欄外理由をそろえる', () => {
+    const courses = [
+      { code: 'A', name: '情報工学工房A', termType: '前学期', offeredTerms: ['前学期'], note: '通年１〜４年次開講',
+        offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
+      { code: 'B', name: '輪講A', termType: '前学期', offeredTerms: ['前学期'],
+        offerings: [{ slots: [] }], options: [] },
+    ]
+    expect(buildTimetablePreview(courses, '前学期').unplaced).toEqual([
+      { code: 'A', name: '情報工学工房A', reason: 'instructor-varies' },
+      { code: 'B', name: '輪講A', reason: 'no-class' },
+    ])
+    expect(buildTimetablePreview(courses, '後学期').unplaced).toEqual([
+      { code: 'A', name: '情報工学工房A', reason: 'instructor-varies' },
+    ])
+  })
+
   // ターム開講でも対応する前後学期へ出し、シラバスと科目表が食い違えば前者を優先する。
   it('春夏・秋冬タームを前後学期へ含め、元のターム名を保持する', () => {
     const courses = [
@@ -175,5 +192,16 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
     }]
     expect(buildVisibleTimetablePreview(courses, '前学期', new Set()).intensive).toHaveLength(1)
     expect(buildVisibleTimetablePreview(courses, '前学期', new Set(['A'])).intensive).toEqual([])
+  })
+
+  // 同じ科目番号で保存する非表示設定は、通年科目の前後学期どちらにも反映される。
+  it('通年科目を非表示にすると前後学期の欄外から外す', () => {
+    const courses = [{
+      code: 'A', name: '情報工学工房A', termType: '前学期', offeredTerms: ['前学期'], note: '通年',
+      offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }],
+    }]
+    const hidden = new Set(['A'])
+    expect(buildVisibleTimetablePreview(courses, '前学期', hidden).unplaced).toEqual([])
+    expect(buildVisibleTimetablePreview(courses, '後学期', hidden).unplaced).toEqual([])
   })
 })
