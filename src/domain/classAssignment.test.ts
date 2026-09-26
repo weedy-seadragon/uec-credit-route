@@ -1,7 +1,7 @@
 // classAssignment.ts の単体テスト。class_assignment.json の表記パターンごとに、
 // プロフィールとの一致判定・セクション解決が正しく動くことを確認する。
 import { describe, expect, it } from 'vitest'
-import { classIdMatchesProfile, hasDedicatedRetakeClass, resolveOfferingsForProfile, resolveSlotsForProfile } from './classAssignment'
+import { classIdMatchesProfile, hasDedicatedRetakeClass, resolveOfferingsForProfile, resolveSlotsForProfile, sectionLabelMatchesProfile } from './classAssignment'
 import type { ClassAssignmentEntry, ClassProfile } from './classAssignment'
 
 describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () => {
@@ -418,5 +418,48 @@ describe('resolveOfferingsForProfile（曜日時限以外のフィールドも�
       { term: '前学期', slots: [], syllabusUrl: 'https://example.com/c' },
     ]
     expect(resolveOfferingsForProfile('CAR503z', offerings, [], {}, 'I', false, '前学期')).toBeUndefined()
+  })
+
+  it('曜日時限が無く同じ学期に複数セクションがある科目も、シラバスの「（Aクラス）」表記でⅠ類のA/B/Cクラスに絞れる（2026-09-26、情報領域演習第三が分けられない不具合）', () => {
+    const offerings = [
+      { term: '後学期', slots: [], sectionLabel: '（Aクラス）', syllabusUrl: 'https://example.com/a' },
+      { term: '後学期', slots: [], sectionLabel: '（Bクラス）', syllabusUrl: 'https://example.com/b' },
+      { term: '後学期', slots: [], sectionLabel: '（Cクラス）', syllabusUrl: 'https://example.com/c' },
+    ]
+    // Bクラスの学生には、Bクラス表記のセクションだけが残る
+    expect(resolveOfferingsForProfile('COM401a', offerings, [], { classIABC: 'B' }, 'I', false, '後学期')).toEqual([offerings[1]])
+    // クラス未設定なら、表記では絞れないので従来どおり決めない（誤ったリンクを出さない）
+    expect(resolveOfferingsForProfile('COM401a', offerings, [], {}, 'I', false, '後学期')).toBeUndefined()
+  })
+
+  it('類ごとに分かれたセクション（インターンシップの「（Ⅰ類）」等）は、プロフィールの類で絞れる', () => {
+    const offerings = [
+      { term: '前学期', slots: [], sectionLabel: '（Ⅰ類）', syllabusUrl: 'https://example.com/1' },
+      { term: '前学期', slots: [], sectionLabel: '（Ⅱ類）', syllabusUrl: 'https://example.com/2' },
+      { term: '前学期', slots: [], sectionLabel: '（Ⅲ類）', syllabusUrl: 'https://example.com/3' },
+    ]
+    // 「Ⅰ類」が「Ⅱ類」「Ⅲ類」の一部として誤って一致しないことも、Ⅱ類の学生で確かめる
+    expect(resolveOfferingsForProfile('CAR503z', offerings, [], {}, 'II', false, '前学期')).toEqual([offerings[1]])
+    // 夜間主（類なし）は表記では絞れない
+    expect(resolveOfferingsForProfile('CAR503z', offerings, [], {}, null, false, '前学期')).toBeUndefined()
+  })
+})
+
+// シラバスのクラス表記とプロフィールの突き合わせ規則だけを検証する
+describe('sectionLabelMatchesProfile（シラバスのクラス表記の一致判定）', () => {
+  it('全角の「（Ａクラス）」や「（クラスA）」の書き方でも、Ⅰ類のAクラスとして一致する', () => {
+    // NFKC 正規化で全角英字がそろうため、表記ゆれがあっても同じクラスと判定できる
+    expect(sectionLabelMatchesProfile('（Ａクラス）', { classIABC: 'A' }, 'I')).toBe(true)
+    expect(sectionLabelMatchesProfile('（クラスA）', { classIABC: 'A' }, 'I')).toBe(true)
+    expect(sectionLabelMatchesProfile('（Aクラス）', { classIABC: 'B' }, 'I')).toBe(false)
+  })
+
+  it('英語科目の「（I15ｸﾗｽ)」のような別の表記や、他の類の学生には一致しない', () => {
+    // 前が英数字のクラス表記はA/B/Cクラスではないため、Ⅰ類以外のプロフィールでも一致させない
+    expect(sectionLabelMatchesProfile('（I15ｸﾗｽ)', { classIABC: 'A' }, 'I')).toBe(false)
+    // A/B/Cクラスの区別はⅠ類だけなので、Ⅱ類の学生にはAクラス表記を当てはめない
+    expect(sectionLabelMatchesProfile('（Aクラス）', { classIABC: 'A' }, 'II')).toBe(false)
+    // 表記が無いセクションは、どのプロフィールにも一致しない
+    expect(sectionLabelMatchesProfile(undefined, { classIABC: 'A' }, 'I')).toBe(false)
   })
 })

@@ -355,6 +355,8 @@ export interface SubjectOffering {
   instructors: string[]
   syllabusUrl: string
   updatedAt: string
+  /** シラバス一覧の科目名末尾の（…）表記（例:「（Aクラス）」）。曜日時限が無い科目のクラス判定に使う */
+  sectionLabel?: string
 }
 
 export interface SubjectMasterEntry {
