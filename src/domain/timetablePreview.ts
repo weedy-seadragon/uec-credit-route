@@ -89,7 +89,7 @@ export interface TimetablePreviewSlot extends ScheduleSlot {
 export interface UnplacedTimetableCourse {
   code: string
   name: string
-  reason: 'no-offering' | 'no-class' | 'no-slot' | 'instructor-dependent' | 'lab' | 'ambiguous-term' | 'ambiguous-slot'
+  reason: 'no-offering' | 'no-class' | 'lower-year-selection' | 'no-slot' | 'instructor-dependent' | 'lab' | 'ambiguous-term' | 'ambiguous-slot'
   /** 候補が複数ある理由の場合に、欄外の選択UIへ渡すセクション。 */
   options?: readonly TimetablePreviewOption[]
 }
@@ -99,7 +99,7 @@ export function splitUnplacedTimetableCourses(courses: readonly UnplacedTimetabl
   selectable: UnplacedTimetableCourse[]
   timeless: UnplacedTimetableCourse[]
 } {
-  const selectableReasons = new Set<UnplacedTimetableCourse['reason']>(['no-class', 'ambiguous-term', 'ambiguous-slot'])
+  const selectableReasons = new Set<UnplacedTimetableCourse['reason']>(['no-class', 'lower-year-selection', 'ambiguous-term', 'ambiguous-slot'])
   // 選択候補の理由を持つ科目だけを候補選択枠へ振り分ける。
   const selectable = courses.filter((course) => selectableReasons.has(course.reason))
   // それ以外は候補選択UIを持たない時限未確定枠へ振り分ける。
@@ -234,14 +234,17 @@ export function buildTimetablePreview(
       appendSelectedOption(slots, course, retakePlacement)
       continue
     }
-    // 低学年科目は同じ時限の複数セクションでも、1件を選ぶまで欄外に残す。
+    // 低学年科目は時限が異なる候補だけを選択対象にし、同時限なら代表候補を配置する。
     if (course.chooseAmongSections && options.length > 1) {
       const selected = findSelectedOption(options, selectedTimetableCodes[course.code])
-      if (selected) {
-        appendSelectedOption(slots, course, selected)
+      const sameSlots = options.every((option) => option.slots.length > 0)
+        && new Set(options.map((option) => slotKey(option.slots))).size === 1
+      const placement = selected ?? (sameSlots ? options[0] : undefined)
+      if (placement) {
+        appendSelectedOption(slots, course, placement)
         continue
       }
-      unplaced.push({ code: course.code, name: course.name, reason: 'no-class', options })
+      unplaced.push({ code: course.code, name: course.name, reason: 'lower-year-selection', options })
       continue
     }
     // 通年注記があり時限候補を示せない科目は、両学期に残して担当教員への確認を促す。

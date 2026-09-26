@@ -132,6 +132,20 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(html).toContain('（再履修向け）')
   })
 
+  // 低学年科目の候補選択は、クラス設定の不足と誤解しない説明で候補枠へ表示する。
+  it('低学年科目の候補理由を専用表示し、選択枠へ分類する', () => {
+    const html = renderPreview([{
+      code: 'A', name: '低学年科目', termType: '前学期', offeredTerms: ['前学期'], chooseAmongSections: true,
+      options: [
+        { term: '前学期', timetableCode: 'A-1', slots: [{ day: '月', period: 1 }] },
+        { term: '前学期', timetableCode: 'A-2', slots: [{ day: '火', period: 1 }] },
+      ],
+    }])
+    expect(html).toContain('曜日時限を選んでください（1科目）')
+    expect(html).toContain('現在の学年より低い年次の科目のため、受講する授業を選んでください')
+    expect(html).not.toContain('受講クラスを特定できません')
+  })
+
   // 自動配置された再履修枠も表示切替欄の候補から変更できる。
   it('再履修の初期枠を選択欄に示し、通常枠も候補に残す', () => {
     const html = renderPreview([{

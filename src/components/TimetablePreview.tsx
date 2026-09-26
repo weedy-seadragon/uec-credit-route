@@ -31,6 +31,7 @@ function availableTerms(courses: readonly TimetablePreviewCourse[]): string[] {
 const REASON_LABELS: Record<UnplacedTimetableCourse['reason'], string> = {
   'no-offering': 'シラバスの開講情報なし',
   'no-class': '受講クラスを特定できません',
+  'lower-year-selection': '現在の学年より低い年次の科目のため、受講する授業を選んでください',
   'no-slot': '曜日時限の記載なし',
   'instructor-dependent': TIMELESS_COURSE_LABELS['instructor-dependent'],
   lab: TIMELESS_COURSE_LABELS.lab,

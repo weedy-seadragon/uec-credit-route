@@ -159,6 +159,24 @@ describe('buildTimetablePreview（修得見込の時間割）', () => {
     expect(result.unplaced.map(({ code, name, reason }) => ({ code, name, reason }))).toEqual([{ code: 'A', name: '実験', reason: 'ambiguous-term' }])
   })
 
+  // 低学年科目の候補が同時限なら配置し、保存済み選択があればその候補を使う。
+  it('低学年の候補が同じ曜日時限なら自動配置し、保存値を優先する', () => {
+    const course = {
+      code: 'A', name: '低学年科目', termType: '前学期', offeredTerms: ['春ﾀｰﾑ', '夏ﾀｰﾑ'], chooseAmongSections: true,
+      options: [
+        { term: '春ﾀｰﾑ', timetableCode: 'A-spring', teacher: '教員甲', slots: [{ day: '月', period: 1 }] },
+        { term: '夏ﾀｰﾑ', timetableCode: 'A-summer', teacher: '教員乙', slots: [{ day: '月', period: 1 }] },
+      ],
+    }
+    const automatic = buildTimetablePreview([course], '前学期')
+    expect(automatic.slots.map((slot) => slot.offeringTerm)).toEqual(['春ﾀｰﾑ'])
+    expect(automatic.unplaced).toEqual([])
+
+    const saved = buildTimetablePreview([course], '前学期', { A: 'A-summer' })
+    expect(saved.slots.map((slot) => slot.offeringTerm)).toEqual(['夏ﾀｰﾑ'])
+    expect(saved.unplaced).toEqual([])
+  })
+
   // 同時限を取る2科目は両方出し、表示側で重複を見えるようにする。
   it('重複した科目をどちらも配置する', () => {
     const result = buildTimetablePreview(['A', 'B'].map((code) => ({
@@ -177,12 +195,19 @@ describe('splitUnplacedTimetableCourses（欄外科目の分類）', () => {
         { term: '前学期', slots: [{ day: '月', period: 1 }] },
         { term: '前学期', slots: [{ day: '火', period: 1 }] },
       ] },
+      { code: 'LOW', name: '低学年科目', termType: '前学期', offeredTerms: ['前学期'], chooseAmongSections: true, options: [
+        { term: '前学期', slots: [{ day: '水', period: 1 }] },
+        { term: '前学期', slots: [{ day: '木', period: 1 }] },
+      ] },
       { code: 'LAB', name: '輪講A', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
       { code: 'WORK', name: '情報工学工房A', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
       { code: 'MISSING', name: '開講情報なし', termType: '前学期', offeredTerms: [], options: [] },
     ], '前学期')
     const groups = splitUnplacedTimetableCourses(result.unplaced)
-    expect(groups.selectable.map((course) => [course.code, course.reason])).toEqual([['ENG', 'ambiguous-slot']])
+    expect(groups.selectable.map((course) => [course.code, course.reason])).toEqual([
+      ['ENG', 'ambiguous-slot'],
+      ['LOW', 'lower-year-selection'],
+    ])
     expect(groups.timeless.map((course) => [course.code, course.reason])).toEqual([
       ['LAB', 'lab'],
       ['WORK', 'instructor-dependent'],
@@ -320,7 +345,7 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
   // 再履修専用枠を一意に決められない場合は、自動選択せず選ぶまで欄外に残す。
   it('再履修専用枠が複数あるときは未選択のままにする', () => {
     const result = buildTimetablePreview([{
-      code: 'A', name: '再履修科目', termType: '前学期', offeredTerms: ['前学期'], chooseAmongSections: true,
+      code: 'A', name: '再履修科目', termType: '前学期', offeredTerms: ['前学期'],
       options: [
         { term: '前学期', timetableCode: 'A-retake-1', slots: [{ day: '火', period: 2 }], retake: true },
         { term: '前学期', timetableCode: 'A-retake-2', slots: [{ day: '水', period: 3 }], retake: true },
@@ -331,20 +356,20 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
       ],
     }], '前学期')
     expect(result.slots).toEqual([])
-    expect(result.unplaced[0].reason).toBe('no-class')
+    expect(result.unplaced[0].reason).toBe('ambiguous-slot')
   })
 
-  // 低学年科目は時限が一致する複数セクションでも、選んだ1件だけを表へ置く。
-  it('明示選択が必要な複数セクションは、選ぶまで欄外に残す', () => {
+  // 低学年科目の時限が異なる場合だけ候補選択に残し、専用理由で説明する。
+  it('時限の異なる低学年科目は候補選択枠に残す', () => {
     const course = {
       code: 'A', name: '低学年の授業', termType: '前学期', offeredTerms: ['前学期'], chooseAmongSections: true,
       options: [
         { term: '前学期', timetableCode: 'A-1', slots: [{ day: '月', period: 1 }] },
-        { term: '前学期', timetableCode: 'A-2', slots: [{ day: '月', period: 1 }] },
+        { term: '前学期', timetableCode: 'A-2', slots: [{ day: '火', period: 1 }] },
       ],
     }
     const unselected = buildTimetablePreview([course], '前学期')
-    expect(unselected.unplaced[0]).toMatchObject({ reason: 'no-class', options: course.options })
+    expect(unselected.unplaced[0]).toMatchObject({ reason: 'lower-year-selection', options: course.options })
     const selected = buildTimetablePreview([course], '前学期', { A: 'A-2' })
     expect(selected.slots.map((slot) => slot.code)).toEqual(['A'])
     expect(selected.unplaced).toEqual([])
