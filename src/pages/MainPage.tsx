@@ -41,6 +41,7 @@ import {
 } from '../storage/otherClusterMajorCredits'
 import { isSameClusterOtherProgramSubject } from '../domain/programSuffix'
 import { normalizeDuplicateSubjectRecords, preferredSubjectCode, setSubjectStatusWithoutDuplicates } from '../domain/subjectRecords'
+import { sortByYearTerm } from '../domain/sortByYearTerm'
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
 import TimetablePreview from '../components/TimetablePreview'
 import type { TimetablePreviewCourse } from '../domain/timetablePreview'
@@ -1533,6 +1534,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       offerings,
     })
   }
+  // 表の下の表示設定一覧も、メイン画面と同じ学年・学期・曜日時限順にする。
+  const sortedTimetablePreviewCourses = sortByYearTerm(
+    timetablePreviewCourses,
+    (course) => course.code,
+    standardYearOf,
+    termTypeOf,
+    slotRankOf,
+  )
 
   return (
     // 下側に余白を持たせる：最後の区分（類専門など）の<summary>がページ最下端にくっついて
@@ -1803,7 +1812,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       </section>
 
       {/* 修得見込の直後に、編集中の選択を週の曜日時限へ並べた表示だけのプレビューを置く。 */}
-      <TimetablePreview courses={timetablePreviewCourses} entryYear={profile.entryYear} hasPendingChanges={hasPendingChanges} />
+      <TimetablePreview courses={sortedTimetablePreviewCourses} entryYear={profile.entryYear} hasPendingChanges={hasPendingChanges} />
 
       <section id="failed-subjects" className="requirement-section failed-section">
         <h2>不合格になった科目（{failedSubjects.length}科目）</h2>
@@ -2314,36 +2323,6 @@ const GROUPS_KEEP_ORIGINAL_ORDER = new Set(['lang-basic-2', 'health-sel'])
  * codeOfで科目コードの取り出し方を指定できるので、コードそのものの配列でも[コード, 状態]のような
  * タプルの配列でも、どちらの並び替えにも使える
  */
-function sortByYearTerm<T>(
-  items: readonly T[],
-  codeOf: (item: T) => string,
-  standardYearOf: (code: string) => number | null,
-  termTypeOf: (code: string) => string | null,
-  slotRankOf?: (code: string) => number,
-): T[] {
-  const termRank = (t: string | null) => (t === '前学期' ? 0 : t === '後学期' ? 1 : 2)
-  // 同じ区分・同じ学年学期の科目は、曜日時限が早い順（月・1限→金・5限）に並べる（2026-09-24）。
-  // 時限が分からない科目（集中講義・オンデマンド等）は、その学年学期の最後に回す。
-  const bySlot = (a: T, b: T) => {
-    if (!slotRankOf) return 0
-    const rankA = slotRankOf(codeOf(a))
-    const rankB = slotRankOf(codeOf(b))
-    if (rankA === rankB) return 0
-    return rankA < rankB ? -1 : 1
-  }
-  return [...items].sort((a, b) => {
-    const yearA = standardYearOf(codeOf(a))
-    const yearB = standardYearOf(codeOf(b))
-    if (yearA === null && yearB === null) return bySlot(a, b)
-    if (yearA === null) return 1 // 年次不明は最後に回す
-    if (yearB === null) return -1
-    if (yearA !== yearB) return yearA - yearB
-    const termDiff = termRank(termTypeOf(codeOf(a))) - termRank(termTypeOf(codeOf(b)))
-    if (termDiff !== 0) return termDiff
-    return bySlot(a, b)
-  })
-}
-
 /**
  * 基本は標準年次・学期順のままにし、日本文化Ａ〜Ｅだけは科目名末尾の英字順に並べる。
  * 日本文化は開講学期が入り混じるため、Ａ・Ｂ・Ｃ・Ｄ・Ｅの系列として続けて読める方が分かりやすい。
