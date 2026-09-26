@@ -73,7 +73,7 @@
   そのまま保持する
 - **ブランチ運用（2026-09-06〜、サイト公開に伴い変更）**：`main`へのpushは`.github/workflows/deploy.yml`でGitHub Pagesへの自動デプロイをトリガーする。通常の開発作業は`dev`ブランチで行い、`dev`へのコミット・プッシュは（開発者の指示により）確認なしで進めてよい。`main`へのマージ（＝実際に公開サイトが更新される操作）は、コミット・プッシュとは別の重みを持つ操作なので、マージする前に開発者に確認する
 
-## 現在の状態（要約、2026-09-13時点）
+## 現在の状態（要約、2026-09-27時点）
 
 **詳しい経緯（いつ・なぜ・どう直したか）は `docs/PROGRESS_LOG.md` に時系列で全部残してある。** ここには「今どうなっているか」だけを書く。同じ種類の不具合を調べるとき・過去の判断の理由を知りたいときはPROGRESS_LOG.mdを検索すること。「次にやること」は`docs/PROJECT_STATUS.md`の「次の確認候補」にまとめてあるので、そちらを参照（このファイルには残タスク一覧は置かない）。
 
@@ -100,6 +100,9 @@
     「情報工学工房」、独立科目の追加で番号がずれる場合）や、現行の科目マスタに存在しない廃止科目（例:
     夜間主の「美術」「経済学」）だけにする。判断に迷ったら`docs/YOURAN_2023_COMPARISON.md`の該当箇所を参照
 - 複数セクション（クラスごとに教員・時限が違う）科目は、`data/timetable/class_assignment_filled.csv`→`class_assignment.json`で、プロフィールのクラス情報と突き合わせて一意に解決する。未記入の`class_id`はない
+  - 曜日時限が「他」で空の科目（情報領域演習第三・インターンシップ等）や「1クラス・2クラス・3クラス」表記の科目（アルゴリズム論第一）は、offeringの`sectionLabel`（シラバス一覧の科目名末尾の（…）表記）とプロフィールのA/B/Cクラス・類で解決する
+- 学域特別講義は、A＝`UEC001z`（1単位）・B＝`UEC004z`（2単位）の2科目。offeringsには年度ごとのテーマ（`topic`）が全部入る。旧区分の`UEC002z`・`UEC003z`は保存済み記録の引き継ぎ用に科目マスタへ残し（`legacy`）、`data/subjects/code-migrations.json`の対応表で保存記録を自動で新コードへ移す（移し先に記録があれば移さない）
+- シラバスの一覧ページ2件だけで更新できる補助スクリプト：`scripts/backfill_section_labels.py`（`sectionLabel`）・`scripts/backfill_special_offerings.py`（学域特別講義のテーマ）。フル実行の`fetch_syllabus.py`も同じ値を付ける
 - データ生成パイプラインの実行順序：`python scripts/gen_data.py`（科目マスタ・2025年度要件JSONを再構築。**offerings・prerequisitesTextを消してしまう**）→`python scripts/fetch_syllabus.py`（シラバスから曜日時限等を再取得）→`python scripts/build_class_assignment.py`→`python scripts/build_class_assignment_json.py`→年度別データを土台の年度から順に再生成（`python scripts/build_2024_data.py`・`python scripts/build_2026_data.py`は2025年度が土台→`python scripts/build_2023_data.py`・`python scripts/build_2022_data.py`は2024年度が土台→`python scripts/build_2021_data.py`は2022年度が土台）→`python scripts/validate_data.py`（整合性チェック）
 
 ### 実装済みの画面・機能
@@ -110,7 +113,14 @@
   - 不合格科目は要件区分ごとに分けて表示し、複数offeringがある科目が不合格の場合は再履修枠の曜日時限を注記する。表示フィルタ（学期）は「残りの必修」「選択科目」「修得推奨科目」すべてに効く
   - 同じ授業が複数区分（プログラム必修・類選択など）に展開されている場合の単位二重計上を防止済み（2026-09-12）
   - 「このサイトについて」に、アイコン制作者・βテスト協力者一覧・NEXUS for UEC（学生開発の関連アプリ）のリンク集・不具合報告テンプレートを掲載
+  - 大見出し（修得した単位・修得見込の単位・時間割プレビュー・選択科目・審査など）は折りたためる。初回は全部開き、開閉状態はlocalStorageに保存
+  - 時間割プレビュー（Ver.1.2.0〜、SPEC F-7）：修得見込の科目を前学期・後学期の週間時間割（月〜金）に並べる。必修は赤、それ以外は科目区分ごとの固定色（13色）。ターム開講・通年・オンデマンド・集中講義・土曜・時限未確定を別枠で扱い、候補が複数ある科目（低学年・再履修・学域特別講義のテーマを含む）はドロップダウンで選ぶ。表示／非表示・選んだ授業はlocalStorageだけに保存し、履修記録・卒業判定には影響しない
+  - 「更新する」時の曜日時限の重複警告は、学期とターム（前学期⊃春・夏、後学期⊃秋・冬）の重なりも判定する
+  - WebMCP（AIエージェント向けツール、メイン画面を開いている間だけ登録）：読み取り4種と履修状態の変更（未確定の変更に入るだけ）。Chromeの試験機能でのみ動く
 - ドメインロジック（`src/domain/`、すべてReact/DOM非依存の純粋関数＋単体テスト）：`requirements.ts`（充足判定。`commonOverrides`でプログラム固有の必修化にも対応）・`recommend.ts`（推奨スコア、先修科目考慮）・`reviews.ts`（審査条件評価）・`classAssignment.ts`（クラス別セクション解決、シラバスリンクの絞り込みにも使用）・`prerequisites.ts`（先修科目の保守的抽出）・`importers.ts`（JSON入出力、schemaVersion 5）
+  - 時間割・開講期関連：`timetablePreview.ts`（プレビューの配置・欄外分類・色区分）・`offeringTerms.ts`（学期とタームの期間重複）・`scheduleConflicts.ts`（更新時の重複警告）・`onDemand.ts`（時限なし科目の区分と表示文言）・`sortByYearTerm.ts`（学年学期・曜日時限順の並べ替え）
+  - その他：`codeMigrations.ts`（旧科目コードの引き継ぎ）・`subjectRecords.ts`（同名科目の記録の重複防止）・`agentTools.ts`（WebMCPが返す内容の組み立て）
+- 表示の好み・プレビュー用の選択（見出しの開閉、時間割の表示／非表示、選んだ授業）は`src/storage/`経由でlocalStorageにだけ保存し、JSONバックアップ（importers.ts）には含めない。キーは入学年度で分けない
 - 画面単位でJavaScriptを分割読み込み（`React.lazy`+`Suspense`）し、初回表示を軽量化
 
 ### 削除した機能
