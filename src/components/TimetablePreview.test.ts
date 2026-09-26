@@ -37,6 +37,15 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(html).toContain('土曜などの授業（1科目）')
     expect(html).toContain('土6限、土7限')
     expect(html).toContain('href="/courses/SAT101?year=2025"')
+    expect(html).not.toContain('（SAT101）')
+  })
+
+  // 曜日時限を決められない科目も、理由と詳細リンクを保ちつつ番号は表示しない。
+  it('未確定の科目を科目名と理由だけで示す', () => {
+    const html = renderPreview([{ code: 'UNP101', name: '時限未定の授業', termType: '前学期', offeredTerms: ['前学期'], options: [] }])
+    expect(html).toContain('曜日時限を確定できない科目（1科目）')
+    expect(html).toContain('href="/courses/UNP101?year=2025"')
+    expect(html).not.toContain('（UNP101）')
   })
 
   // 長い英単語だけに改行用ハイフンを付け、短い英単語と日本語名は変えない。
@@ -58,8 +67,10 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(html).toContain('<span lang="en">Basic Course</span>')
     expect(html).toContain('<span lang="en">Abc\u00ADdef\u00ADghij</span>')
     expect(html).toContain('<span><span>計算機通論</span></span>')
-    expect(html).toContain('aria-label="Academic English for the Second YearⅡ（A0）"')
+    expect(html).toContain('aria-label="Academic English for the Second YearⅡ"')
     expect(html).toContain('href="/courses/A0?year=2025"')
+    expect(html).not.toContain('<small>')
+    expect(html).not.toContain('（A0）')
     expect(courses.map((course) => course.name)).toEqual(names)
   })
 })

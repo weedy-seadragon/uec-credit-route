@@ -867,7 +867,7 @@ select {
   background: color-mix(in srgb, #f7bc69 27%, Canvas);
 }
 
-/* 科目名と番号を1枚のカードにまとめ、セル内に複数科目がある場合も分けて表示する。 */
+/* 科目名を1枚のカードにまとめ、セル内に複数科目がある場合も分けて表示する。 */
 .timetable-course {
   display: block;
   margin-bottom: 0.3rem;
@@ -884,14 +884,6 @@ select {
 /* 英語だけの科目名は、自動判定とソフトハイフンを使って改行する。 */
 .timetable-course [lang="en"] {
   hyphens: auto;
-}
-
-/* 科目番号は補助情報として名前の下に小さく置く。 */
-.timetable-course small {
-  display: block;
-  margin-top: 0.1rem;
-  color: CanvasText;
-  font-size: 0.77rem;
 }
 
 /* 時限重複の表示は、カードの前に短い注意として置く。 */
@@ -938,11 +930,6 @@ select {
     line-height: 1.25;
     overflow-wrap: break-word;
     word-break: normal;
-  }
-
-  /* 科目番号は詳細リンクの先で確認できるため、狭い表では隠す。 */
-  .timetable-course small {
-    display: none;
   }
 
   /* 重複数の表示もセルの幅の中で改行して読めるようにする。 */

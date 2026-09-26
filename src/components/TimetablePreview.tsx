@@ -56,9 +56,8 @@ function CourseInSlot({ slot, entryYear }: { slot: TimetablePreviewSlot; entryYe
   // 英語名だけに言語属性と改行候補を付け、日本語名には手を加えない。
   const englishName = isEnglishCourseName(slot.name)
   return (
-    <Link className="timetable-course" aria-label={`${slot.name}（${slot.code}）`} to={`/courses/${encodeURIComponent(slot.code)}?year=${entryYear}`}>
+    <Link className="timetable-course" aria-label={slot.name} to={`/courses/${encodeURIComponent(slot.code)}?year=${entryYear}`}>
       <span><span lang={englishName ? 'en' : undefined}>{englishName ? hyphenateEnglishName(slot.name) : slot.name}</span>{slot.offeringTerm !== '前学期' && slot.offeringTerm !== '後学期' && `（${slot.offeringTerm}）`}</span>
-      <small>{slot.code}</small>
     </Link>
   )
 }
@@ -141,7 +140,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                     <Link to={`/courses/${encodeURIComponent(code)}?year=${entryYear}`}>
                       {slots[0].name}{slots[0].offeringTerm !== '前学期' && slots[0].offeringTerm !== '後学期' && `（${slots[0].offeringTerm}）`}
                     </Link>
-                    {' '}（{code}）：{slots.map((slot) => `${slot.day}${slot.period}限`).join('、')}
+                    {' '}：{slots.map((slot) => `${slot.day}${slot.period}限`).join('、')}
                   </li>
                 ))}
               </ul>
@@ -158,7 +157,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                 {result.unplaced.map((course) => (
                   <li key={course.code}>
                     <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
-                    {' '}（{course.code}）：{REASON_LABELS[course.reason]}
+                    {' '}：{REASON_LABELS[course.reason]}
                   </li>
                 ))}
               </ul>
