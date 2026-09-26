@@ -1,6 +1,6 @@
 // 時間割プレビューが、曜日時限を断定できる科目だけを配置することを確かめる。
 import { describe, expect, it } from 'vitest'
-import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, offeringTermsOverlap } from './timetablePreview'
+import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, offeringTermsOverlap, splitUnplacedTimetableCourses } from './timetablePreview'
 
 // 学期全体と個別タームの授業が、同じ週に行われるかを検証する。
 describe('開講期間の重複判定', () => {
@@ -166,6 +166,28 @@ describe('buildTimetablePreview（修得見込の時間割）', () => {
       options: [{ term: '前学期', slots: [{ day: '金', period: 3 }] }],
     })), '前学期')
     expect(result.slots.map((slot) => slot.code)).toEqual(['A', 'B'])
+  })
+})
+
+// 未配置の理由から、候補選択が必要な科目と時限自体が未確定の科目を分ける。
+describe('splitUnplacedTimetableCourses（欄外科目の分類）', () => {
+  it('英語演習は候補選択へ、輪講と情報工学工房は時限未確定へ分ける', () => {
+    const result = buildTimetablePreview([
+      { code: 'ENG', name: '英語演習', termType: '前学期', offeredTerms: ['前学期'], options: [
+        { term: '前学期', slots: [{ day: '月', period: 1 }] },
+        { term: '前学期', slots: [{ day: '火', period: 1 }] },
+      ] },
+      { code: 'LAB', name: '輪講A', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
+      { code: 'WORK', name: '情報工学工房A', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
+      { code: 'MISSING', name: '開講情報なし', termType: '前学期', offeredTerms: [], options: [] },
+    ], '前学期')
+    const groups = splitUnplacedTimetableCourses(result.unplaced)
+    expect(groups.selectable.map((course) => [course.code, course.reason])).toEqual([['ENG', 'ambiguous-slot']])
+    expect(groups.timeless.map((course) => [course.code, course.reason])).toEqual([
+      ['LAB', 'lab'],
+      ['WORK', 'instructor-dependent'],
+      ['MISSING', 'no-offering'],
+    ])
   })
 })
 

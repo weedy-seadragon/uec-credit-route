@@ -48,6 +48,19 @@ export interface UnplacedTimetableCourse {
   options?: readonly TimetablePreviewOption[]
 }
 
+/** 欄外科目を、利用者が候補を選ぶものと曜日時限自体が未確定のものに分ける。 */
+export function splitUnplacedTimetableCourses(courses: readonly UnplacedTimetableCourse[]): {
+  selectable: UnplacedTimetableCourse[]
+  timeless: UnplacedTimetableCourse[]
+} {
+  const selectableReasons = new Set<UnplacedTimetableCourse['reason']>(['no-class', 'ambiguous-term', 'ambiguous-slot'])
+  // 選択候補の理由を持つ科目だけを候補選択枠へ振り分ける。
+  const selectable = courses.filter((course) => selectableReasons.has(course.reason))
+  // それ以外は候補選択UIを持たない時限未確定枠へ振り分ける。
+  const timeless = courses.filter((course) => !selectableReasons.has(course.reason))
+  return { selectable, timeless }
+}
+
 /** 時間割グリッドと、その下に表示する未確定科目。 */
 export interface TimetablePreviewResult {
   slots: TimetablePreviewSlot[]

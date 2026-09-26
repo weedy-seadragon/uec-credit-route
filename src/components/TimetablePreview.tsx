@@ -1,7 +1,7 @@
 // 修得見込の科目を開講期ごとに並べる週間時間割。表示設定だけを保存し、履修記録は変更しない。
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, previewSemesterOf } from '../domain/timetablePreview'
+import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, previewSemesterOf, splitUnplacedTimetableCourses } from '../domain/timetablePreview'
 import type { TimetablePreviewCourse, TimetablePreviewSlot, UnplacedTimetableCourse } from '../domain/timetablePreview'
 import { TIMELESS_COURSE_LABELS } from '../domain/onDemand'
 import { loadHiddenTimetableCourses, saveHiddenTimetableCourses } from '../storage/timetableVisibility'
@@ -83,6 +83,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
   const [selectedTimetableCodes, setSelectedTimetableCodes] = useState<Readonly<Record<string, string>>>(() => loadTimetableOfferingSelection())
   const allCoursesResult = buildTimetablePreview(courses, term, selectedTimetableCodes)
   const result = buildVisibleTimetablePreview(courses, term, hiddenCodes, selectedTimetableCodes)
+  const { selectable: selectableCourses, timeless: timelessCourses } = splitUnplacedTimetableCourses(result.unplaced)
   const terms = availableTerms(courses)
   // 選択した開講期の科目を、非表示中のものも含めて設定欄へ残す。
   const termCourseCodes = new Set([
@@ -216,12 +217,12 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
           {result.slots.length === 0 && result.unplaced.length === 0 && result.onDemand.length === 0 && result.intensive.length === 0 && (
             <p className="section-guidance">この開講期に表示中の修得見込科目はありません。</p>
           )}
-          {result.unplaced.length > 0 && (
+          {selectableCourses.length > 0 && (
             <div className="timetable-unplaced">
-              <h3>曜日時限を確定できない科目（{result.unplaced.length}科目）</h3>
-              <p className="section-guidance">クラスや開講情報が未確定の科目は、誤ったコマへ置かずにここへ表示します。科目詳細と公式シラバスを確認してください。</p>
+              <h3>曜日時限を選んでください（{selectableCourses.length}科目）</h3>
+              <p className="section-guidance">候補からセクションを選ぶと、曜日時限が時間割へ反映されます。</p>
               <ul>
-                {result.unplaced.map((course) => (
+                {selectableCourses.map((course) => (
                   <li key={course.code}>
                     <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
                     {' '}：{REASON_LABELS[course.reason]}
@@ -245,6 +246,20 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                         </select>
                       </label>
                     )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {timelessCourses.length > 0 && (
+            <div className="timetable-unplaced">
+              <h3>曜日時限が決まっていない科目（{timelessCourses.length}科目）</h3>
+              <ul>
+                {/* 曜日時限の候補自体がない科目は理由だけを示し、セクション選択を出さない。 */}
+                {timelessCourses.map((course) => (
+                  <li key={course.code}>
+                    <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
+                    {' '}：{REASON_LABELS[course.reason]}
                   </li>
                 ))}
               </ul>

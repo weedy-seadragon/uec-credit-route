@@ -96,9 +96,28 @@ describe('TimetablePreview の表と表外一覧', () => {
   // 曜日時限を決められない科目も、理由と詳細リンクを保ちつつ番号は表示しない。
   it('未確定の科目を科目名と理由だけで示す', () => {
     const html = renderPreview([{ code: 'UNP101', name: '時限未定の授業', termType: '前学期', offeredTerms: ['前学期'], options: [] }])
-    expect(html).toContain('曜日時限を確定できない科目（1科目）')
+    expect(html).toContain('曜日時限を選んでください（1科目）')
     expect(html).toContain('href="/courses/UNP101?year=2025"')
     expect(html).not.toContain('（UNP101）')
+  })
+
+  // 候補のある科目だけを選択欄へ置き、輪講や情報工学工房は理由だけを別枠に示す。
+  it('候補選択と時限未確定の科目を別々の枠に表示する', () => {
+    const html = renderPreview([
+      { code: 'ENG', name: '英語演習', termType: '前学期', offeredTerms: ['前学期'], options: [
+        { term: '前学期', timetableCode: 'ENG-1', slots: [{ day: '月', period: 1 }] },
+        { term: '前学期', timetableCode: 'ENG-2', slots: [{ day: '火', period: 1 }] },
+      ] },
+      { code: 'LAB', name: '輪講A', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
+      { code: 'WORK', name: '情報工学工房A', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
+    ])
+    expect(html).toContain('曜日時限を選んでください（1科目）')
+    expect(html).toContain('曜日時限が決まっていない科目（2科目）')
+    expect(html).toContain('aria-label="英語演習のセクション"')
+    expect(html).not.toContain('aria-label="輪講Aのセクション"')
+    expect(html).not.toContain('aria-label="情報工学工房Aのセクション"')
+    expect(html).toContain('研究室ごとに実施形態が異なります')
+    expect(html).toContain('担当教員により開講時限が異なります')
   })
 
   // 再履修向けセクションは選択肢の表示に注記を添える。
