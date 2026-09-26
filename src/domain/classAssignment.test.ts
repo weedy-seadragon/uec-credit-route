@@ -1,9 +1,12 @@
 // classAssignment.ts の単体テスト。class_assignment.json の表記パターンごとに、
 // プロフィールとの一致判定・セクション解決が正しく動くことを確認する。
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, beforeAll } from 'vitest'
 import { classIdMatchesProfile, hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, resolveTimetablePreviewOfferings, sectionLabelMatchesProfile } from './classAssignment'
 import type { ClassAssignmentEntry, ClassProfile } from './classAssignment'
-import { getClassAssignments, getSubjectsByCode } from '../data/requirementSets'
+import { getClassAssignments, getSubjectsByCode, loadAllEntryYearData } from '../data/requirementSets'
+
+// 要件データ・科目マスタは年度別に遅れて読み込む仕組みなので、テストの前に全年度分を読み込んでおく
+beforeAll(() => loadAllEntryYearData())
 
 describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () => {
   it('「クラスN」は1年次クラス（全類共通）と一致するかどうかで判定する', () => {

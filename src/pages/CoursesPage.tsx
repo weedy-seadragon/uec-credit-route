@@ -5,7 +5,7 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import type { CourseListSection } from '../data/requirementSets'
-import { getCourseListSections, getDataEntryYear, getSubjectsByCode, programOptions } from '../data/requirementSets'
+import { getCourseListSections, getDataEntryYear, getSubjectsByCode, programOptions, requireEntryYearData } from '../data/requirementSets'
 import { loadProfile } from '../storage/profile'
 
 const DAYS = ['月', '火', '水', '木', '金', '土', '日'] as const
@@ -59,6 +59,8 @@ export default function CoursesPage() {
     return profile.program
   })
 
+  // 選択中の年度のデータを読み込み終わるまで描画を待つ（年度を切り替えたときも同じ）
+  requireEntryYearData(catalogYear)
   // 表示する科目名・単位数・開講情報は、選択中の年度の科目マスタから取得する。
   const subjectsByCode = useMemo(() => getSubjectsByCode(catalogYear), [catalogYear])
   // 選択中の年度から、実際に読み込む科目データ年度を求める。

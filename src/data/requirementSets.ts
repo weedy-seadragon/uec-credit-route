@@ -4,122 +4,16 @@
 // 他のコード（画面など）はここでエクスポートしている関数・一覧だけを見ればよく、
 // JSONファイルが具体的に何個あってどこにあるかを気にしなくてよい。
 //
-// 新しいプログラムのデータを追加したら、下の import 文と `programDocs` に1行足すだけでよい
-// （フェーズ3でⅡ類・Ⅲ類・夜間主を追加するときはここを増やす）。
-//
-// `import 名前 from '...json'` は、Viteがビルド時にJSONファイルの中身をそのまま
-// JavaScriptのオブジェクトとして読み込んでくれる機能（tsconfig.app.json の
-// resolveJsonModule で型チェックも通るようにしている）。
+// 要件データと科目マスタは全年度分で数MBあるため、入学年度ごとに分けて、必要になったときだけ読み込む
+// （2026-09-27、ビルド時の「チャンクが大きい」警告と初回表示の重さを解消するため）。
+// - 画面は、データを使う前に requireEntryYearData(入学年度) を呼ぶ。まだ読み込んでいなければ
+//   読み込みを始めて画面の描画をいったん止め（ReactのSuspense）、読み込み後に描画し直される
+// - プログラム一覧（programOptions）だけは全年度分を最初から持つ（programIndexPlugin.ts が作る小さな一覧）
+// 新しい年度・プログラムのJSONを data/requirements/ と data/subjects/ に置けば、ここを書き換えなくても読み込まれる。
 
+import programIndex from 'virtual:program-index'
 import type { GroupKind, RequirementGroup, RequirementSet, ReviewDef } from '../domain/requirements'
 import { isSameClusterOtherProgramSubject } from '../domain/programSuffix'
-import common2021 from '../../data/requirements/2021-day-common.json'
-import media2021 from '../../data/requirements/2021-day-I-media.json'
-import management2021 from '../../data/requirements/2021-day-I-management.json'
-import mathinfo2021 from '../../data/requirements/2021-day-I-mathinfo.json'
-import cs2021 from '../../data/requirements/2021-day-I-cs.json'
-import security2021 from '../../data/requirements/2021-day-II-security.json'
-import netinfo2021 from '../../data/requirements/2021-day-II-netinfo.json'
-import electroinfo2021 from '../../data/requirements/2021-day-II-electroinfo.json'
-import control2021 from '../../data/requirements/2021-day-II-control.json'
-import robotics2021 from '../../data/requirements/2021-day-II-robotics.json'
-import mecha2021 from '../../data/requirements/2021-day-III-mecha.json'
-import electro2021 from '../../data/requirements/2021-day-III-electro.json'
-import optical2021 from '../../data/requirements/2021-day-III-optical.json'
-import physics2021 from '../../data/requirements/2021-day-III-physics.json'
-import chembio2021 from '../../data/requirements/2021-day-III-chembio.json'
-import evening2021 from '../../data/requirements/2021-evening.json'
-import common2022 from '../../data/requirements/2022-day-common.json'
-import media2022 from '../../data/requirements/2022-day-I-media.json'
-import management2022 from '../../data/requirements/2022-day-I-management.json'
-import mathinfo2022 from '../../data/requirements/2022-day-I-mathinfo.json'
-import cs2022 from '../../data/requirements/2022-day-I-cs.json'
-import security2022 from '../../data/requirements/2022-day-II-security.json'
-import netinfo2022 from '../../data/requirements/2022-day-II-netinfo.json'
-import electroinfo2022 from '../../data/requirements/2022-day-II-electroinfo.json'
-import control2022 from '../../data/requirements/2022-day-II-control.json'
-import robotics2022 from '../../data/requirements/2022-day-II-robotics.json'
-import mecha2022 from '../../data/requirements/2022-day-III-mecha.json'
-import electro2022 from '../../data/requirements/2022-day-III-electro.json'
-import optical2022 from '../../data/requirements/2022-day-III-optical.json'
-import physics2022 from '../../data/requirements/2022-day-III-physics.json'
-import chembio2022 from '../../data/requirements/2022-day-III-chembio.json'
-import evening2022 from '../../data/requirements/2022-evening.json'
-import common2023 from '../../data/requirements/2023-day-common.json'
-import media2023 from '../../data/requirements/2023-day-I-media.json'
-import management2023 from '../../data/requirements/2023-day-I-management.json'
-import mathinfo2023 from '../../data/requirements/2023-day-I-mathinfo.json'
-import cs2023 from '../../data/requirements/2023-day-I-cs.json'
-import designds2023 from '../../data/requirements/2023-day-I-designds.json'
-import security2023 from '../../data/requirements/2023-day-II-security.json'
-import netinfo2023 from '../../data/requirements/2023-day-II-netinfo.json'
-import electroinfo2023 from '../../data/requirements/2023-day-II-electroinfo.json'
-import control2023 from '../../data/requirements/2023-day-II-control.json'
-import robotics2023 from '../../data/requirements/2023-day-II-robotics.json'
-import mecha2023 from '../../data/requirements/2023-day-III-mecha.json'
-import electro2023 from '../../data/requirements/2023-day-III-electro.json'
-import optical2023 from '../../data/requirements/2023-day-III-optical.json'
-import physics2023 from '../../data/requirements/2023-day-III-physics.json'
-import chembio2023 from '../../data/requirements/2023-day-III-chembio.json'
-import evening2023 from '../../data/requirements/2023-evening.json'
-import common2024 from '../../data/requirements/2024-day-common.json'
-import media2024 from '../../data/requirements/2024-day-I-media.json'
-import management2024 from '../../data/requirements/2024-day-I-management.json'
-import mathinfo2024 from '../../data/requirements/2024-day-I-mathinfo.json'
-import cs2024 from '../../data/requirements/2024-day-I-cs.json'
-import designds2024 from '../../data/requirements/2024-day-I-designds.json'
-import security2024 from '../../data/requirements/2024-day-II-security.json'
-import netinfo2024 from '../../data/requirements/2024-day-II-netinfo.json'
-import electroinfo2024 from '../../data/requirements/2024-day-II-electroinfo.json'
-import control2024 from '../../data/requirements/2024-day-II-control.json'
-import robotics2024 from '../../data/requirements/2024-day-II-robotics.json'
-import mecha2024 from '../../data/requirements/2024-day-III-mecha.json'
-import electro2024 from '../../data/requirements/2024-day-III-electro.json'
-import optical2024 from '../../data/requirements/2024-day-III-optical.json'
-import physics2024 from '../../data/requirements/2024-day-III-physics.json'
-import chembio2024 from '../../data/requirements/2024-day-III-chembio.json'
-import evening2024 from '../../data/requirements/2024-evening.json'
-import common from '../../data/requirements/2025-day-common.json'
-import media from '../../data/requirements/2025-day-I-media.json'
-import management from '../../data/requirements/2025-day-I-management.json'
-import mathinfo from '../../data/requirements/2025-day-I-mathinfo.json'
-import cs from '../../data/requirements/2025-day-I-cs.json'
-import designds from '../../data/requirements/2025-day-I-designds.json'
-import security from '../../data/requirements/2025-day-II-security.json'
-import netinfo from '../../data/requirements/2025-day-II-netinfo.json'
-import electroinfo from '../../data/requirements/2025-day-II-electroinfo.json'
-import control from '../../data/requirements/2025-day-II-control.json'
-import robotics from '../../data/requirements/2025-day-II-robotics.json'
-import mecha from '../../data/requirements/2025-day-III-mecha.json'
-import electro from '../../data/requirements/2025-day-III-electro.json'
-import optical from '../../data/requirements/2025-day-III-optical.json'
-import physics from '../../data/requirements/2025-day-III-physics.json'
-import chembio from '../../data/requirements/2025-day-III-chembio.json'
-import evening from '../../data/requirements/2025-evening.json'
-import common2026 from '../../data/requirements/2026-day-common.json'
-import media2026 from '../../data/requirements/2026-day-I-media.json'
-import management2026 from '../../data/requirements/2026-day-I-management.json'
-import mathinfo2026 from '../../data/requirements/2026-day-I-mathinfo.json'
-import cs2026 from '../../data/requirements/2026-day-I-cs.json'
-import designds2026 from '../../data/requirements/2026-day-I-designds.json'
-import security2026 from '../../data/requirements/2026-day-II-security.json'
-import netinfo2026 from '../../data/requirements/2026-day-II-netinfo.json'
-import electroinfo2026 from '../../data/requirements/2026-day-II-electroinfo.json'
-import control2026 from '../../data/requirements/2026-day-II-control.json'
-import robotics2026 from '../../data/requirements/2026-day-II-robotics.json'
-import mecha2026 from '../../data/requirements/2026-day-III-mecha.json'
-import electro2026 from '../../data/requirements/2026-day-III-electro.json'
-import optical2026 from '../../data/requirements/2026-day-III-optical.json'
-import physics2026 from '../../data/requirements/2026-day-III-physics.json'
-import chembio2026 from '../../data/requirements/2026-day-III-chembio.json'
-import evening2026 from '../../data/requirements/2026-evening.json'
-import subjectsMaster2021 from '../../data/subjects/youran-2021.json'
-import subjectsMaster2022 from '../../data/subjects/youran-2022.json'
-import subjectsMaster2023 from '../../data/subjects/youran-2023.json'
-import subjectsMaster2024 from '../../data/subjects/youran-2024.json'
-import subjectsMaster2025 from '../../data/subjects/youran-2025.json'
-import subjectsMaster2026 from '../../data/subjects/youran-2026.json'
-import classAssignmentData from '../../data/timetable/class_assignment.json'
 import type { ClassAssignmentEntry } from '../domain/classAssignment'
 
 /**
@@ -227,43 +121,98 @@ function removeSameNamedOtherProgramSubjects(
 // 分からないので、ここで RequirementGroup[] であることを明示しておく（as で型を指定し直している）。
 type CommonDoc = { groups: RequirementGroup[]; commonCreditSources?: { alwaysCommon?: string[] } }
 
-// 昼間コース共通要件は入学年度ごとに内容が異なる可能性があるため、年度をキーにして持つ。
-const commonDocsByYear: ReadonlyMap<number, CommonDoc> = new Map([
-  [2021, common2021 as CommonDoc],
-  [2022, common2022 as CommonDoc],
-  [2023, common2023 as CommonDoc],
-  [2024, common2024 as CommonDoc],
-  [2025, common as CommonDoc],
-  [2026, common2026 as CommonDoc],
-])
+/** 入学年度1つぶんの読み込み済みデータ */
+interface EntryYearData {
+  /** 昼間コース共通要件（年度によって無い場合は undefined） */
+  commonDoc?: CommonDoc
+  /** その年度のプログラム別要件（昼間各プログラム＋夜間主） */
+  programDocs: ProgramDoc[]
+  /** その年度の科目マスタ */
+  subjects: SubjectMasterEntry[]
+}
 
-// 要件JSONは年度別に読み込み、プロフィールのentryYearで正しい1件を選ぶ。
-const programDocs: ProgramDoc[] = [
-  media2021, management2021, mathinfo2021, cs2021, security2021, netinfo2021, electroinfo2021, control2021, robotics2021,
-  mecha2021, electro2021, optical2021, physics2021, chembio2021, evening2021,
-  media2022, management2022, mathinfo2022, cs2022, security2022, netinfo2022, electroinfo2022, control2022, robotics2022,
-  mecha2022, electro2022, optical2022, physics2022, chembio2022, evening2022,
-  media2023, management2023, mathinfo2023, cs2023, designds2023, security2023, netinfo2023, electroinfo2023, control2023, robotics2023,
-  mecha2023, electro2023, optical2023, physics2023, chembio2023, evening2023,
-  media2024, management2024, mathinfo2024, cs2024, designds2024, security2024, netinfo2024, electroinfo2024, control2024, robotics2024,
-  mecha2024, electro2024, optical2024, physics2024, chembio2024, evening2024,
-  media, management, mathinfo, cs, designds, security, netinfo, electroinfo, control, robotics, mecha, electro, optical, physics, chembio, evening,
-  media2026, management2026, mathinfo2026, cs2026, designds2026, security2026, netinfo2026, electroinfo2026, control2026, robotics2026,
-  mecha2026, electro2026, optical2026, physics2026, chembio2026, evening2026,
-] as ProgramDoc[]
+// import.meta.glob は、パターンに合うファイルを「呼ぶと読み込みが始まる関数」の一覧にするViteの機能。
+// 実際の中身は関数を呼んだときに別ファイル（チャンク）として取得されるので、最初の読み込みには含まれない。
+const requirementLoaders = import.meta.glob<unknown>('../../data/requirements/*.json', { import: 'default' })
+const subjectLoaders = import.meta.glob<unknown>('../../data/subjects/youran-*.json', { import: 'default' })
 
-// 科目番号は年度をまたぐと別の科目を指すことがあるため、科目マスタも年度別に切り替える。
-const subjectMastersByYear = new Map([
-  [2021, subjectsMaster2021],
-  [2022, subjectsMaster2022],
-  [2023, subjectsMaster2023],
-  [2024, subjectsMaster2024],
-  [2025, subjectsMaster2025],
-  [2026, subjectsMaster2026],
-])
+// 読み込み済みの年度データ（データ年度 → 中身）と、読み込み中の年度の完了待ち
+const entryYearDataCache = new Map<number, EntryYearData>()
+const entryYearDataLoading = new Map<number, Promise<void>>()
+// クラス別の曜日時限対応表は年度に関係なく1つだけなので、最初の年度と一緒に一度だけ読み込む
+let classAssignmentCache: ClassAssignmentEntry[] | undefined
+
+/** 指定した入学年度（データ年度へ読み替え後）のデータが読み込み済みか */
+export function isEntryYearDataLoaded(entryYear: number): boolean {
+  return entryYearDataCache.has(getDataEntryYear(entryYear)) && classAssignmentCache !== undefined
+}
+
+/**
+ * 指定した入学年度のデータ（その年度の要件JSON一式・科目マスタ・クラス対応表）を読み込む。
+ * 同じ年度を何度呼んでも、読み込みは1回だけ行う。
+ */
+export function loadEntryYearData(entryYear: number): Promise<void> {
+  const dataEntryYear = getDataEntryYear(entryYear)
+  // すでに読み込み済みなら何もしない
+  if (isEntryYearDataLoaded(dataEntryYear)) return Promise.resolve()
+  // 読み込み中なら、その完了を一緒に待つ
+  const loading = entryYearDataLoading.get(dataEntryYear)
+  if (loading) return loading
+  const promise = (async () => {
+    // その年度のファイル名（例: 2025-day-I-media.json）だけを選んで、並行して読み込む
+    const requirementPaths = Object.keys(requirementLoaders).filter((filePath) => filePath.split('/').pop()!.startsWith(`${dataEntryYear}-`))
+    const subjectPath = Object.keys(subjectLoaders).find((filePath) => filePath.endsWith(`/youran-${dataEntryYear}.json`))
+    const [requirementDocs, subjectMaster] = await Promise.all([
+      Promise.all(requirementPaths.map(async (filePath) => ({ filePath, doc: await requirementLoaders[filePath]() }))),
+      subjectPath ? subjectLoaders[subjectPath]() : Promise.resolve({ subjects: [] }),
+      loadClassAssignments(),
+    ])
+    // 共通要件（*-day-common.json）とプログラム別要件に振り分けて覚える
+    const commonEntry = requirementDocs.find(({ filePath }) => filePath.endsWith('-day-common.json'))
+    entryYearDataCache.set(dataEntryYear, {
+      commonDoc: commonEntry?.doc as CommonDoc | undefined,
+      programDocs: requirementDocs.filter(({ filePath }) => !filePath.endsWith('-common.json')).map(({ doc }) => doc as ProgramDoc),
+      subjects: (subjectMaster as { subjects: SubjectMasterEntry[] }).subjects,
+    })
+  })()
+  entryYearDataLoading.set(dataEntryYear, promise)
+  // 読み込みに失敗したら、次に呼ばれたときにもう一度試せるよう待ち状態を消す
+  promise.catch(() => entryYearDataLoading.delete(dataEntryYear))
+  return promise
+}
+
+/** クラス別の曜日時限対応表を一度だけ読み込む */
+async function loadClassAssignments(): Promise<void> {
+  // 2年度目以降の読み込みでは、すでにある対応表をそのまま使う
+  if (classAssignmentCache) return
+  const module = await import('../../data/timetable/class_assignment.json')
+  classAssignmentCache = module.default as ClassAssignmentEntry[]
+}
+
+/**
+ * 画面の描画中に呼び、その入学年度のデータがまだ無ければ読み込みを始めて描画をいったん止める。
+ * （Promiseを throw すると、Reactは一番近い <Suspense> の代わりの表示を出し、読み込み完了後に描画し直す。
+ *  App.tsx の <Suspense> がその役目を持つ）
+ */
+export function requireEntryYearData(entryYear: number): void {
+  // 読み込み済みなら、そのまま描画を続ける
+  if (isEntryYearDataLoaded(entryYear)) return
+  throw loadEntryYearData(entryYear)
+}
+
+/** データがある全年度を読み込む（テストのように、年度を問わず同期的に呼びたい場面で使う） */
+export async function loadAllEntryYearData(): Promise<void> {
+  // プログラム一覧に出てくる年度をそれぞれ1回ずつ読み込む
+  await Promise.all([...new Set(programIndex.map((p) => p.entryYear))].map((year) => loadEntryYearData(year)))
+}
+
+/** 読み込み済みの年度データを返す。まだ読み込んでいなければ undefined（データが無い扱い） */
+function getEntryYearData(entryYear: number): EntryYearData | undefined {
+  return entryYearDataCache.get(getDataEntryYear(entryYear))
+}
 
 /** プロフィール設定画面のプルダウンに出す、今データが揃っている選択肢の一覧 */
-export const programOptions: ProgramOption[] = programDocs.map((p) => ({
+export const programOptions: ProgramOption[] = programIndex.map((p) => ({
   entryYear: p.entryYear,
   course: p.course,
   cluster: p.cluster,
@@ -280,7 +229,7 @@ export function getRequirementSet(entryYear: number, course: string, cluster: st
   // 未対応年度だけは getDataEntryYear() が対応済み年度へ読み替える。
   const dataEntryYear = getDataEntryYear(entryYear)
   // 4つの条件すべてに一致するプログラムファイルを探す
-  const doc = programDocs.find(
+  const doc = getEntryYearData(dataEntryYear)?.programDocs.find(
     (p) => p.entryYear === dataEntryYear && p.course === course && p.cluster === cluster && p.program === program,
   )
   if (!doc) return undefined // まだデータが無い組み合わせ
@@ -289,7 +238,7 @@ export function getRequirementSet(entryYear: number, course: string, cluster: st
   // doc.groups だけをそのまま使う。昼間コースは共通ファイルのgroups（総合文化・実践教育。
   // プログラム固有のcommonOverridesがあれば適用）とプログラム別ファイルのgroups（専門科目）を
   // 1つの配列にまとめて、evaluateRequirements() にそのまま渡せる形にする
-  const commonDoc = commonDocsByYear.get(dataEntryYear)
+  const commonDoc = getEntryYearData(dataEntryYear)?.commonDoc
   const programGroups = removeSameNamedOtherProgramSubjects(doc.groups, entryYear, doc.programSuffix, doc.cluster)
   let groups: RequirementGroup[]
   // 夜間主は自己完結、昼間は同年度の共通要件と専門要件を結合する。
@@ -315,8 +264,8 @@ export function getRequirementSet(entryYear: number, course: string, cluster: st
 export function getRequirementSetWithoutProgram(entryYear: number, cluster: 'I' | 'II' | 'III'): RequirementSet | undefined {
   // プログラム配属前も、対応済み年度の共通・類共通要件を利用する。
   const dataEntryYear = getDataEntryYear(entryYear)
-  const commonDoc = commonDocsByYear.get(dataEntryYear)
-  const representative = programDocs.find((p) => p.entryYear === dataEntryYear && p.course === 'day' && p.cluster === cluster)
+  const commonDoc = getEntryYearData(dataEntryYear)?.commonDoc
+  const representative = getEntryYearData(dataEntryYear)?.programDocs.find((p) => p.entryYear === dataEntryYear && p.course === 'day' && p.cluster === cluster)
   if (!commonDoc || !representative) return undefined
   const specialized = representative.groups.find((group) => group.id === 'specialized')
   const sharedChildren = specialized?.children?.filter((group) => group.id === 'math-basic' || group.id === 'cluster-basic') ?? []
@@ -335,9 +284,9 @@ export function getRequirementSetWithoutProgram(entryYear: number, cluster: 'I' 
 }
 
 /** 入学年度に対応する科目マスタを返す。未対応年度ならundefinedを返す。 */
-function getSubjectMaster(entryYear: number): typeof subjectsMaster2025 | undefined {
+function getSubjectMaster(entryYear: number): { subjects: SubjectMasterEntry[] } | undefined {
   // 科目マスタも要件と同じ年度読み替え規則を使い、片方だけ別年度にならないようにする。
-  return subjectMastersByYear.get(getDataEntryYear(entryYear)) as typeof subjectsMaster2025 | undefined
+  return getEntryYearData(entryYear)
 }
 
 /** 科目番号（フルコード）→単位数 のマップ。evaluateRequirements() にそのまま渡せる */
@@ -388,7 +337,7 @@ export interface SubjectMasterEntry {
 /** 科目番号（フルコード）→科目マスタの情報 のマップ。科目一覧・詳細（F-5）や推奨計算に使う */
 export function getSubjectsByCode(entryYear: number): ReadonlyMap<string, SubjectMasterEntry> {
   const subjectMaster = getSubjectMaster(entryYear)
-  return new Map((subjectMaster?.subjects as SubjectMasterEntry[] | undefined)?.map((s) => [s.code, s]) ?? [])
+  return new Map(subjectMaster?.subjects.map((s) => [s.code, s]) ?? [])
 }
 
 /**
@@ -397,7 +346,8 @@ export function getSubjectsByCode(entryYear: number): ReadonlyMap<string, Subjec
  * 曜日時限の解決は src/domain/classAssignment.ts の resolveSlotsForProfile に渡して使う
  */
 export function getClassAssignments(): ClassAssignmentEntry[] {
-  return classAssignmentData as ClassAssignmentEntry[]
+  // どの年度でもよいので一度 loadEntryYearData() を通っていれば読み込み済み
+  return classAssignmentCache ?? []
 }
 
 /** プログラムID（例:"media"）から、学修要覧の表記そのままのプログラム名（例:「メディア情報学プログラム」）を引く */
@@ -536,7 +486,7 @@ export function getCourseListSections(
   // 未対応年度を選んだ科目一覧も、読み替え先の共通要件から組み立てる。
   const dataEntryYear = getDataEntryYear(entryYear)
   if (!program) {
-    const commonDoc = commonDocsByYear.get(dataEntryYear)
+    const commonDoc = getEntryYearData(dataEntryYear)?.commonDoc
     // 共通要件が未登録の年度は、他年度の一覧を借りず空として返す。
     if (!commonDoc) return out
     collectCourseListSections(commonDoc.groups, out)

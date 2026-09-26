@@ -1,7 +1,10 @@
 // scheduleConflicts.ts の単体テスト。修得予定の候補時限から、期間を考慮した重複を判定する。
-import { describe, expect, it } from 'vitest'
-import { getSubjectsByCode } from '../data/requirementSets'
+import { describe, expect, it, beforeAll } from 'vitest'
+import { getSubjectsByCode, loadAllEntryYearData } from '../data/requirementSets'
 import { findUnavoidableScheduleConflicts } from './scheduleConflicts'
+
+// 要件データ・科目マスタは年度別に遅れて読み込む仕組みなので、テストの前に全年度分を読み込んでおく
+beforeAll(() => loadAllEntryYearData())
 
 // 選べる開講候補を含め、避けられない重複だけを警告する分類。
 describe('findUnavoidableScheduleConflicts（修得予定の時限重複判定）', () => {

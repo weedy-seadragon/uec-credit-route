@@ -122,6 +122,7 @@
   - その他：`codeMigrations.ts`（旧科目コードの引き継ぎ）・`subjectRecords.ts`（同名科目の記録の重複防止）・`agentTools.ts`（WebMCPが返す内容の組み立て）
 - 表示の好み・プレビュー用の選択（見出しの開閉、時間割の表示／非表示、選んだ授業）は`src/storage/`経由でlocalStorageにだけ保存し、JSONバックアップ（importers.ts）には含めない。キーは入学年度で分けない
 - 画面単位でJavaScriptを分割読み込み（`React.lazy`+`Suspense`）し、初回表示を軽量化
+- 要件データ・科目マスタは入学年度ごとに分けて、必要な年度だけ読み込む（`src/data/requirementSets.ts`の`loadEntryYearData`/`requireEntryYearData`）。データを使う画面は描画の最初に`requireEntryYearData(入学年度)`を呼ぶ（未読み込みなら読み込み完了までSuspenseで待つ）。全年度のプログラム一覧だけは`programIndexPlugin.ts`がビルド時に作る`virtual:program-index`から最初から使える。テストでは`beforeAll(() => loadAllEntryYearData())`で全年度を先に読み込む
 
 ### 削除した機能
 

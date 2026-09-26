@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
+import { programIndexPlugin } from './programIndexPlugin.ts'
 
 // GitHub ActionsなどUTCで動く環境でも、利用者に表示する更新日は日本時間でそろえる。
 const buildDateInJapan = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Tokyo' }).format(new Date())
@@ -30,7 +31,14 @@ function siteVersionHtmlPlugin(): Plugin {
 // https://vite.dev/config/
 export default defineConfig({
   base: '/uec-credit-route/',
-  plugins: [react(), siteVersionHtmlPlugin()],
+  // programIndexPlugin：年度別に分けて読み込む要件データのうち、プログラム一覧だけを先に渡す（programIndexPlugin.ts参照）
+  plugins: [react(), siteVersionHtmlPlugin(), programIndexPlugin()],
+  // 「チャンクが大きい」警告の基準を500kBから1000kBに上げる。対象は1年度ぶんの科目マスタ（youran-*.json、
+  // 圧縮前約0.93MB・gzip後約58KB）で、プログラムのコードではなくデータそのもの。年度別に分けて必要な年度だけ
+  // 読み込むようにしたので（src/data/requirementSets.ts）、これ以上分けても利用者の読み込み量は減らない（2026-09-27）
+  build: {
+    chunkSizeWarningLimit: 1000,
+  },
   // ビルド時点の日付を文字列としてコードに埋め込む（トップページの「最終更新日」表示に使う）。
   // define に書いた値は、ビルド時にコード中の同名の識別子（__BUILD_DATE__）へそのまま置き換えられる。
   // GitHub Actionsはmainへのpushのたびにビルドし直すので、これがそのままサイトの最終更新日になる

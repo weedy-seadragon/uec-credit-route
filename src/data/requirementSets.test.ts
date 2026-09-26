@@ -1,8 +1,11 @@
 // 年度別に要件・科目マスタを切り替える入口を検証するテスト。
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, beforeAll } from 'vitest'
 import { evaluateRequirements, type GroupResult, type RequirementGroup } from '../domain/requirements'
-import { entryYearLabel, findSubjectUsages, findSubjectUsagesForProfile, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, programOptions } from './requirementSets'
+import { entryYearLabel, findSubjectUsages, findSubjectUsagesForProfile, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, programOptions, loadAllEntryYearData } from './requirementSets'
 import { TIMETABLE_CATEGORY_COLOR_COUNT } from '../domain/timetablePreview'
+
+// 要件データ・科目マスタは年度別に遅れて読み込む仕組みなので、テストの前に全年度分を読み込んでおく
+beforeAll(() => loadAllEntryYearData())
 
 /** 判定結果のグループ木から、指定IDのグループを再帰的に探す。 */
 function findGroupById(groups: readonly GroupResult[], id: string): GroupResult | undefined {

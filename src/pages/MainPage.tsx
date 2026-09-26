@@ -21,7 +21,7 @@ import { recommend } from '../domain/recommend'
 import { buildNameToCodes, derivePrerequisites } from '../domain/prerequisites'
 import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
-import { entryYearLabel, getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
+import { entryYearLabel, getClassAssignments, requireEntryYearData, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { SubjectOffering, TransferBucketItem } from '../data/requirementSets'
 import { hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, resolveTimetablePreviewOfferings } from '../domain/classAssignment'
 import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
@@ -451,6 +451,8 @@ export default function MainPage() {
       </main>
     )
   }
+  // 入学年度の要件データ・科目マスタを読み込み終わるまで、描画を待つ（requirementSets.ts の年度別読み込み）
+  requireEntryYearData(profile.entryYear)
   return <MainPageContent profile={{ ...profile, cluster: profile.cluster, program: profile.program }} />
 }
 

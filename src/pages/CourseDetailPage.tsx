@@ -3,7 +3,7 @@
 // `useParams` はReact Routerのフックで、URLの `:id` の部分を読み取れる。
 // 例えば "/courses/COM301k" というURLで表示されたときは `id` が "COM301k" になる。
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { entryYearLabel, findSubjectUsages, findSubjectUsagesForProfile, getSubjectsByCode } from '../data/requirementSets'
+import { entryYearLabel, findSubjectUsages, findSubjectUsagesForProfile, getSubjectsByCode, requireEntryYearData } from '../data/requirementSets'
 import type { GroupKind } from '../domain/requirements'
 import { loadProfile } from '../storage/profile'
 
@@ -23,6 +23,8 @@ export default function CourseDetailPage() {
   // 同じ科目番号でも年度で別科目になるため、URLのyearを優先して年度別マスタを引く。
   const requestedYear = Number(searchParams.get('year'))
   const entryYear = requestedYear >= 2021 && requestedYear <= 2026 ? requestedYear : 2025
+  // その年度のデータを読み込み終わるまで描画を待つ
+  requireEntryYearData(entryYear)
   const subject = id ? getSubjectsByCode(entryYear).get(id) : undefined
   // プロフィールがあれば、その学生に適用される課程だけを位置づけとして表示する。
   const profile = loadProfile()

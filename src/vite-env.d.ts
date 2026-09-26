@@ -9,3 +9,18 @@ declare const __BUILD_DATE__: string
 // リリースのたびにvite.config.tsのSITE_VERSIONだけ書き換えれば、ここを通じて
 // トップ画面の見出しにも反映される。
 declare const __SITE_VERSION__: string
+
+// programIndexPlugin.ts がビルド時に作る、全年度のプログラム一覧（要件データ本体は含まない）。
+// 実在しないモジュールなので、TypeScriptに形だけを教えておく。
+declare module 'virtual:program-index' {
+  const programIndex: {
+    entryYear: number
+    course: 'day' | 'evening'
+    cluster: 'I' | 'II' | 'III' | null
+    program: string
+    programName: string
+    programSuffix: string
+    file: string
+  }[]
+  export default programIndex
+}
