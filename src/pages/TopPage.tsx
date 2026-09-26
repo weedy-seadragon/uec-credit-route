@@ -123,6 +123,24 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(Ver.1.2.0→Ver.1.2.1)</span>
+            <span className="release-note-date">アップデート日 2026/9/27</span>
+          </p>
+          <h3 className="release-note-category">機能追加</h3>
+          <ul className="release-note-items">
+            <li>学域特別講義をA（1単位）・B（2単位）の2科目にまとめ、これまでの登録は新しい区分へ自動で移るため、修得単位と共通単位は変わりません。移せない登録がある場合は画面で案内します</li>
+            <li>時間割プレビューで学域特別講義のテーマを選べるようになりました。たとえば「AI時代の著作権ビジネス」は、学域特別講義Bの後学期木曜5限として表示できます</li>
+          </ul>
+          <h3 className="release-note-category">不具合修正</h3>
+          <ul className="release-note-items">
+            <li>更新時の曜日時限の重複警告を修正し、前学期と春・夏ターム、後学期と秋・冬タームの科目の組み合わせも判定するようにしました</li>
+            <li>アルゴリズム論第一のA・B・Cクラスの曜日時限と、生産管理など候補時限が1つだけの科目の時間割表示を修正しました</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（12件）">
         {/* Ver.1.2.0では、修得見込の時間割プレビューと大見出しの折りたたみを追加した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -145,8 +163,6 @@ export default function TopPage() {
             <li>科目一覧のオンデマンド・集中講義・研究室ごとに実施形態が異なる科目などの表示を、時間割プレビューと同じ基準にそろえました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（11件）">
         {/* Ver.1.1.8では、公開済みのWebMCPによるAIエージェント向け操作を案内する。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
