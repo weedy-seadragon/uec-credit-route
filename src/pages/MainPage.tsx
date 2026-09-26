@@ -22,8 +22,8 @@ import { buildNameToCodes, derivePrerequisites } from '../domain/prerequisites'
 import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
 import { entryYearLabel, getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
-import type { TransferBucketItem } from '../data/requirementSets'
-import { hasDedicatedRetakeClass, resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
+import type { SubjectOffering, TransferBucketItem } from '../data/requirementSets'
+import { hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, resolveTimetablePreviewOfferings } from '../domain/classAssignment'
 import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
 import type { PlannedCourseSchedule } from '../domain/scheduleConflicts'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
@@ -41,7 +41,12 @@ import {
 } from '../storage/otherClusterMajorCredits'
 import { isSameClusterOtherProgramSubject } from '../domain/programSuffix'
 import { normalizeDuplicateSubjectRecords, preferredSubjectCode, setSubjectStatusWithoutDuplicates } from '../domain/subjectRecords'
+import { sortByYearTerm } from '../domain/sortByYearTerm'
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
+import TimetablePreview from '../components/TimetablePreview'
+import type { TimetablePreviewCourse } from '../domain/timetablePreview'
+import { timetableCategoryForCourse } from '../domain/timetablePreview'
+import { classifyTimelessCourse, TIMELESS_COURSE_LABELS } from '../domain/onDemand'
 import AgentToolsBridge from '../components/AgentToolsBridge'
 import type { AgentHandlers } from '../components/AgentToolsBridge'
 import { parseAgentStatus, searchSubjects, summarizeRequirementStatus } from '../domain/agentTools'
@@ -620,6 +625,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const reviews = requirementSet.reviews
   const reviewStatuses = reviews ? evaluateReviews(reviews, evaluation, committed, subjectCredits) : []
   const requiredCodes = new Set(boundaryGroups.filter((g) => g.kind === 'required').flatMap((g) => g.subjects))
+  // 選択一覧に独立表示しない共通単位グループと、常時共通単位になる科目を一色へまとめる。
+  const timetableCommonCodes = new Set([
+    ...boundaryGroups.filter((group) => group.countAsCommon).flatMap((group) => group.subjects),
+    ...(requirementSet.alwaysCommonSubjects ?? []),
+  ])
   // 「取得単位」「残りの必修」を区分ごとに見出しを分けて表示するための対応表
   const categoryLookup = buildCategoryLookup(boundaryGroups)
 
@@ -803,6 +813,22 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     })
   }
 
+  /** 修得予定の1科目について、通常履修・再履修の別に合わせた開講候補を返す。 */
+  function resolvePlannedOfferings(code: string, plannedRetakingCodes: ReadonlySet<string>): SubjectOffering[] {
+    const subject = subjectsByCode.get(code)
+    const offerings = subject?.offerings
+    // 開講情報がない科目は、時限を推測せず候補を空にする。
+    if (!offerings || offerings.length === 0) return []
+    // 再履修は再履修専用の候補だけに絞り、見つからなければ通常の枠へ推測で置かない。
+    if (plannedRetakingCodes.has(code)) {
+      return resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, true, subject.termType) ?? []
+    }
+    // 1セクションしかなければそのまま使い、複数あるときはプロフィールのクラスで絞る。
+    return offerings.length === 1
+      ? offerings
+      : resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, false, subject.termType) ?? []
+  }
+
   /** 修得予定の中から、プロフィールに基づいて曜日時限を比較できる開講候補だけを組み立てる。 */
   function plannedCourseSchedules(
     records: ReadonlyMap<string, SubjectStatus>,
@@ -812,19 +838,10 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     // 修得予定の各科目について、通常履修または再履修用として選べる開講セクションを解決する。
     for (const [code, status] of records) {
       if (status !== 'taking') continue
-      const subject = subjectsByCode.get(code)
-      const offerings = subject?.offerings
-      if (!offerings || offerings.length === 0) continue
-      const isRetaking = plannedRetakingCodes.has(code)
-      // 再履修予定は、再履用のセクションが見つかる場合だけその時限を使う。
-      // 見つからない再履修は自由な時間に取れる前提として、警告対象から外す。
-      const candidates = isRetaking
-        ? resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, true, subject.termType)
-        : offerings.length === 1
-          ? offerings
-          : resolveOfferingsForProfile(code, offerings, classAssignments, classProfile, profile.cluster, false, subject.termType)
+      // 更新時の重複警告とプレビューが、同じクラス判定を使うようにする。
+      const candidates = resolvePlannedOfferings(code, plannedRetakingCodes)
       // クラスを絞れない・オンデマンドでslotsが無い科目は、誤警告を避けるため比較しない。
-      const options = (candidates ?? [])
+      const options = candidates
         .filter((offering) => offering.slots.length > 0)
         .map((offering) => ({ term: offering.term, slots: offering.slots }))
       if (options.length > 0) schedules.push({ code, options })
@@ -1242,20 +1259,20 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       // 当年度の開講なし注記は科目名の横（yearTermTag）へ出すため、曜日時限欄では重複させない。
       return null
     }
-    // 輪講・卒業研究は研究室ごとに実施形態が異なり、時間割として一律に示せない。
-    // slotsが空でも「オンデマンド」と推測せず、曜日時限の注記自体を表示しない。
-    if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return unavailable('研究室ごとに実施形態が異なります')
-    // 情報工学工房はオンデマンド授業ではなく、担当教員ごとに開講時限が異なる。
-    // シラバスから一意の時限を取得できないため、誤ってオンデマンドと表示しない。
-    if (subject?.name.startsWith('情報工学工房')) return unavailable('担当教員により開講時限が異なります')
     const note = subject?.note
-    const hasAnySlots = offerings.some((o) => o.slots.length > 0)
-    if (!hasAnySlots) {
-      if (note?.includes('夏期集中')) return <span style={{ marginLeft: '0.4em' }}>夏期集中</span>
-      if (note?.includes('冬期集中')) return <span style={{ marginLeft: '0.4em' }}>冬期集中</span>
-      // 夏期・冬期以外の集中講義は、理由つきの注意書きではなく簡潔な開講形態だけを示す。
-      if (note?.includes('集中')) return <span style={{ marginLeft: '0.4em' }}>集中講義</span>
-      return <span style={{ marginLeft: '0.4em' }}>オンデマンド</span>
+    // メイン画面と時間割プレビューの両方で、実施形態の区分を共通関数へ委ねる。
+    const timelessKind = classifyTimelessCourse(subject.name, note, offerings)
+    // 研究室・担当教員ごとに実施形態が違う科目は、共有区分の理由を曜日時限欄に出す。
+    if (timelessKind === 'lab' || timelessKind === 'instructor-dependent') {
+      return unavailable(TIMELESS_COURSE_LABELS[timelessKind])
+    }
+    // 通常の時限なし科目は、共有ラベルを短く表示する。
+    if (timelessKind === 'on-demand') {
+      return <span style={{ marginLeft: '0.4em' }}>{TIMELESS_COURSE_LABELS[timelessKind]}</span>
+    }
+    // 集中講義の区分名も共通マップから取り、プレビュー側と表示を一致させる。
+    if (timelessKind === 'summer-intensive' || timelessKind === 'winter-intensive' || timelessKind === 'intensive') {
+      return <span style={{ marginLeft: '0.4em' }}>{TIMELESS_COURSE_LABELS[timelessKind]}</span>
     }
     // 隔年度開講・開講年度により内容が変わる、といった注記は、実際に何か表示するときは
     // 併記しておく（2026-09-06。学域特別講義A/Bのような「毎年テーマは変わるが曜日時限は
@@ -1470,6 +1487,69 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // draftは未更新の変更も含むため、科目の選択直後に時間割だけをプレビューできる。
+  // 卒業要件の判定と保存は、従来どおり「更新する」でcommittedへ反映する。
+  const timetablePreviewCourses: TimetablePreviewCourse[] = []
+  for (const [code, status] of draft) {
+    // 修得済み・不合格・未履修は、今回の時間割に入れない。
+    if (status !== 'taking') continue
+    const subject = subjectsByCode.get(code)
+    const offerings = subject?.offerings ?? []
+    const isRetaking = retakingPlanCodes.has(code)
+    const previewResolution = resolveTimetablePreviewOfferings(
+      code,
+      offerings,
+      classAssignments,
+      classProfile,
+      profile.cluster,
+      isRetaking,
+      subject?.termType,
+      subject?.standardYear ?? null,
+      profile.grade,
+    )
+    const isLowerYearSubject = typeof subject?.standardYear === 'number' && subject.standardYear < profile.grade
+    const retakeOfferings = isRetaking || isLowerYearSubject
+      ? offerings.filter((offering) => isDedicatedRetakeOffering(code, offering, classAssignments))
+      : []
+    const previewOfferings = previewResolution.offerings
+    const previewSections = previewResolution.offerings.length > 0
+      ? previewResolution.offerings
+      : offerings
+    timetablePreviewCourses.push({
+      code,
+      name: nameOf(code),
+      yearTermLabel: yearTermOf(code),
+      category: timetableCategoryForCourse(code, requiredCodes, boundaryGroups, timetableCommonCodes),
+      termType: subject?.termType ?? null,
+      offeredTerms: [...new Set(offerings.map((offering) => offering.term))],
+      options: previewOfferings.map((offering) => ({
+        term: offering.term,
+        slots: offering.slots,
+        timetableCode: offering.timetableCode,
+        teacher: offering.instructors.join('、'),
+        retake: retakeOfferings.includes(offering),
+      })),
+      chooseAmongSections: previewResolution.chooseAmongSections,
+      sections: previewSections.map((offering) => ({
+        term: offering.term,
+        slots: offering.slots,
+        timetableCode: offering.timetableCode,
+        teacher: offering.instructors.join('、'),
+        retake: retakeOfferings.includes(offering),
+      })),
+      note: subject?.note,
+      offerings,
+    })
+  }
+  // 表の下の表示設定一覧も、メイン画面と同じ学年・学期・曜日時限順にする。
+  const sortedTimetablePreviewCourses = sortByYearTerm(
+    timetablePreviewCourses,
+    (course) => course.code,
+    standardYearOf,
+    termTypeOf,
+    slotRankOf,
+  )
+
   return (
     // 下側に余白を持たせる：最後の区分（類専門など）の<summary>がページ最下端にくっついて
     // クリックしづらくならないようにするため
@@ -1515,6 +1595,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         <p className="quick-section-links-title">目次</p>
         <div className="quick-section-links-grid">
           <button type="button" onClick={() => scrollToSection('earned-credits')} aria-controls="earned-credits"><span className="page-move-icon">▼</span>修得した単位</button>
+          <button type="button" onClick={() => scrollToSection('timetable-preview')} aria-controls="timetable-preview"><span className="page-move-icon">▼</span>時間割プレビュー</button>
           <button type="button" onClick={() => scrollToSection('failed-subjects')} aria-controls="failed-subjects"><span className="page-move-icon">▼</span>不合格</button>
           <button type="button" onClick={() => scrollToSection('remaining-required')} aria-controls="remaining-required"><span className="page-move-icon">▼</span>残りの必修</button>
           <button type="button" onClick={() => scrollToSection('elective-subjects')} aria-controls="elective-subjects"><span className="page-move-icon">▼</span>選択科目</button>
@@ -1736,6 +1817,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         })()}
         {plannedSubjects.length === 0 && <p>・（ありません）</p>}
       </section>
+
+      {/* 修得見込の直後に、編集中の選択を週の曜日時限へ並べた表示だけのプレビューを置く。 */}
+      <TimetablePreview courses={sortedTimetablePreviewCourses} entryYear={profile.entryYear} hasPendingChanges={hasPendingChanges} />
 
       <section id="failed-subjects" className="requirement-section failed-section">
         <h2>不合格になった科目（{failedSubjects.length}科目）</h2>
@@ -2246,36 +2330,6 @@ const GROUPS_KEEP_ORIGINAL_ORDER = new Set(['lang-basic-2', 'health-sel'])
  * codeOfで科目コードの取り出し方を指定できるので、コードそのものの配列でも[コード, 状態]のような
  * タプルの配列でも、どちらの並び替えにも使える
  */
-function sortByYearTerm<T>(
-  items: readonly T[],
-  codeOf: (item: T) => string,
-  standardYearOf: (code: string) => number | null,
-  termTypeOf: (code: string) => string | null,
-  slotRankOf?: (code: string) => number,
-): T[] {
-  const termRank = (t: string | null) => (t === '前学期' ? 0 : t === '後学期' ? 1 : 2)
-  // 同じ区分・同じ学年学期の科目は、曜日時限が早い順（月・1限→金・5限）に並べる（2026-09-24）。
-  // 時限が分からない科目（集中講義・オンデマンド等）は、その学年学期の最後に回す。
-  const bySlot = (a: T, b: T) => {
-    if (!slotRankOf) return 0
-    const rankA = slotRankOf(codeOf(a))
-    const rankB = slotRankOf(codeOf(b))
-    if (rankA === rankB) return 0
-    return rankA < rankB ? -1 : 1
-  }
-  return [...items].sort((a, b) => {
-    const yearA = standardYearOf(codeOf(a))
-    const yearB = standardYearOf(codeOf(b))
-    if (yearA === null && yearB === null) return bySlot(a, b)
-    if (yearA === null) return 1 // 年次不明は最後に回す
-    if (yearB === null) return -1
-    if (yearA !== yearB) return yearA - yearB
-    const termDiff = termRank(termTypeOf(codeOf(a))) - termRank(termTypeOf(codeOf(b)))
-    if (termDiff !== 0) return termDiff
-    return bySlot(a, b)
-  })
-}
-
 /**
  * 基本は標準年次・学期順のままにし、日本文化Ａ〜Ｅだけは科目名末尾の英字順に並べる。
  * 日本文化は開講学期が入り混じるため、Ａ・Ｂ・Ｃ・Ｄ・Ｅの系列として続けて読める方が分かりやすい。

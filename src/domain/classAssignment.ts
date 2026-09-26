@@ -72,6 +72,27 @@ function teacherOverlaps(a: Set<string>, b: Set<string>): boolean {
   return false
 }
 
+/** 時間割の1セクションが再履修専用か、開講情報とクラス割当から判定する。 */
+export function isDedicatedRetakeOffering<O extends OfferingLike>(
+  code: string,
+  offering: O,
+  assignments: readonly ClassAssignmentEntry[],
+): boolean {
+  const offeringTeachers = teacherTokens(offering.instructors)
+  // offeringの各コマに一致するクラス割当だけを見て、再履修専用IDがあるか確認する。
+  return offering.slots.some((slot) => {
+    const entries = assignments.filter((entry) =>
+      entry.code === code && entry.term === offering.term && entry.day === slot.day && entry.period === String(slot.period),
+    )
+    // 並行クラスで教員が分かる場合は、該当教員の割当を優先して誤判定を防ぐ。
+    const matchedEntries = entries.length > 1 && offeringTeachers.size > 0
+      ? entries.filter((entry) => teacherOverlaps(offeringTeachers, teacherTokens(entry.instructors)))
+      : entries
+    // 一致した割当のclass_idに再履修専用区分が含まれていれば、このセクションを優先表示する。
+    return matchedEntries.some((entry) => entry.classIds.some((id) => id === '再履全員' || id === '再履生'))
+  })
+}
+
 /**
  * class_assignment.json の class_id 表記（例:「クラス3」「Aクラス」「I5クラス」「Mエリア」
  * 「Mエリア(2クラス)」「メディア情報学プログラム」）が、このプロフィールに当てはまるかどうかを判定する。
@@ -415,4 +436,44 @@ export function resolveOfferingsForProfile<O extends OfferingLike>(
   const catchAllMatches = offerings.filter((o) => offeringMatches(o, true))
   if (catchAllMatches.length === 0) return undefined
   return catchAllMatches
+}
+
+/** 時間割プレビュー用に、学年に応じたセクション候補を返す（他の画面のクラス判定には使わない）。 */
+export function resolveTimetablePreviewOfferings<O extends OfferingLike>(
+  code: string,
+  offerings: readonly O[],
+  assignments: readonly ClassAssignmentEntry[],
+  profile: ClassProfile,
+  cluster: 'I' | 'II' | 'III' | null,
+  isRetaking: boolean,
+  subjectTermType: string | null | undefined,
+  standardYear: number | null,
+  currentGrade: number,
+): { offerings: O[]; chooseAmongSections: boolean } {
+  // 標準年次が現在の学年より低ければ、プレビューだけ全候補を残し手動選択を求める。
+  if (typeof standardYear === 'number' && Number.isFinite(standardYear) && standardYear < currentGrade) {
+    const preferredRetakeOfferings = offerings.filter((offering) => isDedicatedRetakeOffering(code, offering, assignments))
+    const orderedOfferings = preferredRetakeOfferings.length > 0
+      ? [...preferredRetakeOfferings, ...offerings.filter((offering) => !preferredRetakeOfferings.includes(offering))]
+      : [...offerings]
+    return { offerings: orderedOfferings, chooseAmongSections: offerings.length > 1 }
+  }
+
+  // 学年が同じか不明なら、従来どおり再履修状態とクラスプロフィールから絞り込む。
+  const resolved = isRetaking
+    ? resolveOfferingsForProfile(code, offerings, assignments, profile, cluster, true, subjectTermType) ?? []
+    : offerings.length === 1
+      ? [...offerings]
+      : resolveOfferingsForProfile(code, offerings, assignments, profile, cluster, false, subjectTermType) ?? []
+  // 再履修時は、見つかった専用枠を先頭に置き、他のセクションもプレビュー候補として残す。
+  if (isRetaking) {
+    const preferredRetakeOfferings = offerings.filter((offering) => isDedicatedRetakeOffering(code, offering, assignments))
+    if (preferredRetakeOfferings.length > 0) {
+      return {
+        offerings: [...preferredRetakeOfferings, ...offerings.filter((offering) => !preferredRetakeOfferings.includes(offering))],
+        chooseAmongSections: false,
+      }
+    }
+  }
+  return { offerings: resolved, chooseAmongSections: false }
 }
