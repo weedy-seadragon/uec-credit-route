@@ -45,6 +45,8 @@ interface OfferingLike {
   term: string
   slots: { day: string; period: number }[]
   instructors?: string[]
+  /** シラバス一覧の科目名末尾の（…）表記（例:「（Aクラス）」「（Ⅰ類）」）。無い科目は省略 */
+  sectionLabel?: string
 }
 
 /** 教員名を比較用のトークン集合にする（姓のみ・フルネームどちらの表記でも比較できるよう、
@@ -276,12 +278,46 @@ export function resolveSlotsForProfile(
 function resolveOfferingsByTermOnly<O extends OfferingLike>(
   offerings: readonly O[],
   isRetaking: boolean,
-  subjectTermType?: string | null,
+  subjectTermType: string | null | undefined,
+  profile: ClassProfile,
+  cluster: 'I' | 'II' | 'III' | null,
 ): O[] | undefined {
-  if (!subjectTermType) return undefined
-  const wanted = offerings.filter((o) => (o.term === subjectTermType) !== isRetaking)
-  if (wanted.length !== 1) return undefined
-  return wanted
+  // 本来の開講学期が分かる科目は、学期で通常／再履修を振り分ける。分からなければ全件を候補にする。
+  const wanted = subjectTermType
+    ? offerings.filter((o) => (o.term === subjectTermType) !== isRetaking)
+    : [...offerings]
+  // 学期だけで1件に決まれば、それが受講するセクション。
+  if (wanted.length === 1) return wanted
+  // 同じ学期に複数セクションがある科目（情報領域演習第三のA/B/Cクラス、インターンシップの類別など）は、
+  // シラバスのクラス表記とプロフィールを突き合わせ、ちょうど1件に絞れたときだけ採用する
+  // （2026-09-26、開発者が「A/B/Cクラスを設定しても情報領域演習第三が分けられない」と報告して追加）。
+  const byLabel = wanted.filter((o) => sectionLabelMatchesProfile(o.sectionLabel, profile, cluster))
+  return byLabel.length === 1 ? byLabel : undefined
+}
+
+/**
+ * シラバスのクラス表記（sectionLabel）が、このプロフィールの受講するセクションを指しているかを返す。
+ * 対応している表記は2種類だけ：
+ * - 「（Aクラス）」「（クラスA）」… Ⅰ類の A/B/C クラス（profile.classIABC）と比べる
+ * - 「（Ⅰ類）」「（海外）（Ⅱ類）」… 類（cluster）と比べる
+ * 全角英字・ローマ数字の字体の違いは NFKC 正規化でそろえる（「Ａ」→「A」、「Ⅰ」→「I」）。
+ */
+export function sectionLabelMatchesProfile(
+  label: string | undefined,
+  profile: ClassProfile,
+  cluster: 'I' | 'II' | 'III' | null,
+): boolean {
+  // 表記が無いセクションや、夜間主（類なし）のプロフィールは、表記では絞り込めない。
+  if (!label || cluster === null) return false
+  const normalized = label.normalize('NFKC')
+  // Ⅰ類の A/B/C クラス表記。前後が英数字の場合（例:「I15クラス」）は別の表記なので一致させない。
+  if (cluster === 'I' && profile.classIABC) {
+    const letter = profile.classIABC
+    const classPattern = new RegExp(`(?<![A-Za-z0-9])${letter}クラス|クラス${letter}(?![A-Za-z0-9])`)
+    if (classPattern.test(normalized)) return true
+  }
+  // 類の表記（NFKC 後は「I類」「II類」「III類」）。「I類」が「II類」の一部として一致しないよう前を確認する。
+  return new RegExp(`(?<![A-Za-z])${cluster}類`).test(normalized)
 }
 
 /**
@@ -307,7 +343,7 @@ export function resolveOfferingsForProfile<O extends OfferingLike>(
   subjectTermType?: string | null,
 ): O[] | undefined {
   if (offerings.length > 0 && offerings.every((o) => o.slots.length === 0)) {
-    return resolveOfferingsByTermOnly(offerings, isRetaking, subjectTermType)
+    return resolveOfferingsByTermOnly(offerings, isRetaking, subjectTermType, profile, cluster)
   }
   // そのofferingに一致するclassIdのうち、実際に一致した1つを返す（無ければundefined）。
   // 「どのclassIdで一致したか」を後段で見て、同じclassId（例:同じプログラム名）が

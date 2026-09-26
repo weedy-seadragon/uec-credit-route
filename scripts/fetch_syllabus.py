@@ -81,6 +81,14 @@ def strip_class_suffix(name: str) -> str:
         name = stripped
 
 
+# 一覧の科目名の末尾にある（…）表記（例:「情報領域演習第三（Aクラス）」の「（Aクラス）」）を
+# そのまま返す。無ければ空文字。曜日時限が「他」で空の科目は、この表記だけがセクション
+# （クラス）を見分ける手がかりになるため、offeringのsectionLabelとして残す
+# （2026-09-26、開発者が「A/B/Cクラスを設定しても情報領域演習第三が分けられない」と報告して追加）
+def section_label(name: str) -> str:
+    return name[len(strip_class_suffix(name)):].strip()
+
+
 # 全角/半角スペースの有無（「Academic Spoken English Ⅰ」と科目マスタの
 # 「Academic Spoken EnglishⅠ」など）や、ローマ数字と半角英字の表記ゆれ（「Academic English
 # for the 2nd Year Ⅰ」と科目マスタの「...Year I」など）、ダッシュの字体違い（「Technical
@@ -230,6 +238,8 @@ def main():
                     "instructors": instructors,
                     "syllabusUrl": DETAIL_URL_TMPL.format(faculty=faculty, code=row["timetableCode"]),
                     "updatedAt": today,
+                    # クラス表記が無い科目にはキー自体を付けない（既存データとの差分を増やさないため）
+                    **({"sectionLabel": section_label(row["name"])} if section_label(row["name"]) else {}),
                 })
             if i % 20 == 0:
                 print(f"[{faculty}] 進捗: {i}/{len(candidates)}", file=sys.stderr)
