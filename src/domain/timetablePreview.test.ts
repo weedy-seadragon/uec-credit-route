@@ -1,6 +1,6 @@
 // 時間割プレビューが、曜日時限を断定できる科目だけを配置することを確かめる。
 import { describe, expect, it } from 'vitest'
-import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, offeringTermsOverlap, splitUnplacedTimetableCourses, timetableCategoryForCourse, timetableLegendForSlots } from './timetablePreview'
+import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, offeringTermsOverlap, splitUnplacedTimetableCourses, timetableCategoryColorsForCourses, timetableCategoryForCourse, timetableLegendForSlots } from './timetablePreview'
 
 // 学期全体と個別タームの授業が、同じ週に行われるかを検証する。
 describe('開講期間の重複判定', () => {
@@ -250,29 +250,49 @@ describe('時間割カードの科目区分', () => {
       { code: 'ADV', name: '後期科目', category: { key: 'advanced', label: '上級科目', isRequired: false, orderIndex: 1 }, termType: '後学期', offeredTerms: ['後学期'], options: [{ term: '後学期', slots: [{ day: '水', period: 3 }] }] },
     ]
     const frontSlots = buildTimetablePreview(courses, '前学期').slots
-    expect(timetableLegendForSlots(frontSlots)).toEqual([
+    const allCategoryColors = timetableCategoryColorsForCourses(courses)
+    expect(timetableLegendForSlots(frontSlots, allCategoryColors)).toEqual([
       { key: 'required', label: '必修', isRequired: true, orderIndex: -1 },
       { key: 'humanities', label: '人文・社会', isRequired: false, orderIndex: 0, colorIndex: 0 },
     ])
   })
 
-  // 全体で9番目の区分も、同じ画面に並ぶ最初の区分とは別の色を使う。
-  it('要件データ全体で8番目以降の区分も表示中の区分ごとに色を割り当てる', () => {
+  // 履修予定に出る区分だけを集めるため、要件上の順位が離れていても連続した色を割り当てる。
+  it('要件データ上で8区分離れた科目にも履修予定内で別色を割り当てる', () => {
     const groups = Array.from({ length: 9 }, (_, index) => ({
       id: `group-${index}`, name: `区分${index}`, kind: 'elective', subjects: [`COURSE-${index}`],
     }))
-    const slots = [0, 8].map((index) => ({
+    const courses = [0, 8].map((index) => ({
       code: `COURSE-${index}`,
       name: `科目${index}`,
-      day: '月',
-      period: index + 1,
-      offeringTerm: '前学期',
       category: timetableCategoryForCourse(`COURSE-${index}`, new Set(), groups),
+      termType: '前学期',
+      offeredTerms: ['前学期'],
+      options: [{ term: '前学期', slots: [{ day: '月', period: index + 1 }] }],
     }))
-    expect(timetableLegendForSlots(slots).map(({ key, colorIndex }) => [key, colorIndex])).toEqual([
+    const allCategoryColors = timetableCategoryColorsForCourses(courses)
+    const slots = buildTimetablePreview(courses, '前学期').slots
+    expect(timetableLegendForSlots(slots, allCategoryColors).map(({ key, colorIndex }) => [key, colorIndex])).toEqual([
       ['group-0', 0],
       ['group-8', 1],
     ])
+  })
+
+  // 前後学期で共通の区分は同じ色を保ち、異なる区分には異なる色を使う。
+  it('前後学期を切り替えても区分の色番号を変えない', () => {
+    const courses = [
+      { code: 'HUM-F', name: '人文前期', category: { key: 'humanities', label: '人文・社会', isRequired: false, orderIndex: 0 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '月', period: 1 }] }] },
+      { code: 'ADV-F', name: '上級前期', category: { key: 'advanced', label: '上級科目', isRequired: false, orderIndex: 1 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '火', period: 1 }] }] },
+      { code: 'HUM-B', name: '人文後期', category: { key: 'humanities', label: '人文・社会', isRequired: false, orderIndex: 0 }, termType: '後学期', offeredTerms: ['後学期'], options: [{ term: '後学期', slots: [{ day: '水', period: 1 }] }] },
+      { code: 'ADV-B', name: '上級後期', category: { key: 'advanced', label: '上級科目', isRequired: false, orderIndex: 1 }, termType: '後学期', offeredTerms: ['後学期'], options: [{ term: '後学期', slots: [{ day: '木', period: 1 }] }] },
+    ]
+    const allCategoryColors = timetableCategoryColorsForCourses(courses)
+    const frontColors = timetableLegendForSlots(buildTimetablePreview(courses, '前学期').slots, allCategoryColors)
+    const backColors = timetableLegendForSlots(buildTimetablePreview(courses, '後学期').slots, allCategoryColors)
+    expect(frontColors.map(({ key, colorIndex }) => [key, colorIndex])).toEqual([
+      ['humanities', 0], ['advanced', 1],
+    ])
+    expect(backColors.map(({ key, colorIndex }) => [key, colorIndex])).toEqual(frontColors.map(({ key, colorIndex }) => [key, colorIndex]))
   })
 })
 

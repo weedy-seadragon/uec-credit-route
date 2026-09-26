@@ -181,7 +181,7 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(html).toContain('後順位区分</li>')
     expect(html).not.toContain('上級科目')
     expect(html).toContain('class="timetable-course" data-category-color="0"')
-    expect(html).toContain('class="timetable-course" data-category-color="1"')
+    expect(html).toContain('class="timetable-course" data-category-color="2"')
     expect(html).toContain('class="timetable-required-badge" aria-hidden="true">必修</span>')
   })
 

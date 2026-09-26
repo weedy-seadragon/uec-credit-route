@@ -1,7 +1,7 @@
 // 修得見込の科目を開講期ごとに並べる週間時間割。表示設定だけを保存し、履修記録は変更しない。
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { buildTimetablePreview, buildVisibleTimetablePreview, defaultRetakeOptionForTerm, maxConcurrentOfferingCount, previewSemesterOf, splitUnplacedTimetableCourses, timetableLegendForSlots } from '../domain/timetablePreview'
+import { buildTimetablePreview, buildVisibleTimetablePreview, defaultRetakeOptionForTerm, maxConcurrentOfferingCount, previewSemesterOf, splitUnplacedTimetableCourses, timetableCategoryColorsForCourses, timetableLegendForSlots } from '../domain/timetablePreview'
 import type { TimetablePreviewCourse, TimetablePreviewOption, TimetablePreviewSlot, UnplacedTimetableCourse } from '../domain/timetablePreview'
 import { TIMELESS_COURSE_LABELS } from '../domain/onDemand'
 import { loadHiddenTimetableCourses, saveHiddenTimetableCourses } from '../storage/timetableVisibility'
@@ -92,10 +92,11 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
   const allCoursesResult = buildTimetablePreview(courses, term, selectedTimetableCodes)
   const result = buildVisibleTimetablePreview(courses, term, hiddenCodes, selectedTimetableCodes)
   const { selectable: selectableCourses, timeless: timelessCourses } = splitUnplacedTimetableCourses(result.unplaced)
-  const categoryLegend = timetableLegendForSlots(result.slots.filter((slot) => DAYS.includes(slot.day)))
+  const allCategoryColors = timetableCategoryColorsForCourses(courses)
+  const categoryLegend = timetableLegendForSlots(result.slots.filter((slot) => DAYS.includes(slot.day)), allCategoryColors)
   const colorIndexByCategory = new Map<string, number>()
   // 必修以外は、現在の表に表示されるカテゴリ色をカードへ引き継ぐ。
-  for (const category of categoryLegend) {
+  for (const category of allCategoryColors) {
     if (category.colorIndex !== undefined) colorIndexByCategory.set(category.key, category.colorIndex)
   }
   const terms = availableTerms(courses)

@@ -34,7 +34,7 @@ export interface TimetablePreviewCategory {
   orderIndex: number
 }
 
-/** 表に出ている科目区分と、その画面内で割り当てた色番号。 */
+/** 表示する科目区分と、全履修予定科目を基準に割り当てた色番号。 */
 export interface TimetableLegendCategory extends TimetablePreviewCategory {
   colorIndex?: number
 }
@@ -122,23 +122,41 @@ export interface TimetablePreviewResult {
   intensive: { code: string; name: string; kind: Extract<TimelessCourseKind, 'summer-intensive' | 'winter-intensive' | 'intensive'> }[]
 }
 
-/** 表示中のコマだけから、必修と科目区分の凡例を要件データ順に作る。 */
-export function timetableLegendForSlots(slots: readonly TimetablePreviewSlot[]): TimetableLegendCategory[] {
+/** 全履修予定科目に出てくる区分へ、要件データ順で安定した色番号を割り当てる。 */
+export function timetableCategoryColorsForCourses(courses: readonly TimetablePreviewCourse[]): TimetableLegendCategory[] {
   const categories = new Map<string, TimetablePreviewCategory>()
-  // 同じ区分のカードが複数あっても、凡例には一度だけ追加する。
-  for (const slot of slots) {
-    if (slot.category && !categories.has(slot.category.key)) categories.set(slot.category.key, slot.category)
+  // 同じ区分に属する科目が複数学期にあっても、色番号は一度だけ割り当てる。
+  for (const course of courses) {
+    if (course.category && !categories.has(course.category.key)) categories.set(course.category.key, course.category)
   }
-  // 必修を先頭に置き、残りは要件データの登場順に並べる。
+  // 色番号の並びは、要件データでの登場順にそろえる。
   const ordered = [...categories.values()].sort((first, second) => {
     if (first.isRequired !== second.isRequired) return first.isRequired ? -1 : 1
     return first.orderIndex - second.orderIndex
   })
   let colorIndex = 0
-  // 色番号は今の表にある区分だけで振るため、最初の8区分は必ず違う色になる。
+  // 全履修予定科目から番号を決め、8区分を超えた場合だけ色を循環する。
   return ordered.map((category) => category.isRequired
     ? category
     : { ...category, colorIndex: colorIndex++ % 8 })
+}
+
+/** 表示学期のコマに出ている区分だけを、全科目で決めた色番号の凡例にする。 */
+export function timetableLegendForSlots(
+  slots: readonly TimetablePreviewSlot[],
+  allCategoryColors: readonly TimetableLegendCategory[],
+): TimetableLegendCategory[] {
+  const categories = new Map<string, TimetablePreviewCategory>()
+  // 同じ区分のカードが複数あっても、凡例には一度だけ追加する。
+  for (const slot of slots) {
+    if (slot.category && !categories.has(slot.category.key)) categories.set(slot.category.key, slot.category)
+  }
+  const colorsByKey = new Map(allCategoryColors.map((category) => [category.key, category]))
+  // 必修を先頭に置き、残りは全体の要件データ順を保って凡例へ出す。
+  return [...categories.values()].sort((first, second) => {
+    if (first.isRequired !== second.isRequired) return first.isRequired ? -1 : 1
+    return first.orderIndex - second.orderIndex
+  }).map((category) => colorsByKey.get(category.key) ?? category)
 }
 
 /** 春・夏タームは前学期、秋・冬タームは後学期として扱う。 */
