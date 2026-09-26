@@ -14951,6 +14951,26 @@
       "graduateLinked": false,
       "groups": [
         "major-free"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21025127",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "羽田",
+            "野嶋"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21025127.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（Ⅱ類）"
+        }
       ]
     },
     {

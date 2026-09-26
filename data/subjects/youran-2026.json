@@ -16377,6 +16377,26 @@
       "graduateLinked": false,
       "groups": [
         "major-free"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21025127",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "羽田",
+            "野嶋"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21025127.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（Ⅱ類）"
+        }
       ]
     },
     {
@@ -16392,6 +16412,26 @@
       "graduateLinked": false,
       "groups": [
         "major-free"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21025127",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "羽田",
+            "野嶋"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21025127.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（Ⅱ類）"
+        }
       ]
     },
     {
@@ -29529,7 +29569,38 @@
       "groups": [
         "major-sel"
       ],
-      "note": "複数学年で履修可"
+      "note": "複数学年で履修可",
+      "offerings": [
+        {
+          "timetableCode": "21324145",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324145.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（木１）"
+        },
+        {
+          "timetableCode": "21324146",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324146.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（その他）"
+        }
+      ]
     },
     {
       "code": "GSE101n",
@@ -29545,7 +29616,38 @@
       "groups": [
         "major-sel"
       ],
-      "note": "複数学年で履修可"
+      "note": "複数学年で履修可",
+      "offerings": [
+        {
+          "timetableCode": "21324145",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324145.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（木１）"
+        },
+        {
+          "timetableCode": "21324146",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324146.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（その他）"
+        }
+      ]
     },
     {
       "code": "GSE101p",
@@ -29561,7 +29663,38 @@
       "groups": [
         "major-sel"
       ],
-      "note": "複数学年で履修可"
+      "note": "複数学年で履修可",
+      "offerings": [
+        {
+          "timetableCode": "21324145",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324145.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（木１）"
+        },
+        {
+          "timetableCode": "21324146",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324146.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（その他）"
+        }
+      ]
     },
     {
       "code": "GSE101r",
@@ -29577,7 +29710,38 @@
       "groups": [
         "major-sel"
       ],
-      "note": "複数学年で履修可"
+      "note": "複数学年で履修可",
+      "offerings": [
+        {
+          "timetableCode": "21324145",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324145.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（木１）"
+        },
+        {
+          "timetableCode": "21324146",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324146.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（その他）"
+        }
+      ]
     },
     {
       "code": "GSE201m",
@@ -29593,7 +29757,38 @@
       "groups": [
         "major-sel"
       ],
-      "note": "複数学年で履修可"
+      "note": "複数学年で履修可",
+      "offerings": [
+        {
+          "timetableCode": "21324257",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324257.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（木１）"
+        },
+        {
+          "timetableCode": "21324258",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324258.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（その他）"
+        }
+      ]
     },
     {
       "code": "GSE201n",
@@ -29609,7 +29804,38 @@
       "groups": [
         "major-sel"
       ],
-      "note": "複数学年で履修可"
+      "note": "複数学年で履修可",
+      "offerings": [
+        {
+          "timetableCode": "21324257",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324257.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（木１）"
+        },
+        {
+          "timetableCode": "21324258",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324258.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（その他）"
+        }
+      ]
     },
     {
       "code": "GSE201p",
@@ -29625,7 +29851,38 @@
       "groups": [
         "major-sel"
       ],
-      "note": "複数学年で履修可"
+      "note": "複数学年で履修可",
+      "offerings": [
+        {
+          "timetableCode": "21324257",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324257.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（木１）"
+        },
+        {
+          "timetableCode": "21324258",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324258.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（その他）"
+        }
+      ]
     },
     {
       "code": "GSE201r",
@@ -29641,7 +29898,38 @@
       "groups": [
         "major-sel"
       ],
-      "note": "複数学年で履修可"
+      "note": "複数学年で履修可",
+      "offerings": [
+        {
+          "timetableCode": "21324257",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324257.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（木１）"
+        },
+        {
+          "timetableCode": "21324258",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [],
+          "instructors": [
+            "谷口　淳子"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21324258.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（その他）"
+        }
+      ]
     },
     {
       "code": "GSE301f",
@@ -37211,7 +37499,33 @@
       "groups": [
         "intl-abroad"
       ],
-      "note": "集中。共通単位。1～8学期で履修可"
+      "note": "集中。共通単位。1～8学期で履修可",
+      "offerings": [
+        {
+          "timetableCode": "21017115",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "安西　亮"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017115.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（学域）（集中）（上級科目）"
+        },
+        {
+          "timetableCode": "21017215",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [],
+          "instructors": [
+            "安西　亮"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017215.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（学域）（集中）（上級科目）"
+        }
+      ]
     },
     {
       "code": "INT007z",
@@ -37227,7 +37541,33 @@
       "groups": [
         "intl-abroad"
       ],
-      "note": "集中。共通単位。1～8学期で履修可"
+      "note": "集中。共通単位。1～8学期で履修可",
+      "offerings": [
+        {
+          "timetableCode": "21017117",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "安西　亮"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017117.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（学域）（集中）（上級科目）"
+        },
+        {
+          "timetableCode": "21017217",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [],
+          "instructors": [
+            "安西　亮"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017217.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（学域）（集中）（上級科目）"
+        }
+      ]
     },
     {
       "code": "INT401m",

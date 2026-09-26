@@ -103,7 +103,7 @@
   - 曜日時限が「他」で空の科目（情報領域演習第三・インターンシップ等）や「1クラス・2クラス・3クラス」表記の科目（アルゴリズム論第一）は、offeringの`sectionLabel`（シラバス一覧の科目名末尾の（…）表記）とプロフィールのA/B/Cクラス・類で解決する
 - 学域特別講義は、A＝`UEC001z`（1単位）・B＝`UEC004z`（2単位）の2科目。offeringsには年度ごとのテーマ（`topic`）が全部入る。旧区分の`UEC002z`・`UEC003z`は保存済み記録の引き継ぎ用に科目マスタへ残し（`legacy`）、`data/subjects/code-migrations.json`の対応表で保存記録を自動で新コードへ移す（移し先に記録があれば移さない）
 - シラバスの一覧ページ2件だけで更新できる補助スクリプト：`scripts/backfill_section_labels.py`（`sectionLabel`）・`scripts/backfill_special_offerings.py`（学域特別講義のテーマ）。フル実行の`fetch_syllabus.py`も同じ値を付ける
-- データ生成パイプラインの実行順序：`python scripts/gen_data.py`（科目マスタ・2025年度要件JSONを再構築。**offerings・prerequisitesTextを消してしまう**）→`python scripts/fetch_syllabus.py`（シラバスから曜日時限等を再取得）→`python scripts/build_class_assignment.py`→`python scripts/build_class_assignment_json.py`→年度別データを土台の年度から順に再生成（`python scripts/build_2024_data.py`・`python scripts/build_2026_data.py`は2025年度が土台→`python scripts/build_2023_data.py`・`python scripts/build_2022_data.py`は2024年度が土台→`python scripts/build_2021_data.py`は2022年度が土台）→`python scripts/validate_data.py`（整合性チェック）
+- データ生成パイプラインの実行順序：`python scripts/gen_data.py`（科目マスタ・2025年度要件JSONを再構築。**offerings・prerequisitesTextを消してしまう**）→`python scripts/fetch_syllabus.py`（シラバスから曜日時限等を再取得）→`python scripts/build_class_assignment.py`→`python scripts/build_class_assignment_json.py`→年度別データを土台の年度から順に再生成（`python scripts/build_2024_data.py`・`python scripts/build_2026_data.py`は2025年度が土台→`python scripts/build_2023_data.py`・`python scripts/build_2022_data.py`は2024年度が土台→`python scripts/build_2021_data.py`は2022年度が土台）→`python scripts/backfill_missing_offerings.py`（2026年度新設科目など、上の手順で offerings が空のまま残る科目に、シラバス個別ページの科目番号欄で確認できたものだけ開講情報を補う）→`python scripts/validate_data.py`（整合性チェック）
 
 ### 実装済みの画面・機能
 
