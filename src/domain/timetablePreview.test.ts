@@ -237,6 +237,22 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
     expect(result.unplaced).toEqual([])
   })
 
+  // 低学年科目は時限が一致する複数セクションでも、選んだ1件だけを表へ置く。
+  it('明示選択が必要な複数セクションは、選ぶまで欄外に残す', () => {
+    const course = {
+      code: 'A', name: '低学年の授業', termType: '前学期', offeredTerms: ['前学期'], chooseAmongSections: true,
+      options: [
+        { term: '前学期', timetableCode: 'A-1', slots: [{ day: '月', period: 1 }] },
+        { term: '前学期', timetableCode: 'A-2', slots: [{ day: '月', period: 1 }] },
+      ],
+    }
+    const unselected = buildTimetablePreview([course], '前学期')
+    expect(unselected.unplaced[0]).toMatchObject({ reason: 'no-class', options: course.options })
+    const selected = buildTimetablePreview([course], '前学期', { A: 'A-2' })
+    expect(selected.slots.map((slot) => slot.code)).toEqual(['A'])
+    expect(selected.unplaced).toEqual([])
+  })
+
   // 別枠の集中講義も表示切替の対象となり、非表示時は結果一覧から外れる。
   it('集中講義を非表示にすると集中講義一覧から外す', () => {
     const courses = [{

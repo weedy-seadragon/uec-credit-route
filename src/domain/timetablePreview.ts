@@ -19,6 +19,8 @@ export interface TimetablePreviewCourse {
   offerings?: readonly OfferingWithSlots[]
   /** クラス判定できない科目の選択肢を作るため、全セクションを保持する。 */
   sections?: readonly TimetablePreviewOption[]
+  /** 低学年科目の複数候補を、時限が同じでも明示選択にする。 */
+  chooseAmongSections?: boolean
 }
 
 /** プレビューで選択可能なセクション。 */
@@ -149,6 +151,16 @@ export function buildTimetablePreview(
     // シラバスの開講情報自体が無い科目は、科目表の学期に基づく欄外表示にする。
     if (course.offeredTerms.length === 0) {
       unplaced.push({ code: course.code, name: course.name, reason: 'no-offering' })
+      continue
+    }
+    // 低学年科目は同じ時限の複数セクションでも、1件を選ぶまで欄外に残す。
+    if (course.chooseAmongSections && options.length > 1) {
+      const selected = findSelectedOption(options, selectedTimetableCodes[course.code])
+      if (selected) {
+        appendSelectedOption(slots, course, selected)
+        continue
+      }
+      unplaced.push({ code: course.code, name: course.name, reason: 'no-class', options })
       continue
     }
     // 通年注記があり時限候補を示せない科目は、両学期に残して担当教員への確認を促す。

@@ -1,7 +1,7 @@
 // classAssignment.ts の単体テスト。class_assignment.json の表記パターンごとに、
 // プロフィールとの一致判定・セクション解決が正しく動くことを確認する。
 import { describe, expect, it } from 'vitest'
-import { classIdMatchesProfile, hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, sectionLabelMatchesProfile } from './classAssignment'
+import { classIdMatchesProfile, hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, resolveTimetablePreviewOfferings, sectionLabelMatchesProfile } from './classAssignment'
 import type { ClassAssignmentEntry, ClassProfile } from './classAssignment'
 
 describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () => {
@@ -458,6 +458,28 @@ describe('resolveOfferingsForProfile（曜日時限以外のフィールドも�
     expect(resolveOfferingsForProfile('CAR503z', offerings, [], {}, 'II', false, '前学期')).toEqual([offerings[1]])
     // 夜間主（類なし）は表記では絞れない
     expect(resolveOfferingsForProfile('CAR503z', offerings, [], {}, null, false, '前学期')).toBeUndefined()
+  })
+})
+
+// 時間割プレビューだけが、低学年科目のクラス判定を避けることを検証する。
+describe('resolveTimetablePreviewOfferings（プレビュー用候補の解決）', () => {
+  it('低学年科目は全候補を残し、今の学年の科目はプロフィールのクラスで絞る', () => {
+    const offerings = [
+      { term: '前学期', slots: [{ day: '月', period: 1 }], timetableCode: 'A-1' },
+      { term: '前学期', slots: [{ day: '火', period: 2 }], timetableCode: 'A-2' },
+    ]
+    const assignments: ClassAssignmentEntry[] = [
+      { code: 'MTH101z', term: '前学期', day: '月', period: '1', classIds: ['クラス1'] },
+      { code: 'MTH101z', term: '前学期', day: '火', period: '2', classIds: ['クラス2'] },
+    ]
+    const profile: ClassProfile = { yearOneClass: 1 }
+    const lowerYear = resolveTimetablePreviewOfferings('MTH101z', offerings, assignments, profile, 'I', false, '前学期', 1, 2)
+    expect(lowerYear.offerings).toEqual(offerings)
+    expect(lowerYear.chooseAmongSections).toBe(true)
+
+    const currentYear = resolveTimetablePreviewOfferings('MTH101z', offerings, assignments, profile, 'I', false, '前学期', 2, 2)
+    expect(currentYear.offerings).toEqual([offerings[0]])
+    expect(currentYear.chooseAmongSections).toBe(false)
   })
 })
 

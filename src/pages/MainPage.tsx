@@ -23,7 +23,7 @@ import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
 import { entryYearLabel, getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { SubjectOffering, TransferBucketItem } from '../data/requirementSets'
-import { hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
+import { hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, resolveTimetablePreviewOfferings } from '../domain/classAssignment'
 import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
 import type { PlannedCourseSchedule } from '../domain/scheduleConflicts'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
@@ -1488,19 +1488,25 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     if (status !== 'taking') continue
     const subject = subjectsByCode.get(code)
     const offerings = subject?.offerings ?? []
-    const candidates = resolvePlannedOfferings(code, retakingPlanCodes)
     const isRetaking = retakingPlanCodes.has(code)
-    const retakeOfferings = isRetaking
+    const previewResolution = resolveTimetablePreviewOfferings(
+      code,
+      offerings,
+      classAssignments,
+      classProfile,
+      profile.cluster,
+      isRetaking,
+      subject?.termType,
+      subject?.standardYear ?? null,
+      profile.grade,
+    )
+    const isLowerYearSubject = typeof subject?.standardYear === 'number' && subject.standardYear < profile.grade
+    const retakeOfferings = isRetaking || isLowerYearSubject
       ? offerings.filter((offering) => isDedicatedRetakeOffering(code, offering, classAssignments))
       : []
-    // 再履修向けセクションを候補の先頭に置き、残りの全セクションもプレビューで選べるようにする。
-    const previewOfferings = isRetaking && retakeOfferings.length > 0
-      ? [...retakeOfferings, ...offerings.filter((offering) => !retakeOfferings.includes(offering))]
-      : isRetaking
-        ? []
-        : candidates
-    const previewSections = retakeOfferings.length > 0
-      ? [...retakeOfferings, ...offerings.filter((offering) => !retakeOfferings.includes(offering))]
+    const previewOfferings = previewResolution.offerings
+    const previewSections = previewResolution.offerings.length > 0
+      ? previewResolution.offerings
       : offerings
     timetablePreviewCourses.push({
       code,
@@ -1515,6 +1521,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         teacher: offering.instructors.join('、'),
         retake: retakeOfferings.includes(offering),
       })),
+      chooseAmongSections: previewResolution.chooseAmongSections,
       sections: previewSections.map((offering) => ({
         term: offering.term,
         slots: offering.slots,

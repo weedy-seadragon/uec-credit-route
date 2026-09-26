@@ -437,3 +437,43 @@ export function resolveOfferingsForProfile<O extends OfferingLike>(
   if (catchAllMatches.length === 0) return undefined
   return catchAllMatches
 }
+
+/** 時間割プレビュー用に、学年に応じたセクション候補を返す（他の画面のクラス判定には使わない）。 */
+export function resolveTimetablePreviewOfferings<O extends OfferingLike>(
+  code: string,
+  offerings: readonly O[],
+  assignments: readonly ClassAssignmentEntry[],
+  profile: ClassProfile,
+  cluster: 'I' | 'II' | 'III' | null,
+  isRetaking: boolean,
+  subjectTermType: string | null | undefined,
+  standardYear: number | null,
+  currentGrade: number,
+): { offerings: O[]; chooseAmongSections: boolean } {
+  // 標準年次が現在の学年より低ければ、プレビューだけ全候補を残し手動選択を求める。
+  if (typeof standardYear === 'number' && Number.isFinite(standardYear) && standardYear < currentGrade) {
+    const preferredRetakeOfferings = offerings.filter((offering) => isDedicatedRetakeOffering(code, offering, assignments))
+    const orderedOfferings = preferredRetakeOfferings.length > 0
+      ? [...preferredRetakeOfferings, ...offerings.filter((offering) => !preferredRetakeOfferings.includes(offering))]
+      : [...offerings]
+    return { offerings: orderedOfferings, chooseAmongSections: offerings.length > 1 }
+  }
+
+  // 学年が同じか不明なら、従来どおり再履修状態とクラスプロフィールから絞り込む。
+  const resolved = isRetaking
+    ? resolveOfferingsForProfile(code, offerings, assignments, profile, cluster, true, subjectTermType) ?? []
+    : offerings.length === 1
+      ? [...offerings]
+      : resolveOfferingsForProfile(code, offerings, assignments, profile, cluster, false, subjectTermType) ?? []
+  // 再履修時は、見つかった専用枠を先頭に置き、他のセクションもプレビュー候補として残す。
+  if (isRetaking) {
+    const preferredRetakeOfferings = offerings.filter((offering) => isDedicatedRetakeOffering(code, offering, assignments))
+    if (preferredRetakeOfferings.length > 0) {
+      return {
+        offerings: [...preferredRetakeOfferings, ...offerings.filter((offering) => !preferredRetakeOfferings.includes(offering))],
+        chooseAmongSections: false,
+      }
+    }
+  }
+  return { offerings: resolved, chooseAmongSections: false }
+}
