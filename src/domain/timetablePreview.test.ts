@@ -280,14 +280,58 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
 
   // 再履修専用の時限を解決できなくても、全セクションから選べる状態にする。
   it('再履修で専用枠が無い科目も全セクションから選べる', () => {
-    const result = buildTimetablePreview([{
+    const course = {
       code: 'A', name: '再履修科目', termType: '前学期', offeredTerms: ['前学期'], options: [], sections: [
         { term: '前学期', timetableCode: 'A-regular-1', teacher: '教員甲', slots: [{ day: '水', period: 2 }] },
         { term: '前学期', timetableCode: 'A-regular-2', teacher: '教員乙', slots: [{ day: '木', period: 2 }] },
       ],
-    }], '前学期', { A: 'A-regular-2' })
+    }
+    const unselected = buildTimetablePreview([course], '前学期')
+    expect(unselected.slots).toEqual([])
+    expect(unselected.unplaced[0].reason).toBe('no-class')
+
+    const result = buildTimetablePreview([course], '前学期', { A: 'A-regular-2' })
     expect(result.slots.map((slot) => [slot.day, slot.period])).toEqual([['木', 2]])
     expect(result.unplaced).toEqual([])
+  })
+
+  // 再履修専用枠が1件だけなら初期配置し、利用者が保存した選択はそちらを優先する。
+  it('再履修専用枠が1つなら初期配置し、別の枠も選び直せる', () => {
+    const course = {
+      code: 'A', name: '再履修科目', termType: '前学期', offeredTerms: ['前学期'], chooseAmongSections: true,
+      options: [
+        { term: '前学期', timetableCode: 'A-regular', slots: [{ day: '月', period: 1 }] },
+        { term: '前学期', timetableCode: 'A-retake', slots: [{ day: '火', period: 2 }], retake: true },
+      ],
+      sections: [
+        { term: '前学期', timetableCode: 'A-regular', slots: [{ day: '月', period: 1 }] },
+        { term: '前学期', timetableCode: 'A-retake', slots: [{ day: '火', period: 2 }], retake: true },
+      ],
+    }
+    const defaulted = buildTimetablePreview([course], '前学期')
+    expect(defaulted.slots.map(({ day, period }) => [day, period])).toEqual([['火', 2]])
+    expect(defaulted.unplaced).toEqual([])
+
+    const changed = buildTimetablePreview([course], '前学期', { A: 'A-regular' })
+    expect(changed.slots.map(({ day, period }) => [day, period])).toEqual([['月', 1]])
+    expect(changed.unplaced).toEqual([])
+  })
+
+  // 再履修専用枠を一意に決められない場合は、自動選択せず選ぶまで欄外に残す。
+  it('再履修専用枠が複数あるときは未選択のままにする', () => {
+    const result = buildTimetablePreview([{
+      code: 'A', name: '再履修科目', termType: '前学期', offeredTerms: ['前学期'], chooseAmongSections: true,
+      options: [
+        { term: '前学期', timetableCode: 'A-retake-1', slots: [{ day: '火', period: 2 }], retake: true },
+        { term: '前学期', timetableCode: 'A-retake-2', slots: [{ day: '水', period: 3 }], retake: true },
+      ],
+      sections: [
+        { term: '前学期', timetableCode: 'A-retake-1', slots: [{ day: '火', period: 2 }], retake: true },
+        { term: '前学期', timetableCode: 'A-retake-2', slots: [{ day: '水', period: 3 }], retake: true },
+      ],
+    }], '前学期')
+    expect(result.slots).toEqual([])
+    expect(result.unplaced[0].reason).toBe('no-class')
   })
 
   // 低学年科目は時限が一致する複数セクションでも、選んだ1件だけを表へ置く。

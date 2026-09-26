@@ -1,8 +1,8 @@
 // 修得見込の科目を開講期ごとに並べる週間時間割。表示設定だけを保存し、履修記録は変更しない。
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, previewSemesterOf, splitUnplacedTimetableCourses, timetableLegendForSlots } from '../domain/timetablePreview'
-import type { TimetablePreviewCourse, TimetablePreviewSlot, UnplacedTimetableCourse } from '../domain/timetablePreview'
+import { buildTimetablePreview, buildVisibleTimetablePreview, defaultRetakeOptionForTerm, maxConcurrentOfferingCount, previewSemesterOf, splitUnplacedTimetableCourses, timetableLegendForSlots } from '../domain/timetablePreview'
+import type { TimetablePreviewCourse, TimetablePreviewOption, TimetablePreviewSlot, UnplacedTimetableCourse } from '../domain/timetablePreview'
 import { TIMELESS_COURSE_LABELS } from '../domain/onDemand'
 import { loadHiddenTimetableCourses, saveHiddenTimetableCourses } from '../storage/timetableVisibility'
 import { loadTimetableOfferingSelection, saveTimetableOfferingSelection } from '../storage/timetableOfferingSelection'
@@ -300,30 +300,61 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
               <summary>時間割に表示する科目を選ぶ（{termCourses.length}科目）</summary>
               <ul>
                 {/* 非表示にした科目もここには残し、いつでも表示へ戻せるようにする。 */}
-                {termCourses.map((course) => (
-                  <li key={course.code}>
-                    <fieldset>
-                      <legend>
-                        <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
-                        {/* 表示用の学年学期はMainPageから受け取り、空文字なら表示しない。 */}
-                        {course.yearTermLabel && <span style={{ marginLeft: '0.4em' }}>（{course.yearTermLabel}）</span>}
-                      </legend>
-                      <label>
-                        <input type="radio" name={`timetable-visible-${course.code}`} checked={!hiddenCodes.has(course.code)} onChange={() => changeVisibility(course.code, true)} />
-                        表示
-                      </label>
-                      <label>
-                        <input type="radio" name={`timetable-visible-${course.code}`} checked={hiddenCodes.has(course.code)} onChange={() => changeVisibility(course.code, false)} />
-                        非表示
-                      </label>
-                      {selectedTimetableCodes[course.code] && (
-                        <button type="button" onClick={() => changeTimetableOffering(course.code, '')}>
-                          セクション選択を解除
-                        </button>
-                      )}
-                    </fieldset>
-                  </li>
-                ))}
+                {termCourses.map((course) => {
+                  // 自動配置された再履修枠も、この一覧から別セクションへ変更できるよう候補を用意する。
+                  const sectionByCode = new Map<string, TimetablePreviewOption>()
+                  for (const section of [...course.options, ...(course.sections ?? [])]) {
+                    if (previewSemesterOf(section.term) !== term) continue
+                    const sectionKey = section.timetableCode ?? `${section.term}:${section.slots.map((slot) => `${slot.day}${slot.period}`).join('-')}`
+                    if (!sectionByCode.has(sectionKey)) sectionByCode.set(sectionKey, section)
+                  }
+                  const sectionChoices = [...sectionByCode.values()]
+                  const savedCode = selectedTimetableCodes[course.code]
+                  const hasSavedChoice = sectionChoices.some((section) => section.timetableCode === savedCode)
+                  const defaultRetake = defaultRetakeOptionForTerm(course, term)
+                  const sectionValue = hasSavedChoice ? savedCode ?? '' : defaultRetake?.timetableCode ?? ''
+                  const canChangeSection = sectionChoices.length > 1 && (hasSavedChoice || Boolean(defaultRetake))
+                  return (
+                    <li key={course.code}>
+                      <fieldset>
+                        <legend>
+                          <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
+                          {/* 表示用の学年学期はMainPageから受け取り、空文字なら表示しない。 */}
+                          {course.yearTermLabel && <span style={{ marginLeft: '0.4em' }}>（{course.yearTermLabel}）</span>}
+                        </legend>
+                        <label>
+                          <input type="radio" name={`timetable-visible-${course.code}`} checked={!hiddenCodes.has(course.code)} onChange={() => changeVisibility(course.code, true)} />
+                          表示
+                        </label>
+                        <label>
+                          <input type="radio" name={`timetable-visible-${course.code}`} checked={hiddenCodes.has(course.code)} onChange={() => changeVisibility(course.code, false)} />
+                          非表示
+                        </label>
+                        {canChangeSection && (
+                          <label className="timetable-section-choice">
+                            {' '}セクション
+                            <select aria-label={`${course.name}のセクション`} value={sectionValue} onChange={(event) => changeTimetableOffering(course.code, event.target.value)}>
+                              <option value="">選択してください</option>
+                              {sectionChoices.map((option) => (
+                                <option key={option.timetableCode ?? `${option.term}:${option.slots.map((slot) => `${slot.day}${slot.period}`).join('-')}`} value={option.timetableCode ?? ''} disabled={!option.timetableCode}>
+                                  {[...new Set(option.slots.map((slot) => `${slot.day}${slot.period}限`))].join('・') || '曜日時限の記載なし'}
+                                  {option.term !== '前学期' && option.term !== '後学期' && `（${option.term}）`}
+                                  {option.retake && '（再履修向け）'}
+                                  {' / '}{option.teacher || '担当教員記載なし'}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                        )}
+                        {selectedTimetableCodes[course.code] && (
+                          <button type="button" onClick={() => changeTimetableOffering(course.code, '')}>
+                            セクション選択を解除
+                          </button>
+                        )}
+                      </fieldset>
+                    </li>
+                  )
+                })}
               </ul>
             </details>
           )}

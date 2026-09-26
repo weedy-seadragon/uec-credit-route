@@ -132,6 +132,25 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(html).toContain('（再履修向け）')
   })
 
+  // 自動配置された再履修枠も表示切替欄の候補から変更できる。
+  it('再履修の初期枠を選択欄に示し、通常枠も候補に残す', () => {
+    const html = renderPreview([{
+      code: 'A', name: '再履修科目', termType: '前学期', offeredTerms: ['前学期'], chooseAmongSections: true,
+      options: [
+        { term: '前学期', timetableCode: 'A-regular', teacher: '教員甲', slots: [{ day: '月', period: 1 }] },
+        { term: '前学期', timetableCode: 'A-retake', teacher: '教員乙', retake: true, slots: [{ day: '火', period: 2 }] },
+      ],
+      sections: [
+        { term: '前学期', timetableCode: 'A-regular', teacher: '教員甲', slots: [{ day: '月', period: 1 }] },
+        { term: '前学期', timetableCode: 'A-retake', teacher: '教員乙', retake: true, slots: [{ day: '火', period: 2 }] },
+      ],
+    }])
+    expect(html).toContain('aria-label="再履修科目のセクション"')
+    expect(html).toContain('<option value="A-retake" selected="">火2限（再履修向け） / 教員乙</option>')
+    expect(html).toContain('<option value="A-regular">月1限 / 教員甲</option>')
+    expect(html).toContain('aria-label="再履修科目"')
+  })
+
   // 凡例は選択中の学期に表で表示される区分だけを示し、必修は文字でも区別する。
   it('現在の学期の凡例と必修ラベルを表示する', () => {
     const html = renderPreview([

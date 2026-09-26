@@ -226,6 +226,14 @@ export function buildTimetablePreview(
       unplaced.push({ code: course.code, name: course.name, reason: 'no-offering' })
       continue
     }
+    // 再履修専用枠が一意なら、通常枠の候補もある科目でもその枠を初期配置する。
+    const savedOption = allTermSections.find((section) => section.timetableCode === selectedTimetableCodes[course.code])
+    const defaultRetake = findUniqueRetakeOption(allTermSections)
+    const retakePlacement = savedOption ?? defaultRetake
+    if (defaultRetake && retakePlacement && retakePlacement.slots.length > 0) {
+      appendSelectedOption(slots, course, retakePlacement)
+      continue
+    }
     // 低学年科目は同じ時限の複数セクションでも、1件を選ぶまで欄外に残す。
     if (course.chooseAmongSections && options.length > 1) {
       const selected = findSelectedOption(options, selectedTimetableCodes[course.code])
@@ -305,6 +313,20 @@ function findSelectedOption(options: readonly TimetablePreviewOption[], savedCod
   // 古い・壊れた保存値は見つからないため、未選択として扱う。
   if (!savedCode) return undefined
   return options.find((option) => option.timetableCode === savedCode)
+}
+
+/** 選択学期にある再履修専用枠が1件だけなら、初期表示用の候補を返す。 */
+export function defaultRetakeOptionForTerm(course: TimetablePreviewCourse, term: string): TimetablePreviewOption | undefined {
+  // 表示中の学期以外の再履修枠は、初期候補に含めない。
+  const termSections = (course.sections ?? []).filter((section) => previewSemesterOf(section.term) === term)
+  return findUniqueRetakeOption(termSections)
+}
+
+/** 選択学期の再履修専用セクションが1件だけなら、初期表示用の候補として返す。 */
+function findUniqueRetakeOption(options: readonly TimetablePreviewOption[]): TimetablePreviewOption | undefined {
+  // 専用枠が複数ある科目は、利用者が選ぶまで欄外に残す。
+  const retakeOptions = options.filter((option) => option.retake)
+  return retakeOptions.length === 1 ? retakeOptions[0] : undefined
 }
 
 /** 利用者が選んだセクションの全コマを時間割へ追加する。 */
