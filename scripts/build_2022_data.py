@@ -32,6 +32,7 @@ import json
 import re
 from pathlib import Path
 from typing import Any
+from special_lecture_data import normalize_special_lecture_subjects
 
 
 # プロジェクト内のデータディレクトリと、複製元・出力先をまとめて定義する。
@@ -597,6 +598,7 @@ def copy_subject_master() -> int:
     # 2024年度経由でここまで自然に引き継がれる（2026-09-14訂正：以前はここで個別に追加
     # していたが、2025年度マスタへの追加により科目マスタ側の重複原因になっていた）。
 
+    subjects = normalize_special_lecture_subjects(subjects)
     document["subjects"] = sorted(subjects, key=lambda subject: subject["code"])
     document["source"] = "学修要覧2022（情報理工学域）付録Cを基準にした年度別科目マスタ。開講情報は原則2026年度シラバス基準"
     document["note"] = "2022年度の旧カリキュラム用。年度ごとに科目番号・単位数が異なる可能性があるため、他年度のマスタと分けて参照する"

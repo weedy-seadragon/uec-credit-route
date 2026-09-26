@@ -23,6 +23,7 @@ import copy
 import json
 import re
 from pathlib import Path
+from special_lecture_data import normalize_special_lecture_subjects
 from typing import Any
 
 
@@ -344,6 +345,7 @@ def build_subject_master() -> int:
     )
 
     subjects.extend(additions)
+    subjects = normalize_special_lecture_subjects(subjects)
     document["subjects"] = sorted(subjects, key=lambda subject: subject["code"])
     write_json(SUBJECTS_2024_PATH, document)
     return len(document["subjects"])

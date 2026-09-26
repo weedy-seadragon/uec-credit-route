@@ -9,6 +9,7 @@ import copy
 import json
 from pathlib import Path
 from typing import Any
+from special_lecture_data import normalize_special_lecture_subjects
 
 
 # このスクリプトの場所を基準にして、実行場所に左右されない入出力先を決める。
@@ -264,6 +265,7 @@ def build_subject_master() -> int:
 
     subjects.extend(additions)
     # 科目番号順に揃え、生成のたびに安定した差分になるようにする。
+    subjects = normalize_special_lecture_subjects(subjects)
     document["subjects"] = sorted(subjects, key=lambda subject: subject["code"])
     write_json(SUBJECTS_2026_PATH, document)
     return len(document["subjects"])

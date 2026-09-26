@@ -41,6 +41,30 @@ describe('buildTimetablePreview（修得見込の時間割）', () => {
     expect(result.slots).toEqual([])
   })
 
+  // テーマ選択が必要な科目は一般の時限なし判定より先に扱い、選んだテーマで表示場所を決める。
+  it('学域特別講義のテーマ候補を選び、時限・集中・時限なしへ振り分ける', () => {
+    const course = {
+      code: 'UEC004z', name: '学域特別講義B', termType: null, offeredTerms: ['前学期', '後学期'],
+      options: [], sections: [
+        { timetableCode: 'B1', term: '前学期', slots: [{ day: '金', period: 5 }], topic: '自動車の大変革' },
+        { timetableCode: 'B2', term: '後学期', slots: [{ day: '木', period: 5 }], topic: 'AI時代の著作権ビジネス' },
+        { timetableCode: 'B3', term: '前学期', slots: [], topic: 'デザイン思考実践（集中）' },
+        { timetableCode: 'B4', term: '前学期', slots: [], topic: '融合領域の最新動向' },
+      ],
+    }
+    const unselected = buildTimetablePreview([course], '前学期')
+    expect(unselected.unplaced[0]).toMatchObject({ reason: 'ambiguous-slot', options: expect.arrayContaining([expect.objectContaining({ topic: '自動車の大変革' })]) })
+
+    const timed = buildTimetablePreview([course], '後学期', { UEC004z: 'B2' })
+    expect(timed.slots).toContainEqual(expect.objectContaining({ code: 'UEC004z', topic: 'AI時代の著作権ビジネス', day: '木', period: 5 }))
+
+    const intensive = buildTimetablePreview([course], '前学期', { UEC004z: 'B3' })
+    expect(intensive.intensive).toContainEqual(expect.objectContaining({ topic: 'デザイン思考実践（集中）', kind: 'intensive' }))
+
+    const noSlot = buildTimetablePreview([course], '前学期', { UEC004z: 'B4' })
+    expect(noSlot.unplaced).toContainEqual(expect.objectContaining({ reason: 'no-slot', topic: '融合領域の最新動向' }))
+  })
+
   // 複数コマの授業は両方のコマへ表示し、別の開講期の授業は混ぜない。
   it('選択した開講期の複数コマだけを配置する', () => {
     const result = buildTimetablePreview([

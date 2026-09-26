@@ -9,6 +9,7 @@ INS502b=多変量解析）ため、名寄せをやめてフルコード1つに�
 単に別々のエントリとして重複して持つ（実害は科目マスタが少し重複する程度）。
 """
 import json, os, re
+from special_lecture_data import SPECIAL_SUBJECTS
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data")
 
@@ -152,10 +153,8 @@ INTL_SKILLS = [("INT001z","UEC Academic Skills Ⅰ (Computer Literacy)",2,"e","1
 INTL_ABROAD = [("INT004z","海外語学研修Ⅰ",1,"e","集中。共通単位"),("INT005z","海外語学研修Ⅱ",2,"e","集中。共通単位")]
 # 学域特別講義の細かなデータ作成事情は利用者には不要なので、画面には年度差だけを注意として出す。
 SPECIAL_NOTE = "開講年度によりテーマ・担当・時限・単位数の扱いが異なる。"
-SPECIAL = [("UEC001z","学域特別講義A(AI時代の著作権ビジネスなど)(1単位修得)",1,"",SPECIAL_NOTE),
-           ("UEC003z","学域特別講義A(AI時代の著作権ビジネスなど)(2単位修得)",2,"",SPECIAL_NOTE),
-           ("UEC002z","学域特別講義B(自動車の大変革に必要な技術など)(1単位修得)",1,"",SPECIAL_NOTE),
-           ("UEC004z","学域特別講義B(自動車の大変革に必要な技術など)(2単位修得)",2,"",SPECIAL_NOTE)]
+SPECIAL = [(code, name, credits, "", SPECIAL_NOTE)
+           for code, (name, credits) in SPECIAL_SUBJECTS.items()]
 
 # ---- C.2 実践教育科目（昼間）
 # 「基礎科学実験A1/A2/B1/B2」の英数字は、シラバスWeb公開システムでの実際の表記に合わせて
@@ -246,7 +245,7 @@ common = {
         ]},
     ],
     "commonCreditSources": {
-        "note": "卒業所要単位を超えた分に加え、以下はそのまま共通単位になる。UEC001z/UEC003z（学域特別講義A）・UEC002z/UEC004z（学域特別講義B）は、開講年度により必修/選択の扱いが異なり一意の区分に割り当てられないため、修得した単位はそのまま共通単位として扱う（開発者の指示、2026-09-05。2026-09-07にA・Bを単位数違いで別コードに分割）",
+        "note": "卒業所要単位を超えた分に加え、以下はそのまま共通単位になる。学域特別講義A（UEC001z・1単位）・B（UEC004z・2単位）は共通単位として扱う。旧コードUEC002z・UEC003zも過去の履修記録を引き継ぐため残し、修得単位を共通単位として数える（2026-09-27）",
         # 学域特別講義（SPECIAL）は開講年度により扱いが異なり必修/選択のどの区分にも一意に
         # 割り当てられないため、修得した単位はそのまま共通単位として扱う（開発者の指示、2026-09-05）
         "alwaysCommon": add("lang-appl-2", LANG_APPL_2) + add("intl-abroad", INTL_ABROAD) + add("special", SPECIAL),
@@ -1589,11 +1588,15 @@ dump("requirements/2025-day-III-optical.json", OPTICAL)
 dump("requirements/2025-day-III-physics.json", PHYSICS3)
 dump("requirements/2025-day-III-chembio.json", CHEMBIO)
 dump("requirements/2025-evening.json", EVENING)
+subject_entries = sorted(SUBJECTS.values(), key=lambda s: s["code"])
+for subject in subject_entries:
+    if subject["code"] in ("UEC002z", "UEC003z"):
+        subject["legacy"] = True
 dump("subjects/youran-2025.json", {
     "schemaVersion": 1,
     "source": "学修要覧2025（情報理工学域）付録C。昼間コース共通科目＋Ⅰ・Ⅱ・Ⅲ類15プログラム＋夜間主収録",
     "note": "曜日時限・担当・シラバスURLはシラバスから別途取得して offerings に入れる（scripts/fetch_syllabus.py 予定）。"
             "主キーは末尾記号を含むフルコード（例 COM405a）。同じ番号でもプログラムが違えば別科目のことがあるため、名寄せはしない",
-    "subjects": sorted(SUBJECTS.values(), key=lambda s: s["code"]),
+    "subjects": subject_entries,
 })
 print("subjects:", len(SUBJECTS))

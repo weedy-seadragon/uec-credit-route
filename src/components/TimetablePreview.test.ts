@@ -67,6 +67,20 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(html).toContain('<a href="/courses/B?year=2025" data-discover="true">年次なし</a></legend>')
   })
 
+  // テーマ名は科目クラスと混同しない独立情報として、選択肢の時限表記と並べる。
+  it('学域特別講義の候補一覧にテーマ名と曜日時限を表示する', () => {
+    const html = renderPreview([{
+      code: 'UEC004z', name: '学域特別講義B', termType: null, offeredTerms: ['前学期'], options: [],
+      sections: [
+        { term: '前学期', timetableCode: 'THEME-1', slots: [{ day: '金', period: 5 }], topic: '自動車の大変革' },
+        { term: '前学期', timetableCode: 'THEME-2', slots: [], topic: 'デザイン思考実践（集中）' },
+      ],
+    }])
+    expect(html).toContain('自動車の大変革（金5限）')
+    expect(html).toContain('デザイン思考実践（集中）')
+    expect(html).toContain('学域特別講義Bのセクション')
+  })
+
   // 時限を持たない通常科目は、未確定一覧ではなく専用のリンク一覧へ出す。
   it('オンデマンド科目を表の下の別枠に表示する', () => {
     const html = renderPreview([{ code: 'OND101', name: 'オンラインの授業', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] }])

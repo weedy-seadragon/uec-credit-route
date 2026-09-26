@@ -29,7 +29,7 @@ CLAUDE.md本文のルール通り、個別ページの取得は1.2秒間隔を�
 一覧ページ・個別ページのHTML構造は2026-09-04時点で確認したもの。サイト側の構造が変わったら
 正規表現を調整すること。
 """
-import json, os, re, sys, time, urllib.request
+import json, os, re, sys, time, unicodedata, urllib.request
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 SUBJECTS_PATH = os.path.join(ROOT, "data", "subjects", "youran-2025.json")
@@ -163,6 +163,64 @@ def parse_slots(day_period: str):
     return slots
 
 
+def extract_special_topic(suffix: str) -> str:
+    """A/B接頭辞の後ろからテーマ名を取り、寄附講座情報だけを分離する。"""
+    topic = suffix.strip()
+    # 一覧では全角・半角括弧や英語名の括弧が混在するため、先頭の括弧だけ深さを見て閉じる。
+    if not topic.startswith("("):
+        return topic
+    depth = 0
+    closing = None
+    for index, character in enumerate(topic):
+        if character == "(":
+            depth += 1
+        elif character == ")":
+            depth -= 1
+            if depth == 0:
+                closing = index
+                break
+    if closing is None:
+        return topic.lstrip("(").strip()
+
+    first_group = topic[1:closing].strip()
+    remainder = topic[closing + 1:].strip()
+    # 協賛名のあとに「講義名」が続く行では、テーマ欄へ講義名だけを入れる。
+    if ("寄附講座" in first_group or "寄附講義" in first_group) and remainder.startswith("「"):
+        return remainder
+    # 日本語名の後ろに英語名や「集中」などの補足があるときは、末尾を切り落とさず残す。
+    return f"{first_group} {remainder}".strip() if remainder else first_group
+
+
+def build_special_offerings_by_code(rows_by_faculty: dict[str, list[dict]], today: str) -> dict[str, list[dict]]:
+    """学期一覧の実際のテーマ行から、学域特別講義A/Bの開講情報を作る。"""
+    codes_by_type = {"A": "UEC001z", "B": "UEC004z"}
+    offerings_by_code: dict[str, list[dict]] = {code: [] for code in codes_by_type.values()}
+    # 一覧上の全角英字・括弧をそろえて、科目区分の接頭辞でA/Bを判定する。
+    for faculty, rows in rows_by_faculty.items():
+        for row in rows:
+            normalized_name = unicodedata.normalize("NFKC", row["name"]).strip()
+            match = re.match(r"^学域特別講義\s*([AB])\s*(.*)$", normalized_name)
+            if not match:
+                continue
+            topic = extract_special_topic(match.group(2))
+            if not topic or not row["timetableCode"]:
+                continue
+            offering = {
+                "timetableCode": row["timetableCode"],
+                "faculty": faculty,
+                "term": row["semester"],
+                "slots": parse_slots(row["dayPeriod"]),
+                "instructors": [name.strip() for name in re.split(r"[・,、]", row["instructor"]) if name.strip()],
+                "syllabusUrl": DETAIL_URL_TMPL.format(faculty=faculty, code=row["timetableCode"]),
+                "updatedAt": today,
+                "topic": topic,
+            }
+            # 開講年度ごとのテーマ行は、統合後のA/B科目にだけ登録する。
+            offerings_by_code[codes_by_type[match.group(1)]].append(offering)
+    # 一覧に存在しなかった科目は空配列のまま返し、古い固定時限を残さない。
+    return offerings_by_code
+
+
 def main():
     with open(SUBJECTS_PATH, encoding="utf-8") as f:
         subjects_data = json.load(f)
@@ -182,6 +240,7 @@ def main():
     }
 
     offerings_by_code: dict[str, list[dict]] = {}
+    rows_by_faculty: dict[str, list[dict]] = {}
     prereq_text_by_code: dict[str, str] = {}
     not_offered_codes: set[str] = set()
     today = time.strftime("%Y-%m-%d")
@@ -190,6 +249,7 @@ def main():
         print(f"[{faculty}] 一覧ページを取得中...", file=sys.stderr)
         list_html = fetch(LIST_URL_TMPL.format(faculty=faculty))
         rows = parse_list(list_html)
+        rows_by_faculty[faculty] = rows
         print(f"[{faculty}] 総行数: {len(rows)}", file=sys.stderr)
 
         candidates = [
@@ -268,24 +328,8 @@ def main():
         if a is not None:
             offerings_by_code[code_b] = a
 
-    # 学域特別講義A/B（2026-09-07にUEC001z/UEC003z=A、UEC002z/UEC004z=Bの単位数違いで分割）は、
-    # 開講年度ごとに具体的なテーマ・担当教員が変わる科目（例:「学域特別講義A(アルゴリズムの基礎)」）で、
-    # 科目マスタの名前には単位数の注記まで含めているため、科目名の完全一致では
-    # 一覧ページの行を拾えない。ただし開講される曜日時限自体は毎年固定（前学期木5/前学期金5）
-    # と開発者から確認済み（2026-09-06）なので、ここで固定値を補う。将来もし名前一致で
-    # 本当に取得できるようになった場合はそちらを優先する（setdefaultなので上書きしない）
-    for code in ("UEC001z", "UEC003z"):
-        offerings_by_code.setdefault(code, [{
-            "timetableCode": "", "faculty": "31", "term": "前学期",
-            "slots": [{"day": "木", "period": 5}], "instructors": [],
-            "syllabusUrl": "", "updatedAt": today,
-        }])
-    for code in ("UEC002z", "UEC004z"):
-        offerings_by_code.setdefault(code, [{
-            "timetableCode": "", "faculty": "31", "term": "前学期",
-            "slots": [{"day": "金", "period": 5}], "instructors": [],
-            "syllabusUrl": "", "updatedAt": today,
-        }])
+    # テーマ行は科目名一致や詳細ページのコード欄に頼らず、一覧のA/B接頭辞から全セクションを作る。
+    offerings_by_code.update(build_special_offerings_by_code(rows_by_faculty, today))
 
     # 昼間の「知的財産権」(CAR603z)・「技術者倫理」(CAR604z)の登録漏れ補正（2026-09-06発覚）：
     # シラバスWeb公開システム側で、夜間主の個別ページ（22018104・22018205）の科目番号欄に

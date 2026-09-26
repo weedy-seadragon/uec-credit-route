@@ -90,6 +90,8 @@ export function timetableCategoryForCourse(
 export interface TimetablePreviewOption extends ScheduleOption {
   timetableCode?: string
   teacher?: string
+  /** 学域特別講義の候補テーマ。 */
+  topic?: string
   /** 再履修専用セクションなら、選択肢で優先枠として注記する。 */
   retake?: boolean
 }
@@ -103,6 +105,7 @@ export interface TimetablePreviewSlot extends ScheduleSlot {
   categoryColorIndex?: number
   /** 前学期・後学期以外の開講期なら、科目名に添えて表示する。 */
   offeringTerm: string
+  topic?: string
 }
 
 /** 選択した開講期の科目だが、曜日時限を断定できないもの。 */
@@ -112,6 +115,7 @@ export interface UnplacedTimetableCourse {
   reason: 'no-offering' | 'no-class' | 'lower-year-selection' | 'no-slot' | 'instructor-dependent' | 'lab' | 'ambiguous-term' | 'ambiguous-slot'
   /** 候補が複数ある理由の場合に、欄外の選択UIへ渡すセクション。 */
   options?: readonly TimetablePreviewOption[]
+  topic?: string
 }
 
 /** 欄外科目を、利用者が候補を選ぶものと曜日時限自体が未確定のものに分ける。 */
@@ -131,8 +135,8 @@ export function splitUnplacedTimetableCourses(courses: readonly UnplacedTimetabl
 export interface TimetablePreviewResult {
   slots: TimetablePreviewSlot[]
   unplaced: UnplacedTimetableCourse[]
-  onDemand: { code: string; name: string }[]
-  intensive: { code: string; name: string; kind: Extract<TimelessCourseKind, 'summer-intensive' | 'winter-intensive' | 'intensive'> }[]
+  onDemand: { code: string; name: string; topic?: string }[]
+  intensive: { code: string; name: string; kind: Extract<TimelessCourseKind, 'summer-intensive' | 'winter-intensive' | 'intensive'>; topic?: string }[]
 }
 
 /** 履修予定に登場する区分へ、要件データ全体を基準に色番号を割り当てる。 */
@@ -225,6 +229,27 @@ export function buildTimetablePreview(
         : course.termType === null || course.termType === term
     // 別の学期だけに開講する科目は、この学期のプレビューから外す。
     if (!belongsToTerm) continue
+
+    const topicSections = (course.sections ?? []).filter((section) => section.topic && previewSemesterOf(section.term) === term)
+    if (topicSections.length > 0) {
+      // 年度ごとに異なるテーマはクラス判定で一意にせず、選んだ一覧行だけを配置する。
+      const selected = findSelectedOption(topicSections, selectedTimetableCodes[course.code])
+      // 保存済みテーマが別学期なら、別テーマを同じ科目の予定として自動表示しない。
+      if (selectedTimetableCodes[course.code] && !selected) continue
+      if (!selected && topicSections.length > 1) {
+        unplaced.push({ code: course.code, name: course.name, reason: 'ambiguous-slot', options: topicSections })
+        continue
+      }
+      const chosen = selected ?? topicSections[0]
+      if (chosen.slots.length > 0) {
+        appendSelectedOption(slots, course, chosen)
+      } else if (chosen.topic?.includes('集中')) {
+        intensive.push({ code: course.code, name: course.name, kind: classifyTopicIntensive(chosen.topic), topic: chosen.topic })
+      } else {
+        unplaced.push({ code: course.code, name: course.name, reason: 'no-slot', topic: chosen.topic })
+      }
+      continue
+    }
 
     // 曜日時限のない科目を、オンデマンド・集中講義・その他に共通基準で分類する。
     const timelessKind = classifyTimelessCourse(course.name, course.note, course.offerings)
@@ -371,8 +396,16 @@ function findUniqueRetakeOption(options: readonly TimetablePreviewOption[]): Tim
 function appendSelectedOption(slots: TimetablePreviewSlot[], course: TimetablePreviewCourse, option: TimetablePreviewOption): void {
   // 1つのセクションに複数コマがあれば、そのすべてを重複判定へ渡す。
   for (const slot of option.slots) {
-    slots.push({ ...slot, code: course.code, name: course.name, category: course.category, offeringTerm: option.term })
+    slots.push({ ...slot, code: course.code, name: course.name, category: course.category, offeringTerm: option.term, ...(option.topic ? { topic: option.topic } : {}) })
   }
+}
+
+/** テーマに含まれる一般的な集中表記を、集中講義一覧の区分へ対応させる。 */
+function classifyTopicIntensive(topic: string): Extract<TimelessCourseKind, 'summer-intensive' | 'winter-intensive' | 'intensive'> {
+  // 夏期・冬期の明記があればその区分を保ち、それ以外の集中テーマは集中講義とする。
+  if (topic.includes('夏期集中')) return 'summer-intensive'
+  if (topic.includes('冬期集中')) return 'winter-intensive'
+  return 'intensive'
 }
 
 /** 非表示にした科目を除いて、時間割と重複判定に使う結果を作る。 */

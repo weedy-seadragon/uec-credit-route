@@ -72,11 +72,11 @@ function CourseInSlot({ slot, entryYear }: { slot: TimetablePreviewSlot; entryYe
     <Link
       className={`timetable-course${category?.isRequired ? ' timetable-course--required' : ''}`}
       data-category-color={slot.categoryColorIndex}
-      aria-label={slot.name}
+      aria-label={`${slot.name}${slot.topic ? `（${slot.topic}）` : ''}`}
       to={`/courses/${encodeURIComponent(slot.code)}?year=${entryYear}`}
     >
       {category?.isRequired && <span className="timetable-required-badge" aria-hidden="true">必修</span>}
-      <span><span lang={englishName ? 'en' : undefined}>{englishName ? hyphenateEnglishName(slot.name) : slot.name}</span>{slot.offeringTerm !== '前学期' && slot.offeringTerm !== '後学期' && `（${slot.offeringTerm}）`}</span>
+      <span><span lang={englishName ? 'en' : undefined}>{englishName ? hyphenateEnglishName(slot.name) : slot.name}</span>{slot.topic && `（${slot.topic}）`}{slot.offeringTerm !== '前学期' && slot.offeringTerm !== '後学期' && `（${slot.offeringTerm}）`}</span>
     </Link>
   )
 }
@@ -109,6 +109,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
     ...allCoursesResult.onDemand.map((course) => course.code),
     ...allCoursesResult.intensive.map((course) => course.code),
     ...allCoursesResult.unplaced.map((course) => course.code),
+    ...courses.filter((course) => course.sections?.some((section) => section.topic && previewSemesterOf(section.term) === term)).map((course) => course.code),
   ])
   const termCourses = courses.filter((course) => termCourseCodes.has(course.code))
 
@@ -219,7 +220,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                 {[...otherDaySlotsByCourse].map(([code, slots]) => (
                   <li key={code}>
                     <Link to={`/courses/${encodeURIComponent(code)}?year=${entryYear}`}>
-                      {slots[0].name}{slots[0].offeringTerm !== '前学期' && slots[0].offeringTerm !== '後学期' && `（${slots[0].offeringTerm}）`}
+                      {slots[0].name}{slots[0].topic && `（${slots[0].topic}）`}{slots[0].offeringTerm !== '前学期' && slots[0].offeringTerm !== '後学期' && `（${slots[0].offeringTerm}）`}
                     </Link>
                     {' '}：{slots.map((slot) => `${slot.day}${slot.period}限`).join('、')}
                   </li>
@@ -234,7 +235,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                 {/* 曜日時限のセルを作らず、科目詳細へのリンクを一覧に残す。 */}
                 {result.onDemand.map((course) => (
                   <li key={course.code}>
-                    <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
+                    <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}{course.topic && `（${course.topic}）`}</Link>
                   </li>
                 ))}
               </ul>
@@ -247,7 +248,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                 {/* 集中講義は時限セルを作らず、注記から分かる区分を添えて一覧に残す。 */}
                 {result.intensive.map((course) => (
                   <li key={course.code}>
-                    <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
+                    <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}{course.topic && `（${course.topic}）`}</Link>
                     {' '}（{INTENSIVE_LABELS[course.kind]}）
                   </li>
                 ))}
@@ -264,7 +265,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
               <ul>
                 {selectableCourses.map((course) => (
                   <li key={course.code}>
-                    <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
+                    <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}{course.topic && `（${course.topic}）`}</Link>
                     {' '}：{REASON_LABELS[course.reason]}
                     {course.options && course.options.length > 0 && (
                       <label className="timetable-section-choice">
@@ -277,7 +278,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                           <option value="">選択してください</option>
                           {course.options.map((option) => (
                             <option key={option.timetableCode ?? `${option.term}:${option.slots.map((slot) => `${slot.day}${slot.period}`).join('-')}`} value={option.timetableCode ?? ''} disabled={!option.timetableCode}>
-                              {[...new Set(option.slots.map((slot) => `${slot.day}${slot.period}限`))].join('・') || '曜日時限の記載なし'}
+                              {timetableOptionLabel(option)}
                               {option.term !== '前学期' && option.term !== '後学期' && `（${option.term}）`}
                               {option.retake && '（再履修向け）'}
                               {' / '}{option.teacher || '担当教員記載なし'}
@@ -298,7 +299,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                 {/* 曜日時限の候補自体がない科目は理由だけを示し、セクション選択を出さない。 */}
                 {timelessCourses.map((course) => (
                   <li key={course.code}>
-                    <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
+                    <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}{course.topic && `（${course.topic}）`}</Link>
                     {' '}：{REASON_LABELS[course.reason]}
                   </li>
                 ))}
@@ -314,7 +315,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                   // 自動配置された再履修枠も、この一覧から別セクションへ変更できるよう候補を用意する。
                   const sectionByCode = new Map<string, TimetablePreviewOption>()
                   for (const section of [...course.options, ...(course.sections ?? [])]) {
-                    if (previewSemesterOf(section.term) !== term) continue
+                    if (!section.topic && previewSemesterOf(section.term) !== term) continue
                     const sectionKey = section.timetableCode ?? `${section.term}:${section.slots.map((slot) => `${slot.day}${slot.period}`).join('-')}`
                     if (!sectionByCode.has(sectionKey)) sectionByCode.set(sectionKey, section)
                   }
@@ -347,8 +348,8 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                               <option value="">選択してください</option>
                               {sectionChoices.map((option) => (
                                 <option key={option.timetableCode ?? `${option.term}:${option.slots.map((slot) => `${slot.day}${slot.period}`).join('-')}`} value={option.timetableCode ?? ''} disabled={!option.timetableCode}>
-                                  {[...new Set(option.slots.map((slot) => `${slot.day}${slot.period}限`))].join('・') || '曜日時限の記載なし'}
-                                  {option.term !== '前学期' && option.term !== '後学期' && `（${option.term}）`}
+                                  {timetableOptionLabel(option)}
+                                  {(option.topic || (option.term !== '前学期' && option.term !== '後学期')) && `（${option.term}）`}
                                   {option.retake && '（再履修向け）'}
                                   {' / '}{option.teacher || '担当教員記載なし'}
                                 </option>
@@ -372,4 +373,15 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
       )}
     </details>
   )
+}
+
+/** テーマの候補には、授業名と選択時に確認できる曜日時限または実施形態を付ける。 */
+function timetableOptionLabel(option: TimetablePreviewOption): string {
+  const slots = [...new Set(option.slots.map((slot) => `${slot.day}${slot.period}限`))].join('・')
+  if (option.topic) {
+    // 開講期が異なるテーマでも、内容と実施形態を同時に見分けられるようにする。
+    if (slots) return `${option.topic}（${slots}）`
+    return option.topic.includes('集中') ? option.topic : `${option.topic}（時限なし）`
+  }
+  return slots || '曜日時限の記載なし'
 }

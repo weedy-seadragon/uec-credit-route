@@ -36,6 +36,7 @@ import copy
 import json
 from pathlib import Path
 from typing import Any
+from special_lecture_data import normalize_special_lecture_subjects
 
 
 # プロジェクト内のデータディレクトリと、複製元・出力先をまとめて定義する。
@@ -287,6 +288,7 @@ def copy_subject_master() -> int:
         eveningAllowed=False, forInternational=False, graduateLinked=False, groups=["major-req"],
     )
 
+    subjects = normalize_special_lecture_subjects(subjects)
     document["subjects"] = sorted(subjects, key=lambda subject: subject["code"])
     write_json(SUBJECTS_DIR / "youran-2023.json", document)
     return len(document["subjects"])

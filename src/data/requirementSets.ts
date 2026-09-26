@@ -357,6 +357,8 @@ export interface SubjectOffering {
   updatedAt: string
   /** シラバス一覧の科目名末尾の（…）表記（例:「（Aクラス）」）。曜日時限が無い科目のクラス判定に使う */
   sectionLabel?: string
+  /** 学域特別講義の年度ごとのテーマ。クラス判定用のsectionLabelとは分けて保持する。 */
+  topic?: string
 }
 
 export interface SubjectMasterEntry {
@@ -374,6 +376,8 @@ export interface SubjectMasterEntry {
   /** シラバスから取得できた科目だけ持つ（scripts/fetch_syllabus.py参照）。同じ科目に複数セクション
    *  （クラス）があることがあり、その場合は曜日時限がセクションごとに違うことがある */
   offerings?: SubjectOffering[]
+  /** 統合前の番号を使った保存記録の表示専用。新規履修の候補には出さない。 */
+  legacy?: boolean
   /** シラバスの「前もって履修しておくべき科目」欄の自由記述テキストをそのまま持つ（「なし」は省略）。
    *  自由記述なので科目コードの配列には変換していない（誤検出のリスクが高いため） */
   prerequisitesText?: string

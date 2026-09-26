@@ -32,6 +32,7 @@ import type { Profile } from '../storage/profile'
 import { loadProfile } from '../storage/profile'
 import { loadRecords, saveRecords } from '../storage/records'
 import { loadRetakingPlanCodes, saveRetakingPlanCodes } from '../storage/retakingPlans'
+import { consumeSubjectCodeMigrationNotice, migrateStoredSubjectCodes, SUBJECT_CODE_MIGRATIONS } from '../storage/subjectCodeMigrations'
 import { loadOtherCommonCredits, loadOtherCommonSubjectCount, saveOtherCommonCredits, saveOtherCommonSubjectCount } from '../storage/otherCommonCredits'
 import { loadOpenMainSections, openMainSectionForNavigation, saveOpenMainSections } from '../storage/mainSectionVisibility'
 import {
@@ -51,6 +52,11 @@ import { classifyTimelessCourse, TIMELESS_COURSE_LABELS } from '../domain/onDema
 import AgentToolsBridge from '../components/AgentToolsBridge'
 import type { AgentHandlers } from '../components/AgentToolsBridge'
 import { parseAgentStatus, searchSubjects, summarizeRequirementStatus } from '../domain/agentTools'
+import { migrateCodeMap, migrateCodeSet } from '../domain/codeMigrations'
+
+// 保存値を各useStateが読むより先に、過去の科目番号をブラウザ内で移行する。
+migrateStoredSubjectCodes()
+let initialSubjectCodeMigrationNotice = consumeSubjectCodeMigrationNotice()
 
 /** プロフィールのうち、要件セットを引くのに必要な項目が揃っている状態（夜間主はcluster: null） */
 interface LoadedProfile extends Omit<Profile, 'program'> {
@@ -550,9 +556,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const [recommendationTermKey, setRecommendationTermKey] = useState('all')
   const [termKey, setTermKey] = useState('all')
   // ダウンロード・読み込みの結果を一言表示するためのメッセージ（F-8）
-  const [dataMessage, setDataMessage] = useState<string | null>(null)
+  const [dataMessage, setDataMessage] = useState<string | null>(initialSubjectCodeMigrationNotice)
   // 更新時に見つかった時限重複は、保存完了後も見落とさないよう操作バー直下に残す。
   const [scheduleWarning, setScheduleWarning] = useState<string | null>(null)
+  useEffect(() => {
+    // StrictModeの初期描画でも案内文を失わず、画面を離れて戻ったときは繰り返さない。
+    initialSubjectCodeMigrationNotice = null
+  }, [])
   // 「単位取得状況をファイルから読み込む」ボタンから、見えない<input type="file">を操作するための参照
   const fileInputRef = useRef<HTMLInputElement>(null)
   // 科目状態だけでなく、共通単位認定・他類専門科目認定のプルダウンも更新前なら追従表示する。
@@ -682,8 +692,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // ここで拾わないとどこにも選択状態を変えるプルダウンが出ない
   // 不合格の科目は「不可の単位」に既に出るので、ここでは重複して出さない。修得予定は専用の一覧で変更できる。
   const commonOnlyRemaining = [
-    ...commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) == null)),
-    ...(requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) == null),
+    ...commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) == null && !subjectsByCode.get(code)?.legacy)),
+    ...(requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) == null && !subjectsByCode.get(code)?.legacy),
   ]
 
   // 表示フィルタ（学期）に応じて、履修できる科目だけをスコア順に並べたものを取得する
@@ -718,8 +728,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // commonOnlyRemainingは選択科目一覧（プルダウン表示）用に修得見込を除いているため、ここでは
   // 修得見込も含めた別の一覧を使う。
   const commonOnlyRemainingIncludingPlanned = [
-    ...commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed')),
-    ...(requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed'),
+    ...commonOnlyGroups.flatMap((g) => g.subjects.filter((code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed' && !subjectsByCode.get(code)?.legacy)),
+    ...(requirementSet.alwaysCommonSubjects ?? []).filter((code) => committed.get(code) !== 'passed' && committed.get(code) !== 'failed' && !subjectsByCode.get(code)?.legacy),
   ]
   /**
    * 指定した学年・学期の修得推奨を、必修・再履修・不足選択区分・共通単位に分けて求める。
@@ -928,14 +938,25 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       const knownRecords = imported.records.filter((record) => subjectsByCode.has(record.code))
       const ignoredCount = imported.ignoredCount + (imported.records.length - knownRecords.length)
       const { merged, added, updated } = mergeRecords(committed, knownRecords)
-      const normalizedMerged = normalizeDuplicateSubjectRecords(merged, subjectsByCode, isOwnProgramSubject, isEquivalentProgramSubject)
+      const normalizedRecords = normalizeDuplicateSubjectRecords(merged, subjectsByCode, isOwnProgramSubject, isEquivalentProgramSubject)
+      // ファイルを既存記録へ統合した後で旧番号を移し、移行先に既存記録があれば旧番号を保持する。
+      const recordMigration = migrateCodeMap(normalizedRecords, SUBJECT_CODE_MIGRATIONS)
+      const normalizedMerged = recordMigration.value
+      const allowedMigrations = Object.fromEntries(Object.entries(SUBJECT_CODE_MIGRATIONS).filter(([oldCode]) => !recordMigration.blockedCodes.includes(oldCode)))
       // ファイル側の再履修予定を優先しつつ、今回の読み込みで不合格→修得予定になった科目も再履修予定にする。
       const nextRetakingPlanCodes = new Set(retakingPlanCodes)
       for (const record of knownRecords) {
-        const effectiveCode = preferredSubjectCode(record.code, subjectsByCode, isOwnProgramSubject, isEquivalentProgramSubject)
+        const resolvedCode = preferredSubjectCode(record.code, subjectsByCode, isOwnProgramSubject, isEquivalentProgramSubject)
+        const effectiveCode = allowedMigrations[resolvedCode] ?? resolvedCode
+        const wasMarkedForRetake = imported.retakingPlanCodes?.includes(record.code)
+          || (allowedMigrations[record.code] !== undefined && imported.retakingPlanCodes?.includes(allowedMigrations[record.code]))
         if (record.status !== 'taking') nextRetakingPlanCodes.delete(effectiveCode)
-        else if (imported.retakingPlanCodes?.includes(record.code) || committed.get(effectiveCode) === 'failed') nextRetakingPlanCodes.add(effectiveCode)
+        else if (wasMarkedForRetake || committed.get(effectiveCode) === 'failed') nextRetakingPlanCodes.add(effectiveCode)
       }
+      // 記録を伴わない再履修設定も同じ対応表で引き継ぐ。
+      const retakeMigration = migrateCodeSet(nextRetakingPlanCodes, allowedMigrations)
+      for (const code of [...nextRetakingPlanCodes]) nextRetakingPlanCodes.delete(code)
+      for (const code of retakeMigration.value) nextRetakingPlanCodes.add(code)
       // 正規化後の記録に存在しない再履修予定は残さず、不要な時限重複警告を防ぐ。
       for (const code of nextRetakingPlanCodes) {
         if (normalizedMerged.get(code) !== 'taking') nextRetakingPlanCodes.delete(code)
@@ -973,6 +994,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       // 読み飛ばした項目がある場合だけ、その件数を添えて知らせる。
       setDataMessage(
         `${added}件追加、${updated}件更新しました。`
+          + (recordMigration.movedCodes.length > 0 ? `学域特別講義の登録を新しい区分（A＝1単位、B＝2単位）に移しました（${recordMigration.movedCodes.length}件）。` : '')
+          + (recordMigration.blockedCodes.length > 0 ? '学域特別講義の登録を確認してください（旧区分のまま残っている科目があります）。' : '')
           + (ignoredCount > 0 ? `科目番号や数値が正しくない${ignoredCount}件は読み込まず、未登録のままにしました。` : ''),
       )
     } catch (err) {
@@ -1046,6 +1069,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   function syllabusUrlOf(code: string): string | null {
     const offerings = subjectsByCode.get(code)?.offerings
     if (!offerings || offerings.length === 0) return null
+    // 年度テーマ別のリンクは履修テーマを選ぶまで一意にできないため、科目詳細へ案内する。
+    if (offerings.some((offering) => offering.topic)) return null
     // 曜日時限だけを補った科目（学域特別講義A/Bなど）は syllabusUrl が空文字になる。
     // 空のhrefは今見ているサイト自身へのリンクになるため、リンク候補として数えない。
     const urls = new Set(offerings.map((o) => o.syllabusUrl).filter((url) => url.length > 0))
@@ -1271,6 +1296,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       // 当年度の開講なし注記は科目名の横（yearTermTag）へ出すため、曜日時限欄では重複させない。
       return null
     }
+    // 学域特別講義は年度テーマごとに時限が異なるため、メイン一覧では時限を決め打ちしない。
+    if (offerings.some((offering) => offering.topic)) return null
     const note = subject?.note
     // メイン画面と時間割プレビューの両方で、実施形態の区分を共通関数へ委ねる。
     const timelessKind = classifyTimelessCourse(subject.name, note, offerings)
@@ -1547,7 +1574,9 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       ? offerings.filter((offering) => isDedicatedRetakeOffering(code, offering, classAssignments))
       : []
     const previewOfferings = previewResolution.offerings
-    const previewSections = previewResolution.offerings.length > 0
+    const previewSections = offerings.some((offering) => offering.topic)
+      ? offerings
+      : previewResolution.offerings.length > 0
       ? previewResolution.offerings
       : offerings
     timetablePreviewCourses.push({
@@ -1563,6 +1592,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         timetableCode: offering.timetableCode,
         teacher: offering.instructors.join('、'),
         retake: retakeOfferings.includes(offering),
+        topic: offering.topic,
       })),
       chooseAmongSections: previewResolution.chooseAmongSections,
       sections: previewSections.map((offering) => ({
@@ -1571,6 +1601,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         timetableCode: offering.timetableCode,
         teacher: offering.instructors.join('、'),
         retake: retakeOfferings.includes(offering),
+        topic: offering.topic,
       })),
       note: subject?.note,
       offerings,

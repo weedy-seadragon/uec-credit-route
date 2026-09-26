@@ -43,6 +43,7 @@ import copy
 import json
 from pathlib import Path
 from typing import Any
+from special_lecture_data import normalize_special_lecture_subjects
 
 
 # プロジェクト内のデータディレクトリと、複製元・出力先をまとめて定義する。
@@ -351,6 +352,7 @@ def copy_subject_master() -> int:
     subjects = update_first_cluster_2021_subjects(document["subjects"])
     subjects = update_third_cluster_2021_subjects(subjects)
     subjects = update_evening_2021_subjects(subjects)
+    subjects = normalize_special_lecture_subjects(subjects)
     document["subjects"] = sorted(subjects, key=lambda subject: subject["code"])
 
     document["source"] = "学修要覧2021（情報理工学域）付録Cを基準にした年度別科目マスタ。開講情報は原則2026年度シラバス基準"

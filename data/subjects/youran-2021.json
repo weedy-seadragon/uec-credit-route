@@ -58221,7 +58221,7 @@
     },
     {
       "code": "UEC001z",
-      "name": "学域特別講義A(AI時代の著作権ビジネスなど)(1単位修得)",
+      "name": "学域特別講義A",
       "credits": 1,
       "field": "UEC",
       "standardSemester": null,
@@ -58236,24 +58236,70 @@
       "note": "開講年度によりテーマ・担当・時限・単位数の扱いが異なる。",
       "offerings": [
         {
-          "timetableCode": "",
+          "timetableCode": "21017155",
           "faculty": "31",
           "term": "前学期",
-          "slots": [
-            {
-              "day": "木",
-              "period": 5
-            }
+          "slots": [],
+          "instructors": [
+            "小林　聡"
           ],
-          "instructors": [],
-          "syllabusUrl": "",
-          "updatedAt": "2026-09-07"
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017155.html",
+          "updatedAt": "2026-09-27",
+          "topic": "アルゴリズムの基礎 (Fundamentals of Algorithms)"
+        },
+        {
+          "timetableCode": "21017156",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "高田　哲司　他"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017156.html",
+          "updatedAt": "2026-09-27",
+          "topic": "融合領域の最新動向B (Current Topics in Emerging Multi-interdisciplinary Engineering B)"
+        },
+        {
+          "timetableCode": "21017157",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "沈　青"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017157.html",
+          "updatedAt": "2026-09-27",
+          "topic": "基盤理工学B (Current Topics in Fundamental Science and Engineering B)"
+        },
+        {
+          "timetableCode": "21017159",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "戸田　貴久"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017159.html",
+          "updatedAt": "2026-09-27",
+          "topic": "3大学協働基礎ゼミ’26:人狼知能エージェント"
+        },
+        {
+          "timetableCode": "21017164",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "中根　大介"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017164.html",
+          "updatedAt": "2026-09-27",
+          "topic": "3大学協働基礎ゼミ’26:リアル・ポケモンGO入門:スマホで探る微生物"
         }
       ]
     },
     {
       "code": "UEC002z",
-      "name": "学域特別講義B(自動車の大変革に必要な技術など)(1単位修得)",
+      "name": "学域特別講義（旧区分・1単位）",
       "credits": 1,
       "field": "UEC",
       "standardSemester": null,
@@ -58266,26 +58312,28 @@
         "special"
       ],
       "note": "開講年度によりテーマ・担当・時限・単位数の扱いが異なる。",
-      "offerings": [
-        {
-          "timetableCode": "",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [
-            {
-              "day": "金",
-              "period": 5
-            }
-          ],
-          "instructors": [],
-          "syllabusUrl": "",
-          "updatedAt": "2026-09-07"
-        }
-      ]
+      "legacy": true
     },
     {
       "code": "UEC003z",
-      "name": "学域特別講義A(AI時代の著作権ビジネスなど)(2単位修得)",
+      "name": "学域特別講義（旧区分・2単位）",
+      "credits": 2,
+      "field": "UEC",
+      "standardSemester": null,
+      "standardYear": null,
+      "termType": "前学期",
+      "eveningAllowed": false,
+      "forInternational": false,
+      "graduateLinked": false,
+      "groups": [
+        "special"
+      ],
+      "note": "開講年度によりテーマ・担当・時限・単位数の扱いが異なる。",
+      "legacy": true
+    },
+    {
+      "code": "UEC004z",
+      "name": "学域特別講義B",
       "credits": 2,
       "field": "UEC",
       "standardSemester": null,
@@ -58300,50 +58348,64 @@
       "note": "開講年度によりテーマ・担当・時限・単位数の扱いが異なる。",
       "offerings": [
         {
-          "timetableCode": "",
+          "timetableCode": "21017255",
           "faculty": "31",
           "term": "前学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "金子修",
+            "澤田賢治"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017255.html",
+          "updatedAt": "2026-09-27",
+          "topic": "「自動車の大変革(CASE)に必要な技術」"
+        },
+        {
+          "timetableCode": "21017158",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "横川　慎二"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017158.html",
+          "updatedAt": "2026-09-27",
+          "topic": "インフォパワードエネルギー概論"
+        },
+        {
+          "timetableCode": "21017258",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "南地　秀哉"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017258.html",
+          "updatedAt": "2026-09-27",
+          "topic": "デザイン思考実践 (集中)"
+        },
+        {
+          "timetableCode": "21017259",
+          "faculty": "31",
+          "term": "後学期",
           "slots": [
             {
               "day": "木",
               "period": 5
             }
           ],
-          "instructors": [],
-          "syllabusUrl": "",
-          "updatedAt": "2026-09-07"
-        }
-      ]
-    },
-    {
-      "code": "UEC004z",
-      "name": "学域特別講義B(自動車の大変革に必要な技術など)(2単位修得)",
-      "credits": 2,
-      "field": "UEC",
-      "standardSemester": null,
-      "standardYear": null,
-      "termType": "前学期",
-      "eveningAllowed": false,
-      "forInternational": false,
-      "graduateLinked": false,
-      "groups": [
-        "special"
-      ],
-      "note": "開講年度によりテーマ・担当・時限・単位数の扱いが異なる。",
-      "offerings": [
-        {
-          "timetableCode": "",
-          "faculty": "31",
-          "term": "前学期",
-          "slots": [
-            {
-              "day": "金",
-              "period": 5
-            }
+          "instructors": [
+            "渡邉　恵理子",
+            "柳井 啓司"
           ],
-          "instructors": [],
-          "syllabusUrl": "",
-          "updatedAt": "2026-09-07"
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017259.html",
+          "updatedAt": "2026-09-27",
+          "topic": "「AI 時代の著作権ビジネス」"
         }
       ]
     },
