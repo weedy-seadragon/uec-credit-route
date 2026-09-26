@@ -197,7 +197,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
             </div>
           )}
           {termCourses.length > 0 && (
-            <details className="timetable-visibility">
+            <details className="nested-subject-group timetable-visibility">
               <summary>時間割に表示する科目を選ぶ（{termCourses.length}科目）</summary>
               <ul>
                 {/* 非表示にした科目もここには残し、いつでも表示へ戻せるようにする。 */}

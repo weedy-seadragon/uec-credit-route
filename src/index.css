@@ -955,14 +955,9 @@ select {
   margin: 0 0 0.3rem;
 }
 
-/* 表示切り替えは表外の折りたたみにまとめ、科目ごとのラジオボタンを読みやすく並べる。 */
+/* 表示切り替えの折りたたみを時間割一覧から離し、ラジオボタンを並べる。 */
 .timetable-visibility {
   margin-top: 1rem;
-}
-
-.timetable-visibility summary {
-  cursor: pointer;
-  font-weight: 700;
 }
 
 .timetable-visibility ul {
@@ -971,12 +966,6 @@ select {
 
 .timetable-visibility li {
   margin: 0.45rem 0;
-}
-
-.timetable-visibility fieldset {
-  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
-  border-radius: 0.35rem;
-  min-width: 0;
 }
 
 .timetable-visibility label {
