@@ -243,6 +243,20 @@ describe('時間割カードの科目区分', () => {
     expect(timetableCategoryForCourse('ADV', new Set(), groups).orderIndex).toBe(1)
   })
 
+  // 要件グループに属さず常時共通単位となる科目だけは、共通単位色へまとめる。
+  it('選択区分のない共通単位科目には共通単位の区分を割り当てる', () => {
+    const groups = [
+      { id: 'humanities', name: '人文・社会', kind: 'elective', subjects: ['HUM'] },
+      { id: 'advanced', name: '上級科目', kind: 'elective', subjects: ['ADV'] },
+    ]
+    expect(timetableCategoryForCourse('COMMON', new Set(), groups, new Set(['COMMON']))).toEqual({
+      key: 'common', label: '共通単位', isRequired: false, orderIndex: 2,
+    })
+    expect(timetableCategoryForCourse('OTHER', new Set(), groups)).toEqual({
+      key: 'other', label: 'その他', isRequired: false, orderIndex: 3,
+    })
+  })
+
   it('凡例には指定した学期のコマに現れる区分だけを一度ずつ並べる', () => {
     const courses = [
       { code: 'REQ', name: '必修科目', category: { key: 'required', label: '必修', isRequired: true, orderIndex: -1 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '月', period: 1 }] }] },
@@ -257,8 +271,8 @@ describe('時間割カードの科目区分', () => {
     ])
   })
 
-  // 履修予定に出る区分だけを集めるため、要件上の順位が離れていても連続した色を割り当てる。
-  it('要件データ上で8区分離れた科目にも履修予定内で別色を割り当てる', () => {
+  // 履修予定に出る区分の有無にかかわらず、要件データ上の順位をそのまま色番号に使う。
+  it('修得見込から外れた区分があっても後続区分の色番号を変えない', () => {
     const groups = Array.from({ length: 9 }, (_, index) => ({
       id: `group-${index}`, name: `区分${index}`, kind: 'elective', subjects: [`COURSE-${index}`],
     }))
@@ -274,8 +288,25 @@ describe('時間割カードの科目区分', () => {
     const slots = buildTimetablePreview(courses, '前学期').slots
     expect(timetableLegendForSlots(slots, allCategoryColors).map(({ key, colorIndex }) => [key, colorIndex])).toEqual([
       ['group-0', 0],
-      ['group-8', 1],
+      ['group-8', 8],
     ])
+  })
+
+  // 10色までは別々に使い、要件カテゴリが11個以上ある場合だけ色を循環する。
+  it('10区分までは別色にし、11番目の区分だけ先頭色へ循環する', () => {
+    const groups = Array.from({ length: 12 }, (_, index) => ({
+      id: `group-${index}`, name: `区分${index}`, kind: 'elective', subjects: [`COURSE-${index}`],
+    }))
+    const courseFor = (index: number) => ({
+      code: `COURSE-${index}`, name: `科目${index}`,
+      category: timetableCategoryForCourse(`COURSE-${index}`, new Set(), groups),
+      termType: '前学期', offeredTerms: ['前学期'], options: [],
+    })
+    const colorsFor = (indices: number[]) => timetableCategoryColorsForCourses(indices.map(courseFor))
+    const firstTen = colorsFor(Array.from({ length: 10 }, (_, index) => index))
+    expect(firstTen.map(({ colorIndex }) => colorIndex)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    expect(colorsFor([0, 10]).map(({ colorIndex }) => colorIndex)).toEqual([0, 0])
+    expect(colorsFor([8])[0].colorIndex).toBe(colorsFor([0, 8])[1].colorIndex)
   })
 
   // 前後学期で共通の区分は同じ色を保ち、異なる区分には異なる色を使う。

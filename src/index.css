@@ -5,30 +5,36 @@
   --timetable-required-bg: #ffe0e4;
   --timetable-required-text: #711d28;
   --timetable-required-border: #c6757e;
-  --timetable-category-0-bg: #dceeff;
-  --timetable-category-0-text: #163f60;
-  --timetable-category-0-border: #6897b8;
-  --timetable-category-1-bg: #d9efe7;
-  --timetable-category-1-text: #1c4b3c;
-  --timetable-category-1-border: #659986;
-  --timetable-category-2-bg: #ece3fb;
-  --timetable-category-2-text: #48366e;
-  --timetable-category-2-border: #8e79b8;
-  --timetable-category-3-bg: #f7eccb;
-  --timetable-category-3-text: #59460c;
-  --timetable-category-3-border: #a8924c;
-  --timetable-category-4-bg: #e3efd6;
-  --timetable-category-4-text: #3b542d;
-  --timetable-category-4-border: #809b67;
-  --timetable-category-5-bg: #e8e8ed;
-  --timetable-category-5-text: #40424d;
-  --timetable-category-5-border: #90929e;
-  --timetable-category-6-bg: #d9eef2;
-  --timetable-category-6-text: #1b4a53;
-  --timetable-category-6-border: #6999a2;
-  --timetable-category-7-bg: #e3e8f1;
-  --timetable-category-7-text: #3c4a60;
-  --timetable-category-7-border: #8391a7;
+  --timetable-category-0-bg: #c9e2ff;
+  --timetable-category-0-text: #12335c;
+  --timetable-category-0-border: #5784c2;
+  --timetable-category-1-bg: #c9f0d2;
+  --timetable-category-1-text: #16452a;
+  --timetable-category-1-border: #4f9a67;
+  --timetable-category-2-bg: #dfcaff;
+  --timetable-category-2-text: #452366;
+  --timetable-category-2-border: #895bbd;
+  --timetable-category-3-bg: #ffe88f;
+  --timetable-category-3-text: #4d3a00;
+  --timetable-category-3-border: #b48b00;
+  --timetable-category-4-bg: #aeeef7;
+  --timetable-category-4-text: #12434a;
+  --timetable-category-4-border: #438f98;
+  --timetable-category-5-bg: #f5c6e5;
+  --timetable-category-5-text: #63203b;
+  --timetable-category-5-border: #b44e83;
+  --timetable-category-6-bg: #d6ed92;
+  --timetable-category-6-text: #354900;
+  --timetable-category-6-border: #829e2d;
+  --timetable-category-7-bg: #d5dce3;
+  --timetable-category-7-text: #303840;
+  --timetable-category-7-border: #78838e;
+  --timetable-category-8-bg: #f0d0b5;
+  --timetable-category-8-text: #542d12;
+  --timetable-category-8-border: #a4653a;
+  --timetable-category-9-bg: #c8cfff;
+  --timetable-category-9-text: #24356d;
+  --timetable-category-9-border: #6877c5;
 }
 
 body {
@@ -920,6 +926,8 @@ select {
 [data-category-color="5"] { --timetable-card-bg: var(--timetable-category-5-bg); --timetable-card-text: var(--timetable-category-5-text); --timetable-card-border: var(--timetable-category-5-border); }
 [data-category-color="6"] { --timetable-card-bg: var(--timetable-category-6-bg); --timetable-card-text: var(--timetable-category-6-text); --timetable-card-border: var(--timetable-category-6-border); }
 [data-category-color="7"] { --timetable-card-bg: var(--timetable-category-7-bg); --timetable-card-text: var(--timetable-category-7-text); --timetable-card-border: var(--timetable-category-7-border); }
+[data-category-color="8"] { --timetable-card-bg: var(--timetable-category-8-bg); --timetable-card-text: var(--timetable-category-8-text); --timetable-card-border: var(--timetable-category-8-border); }
+[data-category-color="9"] { --timetable-card-bg: var(--timetable-category-9-bg); --timetable-card-text: var(--timetable-category-9-text); --timetable-card-border: var(--timetable-category-9-border); }
 
 /* 色だけで必修と分かれるよう、カード内にも短いラベルを添える。 */
 .timetable-course--required {
@@ -995,30 +1003,36 @@ select {
     --timetable-required-bg: #622832;
     --timetable-required-text: #fff0f2;
     --timetable-required-border: #d2838d;
-    --timetable-category-0-bg: #18364c;
-    --timetable-category-0-text: #e0f0ff;
-    --timetable-category-0-border: #6d9abc;
-    --timetable-category-1-bg: #193b32;
-    --timetable-category-1-text: #e0f6ed;
-    --timetable-category-1-border: #72aa96;
-    --timetable-category-2-bg: #33284f;
-    --timetable-category-2-text: #f0e9ff;
-    --timetable-category-2-border: #a38acb;
-    --timetable-category-3-bg: #493a18;
-    --timetable-category-3-text: #fff4d4;
-    --timetable-category-3-border: #c1a65b;
-    --timetable-category-4-bg: #2d3d24;
-    --timetable-category-4-text: #eff9e5;
-    --timetable-category-4-border: #91ad74;
-    --timetable-category-5-bg: #363943;
-    --timetable-category-5-text: #f0f0f5;
-    --timetable-category-5-border: #a6a8b5;
-    --timetable-category-6-bg: #1e3c43;
-    --timetable-category-6-text: #e2f8fb;
-    --timetable-category-6-border: #77aeb7;
-    --timetable-category-7-bg: #303a4b;
-    --timetable-category-7-text: #eef2fa;
-    --timetable-category-7-border: #94a2ba;
+    --timetable-category-0-bg: #135d9f;
+    --timetable-category-0-text: #f1f7ff;
+    --timetable-category-0-border: #79b4f3;
+    --timetable-category-1-bg: #1d623b;
+    --timetable-category-1-text: #f0fff3;
+    --timetable-category-1-border: #78d296;
+    --timetable-category-2-bg: #56328a;
+    --timetable-category-2-text: #f8f1ff;
+    --timetable-category-2-border: #ba94f5;
+    --timetable-category-3-bg: #725900;
+    --timetable-category-3-text: #fff9d8;
+    --timetable-category-3-border: #f2d35c;
+    --timetable-category-4-bg: #0d626c;
+    --timetable-category-4-text: #e9fdff;
+    --timetable-category-4-border: #66d5df;
+    --timetable-category-5-bg: #7a315d;
+    --timetable-category-5-text: #fff1f8;
+    --timetable-category-5-border: #f39bc8;
+    --timetable-category-6-bg: #526b18;
+    --timetable-category-6-text: #f7ffdf;
+    --timetable-category-6-border: #c3e66c;
+    --timetable-category-7-bg: #4a5058;
+    --timetable-category-7-text: #f4f5f7;
+    --timetable-category-7-border: #b9c0c9;
+    --timetable-category-8-bg: #75401d;
+    --timetable-category-8-text: #fff3e8;
+    --timetable-category-8-border: #e3a16e;
+    --timetable-category-9-bg: #373d9c;
+    --timetable-category-9-text: #f2f2ff;
+    --timetable-category-9-border: #9da6ff;
   }
 
   .timetable-conflict-label {

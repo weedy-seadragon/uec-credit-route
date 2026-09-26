@@ -625,6 +625,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const reviews = requirementSet.reviews
   const reviewStatuses = reviews ? evaluateReviews(reviews, evaluation, committed, subjectCredits) : []
   const requiredCodes = new Set(boundaryGroups.filter((g) => g.kind === 'required').flatMap((g) => g.subjects))
+  // 要件グループに属さず、常に共通単位へ算入する科目を時間割でも同じ区分にする。
+  const timetableCommonCodes = new Set(requirementSet.alwaysCommonSubjects ?? [])
   // 「取得単位」「残りの必修」を区分ごとに見出しを分けて表示するための対応表
   const categoryLookup = buildCategoryLookup(boundaryGroups)
 
@@ -1514,7 +1516,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       code,
       name: nameOf(code),
       yearTermLabel: yearTermOf(code),
-      category: timetableCategoryForCourse(code, requiredCodes, boundaryGroups),
+      category: timetableCategoryForCourse(code, requiredCodes, boundaryGroups, timetableCommonCodes),
       termType: subject?.termType ?? null,
       offeredTerms: [...new Set(offerings.map((offering) => offering.term))],
       options: previewOfferings.map((offering) => ({
