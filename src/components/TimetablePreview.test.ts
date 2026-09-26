@@ -170,14 +170,18 @@ describe('TimetablePreview の表と表外一覧', () => {
   // 凡例は選択中の学期に表で表示される区分だけを示し、必修は文字でも区別する。
   it('現在の学期の凡例と必修ラベルを表示する', () => {
     const html = renderPreview([
-      { code: 'REQ', name: '必修科目', category: { key: 'required', label: '必修', isRequired: true, colorIndex: 0 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '月', period: 1 }] }] },
-      { code: 'HUM', name: '人文科目', category: { key: 'humanities', label: '人文・社会', isRequired: false, colorIndex: 0 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '火', period: 2 }] }] },
-      { code: 'ADV', name: '後期科目', category: { key: 'advanced', label: '上級科目', isRequired: false, colorIndex: 1 }, termType: '後学期', offeredTerms: ['後学期'], options: [{ term: '後学期', slots: [{ day: '水', period: 3 }] }] },
+      { code: 'REQ', name: '必修科目', category: { key: 'required', label: '必修', isRequired: true, orderIndex: -1 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '月', period: 1 }] }] },
+      { code: 'HUM', name: '人文科目', category: { key: 'humanities', label: '人文・社会', isRequired: false, orderIndex: 0 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '火', period: 2 }] }] },
+      { code: 'LATE', name: '後順位区分の科目', category: { key: 'later', label: '後順位区分', isRequired: false, orderIndex: 8 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '木', period: 2 }] }] },
+      { code: 'ADV', name: '後期科目', category: { key: 'advanced', label: '上級科目', isRequired: false, orderIndex: 1 }, termType: '後学期', offeredTerms: ['後学期'], options: [{ term: '後学期', slots: [{ day: '水', period: 3 }] }] },
     ])
     expect(html).toContain('aria-label="時間割カードの色分け"')
     expect(html).toContain('必修</li>')
     expect(html).toContain('人文・社会</li>')
+    expect(html).toContain('後順位区分</li>')
     expect(html).not.toContain('上級科目')
+    expect(html).toContain('class="timetable-course" data-category-color="0"')
+    expect(html).toContain('class="timetable-course" data-category-color="1"')
     expect(html).toContain('class="timetable-required-badge" aria-hidden="true">必修</span>')
   })
 

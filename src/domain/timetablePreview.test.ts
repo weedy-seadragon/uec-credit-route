@@ -228,31 +228,50 @@ describe('splitUnplacedTimetableCourses（欄外科目の分類）', () => {
 
 // メイン画面から渡された要件区分をカードの色と凡例に使うことを確かめる。
 describe('時間割カードの科目区分', () => {
-  it('必修は必修表示を優先し、選択科目は所属区分と要件データ順の色番号を使う', () => {
+  it('必修は必修表示を優先し、選択科目は所属区分と要件データ順を持つ', () => {
     const groups = [
       { id: 'required-group', name: '必修区分', kind: 'required', subjects: ['REQ'] },
       { id: 'humanities', name: '人文・社会', label: '人文・社会', kind: 'elective', subjects: ['REQ', 'HUM'] },
       { id: 'advanced', name: '上級科目', kind: 'elective', subjects: ['ADV'] },
     ]
     expect(timetableCategoryForCourse('REQ', new Set(['REQ']), groups)).toEqual({
-      key: 'required', label: '必修', isRequired: true, colorIndex: 0,
+      key: 'required', label: '必修', isRequired: true, orderIndex: -1,
     })
     expect(timetableCategoryForCourse('HUM', new Set(), groups)).toEqual({
-      key: 'humanities', label: '人文・社会', isRequired: false, colorIndex: 0,
+      key: 'humanities', label: '人文・社会', isRequired: false, orderIndex: 0,
     })
-    expect(timetableCategoryForCourse('ADV', new Set(), groups).colorIndex).toBe(1)
+    expect(timetableCategoryForCourse('ADV', new Set(), groups).orderIndex).toBe(1)
   })
 
   it('凡例には指定した学期のコマに現れる区分だけを一度ずつ並べる', () => {
     const courses = [
-      { code: 'REQ', name: '必修科目', category: { key: 'required', label: '必修', isRequired: true, colorIndex: 0 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '月', period: 1 }] }] },
-      { code: 'HUM', name: '人文科目', category: { key: 'humanities', label: '人文・社会', isRequired: false, colorIndex: 0 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '火', period: 2 }] }] },
-      { code: 'ADV', name: '後期科目', category: { key: 'advanced', label: '上級科目', isRequired: false, colorIndex: 1 }, termType: '後学期', offeredTerms: ['後学期'], options: [{ term: '後学期', slots: [{ day: '水', period: 3 }] }] },
+      { code: 'REQ', name: '必修科目', category: { key: 'required', label: '必修', isRequired: true, orderIndex: -1 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '月', period: 1 }] }] },
+      { code: 'HUM', name: '人文科目', category: { key: 'humanities', label: '人文・社会', isRequired: false, orderIndex: 0 }, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '火', period: 2 }] }] },
+      { code: 'ADV', name: '後期科目', category: { key: 'advanced', label: '上級科目', isRequired: false, orderIndex: 1 }, termType: '後学期', offeredTerms: ['後学期'], options: [{ term: '後学期', slots: [{ day: '水', period: 3 }] }] },
     ]
     const frontSlots = buildTimetablePreview(courses, '前学期').slots
     expect(timetableLegendForSlots(frontSlots)).toEqual([
-      { key: 'required', label: '必修', isRequired: true, colorIndex: 0 },
-      { key: 'humanities', label: '人文・社会', isRequired: false, colorIndex: 0 },
+      { key: 'required', label: '必修', isRequired: true, orderIndex: -1 },
+      { key: 'humanities', label: '人文・社会', isRequired: false, orderIndex: 0, colorIndex: 0 },
+    ])
+  })
+
+  // 全体で9番目の区分も、同じ画面に並ぶ最初の区分とは別の色を使う。
+  it('要件データ全体で8番目以降の区分も表示中の区分ごとに色を割り当てる', () => {
+    const groups = Array.from({ length: 9 }, (_, index) => ({
+      id: `group-${index}`, name: `区分${index}`, kind: 'elective', subjects: [`COURSE-${index}`],
+    }))
+    const slots = [0, 8].map((index) => ({
+      code: `COURSE-${index}`,
+      name: `科目${index}`,
+      day: '月',
+      period: index + 1,
+      offeringTerm: '前学期',
+      category: timetableCategoryForCourse(`COURSE-${index}`, new Set(), groups),
+    }))
+    expect(timetableLegendForSlots(slots).map(({ key, colorIndex }) => [key, colorIndex])).toEqual([
+      ['group-0', 0],
+      ['group-8', 1],
     ])
   })
 })

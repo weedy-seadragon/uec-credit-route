@@ -30,8 +30,13 @@ export interface TimetablePreviewCategory {
   key: string
   label: string
   isRequired: boolean
-  /** 要件データでの登場順。色数を超えた分は表示側で循環させる。 */
-  colorIndex: number
+  /** 要件データでの登場順。表示中の区分だけを色分けするときに使う。 */
+  orderIndex: number
+}
+
+/** 表に出ている科目区分と、その画面内で割り当てた色番号。 */
+export interface TimetableLegendCategory extends TimetablePreviewCategory {
+  colorIndex?: number
 }
 
 /** MainPageが持つ境界グループから、時間割用の色区分を作るための最小構造。 */
@@ -50,21 +55,21 @@ export function timetableCategoryForCourse(
   groups: readonly TimetableRequirementGroup[],
 ): TimetablePreviewCategory {
   // 必修判定はMainPageから渡されたrequiredCodesを唯一の基準にする。
-  if (requiredCodes.has(code)) return { key: 'required', label: '必修', isRequired: true, colorIndex: 0 }
+  if (requiredCodes.has(code)) return { key: 'required', label: '必修', isRequired: true, orderIndex: -1 }
   const colorGroups = groups.filter((group) => group.kind !== 'required')
-  const colorIndexById = new Map<string, number>()
-  // 区分の色順は、要件データで最初に登場した区分の順に割り当てる。
+  const orderIndexById = new Map<string, number>()
+  // 区分の順番は要件データで最初に登場した位置から決める。
   for (const group of colorGroups) {
-    if (!colorIndexById.has(group.id)) colorIndexById.set(group.id, colorIndexById.size)
+    if (!orderIndexById.has(group.id)) orderIndexById.set(group.id, orderIndexById.size)
   }
   const group = colorGroups.find((candidate) => candidate.subjects.includes(code))
   // 所属区分が見つからない科目は、全区分の後ろに「その他」として置く。
-  if (!group) return { key: 'other', label: 'その他', isRequired: false, colorIndex: colorIndexById.size }
+  if (!group) return { key: 'other', label: 'その他', isRequired: false, orderIndex: orderIndexById.size }
   return {
     key: group.id,
     label: group.label ?? group.name,
     isRequired: false,
-    colorIndex: colorIndexById.get(group.id) ?? colorIndexById.size,
+    orderIndex: orderIndexById.get(group.id) ?? orderIndexById.size,
   }
 }
 
@@ -81,6 +86,8 @@ export interface TimetablePreviewSlot extends ScheduleSlot {
   code: string
   name: string
   category?: TimetablePreviewCategory
+  /** 表示中の学期の区分から割り当てる色番号。 */
+  categoryColorIndex?: number
   /** 前学期・後学期以外の開講期なら、科目名に添えて表示する。 */
   offeringTerm: string
 }
@@ -116,17 +123,22 @@ export interface TimetablePreviewResult {
 }
 
 /** 表示中のコマだけから、必修と科目区分の凡例を要件データ順に作る。 */
-export function timetableLegendForSlots(slots: readonly TimetablePreviewSlot[]): TimetablePreviewCategory[] {
+export function timetableLegendForSlots(slots: readonly TimetablePreviewSlot[]): TimetableLegendCategory[] {
   const categories = new Map<string, TimetablePreviewCategory>()
   // 同じ区分のカードが複数あっても、凡例には一度だけ追加する。
   for (const slot of slots) {
     if (slot.category && !categories.has(slot.category.key)) categories.set(slot.category.key, slot.category)
   }
-  // 必修を先頭に置き、残りはMainPageから受け取った要件データ順に並べる。
-  return [...categories.values()].sort((first, second) => {
+  // 必修を先頭に置き、残りは要件データの登場順に並べる。
+  const ordered = [...categories.values()].sort((first, second) => {
     if (first.isRequired !== second.isRequired) return first.isRequired ? -1 : 1
-    return first.colorIndex - second.colorIndex
+    return first.orderIndex - second.orderIndex
   })
+  let colorIndex = 0
+  // 色番号は今の表にある区分だけで振るため、最初の8区分は必ず違う色になる。
+  return ordered.map((category) => category.isRequired
+    ? category
+    : { ...category, colorIndex: colorIndex++ % 8 })
 }
 
 /** 春・夏タームは前学期、秋・冬タームは後学期として扱う。 */

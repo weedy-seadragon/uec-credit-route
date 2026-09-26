@@ -67,11 +67,10 @@ function CourseInSlot({ slot, entryYear }: { slot: TimetablePreviewSlot; entryYe
   // 英語名だけに言語属性と改行候補を付け、日本語名には手を加えない。
   const englishName = isEnglishCourseName(slot.name)
   const category = slot.category
-  const colorIndex = category ? ((category.colorIndex % 8) + 8) % 8 : 0
   return (
     <Link
       className={`timetable-course${category?.isRequired ? ' timetable-course--required' : ''}`}
-      data-category-color={category && !category.isRequired ? colorIndex : undefined}
+      data-category-color={slot.categoryColorIndex}
       aria-label={slot.name}
       to={`/courses/${encodeURIComponent(slot.code)}?year=${entryYear}`}
     >
@@ -94,6 +93,11 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
   const result = buildVisibleTimetablePreview(courses, term, hiddenCodes, selectedTimetableCodes)
   const { selectable: selectableCourses, timeless: timelessCourses } = splitUnplacedTimetableCourses(result.unplaced)
   const categoryLegend = timetableLegendForSlots(result.slots.filter((slot) => DAYS.includes(slot.day)))
+  const colorIndexByCategory = new Map<string, number>()
+  // 必修以外は、現在の表に表示されるカテゴリ色をカードへ引き継ぐ。
+  for (const category of categoryLegend) {
+    if (category.colorIndex !== undefined) colorIndexByCategory.set(category.key, category.colorIndex)
+  }
   const terms = availableTerms(courses)
   // 選択した開講期の科目を、非表示中のものも含めて設定欄へ残す。
   const termCourseCodes = new Set([
@@ -131,7 +135,9 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
     if (DAYS.includes(slot.day)) {
       lastPeriod = Math.max(lastPeriod, slot.period)
       const key = `${slot.day}:${slot.period}`
-      slotsByCell.set(key, [...(slotsByCell.get(key) ?? []), slot])
+      const colorIndex = slot.category ? colorIndexByCategory.get(slot.category.key) : undefined
+      const displaySlot = colorIndex === undefined ? slot : { ...slot, categoryColorIndex: colorIndex }
+      slotsByCell.set(key, [...(slotsByCell.get(key) ?? []), displaySlot])
     } else {
       // 表にない曜日のコマも科目単位で保持し、画面から消さない。
       otherDaySlotsByCourse.set(slot.code, [...(otherDaySlotsByCourse.get(slot.code) ?? []), slot])
@@ -159,12 +165,11 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
           <ul>
             {categoryLegend.map((category) => {
               // 表示色は科目カードと同じCSS変数・色番号を使う。
-              const colorIndex = ((category.colorIndex % 8) + 8) % 8
               return (
                 <li key={category.key}>
                   <span
                     className={`timetable-legend-swatch${category.isRequired ? ' timetable-course--required' : ''}`}
-                    data-category-color={category.isRequired ? undefined : colorIndex}
+                    data-category-color={category.colorIndex}
                     aria-hidden="true"
                   />
                   {category.label}
