@@ -72,6 +72,27 @@ function teacherOverlaps(a: Set<string>, b: Set<string>): boolean {
   return false
 }
 
+/** 時間割の1セクションが再履修専用か、開講情報とクラス割当から判定する。 */
+export function isDedicatedRetakeOffering<O extends OfferingLike>(
+  code: string,
+  offering: O,
+  assignments: readonly ClassAssignmentEntry[],
+): boolean {
+  const offeringTeachers = teacherTokens(offering.instructors)
+  // offeringの各コマに一致するクラス割当だけを見て、再履修専用IDがあるか確認する。
+  return offering.slots.some((slot) => {
+    const entries = assignments.filter((entry) =>
+      entry.code === code && entry.term === offering.term && entry.day === slot.day && entry.period === String(slot.period),
+    )
+    // 並行クラスで教員が分かる場合は、該当教員の割当を優先して誤判定を防ぐ。
+    const matchedEntries = entries.length > 1 && offeringTeachers.size > 0
+      ? entries.filter((entry) => teacherOverlaps(offeringTeachers, teacherTokens(entry.instructors)))
+      : entries
+    // 一致した割当のclass_idに再履修専用区分が含まれていれば、このセクションを優先表示する。
+    return matchedEntries.some((entry) => entry.classIds.some((id) => id === '再履全員' || id === '再履生'))
+  })
+}
+
 /**
  * class_assignment.json の class_id 表記（例:「クラス3」「Aクラス」「I5クラス」「Mエリア」
  * 「Mエリア(2クラス)」「メディア情報学プログラム」）が、このプロフィールに当てはまるかどうかを判定する。

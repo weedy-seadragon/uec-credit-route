@@ -225,6 +225,18 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
     expect(result.unplaced).toEqual([])
   })
 
+  // 再履修専用の時限を解決できなくても、全セクションから選べる状態にする。
+  it('再履修で専用枠が無い科目も全セクションから選べる', () => {
+    const result = buildTimetablePreview([{
+      code: 'A', name: '再履修科目', termType: '前学期', offeredTerms: ['前学期'], options: [], sections: [
+        { term: '前学期', timetableCode: 'A-regular-1', teacher: '教員甲', slots: [{ day: '水', period: 2 }] },
+        { term: '前学期', timetableCode: 'A-regular-2', teacher: '教員乙', slots: [{ day: '木', period: 2 }] },
+      ],
+    }], '前学期', { A: 'A-regular-2' })
+    expect(result.slots.map((slot) => [slot.day, slot.period])).toEqual([['木', 2]])
+    expect(result.unplaced).toEqual([])
+  })
+
   // 別枠の集中講義も表示切替の対象となり、非表示時は結果一覧から外れる。
   it('集中講義を非表示にすると集中講義一覧から外す', () => {
     const courses = [{

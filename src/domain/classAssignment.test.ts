@@ -1,7 +1,7 @@
 // classAssignment.ts の単体テスト。class_assignment.json の表記パターンごとに、
 // プロフィールとの一致判定・セクション解決が正しく動くことを確認する。
 import { describe, expect, it } from 'vitest'
-import { classIdMatchesProfile, hasDedicatedRetakeClass, resolveOfferingsForProfile, resolveSlotsForProfile, sectionLabelMatchesProfile } from './classAssignment'
+import { classIdMatchesProfile, hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, sectionLabelMatchesProfile } from './classAssignment'
 import type { ClassAssignmentEntry, ClassProfile } from './classAssignment'
 
 describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () => {
@@ -157,6 +157,22 @@ describe('hasDedicatedRetakeClass（再履修専用セクションの有無）',
       { code: 'MTH101z', term: '前学期', day: '火', period: '3', classIds: ['クラス1', 'クラス2'] },
     ]
     expect(hasDedicatedRetakeClass('MTH101z', assignments)).toBe(false)
+  })
+})
+
+// プレビューで再履修専用の候補だけに目印を付けるため、offering単位の対応を検証する。
+describe('isDedicatedRetakeOffering（offeringの再履修専用判定）', () => {
+  it('曜日時限と担当教員が一致する再履修専用枠だけを判定する', () => {
+    const assignments: ClassAssignmentEntry[] = [
+      { code: 'MTH101z', term: '前学期', day: '月', period: '1', classIds: ['再履生'], instructors: ['教員甲'] },
+      { code: 'MTH101z', term: '前学期', day: '月', period: '1', classIds: ['クラス1'], instructors: ['教員乙'] },
+    ]
+    expect(isDedicatedRetakeOffering('MTH101z', {
+      term: '前学期', slots: [{ day: '月', period: 1 }], instructors: ['教員甲'],
+    }, assignments)).toBe(true)
+    expect(isDedicatedRetakeOffering('MTH101z', {
+      term: '前学期', slots: [{ day: '月', period: 1 }], instructors: ['教員乙'],
+    }, assignments)).toBe(false)
   })
 })
 

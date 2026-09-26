@@ -101,6 +101,18 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(html).not.toContain('（UNP101）')
   })
 
+  // 再履修向けセクションは選択肢の表示に注記を添える。
+  it('候補一覧で再履修向けセクションを示す', () => {
+    const html = renderPreview([{
+      code: 'A', name: '候補科目', termType: '前学期', offeredTerms: ['前学期'], options: [
+        { term: '前学期', timetableCode: 'A-retake', retake: true, teacher: '教員甲', slots: [{ day: '月', period: 1 }] },
+        { term: '前学期', timetableCode: 'A-regular', teacher: '教員乙', slots: [{ day: '火', period: 1 }] },
+      ],
+    }])
+    expect(html.indexOf('A-retake')).toBeLessThan(html.indexOf('A-regular'))
+    expect(html).toContain('（再履修向け）')
+  })
+
   // 長い英単語だけに改行用ハイフンを付け、短い英単語と日本語名は変えない。
   it('英語名の長さだけで改行候補を作り、元の科目名は保つ', () => {
     const names = [

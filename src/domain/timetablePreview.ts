@@ -25,6 +25,8 @@ export interface TimetablePreviewCourse {
 export interface TimetablePreviewOption extends ScheduleOption {
   timetableCode?: string
   teacher?: string
+  /** 再履修専用セクションなら、選択肢で優先枠として注記する。 */
+  retake?: boolean
 }
 
 /** グリッド上の1科目1コマ。複数コマの科目はコマごとに別要素を持つ。 */

@@ -238,6 +238,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                             <option key={option.timetableCode ?? `${option.term}:${option.slots.map((slot) => `${slot.day}${slot.period}`).join('-')}`} value={option.timetableCode ?? ''} disabled={!option.timetableCode}>
                               {[...new Set(option.slots.map((slot) => `${slot.day}${slot.period}限`))].join('・') || '曜日時限の記載なし'}
                               {option.term !== '前学期' && option.term !== '後学期' && `（${option.term}）`}
+                              {option.retake && '（再履修向け）'}
                               {' / '}{option.teacher || '担当教員記載なし'}
                             </option>
                           ))}

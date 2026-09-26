@@ -23,7 +23,7 @@ import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
 import { entryYearLabel, getClassAssignments, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { SubjectOffering, TransferBucketItem } from '../data/requirementSets'
-import { hasDedicatedRetakeClass, resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
+import { hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile } from '../domain/classAssignment'
 import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
 import type { PlannedCourseSchedule } from '../domain/scheduleConflicts'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
@@ -1489,23 +1489,38 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     const subject = subjectsByCode.get(code)
     const offerings = subject?.offerings ?? []
     const candidates = resolvePlannedOfferings(code, retakingPlanCodes)
+    const isRetaking = retakingPlanCodes.has(code)
+    const retakeOfferings = isRetaking
+      ? offerings.filter((offering) => isDedicatedRetakeOffering(code, offering, classAssignments))
+      : []
+    // 再履修向けセクションを候補の先頭に置き、残りの全セクションもプレビューで選べるようにする。
+    const previewOfferings = isRetaking && retakeOfferings.length > 0
+      ? [...retakeOfferings, ...offerings.filter((offering) => !retakeOfferings.includes(offering))]
+      : isRetaking
+        ? []
+        : candidates
+    const previewSections = retakeOfferings.length > 0
+      ? [...retakeOfferings, ...offerings.filter((offering) => !retakeOfferings.includes(offering))]
+      : offerings
     timetablePreviewCourses.push({
       code,
       name: nameOf(code),
       yearTermLabel: yearTermOf(code),
       termType: subject?.termType ?? null,
       offeredTerms: [...new Set(offerings.map((offering) => offering.term))],
-      options: candidates.map((offering) => ({
+      options: previewOfferings.map((offering) => ({
         term: offering.term,
         slots: offering.slots,
         timetableCode: offering.timetableCode,
         teacher: offering.instructors.join('、'),
+        retake: retakeOfferings.includes(offering),
       })),
-      sections: offerings.map((offering) => ({
+      sections: previewSections.map((offering) => ({
         term: offering.term,
         slots: offering.slots,
         timetableCode: offering.timetableCode,
         teacher: offering.instructors.join('、'),
+        retake: retakeOfferings.includes(offering),
       })),
       note: subject?.note,
       offerings,
