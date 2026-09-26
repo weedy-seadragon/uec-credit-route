@@ -9,6 +9,8 @@ import type { OfferingWithSlots } from './onDemand'
 export interface TimetablePreviewCourse {
   code: string
   name: string
+  /** メイン画面と共通の学年・学期表記。表示切替欄だけで使う。 */
+  yearTermLabel?: string
   termType: string | null
   offeredTerms: readonly string[]
   options: readonly ScheduleOption[]

@@ -51,6 +51,16 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect((html.match(/checked=""/g) ?? [])).toHaveLength(4)
   })
 
+  // 表示切替欄ではMainPageから受け取った学年学期表記だけを科目名に添える。
+  it('受講する学年学期を科目名の横に表示する', () => {
+    const html = renderPreview([
+      { code: 'A', name: '年次あり', yearTermLabel: '3年次前学期', termType: '前学期', offeredTerms: ['前学期'], options: [] },
+      { code: 'B', name: '年次なし', yearTermLabel: '', termType: '前学期', offeredTerms: ['前学期'], options: [] },
+    ])
+    expect(html).toContain('年次あり</a><span style="margin-left:0.4em">（3年次前学期）</span></legend>')
+    expect(html).toContain('<a href="/courses/B?year=2025" data-discover="true">年次なし</a></legend>')
+  })
+
   // 時限を持たない通常科目は、未確定一覧ではなく専用のリンク一覧へ出す。
   it('オンデマンド科目を表の下の別枠に表示する', () => {
     const html = renderPreview([{ code: 'OND101', name: 'オンラインの授業', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] }])

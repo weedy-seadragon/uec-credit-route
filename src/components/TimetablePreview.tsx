@@ -225,7 +225,11 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                 {termCourses.map((course) => (
                   <li key={course.code}>
                     <fieldset>
-                      <legend><Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link></legend>
+                      <legend>
+                        <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
+                        {/* 表示用の学年学期はMainPageから受け取り、空文字なら表示しない。 */}
+                        {course.yearTermLabel && <span style={{ marginLeft: '0.4em' }}>（{course.yearTermLabel}）</span>}
+                      </legend>
                       <label>
                         <input type="radio" name={`timetable-visible-${course.code}`} checked={!hiddenCodes.has(course.code)} onChange={() => changeVisibility(course.code, true)} />
                         表示

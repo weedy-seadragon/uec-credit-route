@@ -1497,6 +1497,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     timetablePreviewCourses.push({
       code,
       name: nameOf(code),
+      yearTermLabel: yearTermOf(code),
       termType: subject?.termType ?? null,
       offeredTerms: [...new Set(offerings.map((offering) => offering.term))],
       options: candidates.map((offering) => ({ term: offering.term, slots: offering.slots })),
