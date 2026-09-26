@@ -44,6 +44,7 @@ import { normalizeDuplicateSubjectRecords, preferredSubjectCode, setSubjectStatu
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
 import TimetablePreview from '../components/TimetablePreview'
 import type { TimetablePreviewCourse } from '../domain/timetablePreview'
+import { isOnDemandCourse } from '../domain/onDemand'
 import AgentToolsBridge from '../components/AgentToolsBridge'
 import type { AgentHandlers } from '../components/AgentToolsBridge'
 import { parseAgentStatus, searchSubjects, summarizeRequirementStatus } from '../domain/agentTools'
@@ -1258,13 +1259,17 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     // シラバスから一意の時限を取得できないため、誤ってオンデマンドと表示しない。
     if (subject?.name.startsWith('情報工学工房')) return unavailable('担当教員により開講時限が異なります')
     const note = subject?.note
-    const hasAnySlots = offerings.some((o) => o.slots.length > 0)
-    if (!hasAnySlots) {
+    // 表示と時間割プレビューで、オンデマンドの判定を同じ関数へ委ねる。
+    if (isOnDemandCourse(subject.name, note, offerings)) {
+      return <span style={{ marginLeft: '0.4em' }}>オンデマンド</span>
+    }
+    if (offerings.every((o) => o.slots.length === 0)) {
       if (note?.includes('夏期集中')) return <span style={{ marginLeft: '0.4em' }}>夏期集中</span>
       if (note?.includes('冬期集中')) return <span style={{ marginLeft: '0.4em' }}>冬期集中</span>
       // 夏期・冬期以外の集中講義は、理由つきの注意書きではなく簡潔な開講形態だけを示す。
       if (note?.includes('集中')) return <span style={{ marginLeft: '0.4em' }}>集中講義</span>
-      return <span style={{ marginLeft: '0.4em' }}>オンデマンド</span>
+      // 上の共通判定に当てはまらない、時限なしの科目は断定しない。
+      return unavailable('曜日時限を確認してください')
     }
     // 隔年度開講・開講年度により内容が変わる、といった注記は、実際に何か表示するときは
     // 併記しておく（2026-09-06。学域特別講義A/Bのような「毎年テーマは変わるが曜日時限は
@@ -1494,6 +1499,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       termType: subject?.termType ?? null,
       offeredTerms: [...new Set(offerings.map((offering) => offering.term))],
       options: candidates.map((offering) => ({ term: offering.term, slots: offering.slots })),
+      note: subject?.note,
+      offerings,
     })
   }
 

@@ -2,6 +2,8 @@
 // 複数の開講候補があるときは、すべて同じ曜日時限に決まる場合だけグリッドに置く。
 
 import type { ScheduleOption, ScheduleSlot } from './scheduleConflicts'
+import { isOnDemandCourse } from './onDemand'
+import type { OfferingWithSlots } from './onDemand'
 
 /** プロフィールと再履修状態で開講候補を絞った、プレビュー用の1科目。 */
 export interface TimetablePreviewCourse {
@@ -10,6 +12,8 @@ export interface TimetablePreviewCourse {
   termType: string | null
   offeredTerms: readonly string[]
   options: readonly ScheduleOption[]
+  note?: string
+  offerings?: readonly OfferingWithSlots[]
 }
 
 /** グリッド上の1科目1コマ。複数コマの科目はコマごとに別要素を持つ。 */
@@ -31,6 +35,7 @@ export interface UnplacedTimetableCourse {
 export interface TimetablePreviewResult {
   slots: TimetablePreviewSlot[]
   unplaced: UnplacedTimetableCourse[]
+  onDemand: { code: string; name: string }[]
 }
 
 /** 春・夏タームは前学期、秋・冬タームは後学期として扱う。 */
@@ -90,6 +95,7 @@ export function buildTimetablePreview(
 ): TimetablePreviewResult {
   const slots: TimetablePreviewSlot[] = []
   const unplaced: UnplacedTimetableCourse[] = []
+  const onDemand: { code: string; name: string }[] = []
 
   // 実際のシラバスの開講期を優先し、情報がない科目だけ学修要覧の学期を使う。
   for (const course of courses) {
@@ -99,6 +105,12 @@ export function buildTimetablePreview(
       : course.termType === null || course.termType === term
     // 別の学期だけに開講する科目は、この学期のプレビューから外す。
     if (!belongsToTerm) continue
+
+    // 曜日時限が全セクションで空の通常科目は、専用の一覧に分ける。
+    if (isOnDemandCourse(course.name, course.note, course.offerings)) {
+      onDemand.push({ code: course.code, name: course.name })
+      continue
+    }
 
     const options = course.options.filter((option) => previewSemesterOf(option.term) === term)
     // シラバスの開講情報自体が無い科目は、科目表の学期に基づく欄外表示にする。
@@ -138,5 +150,5 @@ export function buildTimetablePreview(
     }
   }
 
-  return { slots, unplaced }
+  return { slots, unplaced, onDemand }
 }

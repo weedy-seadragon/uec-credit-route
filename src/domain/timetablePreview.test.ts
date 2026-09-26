@@ -22,6 +22,17 @@ describe('開講期間の重複判定', () => {
 
 // 学期の選別、クラス候補の確定、欄外表示の理由をまとめて検証する。
 describe('buildTimetablePreview（修得見込の時間割）', () => {
+  // 全セクションの時限が空の通常科目だけ、未確定の理由から分けて示す。
+  it('オンデマンド科目を専用一覧に分け、集中講義は未確定に残す', () => {
+    const result = buildTimetablePreview([
+      { code: 'A', name: '通常科目', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
+      { code: 'B', name: '集中科目', note: '夏期集中', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
+    ], '前学期')
+    expect(result.onDemand).toEqual([{ code: 'A', name: '通常科目' }])
+    expect(result.unplaced).toEqual([{ code: 'B', name: '集中科目', reason: 'no-slot' }])
+    expect(result.slots).toEqual([])
+  })
+
   // 複数コマの授業は両方のコマへ表示し、別の開講期の授業は混ぜない。
   it('選択した開講期の複数コマだけを配置する', () => {
     const result = buildTimetablePreview([

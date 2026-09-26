@@ -146,7 +146,20 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
               </ul>
             </div>
           )}
-          {result.slots.length === 0 && result.unplaced.length === 0 && (
+          {result.onDemand.length > 0 && (
+            <div className="timetable-on-demand">
+              <h3>オンデマンド（{result.onDemand.length}科目）</h3>
+              <ul>
+                {/* 曜日時限のセルを作らず、科目詳細へのリンクを一覧に残す。 */}
+                {result.onDemand.map((course) => (
+                  <li key={course.code}>
+                    <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {result.slots.length === 0 && result.unplaced.length === 0 && result.onDemand.length === 0 && (
             <p className="section-guidance">この開講期の修得見込科目はありません。</p>
           )}
           {result.unplaced.length > 0 && (

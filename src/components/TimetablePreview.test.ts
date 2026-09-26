@@ -16,6 +16,14 @@ function renderPreview(courses: readonly TimetablePreviewCourse[]): string {
 
 // 平日の行数、表外の科目、英語名の改行候補を検証する。
 describe('TimetablePreview の表と表外一覧', () => {
+  // 時限を持たない通常科目は、未確定一覧ではなく専用のリンク一覧へ出す。
+  it('オンデマンド科目を表の下の別枠に表示する', () => {
+    const html = renderPreview([{ code: 'OND101', name: 'オンラインの授業', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] }])
+    expect(html).toContain('オンデマンド（1科目）')
+    expect(html).toContain('href="/courses/OND101?year=2025"')
+    expect(html).not.toContain('曜日時限を確定できない科目（1科目）')
+  })
+
   // 平日に7限があれば、授業のない6限も含めて連続した行を出す。
   it('平日の7限に合わせて6・7限を表示し、土曜の列を作らない', () => {
     const html = renderPreview([{ code: 'A', name: '夜の授業', termType: '前学期', offeredTerms: ['前学期'], options: [
