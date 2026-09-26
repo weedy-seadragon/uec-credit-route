@@ -100,10 +100,10 @@ export function splitUnplacedTimetableCourses(courses: readonly UnplacedTimetabl
   timeless: UnplacedTimetableCourse[]
 } {
   const selectableReasons = new Set<UnplacedTimetableCourse['reason']>(['no-class', 'lower-year-selection', 'ambiguous-term', 'ambiguous-slot'])
-  // 選択候補の理由を持つ科目だけを候補選択枠へ振り分ける。
-  const selectable = courses.filter((course) => selectableReasons.has(course.reason))
-  // それ以外は候補選択UIを持たない時限未確定枠へ振り分ける。
-  const timeless = courses.filter((course) => !selectableReasons.has(course.reason))
+  // 選択向けの理由があり、実際の候補も1件以上ある科目だけを候補選択枠へ振り分ける。
+  const selectable = courses.filter((course) => selectableReasons.has(course.reason) && (course.options?.length ?? 0) > 0)
+  // 候補が無い科目を含め、それ以外は選択UIのない時限未確定枠へ振り分ける。
+  const timeless = courses.filter((course) => !selectableReasons.has(course.reason) || (course.options?.length ?? 0) === 0)
   return { selectable, timeless }
 }
 

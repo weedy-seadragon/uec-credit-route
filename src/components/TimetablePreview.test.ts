@@ -96,7 +96,9 @@ describe('TimetablePreview の表と表外一覧', () => {
   // 曜日時限を決められない科目も、理由と詳細リンクを保ちつつ番号は表示しない。
   it('未確定の科目を科目名と理由だけで示す', () => {
     const html = renderPreview([{ code: 'UNP101', name: '時限未定の授業', termType: '前学期', offeredTerms: ['前学期'], options: [] }])
-    expect(html).toContain('曜日時限を選んでください（1科目）')
+    expect(html).toContain('曜日時限が決まっていない科目（1科目）')
+    expect(html).not.toContain('曜日時限を選んでください')
+    expect(html).toContain('受講クラスを特定できません')
     expect(html).toContain('href="/courses/UNP101?year=2025"')
     expect(html).not.toContain('（UNP101）')
   })

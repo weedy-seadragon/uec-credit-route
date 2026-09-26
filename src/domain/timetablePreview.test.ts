@@ -214,6 +214,16 @@ describe('splitUnplacedTimetableCourses（欄外科目の分類）', () => {
       ['MISSING', 'no-offering'],
     ])
   })
+
+  // no-classでも候補が0件なら、選べない枠ではなく時限未確定へ移す。
+  it('選択候補が0件のno-class科目を時限未確定へ分ける', () => {
+    const unplaced = buildTimetablePreview([{
+      code: 'NO-OPTIONS', name: '候補なし', termType: '前学期', offeredTerms: ['前学期'], options: [],
+    }], '前学期').unplaced
+    const groups = splitUnplacedTimetableCourses(unplaced)
+    expect(groups.selectable).toEqual([])
+    expect(groups.timeless).toEqual([{ code: 'NO-OPTIONS', name: '候補なし', reason: 'no-class' }])
+  })
 })
 
 // メイン画面から渡された要件区分をカードの色と凡例に使うことを確かめる。
