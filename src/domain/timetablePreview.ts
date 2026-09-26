@@ -13,9 +13,17 @@ export interface TimetablePreviewCourse {
   yearTermLabel?: string
   termType: string | null
   offeredTerms: readonly string[]
-  options: readonly ScheduleOption[]
+  options: readonly TimetablePreviewOption[]
   note?: string
   offerings?: readonly OfferingWithSlots[]
+  /** クラス判定できない科目の選択肢を作るため、全セクションを保持する。 */
+  sections?: readonly TimetablePreviewOption[]
+}
+
+/** プレビューで選択可能なセクション。 */
+export interface TimetablePreviewOption extends ScheduleOption {
+  timetableCode?: string
+  teacher?: string
 }
 
 /** グリッド上の1科目1コマ。複数コマの科目はコマごとに別要素を持つ。 */
@@ -31,6 +39,8 @@ export interface UnplacedTimetableCourse {
   code: string
   name: string
   reason: 'no-offering' | 'no-class' | 'no-slot' | 'instructor-varies' | 'ambiguous-term' | 'ambiguous-slot'
+  /** 候補が複数ある理由の場合に、欄外の選択UIへ渡すセクション。 */
+  options?: readonly TimetablePreviewOption[]
 }
 
 /** 時間割グリッドと、その下に表示する未確定科目。 */
@@ -95,6 +105,7 @@ function slotKey(slots: readonly ScheduleSlot[]): string {
 export function buildTimetablePreview(
   courses: readonly TimetablePreviewCourse[],
   term: string,
+  selectedTimetableCodes: Readonly<Record<string, string>> = {},
 ): TimetablePreviewResult {
   const slots: TimetablePreviewSlot[] = []
   const unplaced: UnplacedTimetableCourse[] = []
@@ -126,6 +137,7 @@ export function buildTimetablePreview(
     }
 
     const options = course.options.filter((option) => previewSemesterOf(option.term) === term)
+    const allTermSections = (course.sections ?? []).filter((section) => previewSemesterOf(section.term) === term)
     // シラバスの開講情報自体が無い科目は、科目表の学期に基づく欄外表示にする。
     if (course.offeredTerms.length === 0) {
       unplaced.push({ code: course.code, name: course.name, reason: 'no-offering' })
@@ -138,7 +150,19 @@ export function buildTimetablePreview(
     }
     // 受講クラスを絞れず、その学期の開講候補を得られない場合は配置しない。
     if (options.length === 0) {
-      unplaced.push({ code: course.code, name: course.name, reason: 'no-class' })
+      // クラス不明なら、プロフィールで絞られていない全セクションをプレビュー候補にする。
+      const selected = allTermSections.find((section) => section.timetableCode === selectedTimetableCodes[course.code])
+      if (selected && selected.slots.length > 0) {
+        // 保存済みのコードが現行データにあり、時限もある場合だけグリッドへ配置する。
+        appendSelectedOption(slots, course, selected)
+        continue
+      }
+      unplaced.push({
+        code: course.code,
+        name: course.name,
+        reason: 'no-class',
+        ...(allTermSections.length > 0 ? { options: allTermSections } : {}),
+      })
       continue
     }
     // 集中講義など、シラバスに曜日時限が無い科目は配置しない。
@@ -148,12 +172,24 @@ export function buildTimetablePreview(
     }
     // 春・夏など別タームの候補が残る場合は、同じ曜日時限でも期間を断定しない。
     if (new Set(options.map((option) => option.term)).size > 1) {
-      unplaced.push({ code: course.code, name: course.name, reason: 'ambiguous-term' })
+      // 候補タームを1つ選ぶまで、科目を欄外に残す。
+      const selected = findSelectedOption(options, selectedTimetableCodes[course.code])
+      if (selected) {
+        appendSelectedOption(slots, course, selected)
+        continue
+      }
+      unplaced.push({ code: course.code, name: course.name, reason: 'ambiguous-term', options })
       continue
     }
     // 同じターム内でもクラスごとに曜日時限が異なれば、両方を仮置きしない。
     if (options.some((option) => slotKey(option.slots) !== slotKey(options[0].slots))) {
-      unplaced.push({ code: course.code, name: course.name, reason: 'ambiguous-slot' })
+      // 同じターム内の時限候補も、利用者が1セクションを選ぶまで欄外に残す。
+      const selected = findSelectedOption(options, selectedTimetableCodes[course.code])
+      if (selected) {
+        appendSelectedOption(slots, course, selected)
+        continue
+      }
+      unplaced.push({ code: course.code, name: course.name, reason: 'ambiguous-slot', options })
       continue
     }
 
@@ -171,12 +207,28 @@ export function buildTimetablePreview(
   return { slots, unplaced, onDemand, intensive }
 }
 
+/** 保存値が現在の候補に存在する場合だけ、選択されたセクションを返す。 */
+function findSelectedOption(options: readonly TimetablePreviewOption[], savedCode: string | undefined): TimetablePreviewOption | undefined {
+  // 古い・壊れた保存値は見つからないため、未選択として扱う。
+  if (!savedCode) return undefined
+  return options.find((option) => option.timetableCode === savedCode)
+}
+
+/** 利用者が選んだセクションの全コマを時間割へ追加する。 */
+function appendSelectedOption(slots: TimetablePreviewSlot[], course: TimetablePreviewCourse, option: TimetablePreviewOption): void {
+  // 1つのセクションに複数コマがあれば、そのすべてを重複判定へ渡す。
+  for (const slot of option.slots) {
+    slots.push({ ...slot, code: course.code, name: course.name, offeringTerm: option.term })
+  }
+}
+
 /** 非表示にした科目を除いて、時間割と重複判定に使う結果を作る。 */
 export function buildVisibleTimetablePreview(
   courses: readonly TimetablePreviewCourse[],
   term: string,
   hiddenCodes: ReadonlySet<string>,
+  selectedTimetableCodes: Readonly<Record<string, string>> = {},
 ): TimetablePreviewResult {
   // 科目単位で取り除いてからグリッドを作るため、重複判定にも混ざらない。
-  return buildTimetablePreview(courses.filter((course) => !hiddenCodes.has(course.code)), term)
+  return buildTimetablePreview(courses.filter((course) => !hiddenCodes.has(course.code)), term, selectedTimetableCodes)
 }

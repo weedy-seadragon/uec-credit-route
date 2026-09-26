@@ -81,7 +81,7 @@ describe('buildTimetablePreview（修得見込の時間割）', () => {
       ] },
     ], '前学期')
     expect(result.slots).toEqual([])
-    expect(result.unplaced).toEqual([
+    expect(result.unplaced.map(({ code, name, reason }) => ({ code, name, reason }))).toEqual([
       { code: 'A', name: '英語', reason: 'ambiguous-slot' },
       { code: 'B', name: 'クラス不明', reason: 'no-class' },
       { code: 'C', name: '時限なし', reason: 'no-slot' },
@@ -156,7 +156,7 @@ describe('buildTimetablePreview（修得見込の時間割）', () => {
       ],
     }], '前学期')
     expect(result.slots).toEqual([])
-    expect(result.unplaced).toEqual([{ code: 'A', name: '実験', reason: 'ambiguous-term' }])
+    expect(result.unplaced.map(({ code, name, reason }) => ({ code, name, reason }))).toEqual([{ code: 'A', name: '実験', reason: 'ambiguous-term' }])
   })
 
   // 同時限を取る2科目は両方出し、表示側で重複を見えるようにする。
@@ -182,6 +182,47 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
     expect(maxConcurrentOfferingCount(all.slots.map((slot) => slot.offeringTerm))).toBe(2)
     expect(visible.slots.map((slot) => slot.code)).toEqual(['A'])
     expect(maxConcurrentOfferingCount(visible.slots.map((slot) => slot.offeringTerm))).toBe(1)
+  })
+
+  // 選択した曖昧なセクションだけが表へ入り、ほかの科目との重複も判定できる。
+  it('選んだ候補を配置し、同時限の重複判定へ含める', () => {
+    const courses = [
+      { code: 'A', name: '候補科目', termType: '前学期', offeredTerms: ['前学期'], options: [
+        { term: '前学期', timetableCode: 'A-1', teacher: '教員甲', slots: [{ day: '月', period: 1 }] },
+        { term: '前学期', timetableCode: 'A-2', teacher: '教員乙', slots: [{ day: '火', period: 1 }] },
+      ] },
+      { code: 'B', name: '別科目', termType: '前学期', offeredTerms: ['前学期'], options: [
+        { term: '前学期', timetableCode: 'B-1', slots: [{ day: '月', period: 1 }] },
+      ] },
+    ]
+    const result = buildTimetablePreview(courses, '前学期', { A: 'A-1' })
+    expect(result.slots.map((slot) => slot.code)).toEqual(['A', 'B'])
+    expect(result.unplaced).toEqual([])
+    expect(maxConcurrentOfferingCount(result.slots.filter((slot) => slot.day === '月').map((slot) => slot.offeringTerm))).toBe(2)
+  })
+
+  // 現行候補にない保存済みコードは選択済みと扱わず、科目を欄外に残す。
+  it('不正または古いセクションコードは未選択として扱う', () => {
+    const result = buildTimetablePreview([{
+      code: 'A', name: '候補科目', termType: '前学期', offeredTerms: ['前学期'], options: [
+        { term: '前学期', timetableCode: 'A-current', slots: [{ day: '月', period: 1 }] },
+        { term: '前学期', timetableCode: 'A-other', slots: [{ day: '火', period: 1 }] },
+      ],
+    }], '前学期', { A: 'removed-section' })
+    expect(result.slots).toEqual([])
+    expect(result.unplaced[0].reason).toBe('ambiguous-slot')
+  })
+
+  // クラスが決まらない科目は、選択学期の全セクションから選べる。
+  it('no-class の科目は全セクションから選ぶ', () => {
+    const result = buildTimetablePreview([{
+      code: 'A', name: 'クラス未確定', termType: '前学期', offeredTerms: ['前学期'], options: [], sections: [
+        { term: '前学期', timetableCode: 'A-1', teacher: '教員甲', slots: [{ day: '水', period: 2 }] },
+        { term: '後学期', timetableCode: 'A-2', teacher: '教員乙', slots: [{ day: '木', period: 2 }] },
+      ],
+    }], '前学期', { A: 'A-1' })
+    expect(result.slots.map((slot) => [slot.day, slot.period])).toEqual([['水', 2]])
+    expect(result.unplaced).toEqual([])
   })
 
   // 別枠の集中講義も表示切替の対象となり、非表示時は結果一覧から外れる。

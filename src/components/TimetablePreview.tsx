@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, previewSemesterOf } from '../domain/timetablePreview'
 import type { TimetablePreviewCourse, TimetablePreviewSlot, UnplacedTimetableCourse } from '../domain/timetablePreview'
 import { loadHiddenTimetableCourses, saveHiddenTimetableCourses } from '../storage/timetableVisibility'
+import { loadTimetableOfferingSelection, saveTimetableOfferingSelection } from '../storage/timetableOfferingSelection'
 
 /** グリッドに表示する平日。土曜などの授業は表の下にまとめる。 */
 const DAYS: readonly string[] = ['月', '火', '水', '木', '金']
@@ -77,8 +78,9 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
 }) {
   const [term, setTerm] = useState('前学期')
   const [hiddenCodes, setHiddenCodes] = useState<ReadonlySet<string>>(() => loadHiddenTimetableCourses())
-  const allCoursesResult = buildTimetablePreview(courses, term)
-  const result = buildVisibleTimetablePreview(courses, term, hiddenCodes)
+  const [selectedTimetableCodes, setSelectedTimetableCodes] = useState<Readonly<Record<string, string>>>(() => loadTimetableOfferingSelection())
+  const allCoursesResult = buildTimetablePreview(courses, term, selectedTimetableCodes)
+  const result = buildVisibleTimetablePreview(courses, term, hiddenCodes, selectedTimetableCodes)
   const terms = availableTerms(courses)
   // 選択した開講期の科目を、非表示中のものも含めて設定欄へ残す。
   const termCourseCodes = new Set([
@@ -97,6 +99,15 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
     else next.add(code)
     setHiddenCodes(next)
     saveHiddenTimetableCourses(next)
+  }
+  /** セクションの選択をすぐ反映し、プレビュー専用の設定として保存する。 */
+  function changeTimetableOffering(code: string, timetableCode: string): void {
+    const next = { ...selectedTimetableCodes }
+    // 空欄は選択解除として保存対象から外し、選択コードは科目番号に対応付ける。
+    if (timetableCode) next[code] = timetableCode
+    else delete next[code]
+    setSelectedTimetableCodes(next)
+    saveTimetableOfferingSelection(next)
   }
   // 平日の科目をコマごとに、土曜などの科目を科目番号ごとにまとめる。
   const slotsByCell = new Map<string, TimetablePreviewSlot[]>()
@@ -212,6 +223,25 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                   <li key={course.code}>
                     <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
                     {' '}：{REASON_LABELS[course.reason]}
+                    {course.options && course.options.length > 0 && (
+                      <label className="timetable-section-choice">
+                        {' '}セクション
+                        <select
+                          aria-label={`${course.name}のセクション`}
+                          value={course.options.some((option) => option.timetableCode === selectedTimetableCodes[course.code]) ? selectedTimetableCodes[course.code] : ''}
+                          onChange={(event) => changeTimetableOffering(course.code, event.target.value)}
+                        >
+                          <option value="">選択してください</option>
+                          {course.options.map((option) => (
+                            <option key={option.timetableCode ?? `${option.term}:${option.slots.map((slot) => `${slot.day}${slot.period}`).join('-')}`} value={option.timetableCode ?? ''} disabled={!option.timetableCode}>
+                              {[...new Set(option.slots.map((slot) => `${slot.day}${slot.period}限`))].join('・') || '曜日時限の記載なし'}
+                              {option.term !== '前学期' && option.term !== '後学期' && `（${option.term}）`}
+                              {' / '}{option.teacher || '担当教員記載なし'}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -238,6 +268,11 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                         <input type="radio" name={`timetable-visible-${course.code}`} checked={hiddenCodes.has(course.code)} onChange={() => changeVisibility(course.code, false)} />
                         非表示
                       </label>
+                      {selectedTimetableCodes[course.code] && (
+                        <button type="button" onClick={() => changeTimetableOffering(course.code, '')}>
+                          セクション選択を解除
+                        </button>
+                      )}
                     </fieldset>
                   </li>
                 ))}

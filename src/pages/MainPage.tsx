@@ -1500,7 +1500,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       yearTermLabel: yearTermOf(code),
       termType: subject?.termType ?? null,
       offeredTerms: [...new Set(offerings.map((offering) => offering.term))],
-      options: candidates.map((offering) => ({ term: offering.term, slots: offering.slots })),
+      options: candidates.map((offering) => ({
+        term: offering.term,
+        slots: offering.slots,
+        timetableCode: offering.timetableCode,
+        teacher: offering.instructors.join('、'),
+      })),
+      sections: offerings.map((offering) => ({
+        term: offering.term,
+        slots: offering.slots,
+        timetableCode: offering.timetableCode,
+        teacher: offering.instructors.join('、'),
+      })),
       note: subject?.note,
       offerings,
     })
