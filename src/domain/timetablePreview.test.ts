@@ -343,6 +343,7 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
     const unselected = buildTimetablePreview([course], '前学期')
     expect(unselected.slots).toEqual([])
     expect(unselected.unplaced[0].reason).toBe('no-class')
+    expect(splitUnplacedTimetableCourses(unselected.unplaced).selectable).toEqual(unselected.unplaced)
 
     const result = buildTimetablePreview([course], '前学期', { A: 'A-regular-2' })
     expect(result.slots.map((slot) => [slot.day, slot.period])).toEqual([['木', 2]])
@@ -386,6 +387,7 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
     }], '前学期')
     expect(result.slots).toEqual([])
     expect(result.unplaced[0].reason).toBe('ambiguous-slot')
+    expect(splitUnplacedTimetableCourses(result.unplaced).selectable).toEqual(result.unplaced)
   })
 
   // 低学年科目の時限が異なる場合だけ候補選択に残し、専用理由で説明する。
@@ -399,6 +401,7 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
     }
     const unselected = buildTimetablePreview([course], '前学期')
     expect(unselected.unplaced[0]).toMatchObject({ reason: 'lower-year-selection', options: course.options })
+    expect(splitUnplacedTimetableCourses(unselected.unplaced).selectable).toEqual(unselected.unplaced)
     const selected = buildTimetablePreview([course], '前学期', { A: 'A-2' })
     expect(selected.slots.map((slot) => slot.code)).toEqual(['A'])
     expect(selected.unplaced).toEqual([])

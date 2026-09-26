@@ -134,8 +134,8 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(html).toContain('（再履修向け）')
   })
 
-  // 低学年科目の候補選択は、クラス設定の不足と誤解しない説明で候補枠へ表示する。
-  it('低学年科目の候補理由を専用表示し、選択枠へ分類する', () => {
+  // 低学年科目の候補選択は、学年に依存しない文言で候補枠へ表示する。
+  it('低学年科目も中立の理由で候補選択枠へ表示する', () => {
     const html = renderPreview([{
       code: 'A', name: '低学年科目', termType: '前学期', offeredTerms: ['前学期'], chooseAmongSections: true,
       options: [
@@ -144,7 +144,7 @@ describe('TimetablePreview の表と表外一覧', () => {
       ],
     }])
     expect(html).toContain('曜日時限を選んでください（1科目）')
-    expect(html).toContain('現在の学年より低い年次の科目のため、受講する授業を選んでください')
+    expect(html).toContain('受講する授業を選んでください')
     expect(html).not.toContain('受講クラスを特定できません')
   })
 
