@@ -11,7 +11,7 @@
 // - 修得予定は将来の単位見込みを表す状態で、更新時には確定できる曜日時限の重複だけを注意表示する。
 //   先修科目（prerequisites）は2026-09-06にprerequisites.ts経由で配線した
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { ChangeEvent, ReactNode, RefObject } from 'react'
+import type { ChangeEvent, MouseEvent as ReactMouseEvent, ReactNode, RefObject } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import type { GroupKind, RequirementGroup, SubjectStatus } from '../domain/requirements'
 import { evaluateRequirements } from '../domain/requirements'
@@ -33,6 +33,7 @@ import { loadProfile } from '../storage/profile'
 import { loadRecords, saveRecords } from '../storage/records'
 import { loadRetakingPlanCodes, saveRetakingPlanCodes } from '../storage/retakingPlans'
 import { loadOtherCommonCredits, loadOtherCommonSubjectCount, saveOtherCommonCredits, saveOtherCommonSubjectCount } from '../storage/otherCommonCredits'
+import { loadOpenMainSections, openMainSectionForNavigation, saveOpenMainSections } from '../storage/mainSectionVisibility'
 import {
   loadOtherClusterMajorCredits,
   loadOtherClusterMajorSubjectCount,
@@ -450,6 +451,10 @@ export default function MainPage() {
 function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 科目詳細から渡された戻り先を読み取り、描画後に対応する区分へ移動する。
   const [searchParams] = useSearchParams()
+  // 初回は全区切りを開き、以後はユーザーの表示設定だけを保存する。
+  const [openMainSectionIds, setOpenMainSectionIds] = useState<ReadonlySet<string>>(() => loadOpenMainSections())
+  // URLの描画後処理から、直近の開閉状態を最新のまま参照する。
+  const openMainSectionIdsRef = useRef(openMainSectionIds)
   // 保存済みプロフィールに古い/不正なプログラム値があっても、未選択として共通要件を表示する。
   const programName = getProgramName(profile.entryYear, profile.program)
   const isProgramUndecided = programName == null
@@ -562,11 +567,18 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     const sectionId = searchParams.get('section')
     if (sectionId !== 'remaining-required' && sectionId !== 'elective-subjects') return
 
-    // 要素の描画と追従UIの配置が終わった後に動かし、見出しが隠れない位置へ移動する。
+    // URLで指定された区切りを開いて保存し、描画後に見出しが隠れない位置へ移動する。
     const animationFrameId = window.requestAnimationFrame(() => {
       const target = document.getElementById(sectionId)
       if (!target) return
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      // 次の描画でdetailsを開き、その次の描画で位置を合わせる。
+      const openedSections = openMainSectionForNavigation(openMainSectionIdsRef.current, sectionId)
+      openMainSectionIdsRef.current = openedSections
+      setOpenMainSectionIds(openedSections)
+      saveOpenMainSections(openedSections)
+      window.requestAnimationFrame(() => {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
     })
     return () => window.cancelAnimationFrame(animationFrameId)
   }, [searchParams])
@@ -1472,13 +1484,36 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     return { regular, otherProgram, international }
   }
 
+  /** 大見出しの開閉を画面へ反映し、履修記録と別のキーへ保存する。 */
+  function changeMainSectionVisibility(sectionId: string, open: boolean): void {
+    // 目次から開くときは共有のナビゲーション関数を使い、閉じるときは対象を除く。
+    const next = open
+      ? openMainSectionForNavigation(openMainSectionIds, sectionId)
+      : new Set([...openMainSectionIds].filter((id) => id !== sectionId))
+    openMainSectionIdsRef.current = next
+    setOpenMainSectionIds(next)
+    saveOpenMainSections(next)
+  }
+
+  /** summaryの標準開閉を止め、保存対象の状態をReact側で切り替える。 */
+  function toggleMainSection(sectionId: string, event: ReactMouseEvent<HTMLElement>): void {
+    // detailsのネイティブ切り替えとReact stateの二重管理を避ける。
+    event.preventDefault()
+    changeMainSectionVisibility(sectionId, !openMainSectionIds.has(sectionId))
+  }
+
   /** 目次のボタンから指定セクションへ滑らかにスクロールする。 */
   function scrollToSection(sectionId: string): void {
     // HashRouterでは#が経路に使われるため、URLアンカーではなくDOM要素を直接スクロールする。
     const target = document.getElementById(sectionId)
     if (!target) return
-    // 既存のscroll-margin-topを使い、追従中の操作ボタンに見出しが隠れないようにする。
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    // 閉じている区切りは先に開き、次の描画フレームで中身が見える位置へ移動する。
+    if (target.tagName === 'DETAILS') changeMainSectionVisibility(sectionId, true)
+    window.requestAnimationFrame(() => {
+      const updatedTarget = document.getElementById(sectionId)
+      // 既存のscroll-margin-topを使い、追従中の操作ボタンに見出しが隠れないようにする。
+      updatedTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
   }
 
   /** ページ末尾から、メイン画面の最上部へ滑らかに戻る。 */
@@ -1655,12 +1690,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
 
       {/* 登録科目数は要件区分の一部ではないため、取得単位の枠の外で先に表示する。 */}
       <p className="registered-subject-count">登録科目数 {registeredSubjectCount}科目</p>
-      <section id="earned-credits" className="requirement-section earned-section">
+      <details id="earned-credits" className="requirement-section earned-section main-collapsible-section" open={openMainSectionIds.has('earned-credits')}>
         {/* 科目として修得した分だけでなく、科目番号を持たない認定分も取得単位に含める。 */}
-        <h2>
+        <summary onClick={(event) => toggleMainSection('earned-credits', event)}><h2>
           修得した単位（{earnedTotalCredits}単位
           {plannedCredits > 0 && <span className="planned-credit"> + {plannedCredits}単位（修得見込）</span>}）
-        </h2>
+        </h2></summary>
         {(() => {
         // 共通単位が0のときは空の見出しを出さない。その他単位認定だけを取得した場合も内訳を表示する。
         const commonCreditsElement = (passedCredits > 0 || otherCommonCommitted > 0) && commonEarnedTotal > 0 ? (
@@ -1740,11 +1775,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <li>（まだありません）</li>
           </ul>
         )}
-      </section>
+      </details>
 
       {/* 修得見込は確定済みの修得単位と不合格科目の間に置き、現在地と見込みを続けて確認できるようにする。 */}
-      <section className="requirement-section planned-section">
-        <h2>修得見込の単位（{plannedCredits}単位）</h2>
+      <details id="planned-credits" className="requirement-section planned-section main-collapsible-section" open={openMainSectionIds.has('planned-credits')}>
+        <summary onClick={(event) => toggleMainSection('planned-credits', event)}><h2>修得見込の単位（{plannedCredits}単位）</h2></summary>
         <p className="section-guidance">修得見込の科目をすべて修得できた場合、黄色で示した見込単位が各区分・審査の計算に反映されます。</p>
         {(() => {
           // 修得見込の科目1行ぶん。区分の一覧と共通単位の内訳の両方で同じ見た目・操作にする。
@@ -1816,13 +1851,19 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           return hasMajorSel ? rendered : [...rendered, plannedCommonElement]
         })()}
         {plannedSubjects.length === 0 && <p>・（ありません）</p>}
-      </section>
+      </details>
 
       {/* 修得見込の直後に、編集中の選択を週の曜日時限へ並べた表示だけのプレビューを置く。 */}
-      <TimetablePreview courses={sortedTimetablePreviewCourses} entryYear={profile.entryYear} hasPendingChanges={hasPendingChanges} />
+      <TimetablePreview
+        courses={sortedTimetablePreviewCourses}
+        entryYear={profile.entryYear}
+        hasPendingChanges={hasPendingChanges}
+        sectionOpen={openMainSectionIds.has('timetable-preview')}
+        onSectionToggle={(event) => toggleMainSection('timetable-preview', event)}
+      />
 
-      <section id="failed-subjects" className="requirement-section failed-section">
-        <h2>不合格になった科目（{failedSubjects.length}科目）</h2>
+      <details id="failed-subjects" className="requirement-section failed-section main-collapsible-section" open={openMainSectionIds.has('failed-subjects')}>
+        <summary onClick={(event) => toggleMainSection('failed-subjects', event)}><h2>不合格になった科目（{failedSubjects.length}科目）</h2></summary>
         <p className="section-guidance">
           要件区分ごとに表示します。必修科目は再履修して単位を修得する必要があります。選択科目は、再履修するか同じ区分から別の科目を選べます。
         </p>
@@ -1882,13 +1923,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           )
         })}
         {failedSubjects.length === 0 && <p>・（ありません）</p>}
-      </section>
+      </details>
 
-      <section id="remaining-required" className="requirement-section">
-        <h2>
+      <details id="remaining-required" className="requirement-section main-collapsible-section" open={openMainSectionIds.has('remaining-required')}>
+        <summary onClick={(event) => toggleMainSection('remaining-required', event)}><h2>
           残りの必修（あと {requiredShortfall(boundaryGroups)}
           {requiredPlannedCredits(boundaryGroups) > 0 && <span className="planned-credit"> - {requiredPlannedCredits(boundaryGroups)}</span>} 単位）
-        </h2>
+        </h2></summary>
         {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、一部の科目が表示されていません。</p>}
         <p className="section-guidance">この一覧の科目はすべて必修です。不合格になった必修科目は、上の「不合格になった科目」で再履修を確認してください。</p>
         {remainingRequiredByCategory.map(({ label, group, items }) => {
@@ -1927,11 +1968,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             <li>（この表示範囲では残っていません）</li>
           </ul>
         )}
-      </section>
+      </details>
 
       {(clusterTransferBucket.length > 0 || programTransferBucket.length > 0) && (
-        <section className="requirement-section">
-          <h2>その他の科目（転類・転プログラム前に必修だった科目）</h2>
+        <details id="other-transfer-credits" className="requirement-section main-collapsible-section" open={openMainSectionIds.has('other-transfer-credits')}>
+          <summary onClick={(event) => toggleMainSection('other-transfer-credits', event)}><h2>その他の科目（転類・転プログラム前に必修だった科目）</h2></summary>
           <p style={{ fontSize: '0.9em' }}>
             元の類・プログラムでは必修だったものの、今の要件には出てこない科目です。修得にすると共通単位に加算されます
             （同名の科目は他の一覧の必修・選択にそのまま出てくるので、ここには出しません）。
@@ -1968,11 +2009,11 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               </ul>
             </div>
           )}
-        </section>
+        </details>
       )}
 
-      <section id="elective-subjects" className="requirement-section">
-        <h2>選択科目</h2>
+      <details id="elective-subjects" className="requirement-section main-collapsible-section" open={openMainSectionIds.has('elective-subjects')}>
+        <summary onClick={(event) => toggleMainSection('elective-subjects', event)}><h2>選択科目</h2></summary>
         {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、一部の科目が表示されていません。</p>}
         <p className="section-guidance">
           区分ごとに表示される不足単位まで、この一覧から科目を選んで修得してください。必修の不合格科目は、この一覧ではなく上の「不合格になった科目」を確認します。
@@ -2094,12 +2135,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           const hasMajorSel = electiveGroups.some((g) => g.id === 'major-sel')
           return hasMajorSel ? rendered : [...rendered, commonCreditsElement]
         })()}
-      </section>
+      </details>
 
       {/* 審査（2年次終了時審査など）。reviewsデータがあるプログラムだけ表示する */}
       {reviewStatuses.length > 0 && (
-        <section id="reviews">
-          <h2>審査</h2>
+        <details id="reviews" className="requirement-section main-collapsible-section" open={openMainSectionIds.has('reviews')}>
+          <summary onClick={(event) => toggleMainSection('reviews', event)}><h2>審査</h2></summary>
           {isProgramUndecided && <p className="section-guidance">プログラムを選択していないため、卒業研究着手審査や卒業審査が表示されていません。</p>}
           <ul>
             {reviewStatuses.map((r) => {
@@ -2148,12 +2189,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               )
             })}
           </ul>
-        </section>
+        </details>
       )}
 
       {/* 一覧全体の表示範囲とは別に、ここで選んだ学年・学期ごとの候補を示す。 */}
-      <section id="term-recommendations" className="term-recommendation-section">
-        <h2>学期別の修得推奨科目</h2>
+      <details id="term-recommendations" className="term-recommendation-section main-collapsible-section" open={openMainSectionIds.has('term-recommendations')}>
+        <summary onClick={(event) => toggleMainSection('term-recommendations', event)}><h2>学期別の修得推奨科目</h2></summary>
         <p className="section-guidance">
           単位取得状況を入力したうえで学年・学期を絞り込むと、その学期に開講される修得推奨科目を表示します。
         </p>
@@ -2274,7 +2315,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
             )}
           </>
         )}
-      </section>
+      </details>
 
       {/* 上のツールバーの「更新」と同じボタン。プルダウンをたくさん触った後、
           いちいちページ上部まで戻らなくて済むように一番下にも置いておく。

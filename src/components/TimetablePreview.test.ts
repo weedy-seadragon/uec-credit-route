@@ -10,7 +10,13 @@ import type { TimetablePreviewCourse } from '../domain/timetablePreview'
 function renderPreview(courses: readonly TimetablePreviewCourse[]): string {
   // 科目詳細へのリンクはルーターの中で描画する。
   return renderToStaticMarkup(createElement(MemoryRouter, null,
-    createElement(TimetablePreview, { courses, entryYear: 2025, hasPendingChanges: false }),
+    createElement(TimetablePreview, {
+      courses,
+      entryYear: 2025,
+      hasPendingChanges: false,
+      sectionOpen: false,
+      onSectionToggle: (event) => event.preventDefault(),
+    }),
   ))
 }
 

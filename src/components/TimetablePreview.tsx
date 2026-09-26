@@ -1,5 +1,6 @@
 // 修得見込の科目を開講期ごとに並べる週間時間割。表示設定だけを保存し、履修記録は変更しない。
 import { useState } from 'react'
+import type { MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { buildTimetablePreview, buildVisibleTimetablePreview, defaultRetakeOptionForTerm, maxConcurrentOfferingCount, previewSemesterOf, splitUnplacedTimetableCourses, timetableCategoryColorsForCourses, timetableLegendForSlots } from '../domain/timetablePreview'
 import type { TimetablePreviewCourse, TimetablePreviewOption, TimetablePreviewSlot, UnplacedTimetableCourse } from '../domain/timetablePreview'
@@ -81,10 +82,12 @@ function CourseInSlot({ slot, entryYear }: { slot: TimetablePreviewSlot; entryYe
 }
 
 /** 曜日・時限が確定した科目を表に置き、未確定の科目を表の下へ示す。 */
-export default function TimetablePreview({ courses, entryYear, hasPendingChanges }: {
+export default function TimetablePreview({ courses, entryYear, hasPendingChanges, sectionOpen, onSectionToggle }: {
   courses: readonly TimetablePreviewCourse[]
   entryYear: number
   hasPendingChanges: boolean
+  sectionOpen: boolean
+  onSectionToggle: (event: MouseEvent<HTMLElement>) => void
 }) {
   const [term, setTerm] = useState('前学期')
   const [hiddenCodes, setHiddenCodes] = useState<ReadonlySet<string>>(() => loadHiddenTimetableCourses())
@@ -148,8 +151,8 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
   const periods = Array.from({ length: lastPeriod }, (_, index) => index + 1)
 
   return (
-    <section id="timetable-preview" className="requirement-section timetable-preview-section">
-      <h2>時間割プレビュー</h2>
+    <details id="timetable-preview" className="requirement-section timetable-preview-section main-collapsible-section" open={sectionOpen}>
+      <summary onClick={onSectionToggle}><h2>時間割プレビュー</h2></summary>
       <p className="section-guidance">
         「修得見込」の科目を表示します。科目の変更はすぐに反映されます。
         {hasPendingChanges && ' 未更新の変更を保存するには「単位取得状況を更新」を押してください。'}
@@ -367,6 +370,6 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
           )}
         </>
       )}
-    </section>
+    </details>
   )
 }

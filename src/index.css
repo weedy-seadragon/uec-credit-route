@@ -814,8 +814,16 @@ select {
 }
 
 .requirement-section > h2,
+.requirement-section > summary > h2,
+.main-collapsible-section > summary > h2,
 .requirement-section > h3 {
   margin-top: 0;
+}
+
+/* 大見出しは見出し文字をsummary内に保ち、件数が閉じた状態でも読めるようにする。 */
+.main-collapsible-section > summary > h2 {
+  margin: 0;
+  font-size: 1.25rem;
 }
 
 /* 修得済みの単位は、予定・不合格と見分けやすい緑の枠で強調する。 */
@@ -1152,6 +1160,7 @@ select {
 
 .elective-group > summary,
 .nested-subject-group > summary,
+.main-collapsible-section > summary,
 .release-note-history > summary {
   display: flex;
   flex-wrap: wrap;
@@ -1174,12 +1183,14 @@ select {
 /* ブラウザ標準の小さな三角を隠し、押しやすい丸い＋/−を右端に表示する。 */
 .elective-group > summary::-webkit-details-marker,
 .nested-subject-group > summary::-webkit-details-marker,
+.main-collapsible-section > summary::-webkit-details-marker,
 .release-note-history > summary::-webkit-details-marker {
   display: none;
 }
 
 .elective-group > summary::after,
 .nested-subject-group > summary::after,
+.main-collapsible-section > summary::after,
 .release-note-history > summary::after {
   content: '＋';
   display: grid;
@@ -1199,6 +1210,7 @@ select {
 /* 開いているときは＋を−に変え、開閉後の状態を文字以外でも分かるようにする。 */
 .elective-group[open] > summary::after,
 .nested-subject-group[open] > summary::after,
+.main-collapsible-section[open] > summary::after,
 .release-note-history[open] > summary::after {
   content: '−';
 }
@@ -1206,12 +1218,14 @@ select {
 /* マウス操作とキーボード操作のどちらでも、押せる見出しだと分かる反応を付ける。 */
 .elective-group > summary:hover,
 .nested-subject-group > summary:hover,
+.main-collapsible-section > summary:hover,
 .release-note-history > summary:hover {
   background: color-mix(in srgb, #e9f1ff 70%, Canvas);
 }
 
 .elective-group > summary:focus-visible,
 .nested-subject-group > summary:focus-visible,
+.main-collapsible-section > summary:focus-visible,
 .release-note-history > summary:focus-visible {
   outline: 3px solid #2e63d6;
   outline-offset: 3px;
