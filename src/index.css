@@ -955,6 +955,38 @@ select {
   margin: 0 0 0.3rem;
 }
 
+/* 表示切り替えは表外の折りたたみにまとめ、科目ごとのラジオボタンを読みやすく並べる。 */
+.timetable-visibility {
+  margin-top: 1rem;
+}
+
+.timetable-visibility summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.timetable-visibility ul {
+  padding-left: 1.4rem;
+}
+
+.timetable-visibility li {
+  margin: 0.45rem 0;
+}
+
+.timetable-visibility fieldset {
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-radius: 0.35rem;
+  min-width: 0;
+}
+
+.timetable-visibility label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0.15rem 0.8rem 0.15rem 0;
+  cursor: pointer;
+}
+
 .section-guidance,
 .group-guidance {
   margin: 0.35rem 0 0.85rem;

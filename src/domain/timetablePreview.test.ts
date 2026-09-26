@@ -1,6 +1,6 @@
 // 時間割プレビューが、曜日時限を断定できる科目だけを配置することを確かめる。
 import { describe, expect, it } from 'vitest'
-import { buildTimetablePreview, maxConcurrentOfferingCount, offeringTermsOverlap } from './timetablePreview'
+import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, offeringTermsOverlap } from './timetablePreview'
 
 // 学期全体と個別タームの授業が、同じ週に行われるかを検証する。
 describe('開講期間の重複判定', () => {
@@ -141,5 +141,21 @@ describe('buildTimetablePreview（修得見込の時間割）', () => {
       options: [{ term: '前学期', slots: [{ day: '金', period: 3 }] }],
     })), '前学期')
     expect(result.slots.map((slot) => slot.code)).toEqual(['A', 'B'])
+  })
+})
+
+// 非表示設定がグリッドと同時限の重複判定へ反映されることを検証する。
+describe('buildVisibleTimetablePreview（表示する科目の選別）', () => {
+  // 同時限の片方を隠すと、残る科目だけになり重複数が1へ減る。
+  it('片方を非表示にすると同時限の重複が消える', () => {
+    const courses = ['A', 'B'].map((code) => ({
+      code, name: code, termType: '前学期', offeredTerms: ['前学期'],
+      options: [{ term: '前学期', slots: [{ day: '金', period: 3 }] }],
+    }))
+    const all = buildVisibleTimetablePreview(courses, '前学期', new Set())
+    const visible = buildVisibleTimetablePreview(courses, '前学期', new Set(['B']))
+    expect(maxConcurrentOfferingCount(all.slots.map((slot) => slot.offeringTerm))).toBe(2)
+    expect(visible.slots.map((slot) => slot.code)).toEqual(['A'])
+    expect(maxConcurrentOfferingCount(visible.slots.map((slot) => slot.offeringTerm))).toBe(1)
   })
 })

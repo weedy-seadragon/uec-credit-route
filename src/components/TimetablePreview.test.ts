@@ -2,7 +2,7 @@
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import TimetablePreview from './TimetablePreview'
 import type { TimetablePreviewCourse } from '../domain/timetablePreview'
 
@@ -14,8 +14,43 @@ function renderPreview(courses: readonly TimetablePreviewCourse[]): string {
   ))
 }
 
+// テスト中に差し替えたブラウザ保存領域を後続のテストへ残さない。
+afterEach(() => {
+  vi.unstubAllGlobals()
+})
+
 // 平日の行数、表外の科目、英語名の改行候補を検証する。
 describe('TimetablePreview の表と表外一覧', () => {
+  // 非表示設定の復元後は、片方のカードと重複ラベルだけが表から消える。
+  it('同じ時限の片方を非表示にすると重複ラベルを出さない', () => {
+    const courses = ['A', 'B'].map((code) => ({
+      code, name: `講義${code}`, termType: '前学期', offeredTerms: ['前学期'],
+      options: [{ term: '前学期', slots: [{ day: '金', period: 3 }] }],
+    }))
+    expect(renderPreview(courses)).toContain('同時限に2科目')
+    vi.stubGlobal('window', { localStorage: {
+      getItem: () => JSON.stringify(['B']),
+    } })
+    const html = renderPreview(courses)
+    expect(html).not.toContain('同時限に2科目')
+    expect(html).toContain('aria-label="講義A"')
+    expect(html).not.toContain('aria-label="講義B"')
+    expect(html).toContain('時間割に表示する科目を選ぶ（2科目）')
+  })
+
+  // 表に置く科目も欄外の科目も、折りたたみで表示を切り替えられる。
+  it('選択学期の表・オンデマンド・未確定・土曜科目を切り替え欄へ並べる', () => {
+    const html = renderPreview([
+      { code: 'A', name: '平日科目', termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '月', period: 1 }] }] },
+      { code: 'B', name: '土曜科目', termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '土', period: 2 }] }] },
+      { code: 'C', name: 'オンデマンド科目', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
+      { code: 'D', name: '未確定科目', termType: '前学期', offeredTerms: ['前学期'], options: [] },
+    ])
+    expect(html).toContain('時間割に表示する科目を選ぶ（4科目）')
+    expect((html.match(/name="timetable-visible-[A-D]"/g) ?? [])).toHaveLength(8)
+    expect((html.match(/checked=""/g) ?? [])).toHaveLength(4)
+  })
+
   // 時限を持たない通常科目は、未確定一覧ではなく専用のリンク一覧へ出す。
   it('オンデマンド科目を表の下の別枠に表示する', () => {
     const html = renderPreview([{ code: 'OND101', name: 'オンラインの授業', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] }])

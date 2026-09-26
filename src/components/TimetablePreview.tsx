@@ -1,8 +1,9 @@
-// 修得見込の科目を開講期ごとに並べる週間時間割。表示だけを担当し、記録の保存はしない。
+// 修得見込の科目を開講期ごとに並べる週間時間割。表示設定だけを保存し、履修記録は変更しない。
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { buildTimetablePreview, maxConcurrentOfferingCount, previewSemesterOf } from '../domain/timetablePreview'
+import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, previewSemesterOf } from '../domain/timetablePreview'
 import type { TimetablePreviewCourse, TimetablePreviewSlot, UnplacedTimetableCourse } from '../domain/timetablePreview'
+import { loadHiddenTimetableCourses, saveHiddenTimetableCourses } from '../storage/timetableVisibility'
 
 /** グリッドに表示する平日。土曜などの授業は表の下にまとめる。 */
 const DAYS: readonly string[] = ['月', '火', '水', '木', '金']
@@ -69,8 +70,27 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
   hasPendingChanges: boolean
 }) {
   const [term, setTerm] = useState('前学期')
-  const result = buildTimetablePreview(courses, term)
+  const [hiddenCodes, setHiddenCodes] = useState<ReadonlySet<string>>(() => loadHiddenTimetableCourses(entryYear))
+  const allCoursesResult = buildTimetablePreview(courses, term)
+  const result = buildVisibleTimetablePreview(courses, term, hiddenCodes)
   const terms = availableTerms(courses)
+  // 選択した開講期の科目を、非表示中のものも含めて設定欄へ残す。
+  const termCourseCodes = new Set([
+    ...allCoursesResult.slots.map((slot) => slot.code),
+    ...allCoursesResult.onDemand.map((course) => course.code),
+    ...allCoursesResult.unplaced.map((course) => course.code),
+  ])
+  const termCourses = courses.filter((course) => termCourseCodes.has(course.code))
+
+  /** 表示設定をすぐ画面へ反映し、履修記録とは別に保存する。 */
+  function changeVisibility(code: string, visible: boolean): void {
+    const next = new Set(hiddenCodes)
+    // 表示を選んだときは非表示集合から外し、非表示を選んだときは加える。
+    if (visible) next.delete(code)
+    else next.add(code)
+    setHiddenCodes(next)
+    saveHiddenTimetableCourses(entryYear, next)
+  }
   // 平日の科目をコマごとに、土曜などの科目を科目番号ごとにまとめる。
   const slotsByCell = new Map<string, TimetablePreviewSlot[]>()
   const otherDaySlotsByCourse = new Map<string, TimetablePreviewSlot[]>()
@@ -160,7 +180,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
             </div>
           )}
           {result.slots.length === 0 && result.unplaced.length === 0 && result.onDemand.length === 0 && (
-            <p className="section-guidance">この開講期の修得見込科目はありません。</p>
+            <p className="section-guidance">この開講期に表示中の修得見込科目はありません。</p>
           )}
           {result.unplaced.length > 0 && (
             <div className="timetable-unplaced">
@@ -175,6 +195,29 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                 ))}
               </ul>
             </div>
+          )}
+          {termCourses.length > 0 && (
+            <details className="timetable-visibility">
+              <summary>時間割に表示する科目を選ぶ（{termCourses.length}科目）</summary>
+              <ul>
+                {/* 非表示にした科目もここには残し、いつでも表示へ戻せるようにする。 */}
+                {termCourses.map((course) => (
+                  <li key={course.code}>
+                    <fieldset>
+                      <legend><Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link></legend>
+                      <label>
+                        <input type="radio" name={`timetable-visible-${course.code}`} checked={!hiddenCodes.has(course.code)} onChange={() => changeVisibility(course.code, true)} />
+                        表示
+                      </label>
+                      <label>
+                        <input type="radio" name={`timetable-visible-${course.code}`} checked={hiddenCodes.has(course.code)} onChange={() => changeVisibility(course.code, false)} />
+                        非表示
+                      </label>
+                    </fieldset>
+                  </li>
+                ))}
+              </ul>
+            </details>
           )}
         </>
       )}

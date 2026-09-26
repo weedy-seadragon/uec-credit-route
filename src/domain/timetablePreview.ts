@@ -152,3 +152,13 @@ export function buildTimetablePreview(
 
   return { slots, unplaced, onDemand }
 }
+
+/** 非表示にした科目を除いて、時間割と重複判定に使う結果を作る。 */
+export function buildVisibleTimetablePreview(
+  courses: readonly TimetablePreviewCourse[],
+  term: string,
+  hiddenCodes: ReadonlySet<string>,
+): TimetablePreviewResult {
+  // 科目単位で取り除いてからグリッドを作るため、重複判定にも混ざらない。
+  return buildTimetablePreview(courses.filter((course) => !hiddenCodes.has(course.code)), term)
+}
