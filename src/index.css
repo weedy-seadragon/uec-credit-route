@@ -32,9 +32,18 @@
   --timetable-category-8-bg: #f0d0b5;
   --timetable-category-8-text: #542d12;
   --timetable-category-8-border: #a4653a;
-  --timetable-category-9-bg: #c8cfff;
-  --timetable-category-9-text: #24356d;
-  --timetable-category-9-border: #6877c5;
+  --timetable-category-9-bg: #a8b6ff;
+  --timetable-category-9-text: #1e2d69;
+  --timetable-category-9-border: #536bbc;
+  --timetable-category-10-bg: #b9bd5d;
+  --timetable-category-10-text: #3e400d;
+  --timetable-category-10-border: #848932;
+  --timetable-category-11-bg: #e9b2f2;
+  --timetable-category-11-text: #4f205b;
+  --timetable-category-11-border: #a44fb3;
+  --timetable-category-12-bg: #8ddac7;
+  --timetable-category-12-text: #153e36;
+  --timetable-category-12-border: #378d7b;
 }
 
 body {
@@ -928,6 +937,9 @@ select {
 [data-category-color="7"] { --timetable-card-bg: var(--timetable-category-7-bg); --timetable-card-text: var(--timetable-category-7-text); --timetable-card-border: var(--timetable-category-7-border); }
 [data-category-color="8"] { --timetable-card-bg: var(--timetable-category-8-bg); --timetable-card-text: var(--timetable-category-8-text); --timetable-card-border: var(--timetable-category-8-border); }
 [data-category-color="9"] { --timetable-card-bg: var(--timetable-category-9-bg); --timetable-card-text: var(--timetable-category-9-text); --timetable-card-border: var(--timetable-category-9-border); }
+[data-category-color="10"] { --timetable-card-bg: var(--timetable-category-10-bg); --timetable-card-text: var(--timetable-category-10-text); --timetable-card-border: var(--timetable-category-10-border); }
+[data-category-color="11"] { --timetable-card-bg: var(--timetable-category-11-bg); --timetable-card-text: var(--timetable-category-11-text); --timetable-card-border: var(--timetable-category-11-border); }
+[data-category-color="12"] { --timetable-card-bg: var(--timetable-category-12-bg); --timetable-card-text: var(--timetable-category-12-text); --timetable-card-border: var(--timetable-category-12-border); }
 
 /* 色だけで必修と分かれるよう、カード内にも短いラベルを添える。 */
 .timetable-course--required {
@@ -1030,9 +1042,18 @@ select {
     --timetable-category-8-bg: #75401d;
     --timetable-category-8-text: #fff3e8;
     --timetable-category-8-border: #e3a16e;
-    --timetable-category-9-bg: #373d9c;
-    --timetable-category-9-text: #f2f2ff;
-    --timetable-category-9-border: #9da6ff;
+    --timetable-category-9-bg: #354ea8;
+    --timetable-category-9-text: #f2f4ff;
+    --timetable-category-9-border: #9daeff;
+    --timetable-category-10-bg: #a09a45;
+    --timetable-category-10-text: #252306;
+    --timetable-category-10-border: #ddd276;
+    --timetable-category-11-bg: #71277d;
+    --timetable-category-11-text: #fff0ff;
+    --timetable-category-11-border: #e39aed;
+    --timetable-category-12-bg: #087b70;
+    --timetable-category-12-text: #edfff9;
+    --timetable-category-12-border: #70d5ba;
   }
 
   .timetable-conflict-label {

@@ -1,6 +1,6 @@
 // 時間割プレビューが、曜日時限を断定できる科目だけを配置することを確かめる。
 import { describe, expect, it } from 'vitest'
-import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, offeringTermsOverlap, splitUnplacedTimetableCourses, timetableCategoryColorsForCourses, timetableCategoryForCourse, timetableLegendForSlots } from './timetablePreview'
+import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, offeringTermsOverlap, splitUnplacedTimetableCourses, TIMETABLE_CATEGORY_COLOR_COUNT, timetableCategoryColorsForCourses, timetableCategoryForCourse, timetableLegendForSlots } from './timetablePreview'
 
 // 学期全体と個別タームの授業が、同じ週に行われるかを検証する。
 describe('開講期間の重複判定', () => {
@@ -243,11 +243,12 @@ describe('時間割カードの科目区分', () => {
     expect(timetableCategoryForCourse('ADV', new Set(), groups).orderIndex).toBe(1)
   })
 
-  // 要件グループに属さず常時共通単位となる科目だけは、共通単位色へまとめる。
+  // 選択一覧に独立表示されない共通単位科目は、グループ・個別指定どちらも共通単位色へまとめる。
   it('選択区分のない共通単位科目には共通単位の区分を割り当てる', () => {
     const groups = [
       { id: 'humanities', name: '人文・社会', kind: 'elective', subjects: ['HUM'] },
       { id: 'advanced', name: '上級科目', kind: 'elective', subjects: ['ADV'] },
+      { id: 'common-only', name: '直接共通', kind: 'elective', required: 0, countAsCommon: true, subjects: ['COMMON'] },
     ]
     expect(timetableCategoryForCourse('COMMON', new Set(), groups, new Set(['COMMON']))).toEqual({
       key: 'common', label: '共通単位', isRequired: false, orderIndex: 2,
@@ -292,9 +293,9 @@ describe('時間割カードの科目区分', () => {
     ])
   })
 
-  // 10色までは別々に使い、要件カテゴリが11個以上ある場合だけ色を循環する。
-  it('10区分までは別色にし、11番目の区分だけ先頭色へ循環する', () => {
-    const groups = Array.from({ length: 12 }, (_, index) => ({
+  // 13色までは別々に使い、要件カテゴリが14個以上ある場合だけ色を循環する。
+  it('13区分までは別色にし、14番目の区分だけ先頭色へ循環する', () => {
+    const groups = Array.from({ length: 15 }, (_, index) => ({
       id: `group-${index}`, name: `区分${index}`, kind: 'elective', subjects: [`COURSE-${index}`],
     }))
     const courseFor = (index: number) => ({
@@ -303,9 +304,9 @@ describe('時間割カードの科目区分', () => {
       termType: '前学期', offeredTerms: ['前学期'], options: [],
     })
     const colorsFor = (indices: number[]) => timetableCategoryColorsForCourses(indices.map(courseFor))
-    const firstTen = colorsFor(Array.from({ length: 10 }, (_, index) => index))
-    expect(firstTen.map(({ colorIndex }) => colorIndex)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-    expect(colorsFor([0, 10]).map(({ colorIndex }) => colorIndex)).toEqual([0, 0])
+    const firstThirteen = colorsFor(Array.from({ length: TIMETABLE_CATEGORY_COLOR_COUNT }, (_, index) => index))
+    expect(firstThirteen.map(({ colorIndex }) => colorIndex)).toEqual(Array.from({ length: TIMETABLE_CATEGORY_COLOR_COUNT }, (_, index) => index))
+    expect(colorsFor([0, TIMETABLE_CATEGORY_COLOR_COUNT]).map(({ colorIndex }) => colorIndex)).toEqual([0, 0])
     expect(colorsFor([8])[0].colorIndex).toBe(colorsFor([0, 8])[1].colorIndex)
   })
 

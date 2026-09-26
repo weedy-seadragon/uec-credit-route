@@ -6,6 +6,9 @@ import { classifyTimelessCourse } from './onDemand'
 import type { TimelessCourseKind } from './onDemand'
 import type { OfferingWithSlots } from './onDemand'
 
+/** 必修色とは別に、選択区分へ固定で割り当てる配色の数。 */
+export const TIMETABLE_CATEGORY_COLOR_COUNT = 13
+
 /** プロフィールと再履修状態で開講候補を絞った、プレビュー用の1科目。 */
 export interface TimetablePreviewCourse {
   code: string
@@ -45,6 +48,8 @@ export interface TimetableRequirementGroup {
   name: string
   label?: string
   kind: string
+  required?: number
+  countAsCommon?: boolean
   subjects: readonly string[]
 }
 
@@ -57,7 +62,10 @@ export function timetableCategoryForCourse(
 ): TimetablePreviewCategory {
   // 必修判定はMainPageから渡されたrequiredCodesを唯一の基準にする。
   if (requiredCodes.has(code)) return { key: 'required', label: '必修', isRequired: true, orderIndex: -1 }
-  const colorGroups = groups.filter((group) => group.kind === 'elective' || group.kind === 'elective-required')
+  const colorGroups = groups.filter((group) =>
+    (group.kind === 'elective' || group.kind === 'elective-required')
+    && (group.required === undefined || group.required > 0),
+  )
   const orderIndexById = new Map<string, number>()
   // 選択区分は全要件から番号を決め、今選択されている科目に左右されないようにする。
   for (const group of colorGroups) {
@@ -137,10 +145,10 @@ export function timetableCategoryColorsForCourses(courses: readonly TimetablePre
     if (first.isRequired !== second.isRequired) return first.isRequired ? -1 : 1
     return first.orderIndex - second.orderIndex
   })
-  // 必修以外は10色を使い、11番目以降の区分だけ先頭から色を循環する。
+  // 必修以外は13色を使い、14番目以降の区分だけ先頭から色を循環する。
   return ordered.map((category) => category.isRequired
     ? category
-    : { ...category, colorIndex: category.orderIndex % 10 })
+    : { ...category, colorIndex: category.orderIndex % TIMETABLE_CATEGORY_COLOR_COUNT })
 }
 
 /** 表示学期のコマに出ている区分だけを、全科目で決めた色番号の凡例にする。 */

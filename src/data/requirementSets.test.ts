@@ -1,7 +1,8 @@
 // 年度別に要件・科目マスタを切り替える入口を検証するテスト。
 import { describe, expect, it } from 'vitest'
-import { evaluateRequirements, type GroupResult } from '../domain/requirements'
-import { entryYearLabel, findSubjectUsages, findSubjectUsagesForProfile, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode } from './requirementSets'
+import { evaluateRequirements, type GroupResult, type RequirementGroup } from '../domain/requirements'
+import { entryYearLabel, findSubjectUsages, findSubjectUsagesForProfile, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, programOptions } from './requirementSets'
+import { TIMETABLE_CATEGORY_COLOR_COUNT } from '../domain/timetablePreview'
 
 /** 判定結果のグループ木から、指定IDのグループを再帰的に探す。 */
 function findGroupById(groups: readonly GroupResult[], id: string): GroupResult | undefined {
@@ -306,5 +307,32 @@ describe('年度別の要件・科目マスタ選択', () => {
 
     expect(findGroupById(result.groups, 'major-req')?.contribution).toBe(2)
     expect(findGroupById(result.groups, 'major-sel')?.contribution).toBe(0)
+  })
+})
+
+// 全年度・全プログラムで、選択区分と共通単位を13色以内に表示できることを検証する。
+describe('時間割区分色の要件データ上限', () => {
+  it('全要件セットの選択区分と共通単位が13色以内に収まる', () => {
+    const counts = programOptions.map((profile) => {
+      const requirementSet = getRequirementSet(profile.entryYear, profile.course, profile.cluster, profile.program)
+      if (!requirementSet) throw new Error(`要件セットが見つかりません: ${profile.entryYear}/${profile.program}`)
+      const electiveGroupIds = new Set<string>()
+      // 入れ子を含む要件木から、選択系の境界グループだけを集める。
+      const collectElectiveIds = (groups: readonly RequirementGroup[]): void => {
+        for (const group of groups) {
+          // IDが同じ区分は1つの色として数える。
+          if ((group.kind === 'elective' || group.kind === 'elective-required') && group.required > 0) electiveGroupIds.add(group.id)
+          // 上位グループの下に選択境界があれば、そこまで再帰して確認する。
+          if (group.children) collectElectiveIds(group.children)
+        }
+      }
+      collectElectiveIds(requirementSet.groups)
+      // 共通単位も固定色を持つ1区分として数える。
+      return { profile, count: electiveGroupIds.size + 1 }
+    })
+
+    const maximum = Math.max(...counts.map(({ count }) => count))
+    const maximumProfiles = counts.filter(({ count }) => count === maximum).map(({ profile }) => `${profile.entryYear}/${profile.course}/${profile.cluster ?? ''}/${profile.program}`)
+    expect(maximum, `最大区分数のプロフィール: ${maximumProfiles.join(', ')}`).toBeLessThanOrEqual(TIMETABLE_CATEGORY_COLOR_COUNT)
   })
 })
