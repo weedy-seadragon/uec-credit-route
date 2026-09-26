@@ -318,8 +318,9 @@ function resolveOfferingsByTermOnly<O extends OfferingLike>(
 
 /**
  * シラバスのクラス表記（sectionLabel）が、このプロフィールの受講するセクションを指しているかを返す。
- * 対応している表記は2種類だけ：
+ * 対応している表記：
  * - 「（Aクラス）」「（クラスA）」… Ⅰ類の A/B/C クラス（profile.classIABC）と比べる
+ * - 「（1クラス）」「（2クラス）」「（3クラス）」… 対応するⅠ類 A/B/C クラスと比べる
  * - 「（Ⅰ類）」「（海外）（Ⅱ類）」… 類（cluster）と比べる
  * 全角英字・ローマ数字の字体の違いは NFKC 正規化でそろえる（「Ａ」→「A」、「Ⅰ」→「I」）。
  */
@@ -336,6 +337,9 @@ export function sectionLabelMatchesProfile(
     const letter = profile.classIABC
     const classPattern = new RegExp(`(?<![A-Za-z0-9])${letter}クラス|クラス${letter}(?![A-Za-z0-9])`)
     if (classPattern.test(normalized)) return true
+    // Ⅰ類のクラスを数字で表記するシラバスでは、A/B/Cを1/2/3クラスに対応させる。
+    const numericClass = profile.classIABC === 'A' ? '1' : profile.classIABC === 'B' ? '2' : '3'
+    if (new RegExp(`(?<![0-9])${numericClass}クラス(?![0-9])`).test(normalized)) return true
   }
   // 類の表記（NFKC 後は「I類」「II類」「III類」）。「I類」が「II類」の一部として一致しないよう前を確認する。
   return new RegExp(`(?<![A-Za-z])${cluster}類`).test(normalized)
@@ -365,6 +369,21 @@ export function resolveOfferingsForProfile<O extends OfferingLike>(
 ): O[] | undefined {
   if (offerings.length > 0 && offerings.every((o) => o.slots.length === 0)) {
     return resolveOfferingsByTermOnly(offerings, isRetaking, subjectTermType, profile, cluster)
+  }
+  // 1/2/3クラス表記が同一学期にそろう場合は、Ⅰ類のA/B/C対応を使って時限を決める。
+  const numericClassLabels = offerings.map((offering) => {
+    const normalized = offering.sectionLabel?.normalize('NFKC') ?? ''
+    return normalized.match(/(?<![0-9])([123])クラス(?![0-9])/)?.[1]
+  })
+  const hasCompleteAbcClassSet =
+    cluster === 'I' &&
+    profile.classIABC != null &&
+    offerings.length >= 3 &&
+    new Set(offerings.map((offering) => offering.term)).size === 1 &&
+    ['1', '2', '3'].every((classNumber) => numericClassLabels.includes(classNumber))
+  if (hasCompleteAbcClassSet) {
+    const matchedNumericSection = offerings.filter((offering) => sectionLabelMatchesProfile(offering.sectionLabel, profile, cluster))
+    if (matchedNumericSection.length === 1) return matchedNumericSection
   }
   // そのofferingに一致するclassIdのうち、実際に一致した1つを返す（無ければundefined）。
   // 「どのclassIdで一致したか」を後段で見て、同じclassId（例:同じプログラム名）が

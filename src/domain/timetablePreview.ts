@@ -258,6 +258,17 @@ export function buildTimetablePreview(
       appendSelectedOption(slots, course, retakePlacement)
       continue
     }
+    // クラス判定できず候補一覧へ回った場合も、同じ学期に時限が1種類だけなら自動配置する。
+    const unresolvedSectionsShareOneSlot =
+      options.length === 0 &&
+      allTermSections.length > 0 &&
+      allTermSections.every((section) => section.slots.length > 0) &&
+      new Set(allTermSections.map((section) => section.term)).size === 1 &&
+      new Set(allTermSections.map((section) => slotKey(section.slots))).size === 1
+    if (unresolvedSectionsShareOneSlot) {
+      appendSelectedOption(slots, course, savedOption ?? allTermSections[0])
+      continue
+    }
     // 低学年科目は時限が異なる候補だけを選択対象にし、同時限なら代表候補を配置する。
     if (course.chooseAmongSections && options.length > 1) {
       const selected = findSelectedOption(options, selectedTimetableCodes[course.code])

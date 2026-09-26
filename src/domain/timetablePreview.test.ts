@@ -384,6 +384,17 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
     expect(result.unplaced).toEqual([])
   })
 
+  // クラス判定できなくても、候補の時限が一つだけなら選択欄を出さず表に置く。
+  it('no-classでも時限候補が1種類なら自動で時間割に表示する', () => {
+    const result = buildTimetablePreview([{
+      code: 'ONE-SLOT', name: '生産管理', termType: '後学期', offeredTerms: ['後学期'], options: [], sections: [
+        { term: '後学期', timetableCode: 'ONE-SLOT-1', teacher: '教員甲', slots: [{ day: '水', period: 3 }] },
+      ],
+    }], '後学期')
+    expect(result.slots.map((slot) => [slot.day, slot.period])).toEqual([['水', 3]])
+    expect(result.unplaced).toEqual([])
+  })
+
   // 再履修専用の時限を解決できなくても、全セクションから選べる状態にする。
   it('再履修で専用枠が無い科目も全セクションから選べる', () => {
     const course = {

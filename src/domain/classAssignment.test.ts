@@ -3,6 +3,7 @@
 import { describe, expect, it } from 'vitest'
 import { classIdMatchesProfile, hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, resolveTimetablePreviewOfferings, sectionLabelMatchesProfile } from './classAssignment'
 import type { ClassAssignmentEntry, ClassProfile } from './classAssignment'
+import { getClassAssignments, getSubjectsByCode } from '../data/requirementSets'
 
 describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () => {
   it('「クラスN」は1年次クラス（全類共通）と一致するかどうかで判定する', () => {
@@ -376,7 +377,29 @@ describe('resolveSlotsForProfile（複数セクションからの解決）', () 
   })
 })
 
+// プロフィールに合うシラバスの開講枠が一意に選ばれることを検証する。
 describe('resolveOfferingsForProfile（曜日時限以外のフィールドも含めて一致したofferingを返す版）', () => {
+  it('Ⅰ類のA/B/Cクラスをシラバスの1/2/3クラスへ対応させて時限を選ぶ', () => {
+    const offerings = [
+      { term: '後学期', slots: [{ day: '火', period: 4 }], sectionLabel: '（３クラス）', syllabusUrl: 'https://example.com/3' },
+      { term: '後学期', slots: [{ day: '水', period: 4 }], sectionLabel: '（２クラス）', syllabusUrl: 'https://example.com/2' },
+      { term: '後学期', slots: [{ day: '木', period: 4 }], sectionLabel: '（１クラス）', syllabusUrl: 'https://example.com/1' },
+    ]
+    // シラバスの数字表記を使うので、既存のプログラム別クラス割当が無くてもABCクラスで選べる。
+    expect(resolveOfferingsForProfile('COM402a', offerings, [], { classIABC: 'A' }, 'I')).toEqual([offerings[2]])
+    expect(resolveOfferingsForProfile('COM402a', offerings, [], { classIABC: 'B' }, 'I')).toEqual([offerings[1]])
+    expect(resolveOfferingsForProfile('COM402a', offerings, [], { classIABC: 'C' }, 'I')).toEqual([offerings[0]])
+  })
+
+  it('2025年度のアルゴリズム論第一はA=1、B=2、C=3のシラバス表記に対応した時限を返す', () => {
+    const offerings = getSubjectsByCode(2025).get('COM402a')?.offerings ?? []
+    const assignments = getClassAssignments()
+    // 実データのシラバス表記・クラス割当を使い、3クラスそれぞれの実際の時限を確かめる。
+    expect(resolveSlotsForProfile('COM402a', offerings, assignments, { classIABC: 'A' }, 'I')).toEqual([{ day: '木', period: 4 }])
+    expect(resolveSlotsForProfile('COM402a', offerings, assignments, { classIABC: 'B' }, 'I')).toEqual([{ day: '水', period: 4 }])
+    expect(resolveSlotsForProfile('COM402a', offerings, assignments, { classIABC: 'C' }, 'I')).toEqual([{ day: '火', period: 4 }])
+  })
+
   it('クラスごとにsyllabusUrlが違う複数セクションから、このプロフィールの1件だけを返す（MainPage.tsxのnameLinkがシラバスリンクを絞り込むのに使う）', () => {
     const offerings = [
       { term: '前学期', slots: [{ day: '火', period: 2 }], syllabusUrl: 'https://example.com/a' },
