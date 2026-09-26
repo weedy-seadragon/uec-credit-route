@@ -944,6 +944,7 @@ select {
 /* 土曜などの科目と時限未確定の科目は、表の直下で確認できるようにする。 */
 .timetable-other-days,
 .timetable-on-demand,
+.timetable-intensive,
 .timetable-unplaced {
   margin-top: 1rem;
 }
@@ -951,6 +952,7 @@ select {
 /* 表の下に並ぶ科目一覧の見出しを、説明や一覧に近づける。 */
 .timetable-other-days h3,
 .timetable-on-demand h3,
+.timetable-intensive h3,
 .timetable-unplaced h3 {
   margin: 0 0 0.3rem;
 }

@@ -44,7 +44,7 @@ import { normalizeDuplicateSubjectRecords, preferredSubjectCode, setSubjectStatu
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
 import TimetablePreview from '../components/TimetablePreview'
 import type { TimetablePreviewCourse } from '../domain/timetablePreview'
-import { isOnDemandCourse } from '../domain/onDemand'
+import { classifyTimelessCourse } from '../domain/onDemand'
 import AgentToolsBridge from '../components/AgentToolsBridge'
 import type { AgentHandlers } from '../components/AgentToolsBridge'
 import { parseAgentStatus, searchSubjects, summarizeRequirementStatus } from '../domain/agentTools'
@@ -1259,15 +1259,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     // シラバスから一意の時限を取得できないため、誤ってオンデマンドと表示しない。
     if (subject?.name.startsWith('情報工学工房')) return unavailable('担当教員により開講時限が異なります')
     const note = subject?.note
-    // 表示と時間割プレビューで、オンデマンドの判定を同じ関数へ委ねる。
-    if (isOnDemandCourse(subject.name, note, offerings)) {
+    // 表示と時間割プレビューで、時限なし科目の分類を同じ関数へ委ねる。
+    const timelessKind = classifyTimelessCourse(subject.name, note, offerings)
+    if (timelessKind === 'on-demand') {
       return <span style={{ marginLeft: '0.4em' }}>オンデマンド</span>
     }
     if (offerings.every((o) => o.slots.length === 0)) {
-      if (note?.includes('夏期集中')) return <span style={{ marginLeft: '0.4em' }}>夏期集中</span>
-      if (note?.includes('冬期集中')) return <span style={{ marginLeft: '0.4em' }}>冬期集中</span>
-      // 夏期・冬期以外の集中講義は、理由つきの注意書きではなく簡潔な開講形態だけを示す。
-      if (note?.includes('集中')) return <span style={{ marginLeft: '0.4em' }}>集中講義</span>
+      if (timelessKind === 'summer-intensive') return <span style={{ marginLeft: '0.4em' }}>夏期集中</span>
+      if (timelessKind === 'winter-intensive') return <span style={{ marginLeft: '0.4em' }}>冬期集中</span>
+      // 夏期・冬期以外の集中講義は、理由つき注意ではなく簡潔な区分を示す。
+      if (timelessKind === 'intensive') return <span style={{ marginLeft: '0.4em' }}>集中講義</span>
       // 上の共通判定に当てはまらない、時限なしの科目は断定しない。
       return unavailable('曜日時限を確認してください')
     }

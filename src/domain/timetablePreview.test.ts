@@ -22,14 +22,22 @@ describe('開講期間の重複判定', () => {
 
 // 学期の選別、クラス候補の確定、欄外表示の理由をまとめて検証する。
 describe('buildTimetablePreview（修得見込の時間割）', () => {
-  // 全セクションの時限が空の通常科目だけ、未確定の理由から分けて示す。
-  it('オンデマンド科目を専用一覧に分け、集中講義は未確定に残す', () => {
+  // 時限の無い科目をオンデマンド・集中講義・未確定へ分類して混同しない。
+  it('オンデマンドと集中講義を専用一覧へ分け、研究系科目は未確定に残す', () => {
     const result = buildTimetablePreview([
       { code: 'A', name: '通常科目', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
       { code: 'B', name: '集中科目', note: '夏期集中', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
+      { code: 'C', name: '集中科目2', note: '冬期集中', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
+      { code: 'D', name: 'その他集中', note: '隔年集中開講', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
+      { code: 'E', name: '輪講A', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
     ], '前学期')
     expect(result.onDemand).toEqual([{ code: 'A', name: '通常科目' }])
-    expect(result.unplaced).toEqual([{ code: 'B', name: '集中科目', reason: 'no-slot' }])
+    expect(result.intensive).toEqual([
+      { code: 'B', name: '集中科目', kind: 'summer-intensive' },
+      { code: 'C', name: '集中科目2', kind: 'winter-intensive' },
+      { code: 'D', name: 'その他集中', kind: 'intensive' },
+    ])
+    expect(result.unplaced).toEqual([{ code: 'E', name: '輪講A', reason: 'no-slot' }])
     expect(result.slots).toEqual([])
   })
 
@@ -157,5 +165,15 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
     expect(maxConcurrentOfferingCount(all.slots.map((slot) => slot.offeringTerm))).toBe(2)
     expect(visible.slots.map((slot) => slot.code)).toEqual(['A'])
     expect(maxConcurrentOfferingCount(visible.slots.map((slot) => slot.offeringTerm))).toBe(1)
+  })
+
+  // 別枠の集中講義も表示切替の対象となり、非表示時は結果一覧から外れる。
+  it('集中講義を非表示にすると集中講義一覧から外す', () => {
+    const courses = [{
+      code: 'A', name: '集中科目', note: '夏期集中', termType: '前学期', offeredTerms: ['前学期'],
+      offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }],
+    }]
+    expect(buildVisibleTimetablePreview(courses, '前学期', new Set()).intensive).toHaveLength(1)
+    expect(buildVisibleTimetablePreview(courses, '前学期', new Set(['A'])).intensive).toEqual([])
   })
 })

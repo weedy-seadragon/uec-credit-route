@@ -8,6 +8,11 @@ import { loadHiddenTimetableCourses, saveHiddenTimetableCourses } from '../stora
 /** グリッドに表示する平日。土曜などの授業は表の下にまとめる。 */
 const DAYS: readonly string[] = ['月', '火', '水', '木', '金']
 const BASE_TERMS = ['前学期', '後学期'] as const
+const INTENSIVE_LABELS = {
+  'summer-intensive': '夏期集中',
+  'winter-intensive': '冬期集中',
+  intensive: '集中講義',
+} as const
 
 /** 画面に並べる開講期を、基本の前後学期と修得見込科目の実際の開講期から作る。 */
 function availableTerms(courses: readonly TimetablePreviewCourse[]): string[] {
@@ -78,6 +83,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
   const termCourseCodes = new Set([
     ...allCoursesResult.slots.map((slot) => slot.code),
     ...allCoursesResult.onDemand.map((course) => course.code),
+    ...allCoursesResult.intensive.map((course) => course.code),
     ...allCoursesResult.unplaced.map((course) => course.code),
   ])
   const termCourses = courses.filter((course) => termCourseCodes.has(course.code))
@@ -179,7 +185,21 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
               </ul>
             </div>
           )}
-          {result.slots.length === 0 && result.unplaced.length === 0 && result.onDemand.length === 0 && (
+          {result.intensive.length > 0 && (
+            <div className="timetable-intensive">
+              <h3>集中講義（{result.intensive.length}科目）</h3>
+              <ul>
+                {/* 集中講義は時限セルを作らず、注記から分かる区分を添えて一覧に残す。 */}
+                {result.intensive.map((course) => (
+                  <li key={course.code}>
+                    <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}</Link>
+                    {' '}（{INTENSIVE_LABELS[course.kind]}）
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {result.slots.length === 0 && result.unplaced.length === 0 && result.onDemand.length === 0 && result.intensive.length === 0 && (
             <p className="section-guidance">この開講期に表示中の修得見込科目はありません。</p>
           )}
           {result.unplaced.length > 0 && (

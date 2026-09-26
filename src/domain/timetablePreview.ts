@@ -2,7 +2,7 @@
 // 複数の開講候補があるときは、すべて同じ曜日時限に決まる場合だけグリッドに置く。
 
 import type { ScheduleOption, ScheduleSlot } from './scheduleConflicts'
-import { isOnDemandCourse } from './onDemand'
+import { classifyTimelessCourse } from './onDemand'
 import type { OfferingWithSlots } from './onDemand'
 
 /** プロフィールと再履修状態で開講候補を絞った、プレビュー用の1科目。 */
@@ -36,6 +36,7 @@ export interface TimetablePreviewResult {
   slots: TimetablePreviewSlot[]
   unplaced: UnplacedTimetableCourse[]
   onDemand: { code: string; name: string }[]
+  intensive: { code: string; name: string; kind: 'summer-intensive' | 'winter-intensive' | 'intensive' }[]
 }
 
 /** 春・夏タームは前学期、秋・冬タームは後学期として扱う。 */
@@ -96,6 +97,7 @@ export function buildTimetablePreview(
   const slots: TimetablePreviewSlot[] = []
   const unplaced: UnplacedTimetableCourse[] = []
   const onDemand: { code: string; name: string }[] = []
+  const intensive: TimetablePreviewResult['intensive'] = []
 
   // 実際のシラバスの開講期を優先し、情報がない科目だけ学修要覧の学期を使う。
   for (const course of courses) {
@@ -106,9 +108,15 @@ export function buildTimetablePreview(
     // 別の学期だけに開講する科目は、この学期のプレビューから外す。
     if (!belongsToTerm) continue
 
-    // 曜日時限が全セクションで空の通常科目は、専用の一覧に分ける。
-    if (isOnDemandCourse(course.name, course.note, course.offerings)) {
+    // 曜日時限のない科目を、オンデマンド・集中講義・その他に共通基準で分類する。
+    const timelessKind = classifyTimelessCourse(course.name, course.note, course.offerings)
+    if (timelessKind === 'on-demand') {
       onDemand.push({ code: course.code, name: course.name })
+      continue
+    }
+    // 集中講義は時限なし一覧へ移し、注記から夏期・冬期・その他の区分を保つ。
+    if (timelessKind === 'summer-intensive' || timelessKind === 'winter-intensive' || timelessKind === 'intensive') {
+      intensive.push({ code: course.code, name: course.name, kind: timelessKind })
       continue
     }
 
@@ -150,7 +158,7 @@ export function buildTimetablePreview(
     }
   }
 
-  return { slots, unplaced, onDemand }
+  return { slots, unplaced, onDemand, intensive }
 }
 
 /** 非表示にした科目を除いて、時間割と重複判定に使う結果を作る。 */

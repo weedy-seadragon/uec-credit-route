@@ -1,6 +1,6 @@
 // オンデマンド判定が、曜日時限と実施形態の注記を共通の基準で扱うことを確認する。
 import { describe, expect, it } from 'vitest'
-import { isOnDemandCourse } from './onDemand'
+import { classifyTimelessCourse, isOnDemandCourse } from './onDemand'
 
 // 時限が空の通常科目と、同じ状態でも対象外となる科目を検証する。
 describe('isOnDemandCourse', () => {
@@ -18,5 +18,24 @@ describe('isOnDemandCourse', () => {
     expect(isOnDemandCourse('輪講A', undefined, [{ slots: [] }])).toBe(false)
     expect(isOnDemandCourse('卒業研究A', undefined, [{ slots: [] }])).toBe(false)
     expect(isOnDemandCourse('情報工学工房A', undefined, [{ slots: [] }])).toBe(false)
+  })
+})
+
+// 時限の無い科目を、オンデマンドと集中講義の種類へ共通分類する。
+describe('classifyTimelessCourse', () => {
+  // noteの夏期・冬期表記を残し、その他の集中表記も独立した区分にする。
+  it('夏期・冬期・その他の集中講義を区別する', () => {
+    expect(classifyTimelessCourse('通常科目', '夏期集中講義', [{ slots: [] }])).toBe('summer-intensive')
+    expect(classifyTimelessCourse('通常科目', '冬期集中', [{ slots: [] }])).toBe('winter-intensive')
+    expect(classifyTimelessCourse('通常科目', '隔年集中開講', [{ slots: [] }])).toBe('intensive')
+  })
+
+  // 同じ空時限でも、通常科目だけをオンデマンドに分類し、個別実施科目は対象外にする。
+  it('オンデマンド・研究系科目・未確定の条件を混同しない', () => {
+    expect(classifyTimelessCourse('通常科目', undefined, [{ slots: [] }])).toBe('on-demand')
+    expect(classifyTimelessCourse('輪講A', '夏期集中', [{ slots: [] }])).toBe(null)
+    expect(classifyTimelessCourse('卒業研究A', undefined, [{ slots: [] }])).toBe(null)
+    expect(classifyTimelessCourse('情報工学工房A', undefined, [{ slots: [] }])).toBe(null)
+    expect(classifyTimelessCourse('通常科目', '夏期集中', [{ slots: [{ day: '月', period: 1 }] }])).toBe(null)
   })
 })
