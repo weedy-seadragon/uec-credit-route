@@ -2,6 +2,8 @@
 // 複数の開講候補があるときは、すべて同じ曜日時限に決まる場合だけグリッドに置く。
 
 import type { ScheduleOption, ScheduleSlot } from './scheduleConflicts'
+import { offeringTermsOverlap, periodsOf } from './offeringTerms'
+export { offeringTermsOverlap } from './offeringTerms'
 import { classifyTimelessCourse } from './onDemand'
 import type { TimelessCourseKind } from './onDemand'
 import type { OfferingWithSlots } from './onDemand'
@@ -175,24 +177,6 @@ const SEMESTER_BY_TERM: Readonly<Record<string, string>> = {
   '夏ﾀｰﾑ': '前学期',
   '秋ﾀｰﾑ': '後学期',
   '冬ﾀｰﾑ': '後学期',
-}
-
-/** 学期全体の授業は、その中の両タームで開講するものとして期間を表す。 */
-const PERIODS_BY_TERM: Readonly<Record<string, readonly string[]>> = {
-  '前学期': ['春ﾀｰﾑ', '夏ﾀｰﾑ'],
-  '後学期': ['秋ﾀｰﾑ', '冬ﾀｰﾑ'],
-}
-
-/** 開講期を、実際に授業が行われるタームの一覧にする。 */
-function periodsOf(term: string): readonly string[] {
-  // 個別タームや未知の開講期は、その名前の期間だけに属する。
-  return PERIODS_BY_TERM[term] ?? [term]
-}
-
-/** 同じ曜日時限の2科目について、開講する期間が重なるか判定する。 */
-export function offeringTermsOverlap(first: string, second: string): boolean {
-  // 前学期と春は重なるが、春と夏は別の期間なので重ならない。
-  return periodsOf(first).some((period) => periodsOf(second).includes(period))
 }
 
 /** 同じ曜日時限に置かれる科目のうち、同時期に開講する最大数を返す。 */

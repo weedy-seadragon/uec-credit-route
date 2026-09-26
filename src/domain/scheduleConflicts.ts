@@ -1,5 +1,6 @@
 // 修得予定の科目どうしで、曜日・時限が必ず重複する組み合わせを見つける純粋ロジック。
 // Reactや科目マスタには依存させず、画面側で解決した「受講候補」だけを受け取る。
+import { offeringTermsOverlap } from './offeringTerms'
 
 /** 1コマぶんの曜日・時限。曜日と時限が同じなら同じ授業時間とみなす。 */
 export interface ScheduleSlot {
@@ -25,11 +26,10 @@ export interface ScheduleConflict {
   secondCode: string
 }
 
-/** 同一学期・同一曜日・同一時限のコマが1つでもあれば、2つのセクションは両立できない。 */
+/** 開講期間が重なり、同じ曜日・時限が1つでもあれば2つのセクションは両立できない。 */
 function optionsOverlap(first: ScheduleOption, second: ScheduleOption): boolean {
-  // 開講学期が異なれば、同じ曜日時限でも同じ週には受講しないため重複ではない。
-  if (first.term !== second.term) return false
-  // 片方のセクションの各コマを見て、もう片方に同じコマがあるか調べる。
+  // 学期全体とその中のタームを同時期として扱い、同じコマがあるか調べる。
+  if (!offeringTermsOverlap(first.term, second.term)) return false
   for (const firstSlot of first.slots) {
     if (second.slots.some((secondSlot) => secondSlot.day === firstSlot.day && secondSlot.period === firstSlot.period)) {
       return true
