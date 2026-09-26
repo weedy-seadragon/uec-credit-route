@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, previewSemesterOf } from '../domain/timetablePreview'
 import type { TimetablePreviewCourse, TimetablePreviewSlot, UnplacedTimetableCourse } from '../domain/timetablePreview'
+import { TIMELESS_COURSE_LABELS } from '../domain/onDemand'
 import { loadHiddenTimetableCourses, saveHiddenTimetableCourses } from '../storage/timetableVisibility'
 import { loadTimetableOfferingSelection, saveTimetableOfferingSelection } from '../storage/timetableOfferingSelection'
 
@@ -31,7 +32,8 @@ const REASON_LABELS: Record<UnplacedTimetableCourse['reason'], string> = {
   'no-offering': 'シラバスの開講情報なし',
   'no-class': '受講クラスを特定できません',
   'no-slot': '曜日時限の記載なし',
-  'instructor-varies': '担当教員により開講時限が異なります',
+  'instructor-dependent': TIMELESS_COURSE_LABELS['instructor-dependent'],
+  lab: TIMELESS_COURSE_LABELS.lab,
   'ambiguous-term': '開講タームが複数候補',
   'ambiguous-slot': '曜日時限が複数候補',
 }

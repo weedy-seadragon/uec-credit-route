@@ -44,7 +44,7 @@ import { normalizeDuplicateSubjectRecords, preferredSubjectCode, setSubjectStatu
 import SubjectStatusSelect from '../components/SubjectStatusSelect'
 import TimetablePreview from '../components/TimetablePreview'
 import type { TimetablePreviewCourse } from '../domain/timetablePreview'
-import { classifyTimelessCourse } from '../domain/onDemand'
+import { classifyTimelessCourse, TIMELESS_COURSE_LABELS } from '../domain/onDemand'
 import AgentToolsBridge from '../components/AgentToolsBridge'
 import type { AgentHandlers } from '../components/AgentToolsBridge'
 import { parseAgentStatus, searchSubjects, summarizeRequirementStatus } from '../domain/agentTools'
@@ -1252,25 +1252,20 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       // 当年度の開講なし注記は科目名の横（yearTermTag）へ出すため、曜日時限欄では重複させない。
       return null
     }
-    // 輪講・卒業研究は研究室ごとに実施形態が異なり、時間割として一律に示せない。
-    // slotsが空でも「オンデマンド」と推測せず、曜日時限の注記自体を表示しない。
-    if (subject?.name.startsWith('輪講') || subject?.name.startsWith('卒業研究')) return unavailable('研究室ごとに実施形態が異なります')
-    // 情報工学工房はオンデマンド授業ではなく、担当教員ごとに開講時限が異なる。
-    // シラバスから一意の時限を取得できないため、誤ってオンデマンドと表示しない。
-    if (subject?.name.startsWith('情報工学工房')) return unavailable('担当教員により開講時限が異なります')
     const note = subject?.note
-    // 表示と時間割プレビューで、時限なし科目の分類を同じ関数へ委ねる。
+    // メイン画面と時間割プレビューの両方で、実施形態の区分を共通関数へ委ねる。
     const timelessKind = classifyTimelessCourse(subject.name, note, offerings)
-    if (timelessKind === 'on-demand') {
-      return <span style={{ marginLeft: '0.4em' }}>オンデマンド</span>
+    // 研究室・担当教員ごとに実施形態が違う科目は、共有区分の理由を曜日時限欄に出す。
+    if (timelessKind === 'lab' || timelessKind === 'instructor-dependent') {
+      return unavailable(TIMELESS_COURSE_LABELS[timelessKind])
     }
-    if (offerings.every((o) => o.slots.length === 0)) {
-      if (timelessKind === 'summer-intensive') return <span style={{ marginLeft: '0.4em' }}>夏期集中</span>
-      if (timelessKind === 'winter-intensive') return <span style={{ marginLeft: '0.4em' }}>冬期集中</span>
-      // 夏期・冬期以外の集中講義は、理由つき注意ではなく簡潔な区分を示す。
-      if (timelessKind === 'intensive') return <span style={{ marginLeft: '0.4em' }}>集中講義</span>
-      // 上の共通判定に当てはまらない、時限なしの科目は断定しない。
-      return unavailable('曜日時限を確認してください')
+    // 通常の時限なし科目は、共有ラベルを短く表示する。
+    if (timelessKind === 'on-demand') {
+      return <span style={{ marginLeft: '0.4em' }}>{TIMELESS_COURSE_LABELS[timelessKind]}</span>
+    }
+    // 集中講義の区分名も共通マップから取り、プレビュー側と表示を一致させる。
+    if (timelessKind === 'summer-intensive' || timelessKind === 'winter-intensive' || timelessKind === 'intensive') {
+      return <span style={{ marginLeft: '0.4em' }}>{TIMELESS_COURSE_LABELS[timelessKind]}</span>
     }
     // 隔年度開講・開講年度により内容が変わる、といった注記は、実際に何か表示するときは
     // 併記しておく（2026-09-06。学域特別講義A/Bのような「毎年テーマは変わるが曜日時限は

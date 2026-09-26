@@ -1,6 +1,6 @@
 // オンデマンド判定が、曜日時限と実施形態の注記を共通の基準で扱うことを確認する。
 import { describe, expect, it } from 'vitest'
-import { classifyTimelessCourse, isOnDemandCourse } from './onDemand'
+import { classifyTimelessCourse, isOnDemandCourse, TIMELESS_COURSE_LABELS } from './onDemand'
 
 // 時限が空の通常科目と、同じ状態でも対象外となる科目を検証する。
 describe('isOnDemandCourse', () => {
@@ -33,9 +33,17 @@ describe('classifyTimelessCourse', () => {
   // 同じ空時限でも、通常科目だけをオンデマンドに分類し、個別実施科目は対象外にする。
   it('オンデマンド・研究系科目・未確定の条件を混同しない', () => {
     expect(classifyTimelessCourse('通常科目', undefined, [{ slots: [] }])).toBe('on-demand')
-    expect(classifyTimelessCourse('輪講A', '夏期集中', [{ slots: [] }])).toBe(null)
-    expect(classifyTimelessCourse('卒業研究A', undefined, [{ slots: [] }])).toBe(null)
-    expect(classifyTimelessCourse('情報工学工房A', undefined, [{ slots: [] }])).toBe(null)
+    expect(classifyTimelessCourse('輪講A', '夏期集中', [{ slots: [] }])).toBe('lab')
+    expect(classifyTimelessCourse('卒業研究A', undefined, [{ slots: [] }])).toBe('lab')
+    expect(classifyTimelessCourse('情報工学工房A', undefined, [{ slots: [] }])).toBe('instructor-dependent')
     expect(classifyTimelessCourse('通常科目', '夏期集中', [{ slots: [{ day: '月', period: 1 }] }])).toBe(null)
+  })
+
+  // 研究室単位・担当教員依存の共通区分を、時限の有無にかかわらず理由へ使う。
+  it('研究室と担当教員の区分を共有文言へ対応付ける', () => {
+    expect(classifyTimelessCourse('輪講A', undefined, [{ slots: [{ day: '月', period: 1 }] }])).toBe('lab')
+    expect(classifyTimelessCourse('情報工学工房A', undefined, [{ slots: [{ day: '月', period: 1 }] }])).toBe('instructor-dependent')
+    expect(TIMELESS_COURSE_LABELS.lab).toBe('研究室ごとに実施形態が異なります')
+    expect(TIMELESS_COURSE_LABELS['instructor-dependent']).toBe('担当教員により開講時限が異なります')
   })
 })

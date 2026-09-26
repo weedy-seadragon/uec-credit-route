@@ -37,7 +37,7 @@ describe('buildTimetablePreview（修得見込の時間割）', () => {
       { code: 'C', name: '集中科目2', kind: 'winter-intensive' },
       { code: 'D', name: 'その他集中', kind: 'intensive' },
     ])
-    expect(result.unplaced).toEqual([{ code: 'E', name: '輪講A', reason: 'no-slot' }])
+    expect(result.unplaced).toEqual([{ code: 'E', name: '輪講A', reason: 'lab' }])
     expect(result.slots).toEqual([])
   })
 
@@ -107,11 +107,11 @@ describe('buildTimetablePreview（修得見込の時間割）', () => {
         offerings: [{ slots: [] }], options: [] },
     ]
     expect(buildTimetablePreview(courses, '前学期').unplaced).toEqual([
-      { code: 'A', name: '情報工学工房A', reason: 'instructor-varies' },
-      { code: 'B', name: '輪講A', reason: 'no-class' },
+      { code: 'A', name: '情報工学工房A', reason: 'instructor-dependent' },
+      { code: 'B', name: '輪講A', reason: 'lab' },
     ])
     expect(buildTimetablePreview(courses, '後学期').unplaced).toEqual([
-      { code: 'A', name: '情報工学工房A', reason: 'instructor-varies' },
+      { code: 'A', name: '情報工学工房A', reason: 'instructor-dependent' },
     ])
   })
 

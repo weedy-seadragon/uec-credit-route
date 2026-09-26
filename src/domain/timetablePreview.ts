@@ -3,6 +3,7 @@
 
 import type { ScheduleOption, ScheduleSlot } from './scheduleConflicts'
 import { classifyTimelessCourse } from './onDemand'
+import type { TimelessCourseKind } from './onDemand'
 import type { OfferingWithSlots } from './onDemand'
 
 /** プロフィールと再履修状態で開講候補を絞った、プレビュー用の1科目。 */
@@ -38,7 +39,7 @@ export interface TimetablePreviewSlot extends ScheduleSlot {
 export interface UnplacedTimetableCourse {
   code: string
   name: string
-  reason: 'no-offering' | 'no-class' | 'no-slot' | 'instructor-varies' | 'ambiguous-term' | 'ambiguous-slot'
+  reason: 'no-offering' | 'no-class' | 'no-slot' | 'instructor-dependent' | 'lab' | 'ambiguous-term' | 'ambiguous-slot'
   /** 候補が複数ある理由の場合に、欄外の選択UIへ渡すセクション。 */
   options?: readonly TimetablePreviewOption[]
 }
@@ -48,7 +49,7 @@ export interface TimetablePreviewResult {
   slots: TimetablePreviewSlot[]
   unplaced: UnplacedTimetableCourse[]
   onDemand: { code: string; name: string }[]
-  intensive: { code: string; name: string; kind: 'summer-intensive' | 'winter-intensive' | 'intensive' }[]
+  intensive: { code: string; name: string; kind: Extract<TimelessCourseKind, 'summer-intensive' | 'winter-intensive' | 'intensive'> }[]
 }
 
 /** 春・夏タームは前学期、秋・冬タームは後学期として扱う。 */
@@ -126,6 +127,11 @@ export function buildTimetablePreview(
 
     // 曜日時限のない科目を、オンデマンド・集中講義・その他に共通基準で分類する。
     const timelessKind = classifyTimelessCourse(course.name, course.note, course.offerings)
+    if (timelessKind === 'lab' || timelessKind === 'instructor-dependent') {
+      // 研究室単位・担当教員依存の科目は一律の曜日時限に置かず、その共通区分を理由にする。
+      unplaced.push({ code: course.code, name: course.name, reason: timelessKind })
+      continue
+    }
     if (timelessKind === 'on-demand') {
       onDemand.push({ code: course.code, name: course.name })
       continue
@@ -145,7 +151,7 @@ export function buildTimetablePreview(
     }
     // 通年注記があり時限候補を示せない科目は、両学期に残して担当教員への確認を促す。
     if (isYearRound && (options.length === 0 || options.every((option) => option.slots.length === 0))) {
-      unplaced.push({ code: course.code, name: course.name, reason: 'instructor-varies' })
+      unplaced.push({ code: course.code, name: course.name, reason: 'instructor-dependent' })
       continue
     }
     // 受講クラスを絞れず、その学期の開講候補を得られない場合は配置しない。
