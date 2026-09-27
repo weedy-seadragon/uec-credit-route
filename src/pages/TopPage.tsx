@@ -123,6 +123,23 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
+        {/* Ver.1.2.4では、WebMCPで時間割プレビューを読めるようにし、学域特別講義Bの科目名にテーマ例を添えた。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(Ver.1.2.3→Ver.1.2.4)</span>
+            <span className="release-note-date">アップデート日 2026/9/28</span>
+          </p>
+          <h3 className="release-note-category">機能追加</h3>
+          <ul className="release-note-items">
+            <li>WebMCPで、AIエージェントから時間割プレビューの内容を確認できるようにしました。前学期・後学期ごとの曜日時限の表や、オンデマンド・集中講義の科目、授業の選択が必要な科目を、画面で選んだ授業・表示設定どおりに読み取れます</li>
+          </ul>
+          <h3 className="release-note-category">表示の改善</h3>
+          <ul className="release-note-items">
+            <li>学域特別講義Bの科目名を「学域特別講義B（著作権、自動車など）」とし、どんなテーマの授業が含まれるかを分かりやすくしました。これまでの登録はそのまま引き継がれます</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（15件）">
         {/* Ver.1.2.3では、学修要覧とシラバスで開講学期が食い違う科目の学期をシラバスに合わせた。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -135,8 +152,6 @@ export default function TopPage() {
             <li>夜間主の総合コミュニケーション科学で、シラバスへのリンクが表示されていなかった不具合を修正しました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（14件）">
         {/* Ver.1.2.2では、データの読み込みを年度別にして軽くし、開講情報が無かった科目の曜日時限・シラバスを補った。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
