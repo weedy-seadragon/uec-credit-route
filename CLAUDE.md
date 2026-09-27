@@ -73,7 +73,7 @@
   そのまま保持する
 - **ブランチ運用（2026-09-06〜、サイト公開に伴い変更）**：`main`へのpushは`.github/workflows/deploy.yml`でGitHub Pagesへの自動デプロイをトリガーする。通常の開発作業は`dev`ブランチで行い、`dev`へのコミット・プッシュは（開発者の指示により）確認なしで進めてよい。`main`へのマージ（＝実際に公開サイトが更新される操作）は、コミット・プッシュとは別の重みを持つ操作なので、マージする前に開発者に確認する
 
-## 現在の状態（要約、2026-09-27時点）
+## 現在の状態（要約、2026-09-28時点）
 
 **詳しい経緯（いつ・なぜ・どう直したか）は `docs/PROGRESS_LOG.md` に時系列で全部残してある。** ここには「今どうなっているか」だけを書く。同じ種類の不具合を調べるとき・過去の判断の理由を知りたいときはPROGRESS_LOG.mdを検索すること。「次にやること」は`docs/PROJECT_STATUS.md`の「次の確認候補」にまとめてあるので、そちらを参照（このファイルには残タスク一覧は置かない）。
 
@@ -101,7 +101,7 @@
     夜間主の「美術」「経済学」）だけにする。判断に迷ったら`docs/YOURAN_2023_COMPARISON.md`の該当箇所を参照
 - 複数セクション（クラスごとに教員・時限が違う）科目は、`data/timetable/class_assignment_filled.csv`→`class_assignment.json`で、プロフィールのクラス情報と突き合わせて一意に解決する。未記入の`class_id`はない
   - 曜日時限が「他」で空の科目（情報領域演習第三・インターンシップ等）や「1クラス・2クラス・3クラス」表記の科目（アルゴリズム論第一）は、offeringの`sectionLabel`（シラバス一覧の科目名末尾の（…）表記）とプロフィールのA/B/Cクラス・類で解決する
-- 学域特別講義は、A＝`UEC001z`（1単位）・B＝`UEC004z`（2単位）の2科目。offeringsには年度ごとのテーマ（`topic`）が全部入る。旧区分の`UEC002z`・`UEC003z`は保存済み記録の引き継ぎ用に科目マスタへ残し（`legacy`）、`data/subjects/code-migrations.json`の対応表で保存記録を自動で新コードへ移す（移し先に記録があれば移さない）
+- 学域特別講義は、A＝`UEC001z`（1単位）・B＝`UEC004z`（2単位）の2科目。Bの表示名は「学域特別講義B（著作権、自動車など）」（2026-09-28、開発者指示。定義元は`scripts/special_lecture_data.py`）で、シラバス上の科目名と一致しないため、A/Bの開講情報はスクリプト側で科目名ではなく科目コードで照合する（`fetch_syllabus.py`の`build_special_offerings_by_code`、`backfill_missing_offerings.py`の`apply_special_offerings_by_code`）。offeringsには年度ごとのテーマ（`topic`）が全部入る。旧区分の`UEC002z`・`UEC003z`は保存済み記録の引き継ぎ用に科目マスタへ残し（`legacy`）、`data/subjects/code-migrations.json`の対応表で保存記録を自動で新コードへ移す（移し先に記録があれば移さない）
 - シラバスの一覧ページ2件だけで更新できる補助スクリプト：`scripts/backfill_section_labels.py`（`sectionLabel`）・`scripts/backfill_special_offerings.py`（学域特別講義のテーマ）。フル実行の`fetch_syllabus.py`も同じ値を付ける
 - データ生成パイプラインの実行順序：`python scripts/gen_data.py`（科目マスタ・2025年度要件JSONを再構築。**offerings・prerequisitesTextを消してしまう**）→`python scripts/fetch_syllabus.py`（シラバスから曜日時限等を再取得）→`python scripts/build_class_assignment.py`→`python scripts/build_class_assignment_json.py`→年度別データを土台の年度から順に再生成（`python scripts/build_2024_data.py`・`python scripts/build_2026_data.py`は2025年度が土台→`python scripts/build_2023_data.py`・`python scripts/build_2022_data.py`は2024年度が土台→`python scripts/build_2021_data.py`は2022年度が土台）→`python scripts/backfill_missing_offerings.py`（2026年度新設科目など、上の手順で offerings が空のまま残る科目に、シラバス個別ページの科目番号欄で確認できたものだけ開講情報を補う）→`python scripts/sync_term_types.py`（学期が学修要覧とシラバスで食い違う科目の termType をシラバス側へ合わせる）→`python scripts/validate_data.py`（整合性チェック）
 

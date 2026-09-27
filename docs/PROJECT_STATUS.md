@@ -1,6 +1,6 @@
 # プロジェクトの現在地
 
-最終更新: 2026-09-27  
+最終更新: 2026-09-28  
 開発ブランチ: `dev`  
 公開ブランチ: `main`（現在のバージョンは`vite.config.ts`の`SITE_VERSION`、各版の内容はトップ画面のリリースノートを参照）
 
@@ -13,7 +13,7 @@
 - 要件充足、共通単位への算入、2年次終了時・卒業研究着手・卒業などの審査を判定できる
 - 履修状態は未履修・修得・修得見込・不合格を保存でき、修得見込を含む見込みも確認できる
 - クラス情報に応じて、複数セクション科目の曜日時限とシラバスリンクを絞り込める
-- 学域特別講義はA＝1単位・B＝2単位の2科目で扱い、UEC002z・UEC003zは旧区分（保存記録を新コードへ自動で置き換え）として残す
+- 学域特別講義はA＝1単位・B＝2単位の2科目で扱い（Bの表示名は「学域特別講義B（著作権、自動車など）」、Ver.1.2.4〜）、UEC002z・UEC003zは旧区分（保存記録を新コードへ自動で置き換え）として残す
 - 学年・学期を選んで、その学期の必修・再履修・選択区分ごとの修得推奨を確認できる
 - 入力内容のダウンロード・読み込み・リセットに対応している。データはブラウザ内だけに保存される
 - 修得見込の科目は、メイン画面の時間割プレビューで前学期・後学期の曜日時限（月〜金、6・7限は授業がある場合のみ）へ並べられる（Ver.1.2.0〜）
@@ -71,7 +71,7 @@ npm run build
 - 現在、優先度の高い未修正課題は無い
 
 - 学期別の修得推奨が、実際の履修計画に十分役立つかを利用者の意見とともに確認する
-- WebMCP（AIエージェントからの操作）：`dev`・`main`に反映済み（2026-09-26確認）。メイン画面を開いている間だけ、`get_profile`・`get_requirement_status`・`get_term_recommendations`・`get_timetable_preview`・`search_subjects`（読み取り）と`set_subject_status`（書き込み）の6ツールを登録する。書き込みは画面の「未更新の変更」に入るだけで、利用者が「更新する」を押すまで保存・判定に反映しない。WebMCPはChrome 146以降の試験機能（`chrome://flags`の`#enable-webmcp-for-testing`）でだけ動き、非対応ブラウザでは何もしない。公開サイトで一般に使えるようにするにはオリジントライアル登録が必要で、まだ行っていない。実装は`src/webmcp.ts`（ブラウザAPIへの登録）・`src/domain/agentTools.ts`（返す内容の組み立て・入力検証）・`src/components/AgentToolsBridge.ts`（ツール定義と登録のタイミング）・`MainPage.tsx`の`agentHandlers`（各ツールの処理）
+- WebMCP（AIエージェントからの操作）：`dev`・`main`に反映済み（2026-09-26確認。`get_timetable_preview`はVer.1.2.4で2026-09-28に公開）。メイン画面を開いている間だけ、`get_profile`・`get_requirement_status`・`get_term_recommendations`・`get_timetable_preview`・`search_subjects`（読み取り）と`set_subject_status`（書き込み）の6ツールを登録する。書き込みは画面の「未更新の変更」に入るだけで、利用者が「更新する」を押すまで保存・判定に反映しない。WebMCPはChrome 146以降の試験機能（`chrome://flags`の`#enable-webmcp-for-testing`）でだけ動き、非対応ブラウザでは何もしない。公開サイトで一般に使えるようにするにはオリジントライアル登録が必要で、まだ行っていない。実装は`src/webmcp.ts`（ブラウザAPIへの登録）・`src/domain/agentTools.ts`（返す内容の組み立て・入力検証）・`src/components/AgentToolsBridge.ts`（ツール定義と登録のタイミング）・`MainPage.tsx`の`agentHandlers`（各ツールの処理）
 
 ### 運用上の注意（複数セッション併用時）
 
