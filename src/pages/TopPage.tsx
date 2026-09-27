@@ -123,6 +123,20 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
+        {/* Ver.1.2.3では、学修要覧とシラバスで開講学期が食い違う科目の学期をシラバスに合わせた。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(Ver.1.2.2→Ver.1.2.3)</span>
+            <span className="release-note-date">アップデート日 2026/9/27</span>
+          </p>
+          <h3 className="release-note-category">不具合修正</h3>
+          <ul className="release-note-items">
+            <li>マルチメディア処理・計算機アーキテクチャー・アカデミックスキルズなど、学修要覧と公式シラバスで開講学期が違っていた13科目の学期を、公式シラバスに合わせました。科目一覧の学期表示や修得推奨の学期が、実際の開講学期どおりになります</li>
+            <li>夜間主の総合コミュニケーション科学で、シラバスへのリンクが表示されていなかった不具合を修正しました</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（14件）">
         {/* Ver.1.2.2では、データの読み込みを年度別にして軽くし、開講情報が無かった科目の曜日時限・シラバスを補った。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -135,8 +149,6 @@ export default function TopPage() {
             <li>サイエンス工房A・B、海外研修Ⅰ・Ⅱ、マルチメディア処理、形式言語理論、Topics in Informatics、Research Presentationなど、曜日時限やシラバスへのリンクが出ていなかった科目に、公式シラバスの開講情報を表示するようにしました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（13件）">
         {/* Ver.1.2.1では、学域特別講義をA・Bの2科目にまとめ、重複警告・時間割の時限表示を修正した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
