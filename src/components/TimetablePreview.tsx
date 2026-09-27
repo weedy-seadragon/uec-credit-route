@@ -2,9 +2,8 @@
 import { useState } from 'react'
 import type { MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { buildTimetablePreview, buildVisibleTimetablePreview, defaultRetakeOptionForTerm, maxConcurrentOfferingCount, previewSemesterOf, splitUnplacedTimetableCourses, timetableCategoryColorsForCourses, timetableLegendForSlots } from '../domain/timetablePreview'
-import type { TimetablePreviewCourse, TimetablePreviewOption, TimetablePreviewSlot, UnplacedTimetableCourse } from '../domain/timetablePreview'
-import { TIMELESS_COURSE_LABELS } from '../domain/onDemand'
+import { buildTimetablePreview, buildVisibleTimetablePreview, defaultRetakeOptionForTerm, maxConcurrentOfferingCount, previewSemesterOf, splitUnplacedTimetableCourses, TIMETABLE_UNPLACED_REASON_LABELS, timetableCategoryColorsForCourses, timetableLegendForSlots } from '../domain/timetablePreview'
+import type { TimetablePreviewCourse, TimetablePreviewOption, TimetablePreviewSlot } from '../domain/timetablePreview'
 import { loadHiddenTimetableCourses, saveHiddenTimetableCourses } from '../storage/timetableVisibility'
 import { loadTimetableOfferingSelection, saveTimetableOfferingSelection } from '../storage/timetableOfferingSelection'
 
@@ -26,18 +25,6 @@ function availableTerms(courses: readonly TimetablePreviewCourse[]): string[] {
     for (const term of course.offeredTerms) terms.add(previewSemesterOf(term))
   }
   return [...BASE_TERMS, ...[...terms].filter((term) => term !== '前学期' && term !== '後学期').sort()]
-}
-
-/** 未確定科目の理由を、科目一覧の中で読める短い文言にする。 */
-const REASON_LABELS: Record<UnplacedTimetableCourse['reason'], string> = {
-  'no-offering': 'シラバスの開講情報なし',
-  'no-class': '受講クラスを特定できません',
-  'lower-year-selection': '受講する授業を選んでください',
-  'no-slot': '曜日時限の記載なし',
-  'instructor-dependent': TIMELESS_COURSE_LABELS['instructor-dependent'],
-  lab: TIMELESS_COURSE_LABELS.lab,
-  'ambiguous-term': '開講タームが複数候補',
-  'ambiguous-slot': '曜日時限が複数候補',
 }
 
 /** 科目名が英字・数字・記号だけなら、英語用の改行規則を使う。 */
@@ -266,7 +253,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                 {selectableCourses.map((course) => (
                   <li key={course.code}>
                     <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}{course.topic && `（${course.topic}）`}</Link>
-                    {' '}：{REASON_LABELS[course.reason]}
+                    {' '}：{TIMETABLE_UNPLACED_REASON_LABELS[course.reason]}
                     {course.options && course.options.length > 0 && (
                       <label className="timetable-section-choice">
                         {' '}セクション
@@ -300,7 +287,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                 {timelessCourses.map((course) => (
                   <li key={course.code}>
                     <Link to={`/courses/${encodeURIComponent(course.code)}?year=${entryYear}`}>{course.name}{course.topic && `（${course.topic}）`}</Link>
-                    {' '}：{REASON_LABELS[course.reason]}
+                    {' '}：{TIMETABLE_UNPLACED_REASON_LABELS[course.reason]}
                   </li>
                 ))}
               </ul>

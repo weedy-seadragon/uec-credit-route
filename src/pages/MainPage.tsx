@@ -51,7 +51,10 @@ import { timetableCategoryForCourse } from '../domain/timetablePreview'
 import { classifyTimelessCourse, TIMELESS_COURSE_LABELS } from '../domain/onDemand'
 import AgentToolsBridge from '../components/AgentToolsBridge'
 import type { AgentHandlers } from '../components/AgentToolsBridge'
-import { parseAgentStatus, searchSubjects, summarizeRequirementStatus } from '../domain/agentTools'
+import { parseAgentStatus, searchSubjects, summarizeRequirementStatus, summarizeTimetablePreview } from '../domain/agentTools'
+import { buildVisibleTimetablePreview } from '../domain/timetablePreview'
+import { loadHiddenTimetableCourses } from '../storage/timetableVisibility'
+import { loadTimetableOfferingSelection } from '../storage/timetableOfferingSelection'
 import { migrateCodeMap, migrateCodeSet } from '../domain/codeMigrations'
 
 // 保存値を各useStateが読むより先に、過去の科目番号をブラウザ内で移行する。
@@ -1445,6 +1448,14 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
           candidates: result.common.map((r) => agentSubjectInfo(r.code)),
         },
       }
+    },
+    getTimetablePreview: (input) => {
+      const term = input.term
+      if (term !== '前学期' && term !== '後学期') return { error: 'term は「前学期」か「後学期」で指定してください' }
+      // 画面の時間割プレビューと同じく、非表示にした科目と選んだ授業の設定をブラウザから読んで反映する
+      // （ツールが呼ばれた時点の最新の設定を使うため、描画時ではなくここで読む）
+      const result = buildVisibleTimetablePreview(sortedTimetablePreviewCourses, term, loadHiddenTimetableCourses(), loadTimetableOfferingSelection())
+      return summarizeTimetablePreview(result, term)
     },
     searchSubjects: (input) => {
       if (typeof input.query !== 'string') return { error: 'query に科目名か科目番号の一部を文字列で指定してください' }

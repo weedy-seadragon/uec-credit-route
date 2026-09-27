@@ -13,7 +13,7 @@ import type { AgentTool } from '../webmcp'
  * AIエージェント（WebMCP）から呼ばれる各ツールの実際の処理。
  * 画面の最新の状態（履修記録・判定結果）を使うため、MainPage の描画のたびに作り直して props で渡す。
  */
-export type AgentHandlers = Record<'getProfile' | 'getRequirementStatus' | 'getTermRecommendations' | 'searchSubjects' | 'setSubjectStatus', (input: Record<string, unknown>) => unknown>
+export type AgentHandlers = Record<'getProfile' | 'getRequirementStatus' | 'getTermRecommendations' | 'getTimetablePreview' | 'searchSubjects' | 'setSubjectStatus', (input: Record<string, unknown>) => unknown>
 
 /**
  * エージェントに公開するツールの一覧（名前・説明・入力の形）を作る。
@@ -50,6 +50,20 @@ function buildAgentToolDefinitions(call: <K extends keyof AgentHandlers>(key: K,
       },
       readOnly: true,
       execute: (input) => call('getTermRecommendations', input),
+    },
+    {
+      name: 'get_timetable_preview',
+      description:
+        '画面の「時間割プレビュー」と同じ内容を、指定した学期（前学期・後学期）について返す。修得見込の科目を曜日時限の表に並べたもので、画面の未確定の変更（まだ「更新する」を押していない変更）も含む。利用者が非表示にした科目は含まず、利用者がドロップダウンで選んだ授業はその時限で slots に入る。slots は表のコマ（category は卒業要件上の区分、required は必修か、partialTerm は春・夏・秋・冬タームのみの開講ならそのターム名）、conflicts は開講期間が重なる科目が同じ曜日時限に2つ以上ある枠。onDemand・intensive は時限の無いオンデマンド・集中講義。needsSelection は曜日時限の候補が複数あり利用者が画面で選ぶ必要がある科目（候補の一覧つき。このツールからは選べない）、undecided は曜日時限そのものが決まっていない科目（理由つき）。',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          term: { type: 'string', enum: ['前学期', '後学期'], description: '表示する学期' },
+        },
+        required: ['term'],
+      },
+      readOnly: true,
+      execute: (input) => call('getTimetablePreview', input),
     },
     {
       name: 'search_subjects',

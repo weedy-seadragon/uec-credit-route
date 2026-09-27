@@ -6,6 +6,9 @@
 
 import type { EvaluationResult, GroupResult, SubjectStatus } from './requirements'
 import type { ReviewStatus } from './reviews'
+import { maxConcurrentOfferingCount, splitUnplacedTimetableCourses, TIMETABLE_UNPLACED_REASON_LABELS } from './timetablePreview'
+import type { TimetablePreviewOption, TimetablePreviewResult } from './timetablePreview'
+import { TIMELESS_COURSE_LABELS } from './onDemand'
 
 /** エージェントに返す、要件区分1つぶんの修得状況 */
 export interface AgentGroupStatus {
@@ -112,4 +115,95 @@ export function parseAgentStatus(value: unknown): { ok: true; status: SubjectSta
   if (value === 'none') return { ok: true, status: undefined }
   if (value === 'passed' || value === 'taking' || value === 'failed') return { ok: true, status: value }
   return { ok: false }
+}
+
+/** エージェントに返す、時間割の1コマぶんの科目 */
+export interface AgentTimetableSlot {
+  day: string
+  period: number
+  code: string
+  name: string
+  /** 卒業要件上の区分名（例:「必修」「類専門（選択）」） */
+  category: string | null
+  required: boolean
+  /** 春・夏・秋・冬タームなど、学期の一部だけで開講される場合のターム名 */
+  partialTerm: string | null
+  /** 学域特別講義のテーマ */
+  topic: string | null
+}
+
+/** エージェントに返す、時間割プレビュー1学期ぶんの内容 */
+export interface AgentTimetablePreview {
+  term: string
+  slots: AgentTimetableSlot[]
+  /** 同じ曜日時限に、開講期間の重なる科目が2つ以上ある枠 */
+  conflicts: { day: string; period: number; codes: string[] }[]
+  onDemand: { code: string; name: string; topic: string | null }[]
+  intensive: { code: string; name: string; kind: string; topic: string | null }[]
+  /** 曜日時限の候補が複数あり、利用者が画面のドロップダウンで選ぶ必要がある科目 */
+  needsSelection: { code: string; name: string; reason: string; options: { timetableCode: string | null; term: string; schedule: string; teacher: string | null; topic: string | null; retake: boolean }[] }[]
+  /** 曜日時限そのものが決まっていない科目（輪講・卒業研究・集中の未記載など） */
+  undecided: { code: string; name: string; reason: string }[]
+}
+
+/** 曜日の並び順（月→日）。一覧を読みやすい順に並べるために使う */
+const DAY_ORDER = ['月', '火', '水', '木', '金', '土', '日']
+
+/** 曜日時限の一覧を「月2・木2」のような文字列にする。時限が無ければ「時限なし」 */
+function scheduleText(option: TimetablePreviewOption): string {
+  return option.slots.length > 0 ? option.slots.map((slot) => `${slot.day}${slot.period}`).join('・') : '時限なし'
+}
+
+/**
+ * 時間割プレビューの計算結果（buildVisibleTimetablePreview の戻り値）を、エージェントに渡しやすいJSONにする。
+ * 画面と同じく、非表示にした科目は含めず、選んだ授業は表の側に入っている前提。
+ */
+export function summarizeTimetablePreview(result: TimetablePreviewResult, term: string): AgentTimetablePreview {
+  // 表のコマを、曜日→時限の順に並べて返す
+  const slots = [...result.slots]
+    .sort((a, b) => DAY_ORDER.indexOf(a.day) - DAY_ORDER.indexOf(b.day) || a.period - b.period)
+    .map((slot) => ({
+      day: slot.day,
+      period: slot.period,
+      code: slot.code,
+      name: slot.name,
+      category: slot.category?.label ?? null,
+      required: slot.category?.isRequired ?? false,
+      // 前学期・後学期そのものなら添えない（タームのときだけ意味がある）
+      partialTerm: slot.offeringTerm === '前学期' || slot.offeringTerm === '後学期' ? null : slot.offeringTerm,
+      topic: slot.topic ?? null,
+    }))
+  // 同じ曜日時限の科目をまとめ、期間が重なる科目が2つ以上ある枠だけを重複として返す（画面の「同時限に2科目」と同じ判定）
+  const cells = new Map<string, typeof result.slots>()
+  for (const slot of result.slots) {
+    const key = `${slot.day}:${slot.period}`
+    cells.set(key, [...(cells.get(key) ?? []), slot])
+  }
+  const conflicts = [...cells.values()]
+    .filter((cellSlots) => maxConcurrentOfferingCount(cellSlots.map((slot) => slot.offeringTerm)) > 1)
+    .map((cellSlots) => ({ day: cellSlots[0].day, period: cellSlots[0].period, codes: cellSlots.map((slot) => slot.code) }))
+    .sort((a, b) => DAY_ORDER.indexOf(a.day) - DAY_ORDER.indexOf(b.day) || a.period - b.period)
+  // 欄外の科目を、画面と同じ基準で「候補から選ぶ」と「時限が決まっていない」に分ける
+  const { selectable, timeless } = splitUnplacedTimetableCourses(result.unplaced)
+  return {
+    term,
+    slots,
+    conflicts,
+    onDemand: result.onDemand.map((course) => ({ code: course.code, name: course.name, topic: course.topic ?? null })),
+    intensive: result.intensive.map((course) => ({ code: course.code, name: course.name, kind: TIMELESS_COURSE_LABELS[course.kind], topic: course.topic ?? null })),
+    needsSelection: selectable.map((course) => ({
+      code: course.code,
+      name: course.name,
+      reason: TIMETABLE_UNPLACED_REASON_LABELS[course.reason],
+      options: (course.options ?? []).map((option) => ({
+        timetableCode: option.timetableCode ?? null,
+        term: option.term,
+        schedule: scheduleText(option),
+        teacher: option.teacher ?? null,
+        topic: option.topic ?? null,
+        retake: option.retake ?? false,
+      })),
+    })),
+    undecided: timeless.map((course) => ({ code: course.code, name: course.name, reason: TIMETABLE_UNPLACED_REASON_LABELS[course.reason] })),
+  }
 }

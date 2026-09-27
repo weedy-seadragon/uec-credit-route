@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { parseAgentStatus, searchSubjects, summarizeRequirementStatus } from './agentTools'
+import { parseAgentStatus, searchSubjects, summarizeRequirementStatus, summarizeTimetablePreview } from './agentTools'
+import { buildTimetablePreview } from './timetablePreview'
 import type { EvaluationResult, GroupResult } from './requirements'
 
 // テスト用に、判定結果1グループぶんを必要な値だけ指定して作る（残りは0や空で埋める）
@@ -105,5 +106,45 @@ describe('parseAgentStatus', () => {
     expect(parseAgentStatus('修得')).toEqual({ ok: false })
     expect(parseAgentStatus('PASSED')).toEqual({ ok: false })
     expect(parseAgentStatus(undefined)).toEqual({ ok: false })
+  })
+})
+
+
+// 時間割プレビューの結果を、エージェント向けのJSONへまとめる処理の検証
+describe('summarizeTimetablePreview', () => {
+  it('表のコマを曜日・時限順に並べ、期間が重なる同時限だけを重複として返す', () => {
+    // 金3に前学期の2科目（重複）と、月1に春ターム・夏タームの2科目（期間が重ならないので重複ではない）を置く
+    const result = buildTimetablePreview([
+      { code: 'X', name: '金曜A', termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '金', period: 3 }] }] },
+      { code: 'Y', name: '金曜B', termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '金', period: 3 }] }] },
+      { code: 'S', name: '春の実験', termType: '前学期', offeredTerms: ['春ﾀｰﾑ'], options: [{ term: '春ﾀｰﾑ', slots: [{ day: '月', period: 1 }] }] },
+      { code: 'U', name: '夏の実験', termType: '前学期', offeredTerms: ['夏ﾀｰﾑ'], options: [{ term: '夏ﾀｰﾑ', slots: [{ day: '月', period: 1 }] }] },
+    ], '前学期')
+    const summary = summarizeTimetablePreview(result, '前学期')
+    expect(summary.slots.map((slot) => `${slot.day}${slot.period}:${slot.code}`)).toEqual(['月1:S', '月1:U', '金3:X', '金3:Y'])
+    // ターム開講のコマだけ、ターム名が partialTerm に入る
+    expect(summary.slots.find((slot) => slot.code === 'S')?.partialTerm).toBe('春ﾀｰﾑ')
+    expect(summary.slots.find((slot) => slot.code === 'X')?.partialTerm).toBeNull()
+    expect(summary.conflicts).toEqual([{ day: '金', period: 3, codes: ['X', 'Y'] }])
+  })
+
+  it('候補から選ぶ科目は候補の一覧つき、時限が決まっていない科目は理由つきで分けて返す', () => {
+    // 英語演習のように時限の違う候補がある科目と、輪講のように時限が決まらない科目
+    const result = buildTimetablePreview([
+      { code: 'E', name: '英語演習', termType: '前学期', offeredTerms: ['前学期'], options: [
+        { term: '前学期', slots: [{ day: '火', period: 2 }], timetableCode: 'T1', teacher: '山田' },
+        { term: '前学期', slots: [{ day: '木', period: 2 }], timetableCode: 'T2', teacher: '佐藤' },
+      ] },
+      { code: 'L', name: '輪講A', termType: '前学期', offeredTerms: ['前学期'], offerings: [{ slots: [] }], options: [{ term: '前学期', slots: [] }] },
+    ], '前学期')
+    const summary = summarizeTimetablePreview(result, '前学期')
+    expect(summary.needsSelection).toEqual([{
+      code: 'E', name: '英語演習', reason: '曜日時限が複数候補',
+      options: [
+        { timetableCode: 'T1', term: '前学期', schedule: '火2', teacher: '山田', topic: null, retake: false },
+        { timetableCode: 'T2', term: '前学期', schedule: '木2', teacher: '佐藤', topic: null, retake: false },
+      ],
+    }])
+    expect(summary.undecided).toEqual([{ code: 'L', name: '輪講A', reason: '研究室ごとに実施形態が異なります' }])
   })
 })

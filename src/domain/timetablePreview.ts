@@ -4,7 +4,7 @@
 import type { ScheduleOption, ScheduleSlot } from './scheduleConflicts'
 import { offeringTermsOverlap, periodsOf } from './offeringTerms'
 export { offeringTermsOverlap } from './offeringTerms'
-import { classifyTimelessCourse } from './onDemand'
+import { classifyTimelessCourse, TIMELESS_COURSE_LABELS } from './onDemand'
 import type { TimelessCourseKind } from './onDemand'
 import type { OfferingWithSlots } from './onDemand'
 
@@ -116,6 +116,18 @@ export interface UnplacedTimetableCourse {
   /** 候補が複数ある理由の場合に、欄外の選択UIへ渡すセクション。 */
   options?: readonly TimetablePreviewOption[]
   topic?: string
+}
+
+/** 欄外科目の理由を、画面とAIエージェント向けの説明で共用する短い文言にする。 */
+export const TIMETABLE_UNPLACED_REASON_LABELS: Readonly<Record<UnplacedTimetableCourse['reason'], string>> = {
+  'no-offering': 'シラバスの開講情報なし',
+  'no-class': '受講クラスを特定できません',
+  'lower-year-selection': '受講する授業を選んでください',
+  'no-slot': '曜日時限の記載なし',
+  'instructor-dependent': TIMELESS_COURSE_LABELS['instructor-dependent'],
+  lab: TIMELESS_COURSE_LABELS.lab,
+  'ambiguous-term': '開講タームが複数候補',
+  'ambiguous-slot': '曜日時限が複数候補',
 }
 
 /** 欄外科目を、利用者が候補を選ぶものと曜日時限自体が未確定のものに分ける。 */
