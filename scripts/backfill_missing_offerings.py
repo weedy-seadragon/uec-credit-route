@@ -6,9 +6,14 @@ scripts/fetch_syllabus.py は 2025年度の科目マスタにある科目名し�
 2026年度に新設された科目（例: サイエンス工房A/B、海外研修Ⅰ・Ⅱ）や、前回の取得後にシラバス側の
 科目番号欄が更新された科目は offerings が空のまま残る（2026-09-27、開発者依頼の点検で発覚）。
 このスクリプトは、全年度の科目マスタから「offerings が空で、名前がシラバス一覧の行と一致する科目」を
-集め、その行の個別ページだけを開いて科目番号欄を読む。**科目番号欄にその科目番号が明記されている
-ページだけ**を offerings として付ける（名前が同じでも番号の無いページには付けない。誤った時限を
-付けないため）。取得は既存と同じく1.2秒間隔・連絡先入りのUser-Agent。
+集め、その行の個別ページだけを開いて科目番号欄を読む。次のどれかに当てはまるページだけを offerings として付ける。
+1. 科目番号欄にその科目番号が明記されている
+2. 科目番号欄が空欄（例: Topics in Informatics Ⅰ）で、科目名が完全に一致する
+3. 科目番号欄に書かれた番号が、すべて同じ科目名の別の科目番号（例: 同じ授業を「上級科目扱い」で
+   数える INT502z と、シラバスに載っている ENG502z。形式言語理論の COM406a と COM405c/d）
+2・3は「シラバスに従う」という開発者の判断（2026-09-27）と、「科目名が同じなら同一科目として扱ってよい」
+という判断（2026-09-13）による。番号欄に**別の名前の科目**の番号が書かれているページには付けない
+（別の授業の可能性があるため）。取得は既存と同じく1.2秒間隔・連絡先入りのUser-Agent。
 """
 import glob, json, os, re, sys, time
 
@@ -57,15 +62,32 @@ def main():
                 target_rows.append((faculty, row, missing_codes_by_name[key]))
     print(f"個別ページを確認する行: {len(target_rows)}件", file=sys.stderr)
 
-    # 個別ページの科目番号欄に明記された科目番号 → 付ける offering の一覧
-    offerings_by_code: dict[str, list[dict]] = {}
+    # 科目番号 → 正規化した科目名。番号欄の番号はシラバス年度（2026）の採番なので、最新年度の
+    # 科目マスタを優先して引く（プログラム記号がずれた古い年度では、同じ番号が別の科目を指すことがあるため）
+    name_by_code: dict[str, str] = {}
+    for data in reversed(list(files.values())):
+        for subject in data["subjects"]:
+            name_by_code.setdefault(subject["code"], normalize_for_match(subject["name"]))
+
+    # 付けてよい (科目名, 科目番号) の組 → 付ける offering の一覧。
+    # 同じ番号が年度によって別の科目を指すことがあるので、番号だけでなく科目名とセットで持つ
+    offerings_by_key: dict[tuple[str, str], list[dict]] = {}
     for faculty, row, codes in target_rows:
         time.sleep(REQUEST_INTERVAL_SEC)
         detail_html = fetch(DETAIL_URL_TMPL.format(faculty=faculty, code=row["timetableCode"]))
         m = CODE_CELL_RE.search(detail_html)
         page_codes = set(m.group(1).split()) if m else set()
-        # 科目番号欄に書かれていない番号には付けない（名前だけの一致は根拠にしない）
-        for code in sorted(codes & page_codes):
+        row_name = normalize_for_match(strip_class_suffix(row["name"]))
+        if not page_codes:
+            # 規則2：番号欄が空欄なら、科目名が一致した科目すべてに付ける
+            target_codes = codes
+        elif all(name_by_code.get(code) == row_name for code in page_codes):
+            # 規則1・3：番号欄の番号がすべて同じ名前の科目なら、同じ名前の科目すべてに付ける
+            target_codes = codes
+        else:
+            # 別の名前の科目の番号が混ざるページは、番号欄に明記された科目にだけ付ける（規則1のみ）
+            target_codes = codes & page_codes
+        for code in sorted(target_codes):
             offering = {
                 "timetableCode": row["timetableCode"],
                 "faculty": faculty,
@@ -78,15 +100,17 @@ def main():
             # クラス表記がある行だけ sectionLabel を付ける（fetch_syllabus.py と同じ形）
             if section_label(row["name"]):
                 offering["sectionLabel"] = section_label(row["name"])
-            offerings_by_code.setdefault(code, []).append(offering)
+            offerings_by_key.setdefault((row_name, code), []).append(offering)
 
-    # 各年度の科目マスタで、offerings が空のままの科目にだけ書き込む（既存の offerings は触らない）
+    # 各年度の科目マスタで、offerings が空のままの科目にだけ書き込む（既存の offerings は触らない）。
+    # その年度での科目名がシラバスの行と一致する科目にだけ付ける
     for path, data in files.items():
         changed = []
         for subject in data["subjects"]:
-            if subject.get("offerings") or subject["code"] not in offerings_by_code:
+            key = (normalize_for_match(subject["name"]), subject["code"])
+            if subject.get("offerings") or subject.get("legacy") or key not in offerings_by_key:
                 continue
-            subject["offerings"] = offerings_by_code[subject["code"]]
+            subject["offerings"] = offerings_by_key[key]
             changed.append(subject["code"])
         # 変更の無いファイルは書き直さない（改行コード等の余計な差分を出さないため）
         if changed:

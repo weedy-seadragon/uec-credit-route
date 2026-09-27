@@ -8735,6 +8735,24 @@
       "graduateLinked": false,
       "groups": [
         "major-sel"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21124204",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "関　新之助"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21124204.html",
+          "updatedAt": "2026-09-27"
+        }
       ]
     },
     {
@@ -14936,6 +14954,44 @@
       "graduateLinked": false,
       "groups": [
         "major-free"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21025127",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "羽田",
+            "野嶋"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21025127.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（Ⅱ類）"
+        },
+        {
+          "timetableCode": "21025126",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 4
+            }
+          ],
+          "instructors": [
+            "高木（一）",
+            "廣田"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21025126.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（Ⅰ類）"
+        }
       ]
     },
     {
@@ -32407,6 +32463,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21016202",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "金",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "金森　俊樹"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016202.html",
+          "updatedAt": "2026-09-27"
+        }
       ]
     },
     {
@@ -32422,6 +32496,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21016203",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "月",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "久野　雅樹"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016203.html",
+          "updatedAt": "2026-09-27"
+        }
       ]
     },
     {
@@ -32437,6 +32529,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21016205",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "佐藤　賢一"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016205.html",
+          "updatedAt": "2026-09-27"
+        }
       ]
     },
     {
@@ -32453,7 +32563,25 @@
       "groups": [
         "advanced"
       ],
-      "note": "偶数年度開講"
+      "note": "偶数年度開講",
+      "offerings": [
+        {
+          "timetableCode": "21016206",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "武石　典史"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016206.html",
+          "updatedAt": "2026-09-27"
+        }
+      ]
     },
     {
       "code": "HSS605z",
@@ -32469,7 +32597,26 @@
       "groups": [
         "advanced"
       ],
-      "note": "奇数年度開講"
+      "note": "奇数年度開講",
+      "offerings": [
+        {
+          "timetableCode": "21016207",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "未定"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016207.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（R8開講なし）"
+        }
+      ]
     },
     {
       "code": "HSS606z",
@@ -32484,6 +32631,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21016208",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 1
+            }
+          ],
+          "instructors": [
+            "栗田　岳　ほか"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016208.html",
+          "updatedAt": "2026-09-27"
+        }
       ]
     },
     {
@@ -32499,6 +32664,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21016209",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "中野　愛理"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016209.html",
+          "updatedAt": "2026-09-27"
+        }
       ]
     },
     {
@@ -32514,6 +32697,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21016210",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "水",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "中山　弘太郎"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016210.html",
+          "updatedAt": "2026-09-27"
+        }
       ]
     },
     {
@@ -32529,6 +32730,24 @@
       "graduateLinked": false,
       "groups": [
         "advanced"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21016235",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "栗田　岳"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016235.html",
+          "updatedAt": "2026-09-27"
+        }
       ]
     },
     {
@@ -33264,6 +33483,25 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017209",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "月",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "佐藤　寛之"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017209.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（Evolutionary Computation）"
+        }
       ]
     },
     {
@@ -33279,6 +33517,25 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017209",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "月",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "佐藤　寛之"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017209.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（Evolutionary Computation）"
+        }
       ]
     },
     {
@@ -33324,6 +33581,25 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017209",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "月",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "佐藤　寛之"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017209.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（Evolutionary Computation）"
+        }
       ]
     },
     {
@@ -33414,6 +33690,25 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017118",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "古川　怜"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017118.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（Polymer Photonics）"
+        }
       ]
     },
     {
@@ -33429,6 +33724,25 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017118",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "古川　怜"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017118.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（Polymer Photonics）"
+        }
       ]
     },
     {
@@ -33444,6 +33758,25 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017118",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "古川　怜"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017118.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（Polymer Photonics）"
+        }
       ]
     },
     {
@@ -33459,6 +33792,25 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017118",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "古川　怜"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017118.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（Polymer Photonics）"
+        }
       ]
     },
     {
@@ -33785,6 +34137,25 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017212",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "宮脇　陽一"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017212.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（The human brain as intelligent machines）"
+        }
       ]
     },
     {
@@ -33800,6 +34171,25 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017212",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "宮脇　陽一"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017212.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（The human brain as intelligent machines）"
+        }
       ]
     },
     {
@@ -33815,6 +34205,25 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017212",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "宮脇　陽一"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017212.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（The human brain as intelligent machines）"
+        }
       ]
     },
     {
@@ -34241,6 +34650,33 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017113",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "遠藤",
+            "大淵",
+            "尾関",
+            "斎藤（弘）",
+            "白川（英）",
+            "中村（淳）",
+            "長谷川",
+            "山鹿",
+            "森下"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017113.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "(Exercises in Advanced Computational Science)"
+        }
       ]
     },
     {
@@ -34256,6 +34692,33 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017113",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "遠藤",
+            "大淵",
+            "尾関",
+            "斎藤（弘）",
+            "白川（英）",
+            "中村（淳）",
+            "長谷川",
+            "山鹿",
+            "森下"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017113.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "(Exercises in Advanced Computational Science)"
+        }
       ]
     },
     {
@@ -34271,6 +34734,33 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017113",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "遠藤",
+            "大淵",
+            "尾関",
+            "斎藤（弘）",
+            "白川（英）",
+            "中村（淳）",
+            "長谷川",
+            "山鹿",
+            "森下"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017113.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "(Exercises in Advanced Computational Science)"
+        }
       ]
     },
     {
@@ -34286,6 +34776,33 @@
       "graduateLinked": false,
       "groups": [
         "major-intl"
+      ],
+      "offerings": [
+        {
+          "timetableCode": "21017113",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "遠藤",
+            "大淵",
+            "尾関",
+            "斎藤（弘）",
+            "白川（英）",
+            "中村（淳）",
+            "長谷川",
+            "山鹿",
+            "森下"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21017113.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "(Exercises in Advanced Computational Science)"
+        }
       ]
     },
     {
@@ -34772,7 +35289,25 @@
       "groups": [
         "advanced"
       ],
-      "note": "偶数年度開講・上級科目扱い"
+      "note": "偶数年度開講・上級科目扱い",
+      "offerings": [
+        {
+          "timetableCode": "21016113",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "Atsuko Marie Jeffreys"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016113.html",
+          "updatedAt": "2026-09-27"
+        }
+      ]
     },
     {
       "code": "INT503z",
@@ -34788,7 +35323,21 @@
       "groups": [
         "advanced"
       ],
-      "note": "奇数年度開講・上級科目扱い"
+      "note": "奇数年度開講・上級科目扱い",
+      "offerings": [
+        {
+          "timetableCode": "21016115",
+          "faculty": "31",
+          "term": "前学期",
+          "slots": [],
+          "instructors": [
+            "未定"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016115.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（R8開講なし）"
+        }
+      ]
     },
     {
       "code": "INT504z",
@@ -34875,7 +35424,25 @@
       "groups": [
         "advanced"
       ],
-      "note": "偶数年度開講・上級科目扱い"
+      "note": "偶数年度開講・上級科目扱い",
+      "offerings": [
+        {
+          "timetableCode": "21016215",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "Atsuko Marie Jeffreys"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016215.html",
+          "updatedAt": "2026-09-27"
+        }
+      ]
     },
     {
       "code": "INT602z",
@@ -34927,7 +35494,26 @@
       "groups": [
         "advanced"
       ],
-      "note": "奇数年度開講・上級科目扱い"
+      "note": "奇数年度開講・上級科目扱い",
+      "offerings": [
+        {
+          "timetableCode": "21016212",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "木",
+              "period": 2
+            }
+          ],
+          "instructors": [
+            "未定"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016212.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（R8開講なし）"
+        }
+      ]
     },
     {
       "code": "INT604z",
@@ -34943,7 +35529,26 @@
       "groups": [
         "advanced"
       ],
-      "note": "奇数年度開講・上級科目扱い"
+      "note": "奇数年度開講・上級科目扱い",
+      "offerings": [
+        {
+          "timetableCode": "21016213",
+          "faculty": "31",
+          "term": "後学期",
+          "slots": [
+            {
+              "day": "火",
+              "period": 5
+            }
+          ],
+          "instructors": [
+            "未定"
+          ],
+          "syllabusUrl": "https://kyoumu.office.uec.ac.jp/syllabus/2026/31/31_21016213.html",
+          "updatedAt": "2026-09-27",
+          "sectionLabel": "（R8開講なし）"
+        }
+      ]
     },
     {
       "code": "JPN101z",
