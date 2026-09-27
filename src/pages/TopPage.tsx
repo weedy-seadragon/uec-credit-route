@@ -123,6 +123,21 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
+        {/* Ver.1.2.2では、データの読み込みを年度別にして軽くし、開講情報が無かった科目の曜日時限・シラバスを補った。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(Ver.1.2.1→Ver.1.2.2)</span>
+            <span className="release-note-date">アップデート日 2026/9/27</span>
+          </p>
+          <h3 className="release-note-category">表示の改善</h3>
+          <ul className="release-note-items">
+            <li>卒業要件と科目のデータを入学年度ごとに分け、自分の年度の分だけを読み込むようにしました。メイン画面などを初めて開くときの読み込みが軽くなります</li>
+            <li>サイエンス工房A・B、海外研修Ⅰ・Ⅱ、マルチメディア処理、形式言語理論、Topics in Informatics、Research Presentationなど、曜日時限やシラバスへのリンクが出ていなかった科目に、公式シラバスの開講情報を表示するようにしました</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（13件）">
+        {/* Ver.1.2.1では、学域特別講義をA・Bの2科目にまとめ、重複警告・時間割の時限表示を修正した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
             <span>・アップデート(Ver.1.2.0→Ver.1.2.1)</span>
@@ -139,8 +154,6 @@ export default function TopPage() {
             <li>アルゴリズム論第一のA・B・Cクラスの曜日時限と、生産管理など候補時限が1つだけの科目の時間割表示を修正しました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（12件）">
         {/* Ver.1.2.0では、修得見込の時間割プレビューと大見出しの折りたたみを追加した。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
