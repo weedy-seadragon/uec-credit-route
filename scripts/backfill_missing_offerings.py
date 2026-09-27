@@ -14,13 +14,14 @@ scripts/fetch_syllabus.py は 2025年度の科目マスタにある科目名し�
 2・3は「シラバスに従う」という開発者の判断（2026-09-27）と、「科目名が同じなら同一科目として扱ってよい」
 という判断（2026-09-13）による。番号欄に**別の名前の科目**の番号が書かれているページには付けない
 （別の授業の可能性があるため）。取得は既存と同じく1.2秒間隔・連絡先入りのUser-Agent。
+学域特別講義A/Bはテーマ付きの表示名を名前照合できないため、一覧接頭辞から科目コードへ直接割り当てる。
 """
 import glob, json, os, re, sys, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_syllabus import (  # noqa: E402  （一覧の解析・名前の正規化・個別ページの取得を共用する）
     CODE_CELL_RE, DETAIL_URL_TMPL, FACULTIES, LIST_URL_TMPL, REQUEST_INTERVAL_SEC,
-    fetch, normalize_for_match, parse_list, parse_slots, section_label, strip_class_suffix,
+    build_special_offerings_by_code, fetch, normalize_for_match, parse_list, parse_slots, section_label, strip_class_suffix,
 )
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
@@ -34,6 +35,22 @@ def load_subject_files() -> dict[str, dict]:
         with open(path, encoding="utf-8") as f:
             files[path] = json.load(f)
     return files
+
+
+def apply_special_offerings_by_code(
+    subjects: list[dict],
+    offerings_by_code: dict[str, list[dict]],
+) -> list[str]:
+    """テーマ名を含む表示名と照合せず、A/B講義のコードで不足情報を補う。"""
+    changed_codes = []
+    # UEC001z・UEC004zはテーマごとに一覧名が変わるため、科目コードで直接結び付ける。
+    for subject in subjects:
+        offerings = offerings_by_code.get(subject["code"], [])
+        if not offerings or subject.get("offerings") or subject.get("legacy"):
+            continue
+        subject["offerings"] = offerings
+        changed_codes.append(subject["code"])
+    return changed_codes
 
 
 def main():
@@ -51,16 +68,21 @@ def main():
 
     # シラバス一覧の行のうち、名前が上の科目と一致するものだけを個別ページの取得対象にする
     target_rows = []
+    rows_by_faculty = {}
     for i, faculty in enumerate(FACULTIES):
         # 2ページ目以降は、サーバー負荷を避けるため間隔を空けてから取得する
         if i > 0:
             time.sleep(REQUEST_INTERVAL_SEC)
-        for row in parse_list(fetch(LIST_URL_TMPL.format(faculty=faculty))):
+        rows = parse_list(fetch(LIST_URL_TMPL.format(faculty=faculty)))
+        rows_by_faculty[faculty] = rows
+        for row in rows:
             key = normalize_for_match(strip_class_suffix(row["name"]))
             # 名前が一致し、個別ページへのリンクがある行だけを残す
             if row["href"] and key in missing_codes_by_name:
                 target_rows.append((faculty, row, missing_codes_by_name[key]))
     print(f"個別ページを確認する行: {len(target_rows)}件", file=sys.stderr)
+    # 学域特別講義の一覧名には年度ごとのテーマが付くため、共通関数でコード別に作る。
+    special_offerings_by_code = build_special_offerings_by_code(rows_by_faculty, today)
 
     # 科目番号 → 正規化した科目名。番号欄の番号はシラバス年度（2026）の採番なので、最新年度の
     # 科目マスタを優先して引く（プログラム記号がずれた古い年度では、同じ番号が別の科目を指すことがあるため）
@@ -103,9 +125,10 @@ def main():
             offerings_by_key.setdefault((row_name, code), []).append(offering)
 
     # 各年度の科目マスタで、offerings が空のままの科目にだけ書き込む（既存の offerings は触らない）。
-    # その年度での科目名がシラバスの行と一致する科目にだけ付ける
+    # 通常科目は年度別科目名、学域特別講義は科目コードで照合する。
     for path, data in files.items():
-        changed = []
+        # 表示名を変えた学域特別講義は、科目コードから先に不足データを補う。
+        changed = apply_special_offerings_by_code(data["subjects"], special_offerings_by_code)
         for subject in data["subjects"]:
             key = (normalize_for_match(subject["name"]), subject["code"])
             if subject.get("offerings") or subject.get("legacy") or key not in offerings_by_key:

@@ -44,7 +44,7 @@ describe('buildTimetablePreview（修得見込の時間割）', () => {
   // テーマ選択が必要な科目は一般の時限なし判定より先に扱い、選んだテーマで表示場所を決める。
   it('学域特別講義のテーマ候補を選び、時限・集中・時限なしへ振り分ける', () => {
     const course = {
-      code: 'UEC004z', name: '学域特別講義B', termType: null, offeredTerms: ['前学期', '後学期'],
+      code: 'UEC004z', name: '学域特別講義B（著作権、自動車など）', termType: null, offeredTerms: ['前学期', '後学期'],
       options: [], sections: [
         { timetableCode: 'B1', term: '前学期', slots: [{ day: '金', period: 5 }], topic: '自動車の大変革' },
         { timetableCode: 'B2', term: '後学期', slots: [{ day: '木', period: 5 }], topic: 'AI時代の著作権ビジネス' },

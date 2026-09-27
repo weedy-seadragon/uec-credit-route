@@ -2,6 +2,7 @@
 import unittest
 
 from fetch_syllabus import build_special_offerings_by_code, extract_special_topic
+from backfill_missing_offerings import apply_special_offerings_by_code
 
 
 class SpecialOfferingTests(unittest.TestCase):
@@ -38,6 +39,22 @@ class SpecialOfferingTests(unittest.TestCase):
             "「自動車の大変革(CASE)に必要な技術」",
         )
         self.assertEqual(extract_special_topic("(デザイン思考実践)(集中)"), "デザイン思考実践 (集中)")
+
+    def test_backfill_finds_b_course_by_code_after_display_name_change(self):
+        """Bの表示名が変わっても、コードによる補完で一覧のテーマを失わない。"""
+        subjects = [{
+            "code": "UEC004z",
+            "name": "学域特別講義B（著作権、自動車など）",
+            "credits": 2,
+            "note": "年度でテーマが異なる",
+        }]
+        offerings = {"UEC004z": [{"topic": "著作権ビジネス", "slots": [{"day": "木", "period": 5}]}]}
+
+        changed = apply_special_offerings_by_code(subjects, offerings)
+
+        self.assertEqual(changed, ["UEC004z"])
+        self.assertEqual(subjects[0]["offerings"], offerings["UEC004z"])
+        self.assertEqual(subjects[0]["note"], "年度でテーマが異なる")
 
 
 if __name__ == "__main__":
