@@ -94,6 +94,8 @@ export interface TimetablePreviewOption extends ScheduleOption {
   topic?: string
   /** 再履修専用セクションなら、選択肢で優先枠として注記する。 */
   retake?: boolean
+  /** 学籍番号を保存せず、利用者自身が照合するために表示する受講条件。 */
+  condition?: string
 }
 
 /** グリッド上の1科目1コマ。複数コマの科目はコマごとに別要素を持つ。 */
@@ -106,6 +108,8 @@ export interface TimetablePreviewSlot extends ScheduleSlot {
   /** 前学期・後学期以外の開講期なら、科目名に添えて表示する。 */
   offeringTerm: string
   topic?: string
+  /** 選択したセクションに付く、学籍番号の範囲・偶奇などの受講条件。 */
+  condition?: string
 }
 
 /** 選択した開講期の科目だが、曜日時限を断定できないもの。 */
@@ -371,12 +375,22 @@ export function buildTimetablePreview(
 
     // 同じ時限に複数のセクションがあっても、科目は各コマに一度だけ配置する。
     const seen = new Set<string>()
+    // 自動配置する候補に条件があれば、科目カードからも確認できるよう重複を除いてまとめる。
+    const conditions = [...new Set(options.map((option) => option.condition).filter((condition): condition is string => Boolean(condition)))]
+    const condition = conditions.length > 0 ? conditions.join('／') : undefined
     for (const slot of options[0].slots) {
       const key = `${slot.day}:${slot.period}`
       // 同じ科目の同じコマが重複登録されていても、カードは一枚だけにする。
       if (seen.has(key)) continue
       seen.add(key)
-      slots.push({ ...slot, code: course.code, name: course.name, category: course.category, offeringTerm: options[0].term })
+      slots.push({
+        ...slot,
+        code: course.code,
+        name: course.name,
+        category: course.category,
+        offeringTerm: options[0].term,
+        ...(condition ? { condition } : {}),
+      })
     }
   }
 
@@ -408,7 +422,15 @@ function findUniqueRetakeOption(options: readonly TimetablePreviewOption[]): Tim
 function appendSelectedOption(slots: TimetablePreviewSlot[], course: TimetablePreviewCourse, option: TimetablePreviewOption): void {
   // 1つのセクションに複数コマがあれば、そのすべてを重複判定へ渡す。
   for (const slot of option.slots) {
-    slots.push({ ...slot, code: course.code, name: course.name, category: course.category, offeringTerm: option.term, ...(option.topic ? { topic: option.topic } : {}) })
+    slots.push({
+      ...slot,
+      code: course.code,
+      name: course.name,
+      category: course.category,
+      offeringTerm: option.term,
+      ...(option.topic ? { topic: option.topic } : {}),
+      ...(option.condition ? { condition: option.condition } : {}),
+    })
   }
 }
 

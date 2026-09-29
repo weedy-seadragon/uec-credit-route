@@ -154,6 +154,27 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(html).toContain('（再履修向け）')
   })
 
+  // 学籍番号自体を保存しなくても、公式時間割の条件を候補と選択後のカードで確認できる。
+  it('学籍番号条件をセクション候補と時間割カードの科目名に添える', () => {
+    const html = renderPreview([
+      {
+        code: 'RANGE', name: '範囲で選ぶ科目', termType: '前学期', offeredTerms: ['前学期'],
+        options: [
+          { term: '前学期', timetableCode: 'RANGE-A', teacher: '教員甲', condition: '学籍番号下3桁003～103', slots: [{ day: '木', period: 3 }] },
+          { term: '前学期', timetableCode: 'RANGE-B', teacher: '教員乙', condition: '学籍番号下3桁106～', slots: [{ day: '金', period: 2 }] },
+        ],
+      },
+      {
+        code: 'PARITY', name: '偶奇で決まる科目', termType: '前学期', offeredTerms: ['前学期'],
+        options: [{ term: '前学期', timetableCode: 'PARITY-EVEN', condition: '学籍番号偶数', slots: [{ day: '月', period: 2 }] }],
+      },
+    ])
+    // 複数候補には各範囲を表示し、1候補で自動配置された科目にも同じ条件を残す。
+    expect(html).toContain('木3限（学籍番号下3桁003～103） / 教員甲')
+    expect(html).toContain('金2限（学籍番号下3桁106～） / 教員乙')
+    expect(html).toContain('aria-label="偶奇で決まる科目（学籍番号偶数）"')
+  })
+
   // 低学年科目の候補選択は、学年に依存しない文言で候補枠へ表示する。
   it('低学年科目も中立の理由で候補選択枠へ表示する', () => {
     const html = renderPreview([{

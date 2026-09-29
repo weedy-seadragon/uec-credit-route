@@ -23,7 +23,7 @@ import type { ExportedData } from '../domain/importers'
 import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/importers'
 import { entryYearLabel, getClassAssignments, requireEntryYearData, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { SubjectOffering, TransferBucketItem } from '../data/requirementSets'
-import { hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, resolveTimetablePreviewOfferings } from '../domain/classAssignment'
+import { displayConditionForOffering, hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, resolveTimetablePreviewOfferings } from '../domain/classAssignment'
 import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
 import type { PlannedCourseSchedule } from '../domain/scheduleConflicts'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
@@ -1641,6 +1641,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         teacher: offering.instructors.join('、'),
         retake: retakeOfferings.includes(offering),
         topic: offering.topic,
+        condition: displayConditionForOffering(code, offering, classAssignments, classProfile, profile.cluster, isRetaking),
       })),
       chooseAmongSections: previewResolution.chooseAmongSections,
       sections: previewSections.map((offering) => ({
@@ -1650,6 +1651,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         teacher: offering.instructors.join('、'),
         retake: retakeOfferings.includes(offering),
         topic: offering.topic,
+        condition: displayConditionForOffering(code, offering, classAssignments, classProfile, profile.cluster, isRetaking),
       })),
       note: subject?.note,
       offerings,

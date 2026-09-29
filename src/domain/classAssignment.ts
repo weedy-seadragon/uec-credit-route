@@ -32,6 +32,17 @@ export interface ClassAssignmentEntry {
 }
 
 /**
+ * 「機械システムプログラム（学籍番号下3桁506～625）」のような、プログラム名に
+ * 利用者自身が確認する条件を添えたclass_idを分解する。
+ * 学籍番号そのものはプロフィールへ保存せず、条件文だけを時間割へ表示する。
+ */
+function conditionedProgramClassId(classId: string): { programName: string; condition: string } | undefined {
+  // 全角かっこ内を表示条件として扱い、プログラム名と条件が両方ある表記だけを受け付ける。
+  const match = classId.match(/^(.+プログラム)（(.+)）$/)
+  return match ? { programName: match[1], condition: match[2] } : undefined
+}
+
+/**
  * 指定科目に「再履全員」または「再履生」向けの専用セクションがあるかを返す。
  * 再履修の通常開講と専用枠を区別して、修得推奨の表示を重複させないために使う。
  */
@@ -144,6 +155,11 @@ export function classIdMatchesProfile(
 
   if (profile.programName && classId === profile.programName) return true
   if (classId === '全クラス') return true
+
+  // 学籍番号の範囲はアプリ側で判定せず、所属プログラムだけを照合して候補を残す。
+  // 実際の条件は時間割の候補名へ表示し、利用者本人に選んでもらう。
+  const conditionedProgram = conditionedProgramClassId(classId)
+  if (conditionedProgram) return profile.programName === conditionedProgram.programName
 
   // 「プログラム名の学籍番号偶数/奇数」：単独・複数どちらのプログラム表記にも対応する。
   // 複数プログラムの「＆」は、CSVの読点を候補の区切りと取り違えないよう変換した記号である。
@@ -417,7 +433,11 @@ export function resolveOfferingsForProfile<O extends OfferingLike>(
       for (const entry of candidateEntries) {
         for (const id of entry.classIds) {
           if (id === '全クラス' && !allowCatchAll) continue
-          if (classIdMatchesProfile(id, profile, cluster, isRetaking)) return id
+          if (classIdMatchesProfile(id, profile, cluster, isRetaking)) {
+            // 条件付きプログラムは条件文が違っても同じプログラムの複数候補として扱う。
+            // これにより、候補を消さずに利用者へ選択を求められる。
+            return conditionedProgramClassId(id)?.programName ?? id
+          }
         }
       }
     }
@@ -455,6 +475,53 @@ export function resolveOfferingsForProfile<O extends OfferingLike>(
   const catchAllMatches = offerings.filter((o) => offeringMatches(o, true))
   if (catchAllMatches.length === 0) return undefined
   return catchAllMatches
+}
+
+/** class_idから、時間割へ表示する学籍番号条件だけを取り出す。 */
+function displayConditionOfClassId(classId: string): string | undefined {
+  // 範囲条件は全角かっこ内の文言をそのまま公式表記として使う。
+  const conditionedProgram = conditionedProgramClassId(classId)
+  if (conditionedProgram) return conditionedProgram.condition
+  // 偶奇条件はプログラム名を除き、利用者が確認すべき部分だけを短く表示する。
+  const parity = classId.match(/学籍番号(偶数|奇数)$/)
+  return parity ? `学籍番号${parity[1]}` : undefined
+}
+
+/**
+ * 1つの開講セクションに対応する学籍番号条件を返す。
+ * 曜日・時限と担当教員を照合し、プロフィールに当てはまるclass_idの条件だけを表示する。
+ */
+export function displayConditionForOffering<O extends OfferingLike>(
+  code: string,
+  offering: O,
+  assignments: readonly ClassAssignmentEntry[],
+  profile: ClassProfile,
+  cluster: 'I' | 'II' | 'III' | null,
+  isRetaking = false,
+): string | undefined {
+  const offeringTeachers = teacherTokens(offering.instructors)
+  const conditions = new Set<string>()
+  // 複数コマの授業は各コマに同じ条件が入るため、Setで重複を除く。
+  for (const slot of offering.slots) {
+    const entries = assignments.filter((entry) =>
+      entry.code === code && entry.term === offering.term && entry.day === slot.day && entry.period === String(slot.period),
+    )
+    let candidateEntries = entries
+    // 同時限に複数教員のセクションがある場合は、このofferingの担当教員と重なる行を優先する。
+    if (entries.length > 1 && offeringTeachers.size > 0) {
+      const narrowed = entries.filter((entry) => teacherOverlaps(offeringTeachers, teacherTokens(entry.instructors)))
+      if (narrowed.length > 0) candidateEntries = narrowed
+    }
+    // プロフィールに当てはまるclass_idだけから、表示用の条件文を集める。
+    for (const entry of candidateEntries) {
+      for (const classId of entry.classIds) {
+        if (!classIdMatchesProfile(classId, profile, cluster, isRetaking)) continue
+        const condition = displayConditionOfClassId(classId)
+        if (condition) conditions.add(condition)
+      }
+    }
+  }
+  return conditions.size > 0 ? [...conditions].join('／') : undefined
 }
 
 /** 時間割プレビュー用に、学年に応じたセクション候補を返す（他の画面のクラス判定には使わない）。 */

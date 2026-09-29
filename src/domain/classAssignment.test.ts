@@ -1,7 +1,7 @@
 // classAssignment.ts の単体テスト。class_assignment.json の表記パターンごとに、
 // プロフィールとの一致判定・セクション解決が正しく動くことを確認する。
 import { describe, expect, it, beforeAll } from 'vitest'
-import { classIdMatchesProfile, hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, resolveTimetablePreviewOfferings, sectionLabelMatchesProfile } from './classAssignment'
+import { classIdMatchesProfile, displayConditionForOffering, hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, resolveTimetablePreviewOfferings, sectionLabelMatchesProfile } from './classAssignment'
 import type { ClassAssignmentEntry, ClassProfile } from './classAssignment'
 import { getClassAssignments, getSubjectsByCode, loadAllEntryYearData } from '../data/requirementSets'
 
@@ -75,6 +75,14 @@ describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () =>
     expect(classIdMatchesProfile('経営・社会情報学プログラム', profile, 'I')).toBe(false)
   })
 
+  it('学籍番号条件付きのプログラム名は番号を保存せず、所属プログラムだけで候補として一致させる', () => {
+    // 条件の最終判断は利用者自身が行うため、ここでは機械システム所属なら両方の候補を残す。
+    const profile: ClassProfile = { programName: '機械システムプログラム' }
+    expect(classIdMatchesProfile('機械システムプログラム（学籍番号下3桁506～625）', profile, 'III')).toBe(true)
+    expect(classIdMatchesProfile('機械システムプログラム（学籍番号下3桁628～）', profile, 'III')).toBe(true)
+    expect(classIdMatchesProfile('機械システムプログラム（学籍番号下3桁506～625）', { programName: '先端ロボティクスプログラム' }, 'II')).toBe(false)
+  })
+
   it('「全クラス」はクラス分けに関係なく誰でも一致する', () => {
     expect(classIdMatchesProfile('全クラス', {}, 'I')).toBe(true)
     expect(classIdMatchesProfile('全クラス', { classIIArea: 'M' }, 'II')).toBe(true)
@@ -141,6 +149,41 @@ describe('classIdMatchesProfile（class_id表記ごとの一致判定）', () =>
     expect(classIdMatchesProfile('メディア情報学プログラム', profile, 'I', true)).toBe(false)
     // isRetakingがfalseなら、これらは今まで通り一致する
     expect(classIdMatchesProfile('クラス3', profile, 'I', false)).toBe(true)
+  })
+})
+
+// プロフィールへ学籍番号を保存せず、時間割候補に公式条件だけを添える処理を検証する。
+describe('displayConditionForOffering（受講条件の表示）', () => {
+  it('範囲条件は同じプログラムの候補へ表示し、複数コマにある重複は1つにまとめる', () => {
+    const assignments: ClassAssignmentEntry[] = [
+      { code: 'MCE602k', term: '後学期', day: '火', period: '3', classIds: ['機械システムプログラム（学籍番号下3桁506～625）'], instructors: ['増田'] },
+      { code: 'MCE602k', term: '後学期', day: '火', period: '4', classIds: ['機械システムプログラム（学籍番号下3桁506～625）'], instructors: ['増田'] },
+    ]
+    const offering = { term: '後学期', slots: [{ day: '火', period: 3 }, { day: '火', period: 4 }], instructors: ['増田　宏'] }
+    // 同じ条件が3限・4限の両方に記録されていても、表示文は重複させない。
+    expect(displayConditionForOffering('MCE602k', offering, assignments, { programName: '機械システムプログラム' }, 'III')).toBe('学籍番号下3桁506～625')
+  })
+
+  it('偶奇条件はプログラム名を除いた短い表示にする', () => {
+    const assignments: ClassAssignmentEntry[] = [
+      { code: 'ELE403h', term: '後学期', day: '月', period: '2', classIds: ['情報通信工学プログラム＆電子情報学プログラムの学籍番号偶数'] },
+    ]
+    const offering = { term: '後学期', slots: [{ day: '月', period: 2 }] }
+    // 1年次クラスの偶奇で対象セクションを絞った後、条件の存在も科目カードへ伝える。
+    expect(displayConditionForOffering('ELE403h', offering, assignments, { yearOneClass: 6, programName: '電子情報学プログラム' }, 'II')).toBe('学籍番号偶数')
+  })
+
+  it('実データのマシンデザインBは機械システム向け2候補を残し、それぞれの範囲を表示する', () => {
+    const offerings = getSubjectsByCode(2026).get('MCE602k')?.offerings ?? []
+    const assignments = getClassAssignments()
+    const profile: ClassProfile = { programName: '機械システムプログラム' }
+    // 学籍番号を持たないため火曜・水曜をどちらも候補にし、利用者が表示条件で判断できるようにする。
+    const resolved = resolveTimetablePreviewOfferings('MCE602k', offerings, assignments, profile, 'III', false, '後学期', 3, 3)
+    expect(resolved.offerings.map((offering) => offering.timetableCode)).toEqual(['21324214', '21324215'])
+    expect(resolved.offerings.map((offering) => displayConditionForOffering('MCE602k', offering, assignments, profile, 'III'))).toEqual([
+      '学籍番号下3桁506～625',
+      '学籍番号下3桁628～',
+    ])
   })
 })
 

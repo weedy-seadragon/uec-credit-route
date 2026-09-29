@@ -9,6 +9,26 @@ import { getDataEntryYear, programOptions } from '../data/requirementSets'
 import type { Profile } from '../storage/profile'
 import { loadProfile, saveProfile } from '../storage/profile'
 
+/** 2026年度時間割に明記された、Ⅰ類A/B/Cクラスの学籍番号下3桁による区分。 */
+const I_CLASS_DESCRIPTIONS_BY_ENTRY_YEAR: Readonly<Record<number, Readonly<Record<'A' | 'B' | 'C', string>>>> = {
+  2025: {
+    A: 'クラス1、またはクラス2の下3桁002～082',
+    B: 'クラス2の下3桁086～254、クラス3の003～171、またはⅡ類からの転類生',
+    C: 'クラス3の下3桁175～255、クラス4、またはⅢ類からの転類生',
+  },
+  2026: {
+    A: 'クラス1、またはクラス2の下3桁002～090',
+    B: 'クラス2の下3桁094～266、またはクラス3の003～179',
+    C: 'クラス3の下3桁183～267、またはクラス4',
+  },
+}
+
+/** 入学年度に対応するA/B/Cクラスの公式な目安を返す。対象外年度は従来の短い表示にする。 */
+function classIDescription(entryYear: number, className: 'A' | 'B' | 'C'): string | undefined {
+  // 2026年度のA2・A4に記載がある2025・2026年度入学生だけを案内対象にする。
+  return I_CLASS_DESCRIPTIONS_BY_ENTRY_YEAR[entryYear]?.[className]
+}
+
 // 学修要覧データを用意できた入学年度だけを、プロフィールで個別に選べるようにする。
 const SHOW_ENTRY_YEAR_INPUT = true
 const ENTRY_YEAR_OPTIONS = [2026, 2025, 2024, 2023, 2022, 2021] as const
@@ -259,10 +279,15 @@ export default function SetupPage() {
                   onChange={(e) => setClassIABC(e.target.value === '' ? null : (e.target.value as 'A' | 'B' | 'C'))}
                 >
                   <option value="">未定</option>
-                  <option value="A">Aクラス</option>
-                  <option value="B">Bクラス</option>
-                  <option value="C">Cクラス</option>
+                  {(['A', 'B', 'C'] as const).map((className) => {
+                    // 学籍番号自体は入力・保存せず、利用者が自分で照合できる条件だけを選択肢へ添える。
+                    const description = classIDescription(entryYear, className)
+                    return <option key={className} value={className}>{className}クラス{description && `（${description}）`}</option>
+                  })}
                 </select>
+                {classIDescription(entryYear, 'A') && (
+                  <p className="field-note">2026年度時間割の区分を表示しています。学籍番号そのものは入力・保存しません。</p>
+                )}
               </div>
             )}
 

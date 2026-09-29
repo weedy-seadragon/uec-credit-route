@@ -59,11 +59,11 @@ function CourseInSlot({ slot, entryYear }: { slot: TimetablePreviewSlot; entryYe
     <Link
       className={`timetable-course${category?.isRequired ? ' timetable-course--required' : ''}`}
       data-category-color={slot.categoryColorIndex}
-      aria-label={`${slot.name}${slot.topic ? `（${slot.topic}）` : ''}`}
+      aria-label={`${slot.name}${slot.topic ? `（${slot.topic}）` : ''}${slot.condition ? `（${slot.condition}）` : ''}`}
       to={`/courses/${encodeURIComponent(slot.code)}?year=${entryYear}`}
     >
       {category?.isRequired && <span className="timetable-required-badge" aria-hidden="true">必修</span>}
-      <span><span lang={englishName ? 'en' : undefined}>{englishName ? hyphenateEnglishName(slot.name) : slot.name}</span>{slot.topic && `（${slot.topic}）`}{slot.offeringTerm !== '前学期' && slot.offeringTerm !== '後学期' && `（${slot.offeringTerm}）`}</span>
+      <span><span lang={englishName ? 'en' : undefined}>{englishName ? hyphenateEnglishName(slot.name) : slot.name}</span>{slot.topic && `（${slot.topic}）`}{slot.condition && `（${slot.condition}）`}{slot.offeringTerm !== '前学期' && slot.offeringTerm !== '後学期' && `（${slot.offeringTerm}）`}</span>
     </Link>
   )
 }
@@ -370,5 +370,7 @@ function timetableOptionLabel(option: TimetablePreviewOption): string {
     if (slots) return `${option.topic}（${slots}）`
     return option.topic.includes('集中') ? option.topic : `${option.topic}（時限なし）`
   }
-  return slots || '曜日時限の記載なし'
+  // 学籍番号は保存せず、公式時間割に書かれた条件を候補の直後へ表示する。
+  const slotLabel = slots || '曜日時限の記載なし'
+  return option.condition ? `${slotLabel}（${option.condition}）` : slotLabel
 }
