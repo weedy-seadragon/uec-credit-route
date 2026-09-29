@@ -36,5 +36,5 @@ python scripts/validate_data.py
 - TypeScript/Reactの変更後：`app/`で`npm test`、`npm run lint`、`npm run build`
 - `app/data/`の変更後：上記に加えてリポジトリ直下で`python scripts/validate_data.py`
 - 通常の開発は`dev`で進め、コミット・プッシュしてよい
-- `main`へのマージは公開操作なので、必ず開発者の明示的な依頼後に行う
+- `main`への反映は公開操作なので、必ず開発者の明示的な依頼後に行う。直接pushせず、`dev`からのプルリクエスト経由で行う
 - 現在の状態が変わったら`docs/PROJECT_STATUS.md`、経緯は`docs/PROGRESS_LOG.md`を更新する

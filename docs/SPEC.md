@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 文書バージョン | 0.1（初版ドラフト） |
+| 文書バージョン | 0.1（初版ドラフトとして作成し、その後の実装に合わせて随時更新。現在の実装状況は`PROJECT_STATUS.md`を参照） |
 | 作成日 | 2026-09-03 |
 | 想定読者 | 開発者本人、協力者（時間割アプリ開発の友人） |
 | 対象 | 電気通信大学 情報理工学域 昼間コース全類（Ⅰ・Ⅱ・Ⅲ類）＋ 夜間主コース（先端工学基礎課程） |
@@ -694,16 +694,16 @@
 - 要件判定・推奨ロジックは、望むならC++で先にCLIとして試作してよい（入力：JSON、出力：JSON）。ロジックの正しさをC++で確かめてからTSに移植する、という使い方
 - Emscripten（C++→WebAssembly）で本番に組み込むことも技術的には可能だが、ビルド環境の構築とJS⇄WASMのデータ受け渡しが初心者には重い。ロジック自体は軽いので、**初版ではやらない**
 
-### 9.3 コード構成（案）
+### 9.3 コード構成
 
 ```
 repo/
 ├─ app/                     # Webアプリ一式（npmの作業ディレクトリ）
 │  ├─ data/                 # 生成されたJSON（サイトに同梱）
-│  │  ├─ subjects/2026.json
-│  │  ├─ requirements/2025-day-I-media.json
-│  │  ├─ requirements/common-day.json   # 総合文化・実践教育の科目リスト（全プログラム共通）
-│  │  └─ aliases.json
+│  │  ├─ subjects/youran-{年度}.json          # 入学年度ごとの科目マスタ
+│  │  ├─ requirements/{年度}-day-{類}-{プログラム}.json
+│  │  ├─ requirements/{年度}-day-common.json   # 総合文化・実践教育の科目リスト（全プログラム共通）
+│  │  └─ timetable/             # クラス別の曜日時限を解決する対応表
 │  └─ src/
 │     ├─ domain/            # 純粋ロジック（UI非依存）
 │     │  ├─ requirements.ts # 充足判定
@@ -713,11 +713,10 @@ repo/
 │     ├─ components/
 │     └─ storage/           # localStorage / JSON入出力
 ├─ scripts/                 # データ更新（Python）
-│   ├─ fetch_syllabus.py
-│   ├─ extract_youran.py
-│   ├─ match_names.py
-│   └─ validate.py
-├─ tests/
+│   ├─ gen_data.py / build_20XX_data.py   # 要件・科目データの生成
+│   ├─ fetch_syllabus.py                  # シラバスから開講情報を取得
+│   ├─ backfill_*.py / sync_term_types.py # 開講情報・学期の補完
+│   └─ validate_data.py                   # 整合性チェック
 └─ .github/workflows/deploy.yml
 ```
 

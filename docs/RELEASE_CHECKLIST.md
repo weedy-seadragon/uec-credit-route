@@ -9,7 +9,7 @@
 
 - [ ] 普段使いの入力内容を変更しないため、シークレットウィンドウまたは別ブラウザで確認する
 - [ ] PC幅とスマホ幅（幅390px程度）の両方で確認する
-- [ ] `npm test`、`npm run build`を実行する
+- [ ] `app/`で`npm test`、`npm run lint`、`npm run build`を実行する
 - [ ] `app/data/`を変更した場合は、`python scripts/validate_data.py`も実行する
 
 ## 初回利用の流れ

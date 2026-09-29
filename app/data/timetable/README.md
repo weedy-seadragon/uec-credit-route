@@ -2,7 +2,7 @@
 
 ## これは何のためのファイルか
 
-`app/data/subjects/youran-2025.json` の `offerings`（`scripts/fetch_syllabus.py` がシラバスWeb公開システムから
+`app/data/subjects/youran-{年度}.json` の `offerings`（`scripts/fetch_syllabus.py` がシラバスWeb公開システムから
 取得したもの）には、1つの科目に複数のセクション（クラス）がある場合、各セクションの担当教員・曜日時限は
 分かるが、**そのセクションがどのクラス（1年次クラス1〜12、Ⅰ類のA/B/Cクラスなど）の学生向けかは分からない**。
 
@@ -27,7 +27,7 @@
 
 ## シラバスの年度に注意（2026-09-05に発覚）
 
-`app/data/subjects/youran-2025.json`の「2025」は**学修要覧の入学年度**（カリキュラムの版）で、
+`app/data/subjects/youran-{年度}.json`の年は**学修要覧の入学年度**（カリキュラムの版）で、
 シラバス（`offerings`）を見るべき年度とは別物。時間割PDF（`timet/A*.pdf`）は開講年度（実際に
 授業がある年度）のものなので、シラバスも同じ開講年度を見る必要がある。`scripts/fetch_syllabus.py`の
 `SYLLABUS_YEAR`定数がその年度（今は2026）。ここが1年ずれていると、同じ科目でも担当教員・
@@ -40,7 +40,7 @@
 
 ## 対象PDFと、そのPDFで使われるクラス表記（`class_id`列に何を書くか）
 
-CLAUDE.mdの進捗ログ（2026-09-05時点の調査）より。曖昧な場合はCLAUDE.mdの該当箇所を確認すること。
+`docs/PROGRESS_LOG.md`の記録（2026-09-05時点の調査）より。曖昧な場合はPROGRESS_LOG.mdの該当箇所を確認すること。
 
 | pdf | 学年・学期 | 対象クラス（`cluster`列 / `class_id`列の値） |
 |---|---|---|
