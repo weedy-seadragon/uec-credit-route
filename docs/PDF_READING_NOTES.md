@@ -11,7 +11,7 @@
 - `PDF/yoran_2025.pdf`（プロジェクト内の`PDF`サブフォルダ）：学修要覧2025
   （情報理工学域）の本編そのもの。第2章（科目区分・単位算出基準・各種審査の所要単位数）、
   別表2〜5、付録C（全15プログラム＋夜間主課程のカリキュラム表を含む事実上のフル版）。全54ページ
-- `C:\Users\maita\Downloads\youran2025-gakuiki.pdf`（プロジェクト外、Downloads直下、225ページ）：
+- `C:\Users\<ユーザー名>\Downloads\youran2025-gakuiki.pdf`（プロジェクト外、Downloads直下、225ページ）：
   大学全体の学修要覧原本。情報理工学域の該当章は物理ページ20〜24付近（別表3・別表3の2・別表4など）
 
 どちらも存在しない/見当たらない場合は、開発者に確認する（過去に一度「無くなった」と誤認したが
@@ -28,7 +28,7 @@
    - **poppler の `pdftoppm`**（推奨、こちらの方が速い）：
      `winget install oschwartz10612.Poppler` で導入済みのはずだが、無ければ上記コマンドで入れる。
      フルパスは
-     `C:\Users\maita\AppData\Local\Microsoft\WinGet\Packages\oschwartz10612.Poppler_Microsoft.Winget.Source_8wekyb3d8bbwe\poppler-25.07.0\Library\bin\pdftoppm.exe`
+     `C:\Users\<ユーザー名>\AppData\Local\Microsoft\WinGet\Packages\oschwartz10612.Poppler_Microsoft.Winget.Source_8wekyb3d8bbwe\poppler-25.07.0\Library\bin\pdftoppm.exe`
      （バージョン番号は変わりうるので、無ければ`Get-ChildItem`等で探す）。使い方：
      ```
      pdftoppm.exe -png -r 200 -f <開始ページ> -l <終了ページ> <PDFパス> <出力先プレフィックス>
