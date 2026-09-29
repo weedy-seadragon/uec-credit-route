@@ -1468,6 +1468,21 @@ select {
   border-left: 3px solid #88a5dc;
 }
 
+/* 卒業審査の「すべての区分の必要単位を満たす」の下に出す、足りない区分の一覧。 */
+.review-shortfall-groups {
+  margin: 0.3rem 0 0;
+  font-size: 0.95em;
+}
+
+.review-shortfall-groups > p {
+  margin: 0;
+}
+
+.review-shortfall-groups > ul {
+  margin: 0.1rem 0 0;
+  padding-left: 1.2rem;
+}
+
 /* 「通常の条件」と「特例」のように、どちらか一方を満たせばよい選択肢の間に入れる「または」。 */
 .review-alternative-separator {
   margin: 0.5rem 0;

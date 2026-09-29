@@ -1209,8 +1209,43 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
         const planned = Math.max(0, evaluation.commonCredits.projected.contribution - evaluation.commonCredits.contribution)
         return <>共通単位 {cond.min}単位以上（現在 {evaluation.commonCredits.contribution}{planned > 0 && <span className="planned-credit"> + {planned}</span>} 単位）</>
         }
-      case 'allGroups':
-        return <>すべての区分の必要単位を満たす{canBeSatisfiedWithPlans() && <span className="planned-credit">（達成予定）</span>}</>
+      case 'allGroups': {
+        // どの区分が足りないのかが分かるよう、まだ必要単位に届いていない区分（と共通単位）を下に並べる
+        // （2026-09-29、開発者要望）。数値の出し方は選択科目の各区分の見出しとそろえる
+        const shortGroups = boundaryGroups.filter((g) => !g.satisfied)
+        const commonShort = !evaluation.commonCredits.satisfied
+        return (
+          <>
+            すべての区分の必要単位を満たす{canBeSatisfiedWithPlans() && <span className="planned-credit">（達成予定）</span>}
+            {/* 足りない区分が1つも無ければ（合計単位だけが足りない等）、一覧は出さない */}
+            {(shortGroups.length > 0 || commonShort) && (
+              <div className="review-shortfall-groups">
+                <p>以下の単位が足りません</p>
+                <ul>
+                  {shortGroups.map((g) => {
+                    // 必要単位で頭打ちにしない、実際の単位数（現在・修得見込）
+                    const current = g.contribution + g.overflow
+                    const projected = g.projectedContribution + g.projectedOverflow
+                    return (
+                      <li key={g.id}>
+                        {g.label ?? g.name} 現在 {current}/{g.required}単位
+                        {projected > current && <span className="planned-credit"> → {projected}/{g.required}単位（修得見込）</span>}
+                      </li>
+                    )
+                  })}
+                  {/* 共通単位は区分グループとは別に計算しているので、最後に1行足す（数値は共通単位の見出しと同じ） */}
+                  {commonShort && (
+                    <li>
+                      共通単位 現在 {commonEarnedTotal}/{evaluation.commonCredits.required}単位
+                      {commonPlannedTotal > 0 && <span className="planned-credit"> → {commonEarnedTotal + commonPlannedTotal}/{evaluation.commonCredits.required}単位（修得見込）</span>}
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
+          </>
+        )
+      }
       case 'review': {
         const target = reviews?.find((r) => r.id === cond.id)
         return <>「{target?.name ?? cond.id}」に合格{canBeSatisfiedWithPlans() && <span className="planned-credit">（達成予定）</span>}</>
