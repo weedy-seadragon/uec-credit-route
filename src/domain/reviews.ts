@@ -22,6 +22,13 @@ export interface ReviewStatus {
    * 科目名・区分名への変換はUI側の役目）。合格していれば空配列
    */
   unsatisfied: ReviewCondition[]
+  /**
+   * 審査全体が「どれか1つを満たせばよい」（anyOf）形で、どの枝も満たしていないときだけ、
+   * 枝ごとの不足条件を並べたもの（例: 2年次終了時審査の「通常の条件」と「特例（合計60単位）」）。
+   * unsatisfiedは一番惜しい枝だけなので、両方の選択肢を見せたい表示ではこちらを使う。
+   * 合格している・anyOf形でない審査では空配列
+   */
+  unsatisfiedAlternatives: ReviewCondition[][]
   onFail?: { blockedSubjects?: string[]; note?: string }
   /** 合否に関わらず常に表示する注記（ReviewDef.caveatをそのまま渡すだけ） */
   caveat?: string
@@ -136,6 +143,17 @@ function collectUnsatisfied(node: ReviewNode, ctx: Context): ReviewCondition[] {
   return isConditionSatisfied(node, ctx) ? [] : [node]
 }
 
+/**
+ * 審査全体が1つのanyOfだけでできている場合に、枝ごとの不足条件を集める（枝の並び順はデータのまま）。
+ * 審査が不合格のときだけ呼ぶので、ここに来た時点でどの枝も満たしていない。
+ * anyOf形でない審査（allOfなど）は選択肢が無いので空配列を返す
+ */
+function collectUnsatisfiedAlternatives(nodes: readonly ReviewNode[], ctx: Context): ReviewCondition[][] {
+  // 審査のトップが「anyOf 1つだけ」でなければ、選択肢として並べる対象ではない
+  if (nodes.length !== 1 || !('anyOf' in nodes[0])) return []
+  return nodes[0].anyOf.map((branch) => collectUnsatisfied(branch, ctx))
+}
+
 function evaluateReviewSatisfied(id: string, ctx: Context): boolean {
   if (ctx.cache.has(id)) return ctx.cache.get(id) as boolean
   if (ctx.visiting.has(id)) return false // 循環参照は起きない想定だが、安全側でfalseにする
@@ -179,6 +197,7 @@ export function evaluateReviews(
       satisfied,
       projectedSatisfied,
       unsatisfied: satisfied ? [] : nodes.flatMap((n) => collectUnsatisfied(n, ctx)),
+      unsatisfiedAlternatives: satisfied ? [] : collectUnsatisfiedAlternatives(nodes, ctx),
       onFail: review.onFail,
       caveat: review.caveat,
     }

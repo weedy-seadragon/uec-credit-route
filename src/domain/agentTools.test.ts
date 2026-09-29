@@ -60,7 +60,7 @@ describe('summarizeRequirementStatus', () => {
       totalCredits: { required: 0, contribution: 0, shortfall: 0, satisfied: true, projected: { contribution: 0, shortfall: 0, satisfied: true } },
     }
     const result = summarizeRequirementStatus(evaluation, [
-      { id: 'y2end', name: '2年次終了時審査', when: '2年次終了時', satisfied: false, projectedSatisfied: true, unsatisfied: [] },
+      { id: 'y2end', name: '2年次終了時審査', when: '2年次終了時', satisfied: false, projectedSatisfied: true, unsatisfied: [], unsatisfiedAlternatives: [] },
     ])
     expect(result.reviews).toEqual([{ id: 'y2end', name: '2年次終了時審査', when: '2年次終了時', satisfied: false, projectedSatisfied: true }])
   })

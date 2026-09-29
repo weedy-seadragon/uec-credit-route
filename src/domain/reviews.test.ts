@@ -139,6 +139,46 @@ describe('evaluateReviews（allOf/anyOfの組み合わせ）', () => {
     expect(result.at(0)?.satisfied).toBe(false)
     expect(result.at(0)?.unsatisfied).toEqual([{ type: 'allPassed', groupId: 'g2' }])
   })
+
+  it('anyOfの枝がどれも満たされていないときは、unsatisfiedAlternativesに枝ごとの不足条件が並ぶ', () => {
+    const review: ReviewDef = {
+      id: 'r',
+      name: 'テスト審査',
+      anyOf: [
+        { allOf: [{ type: 'allPassed', groupId: 'g1' }, { type: 'allPassed', groupId: 'g2' }] },
+        { type: 'totalCredits', min: 100, note: '特例' },
+      ],
+    }
+    // g1だけ満たしている。通常の枝の不足（g2）と、特例の枝の不足（合計100単位）の両方を、データの順に返す
+    const result = evaluateReviews([review], evaluate({ R1: 'passed' }), records(), subjectCredits)
+    expect(result.at(0)?.unsatisfiedAlternatives).toEqual([
+      [{ type: 'allPassed', groupId: 'g2' }],
+      [{ type: 'totalCredits', min: 100, note: '特例' }],
+    ])
+  })
+
+  it('anyOfのどれかの枝を満たして合格していれば、unsatisfiedAlternativesは空になる', () => {
+    const review: ReviewDef = {
+      id: 'r',
+      name: 'テスト審査',
+      anyOf: [
+        { allOf: [{ type: 'allPassed', groupId: 'g1' }, { type: 'allPassed', groupId: 'g2' }] },
+        { type: 'totalCredits', min: 100, note: '特例' },
+      ],
+    }
+    // 通常の枝（g1・g2）を満たしているので合格。不足を見せる必要が無い
+    const result = evaluateReviews([review], evaluate({ R1: 'passed', R2: 'passed' }), records(), subjectCredits)
+    expect(result.at(0)?.satisfied).toBe(true)
+    expect(result.at(0)?.unsatisfiedAlternatives).toEqual([])
+  })
+
+  it('審査のトップがallOfなら、不合格でもunsatisfiedAlternativesは空になる（選択肢が無いため）', () => {
+    const review: ReviewDef = { id: 'r', name: 'テスト審査', allOf: [{ type: 'allPassed', groupId: 'g1' }] }
+    // g1を満たしていないので不合格だが、「どちらか」の形ではないので選択肢としては並べない
+    const result = evaluateReviews([review], evaluate({}), records(), subjectCredits)
+    expect(result.at(0)?.satisfied).toBe(false)
+    expect(result.at(0)?.unsatisfiedAlternatives).toEqual([])
+  })
 })
 
 // 修得予定は現在の合否には含めない一方、すべて修得できた場合の見込み合否には含める。

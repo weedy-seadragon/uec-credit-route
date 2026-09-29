@@ -2197,6 +2197,31 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
               // 2年次終了時・卒業審査と、夜間主の輪講履修条件は不足条件が少ないため、
               // 詳細を開かず本文へそのまま出す。
               const showConditionsInline = r.id === 'y2-end' || r.id === 'graduation' || r.id === 'seminar-eligibility'
+              // 「どちらか1つを満たせばよい」審査（2年次終了時審査の通常の条件と特例）がどちらも不足しているときは、
+              // 一番惜しい方だけでなく、両方の不足を「または」でつないで並べる（2026-09-29、開発者要望）
+              const conditionList = r.unsatisfiedAlternatives.length > 1 ? (
+                <>
+                  {r.unsatisfiedAlternatives.map((branch, branchIndex) => (
+                    <div key={branchIndex}>
+                      {/* 2つ目以降の選択肢の前に「または」を入れる */}
+                      {branchIndex > 0 && <p className="review-alternative-separator">または</p>}
+                      <ul className="review-conditions">
+                        {branch.map((cond, i) => (
+                          <li key={i}>{describeCondition(cond)}</li>
+                        ))}
+                      </ul>
+                      {/* 条件1つだけの選択肢（特例の合計単位など）は、データの注記（「特例。…」）も添える */}
+                      {branch.length === 1 && branch[0].note && <p className="review-note">※ {branch[0].note}</p>}
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <ul className="review-conditions">
+                  {visibleUnsatisfied.map((cond, i) => (
+                    <li key={i}>{describeCondition(cond)}</li>
+                  ))}
+                </ul>
+              )
               return (
                 <li key={r.id}>
                   {r.name}
@@ -2211,20 +2236,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                   {!r.satisfied && visibleUnsatisfied.length > 0 && (
                     showConditionsInline ? (
                       <div className="review-conditions-inline">
-                        <ul className="review-conditions">
-                          {visibleUnsatisfied.map((cond, i) => (
-                            <li key={i}>{describeCondition(cond)}</li>
-                          ))}
-                        </ul>
+                        {conditionList}
                         {r.onFail?.note && <p className="review-note">※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
                       </div>
                     ) : (
                       <ReviewDetails title={`${r.name}の詳細`}>
-                        <ul className="review-conditions">
-                          {visibleUnsatisfied.map((cond, i) => (
-                            <li key={i}>{describeCondition(cond)}</li>
-                          ))}
-                        </ul>
+                        {conditionList}
                         {r.onFail?.note && <p className="review-note">※ {onFailNoteWithSubjectNames(r.onFail.note, r.onFail.blockedSubjects ?? [])}</p>}
                       </ReviewDetails>
                     )

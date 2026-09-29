@@ -1468,6 +1468,12 @@ select {
   border-left: 3px solid #88a5dc;
 }
 
+/* 「通常の条件」と「特例」のように、どちらか一方を満たせばよい選択肢の間に入れる「または」。 */
+.review-alternative-separator {
+  margin: 0.5rem 0;
+  font-weight: bold;
+}
+
 /* 審査条件の補足は、折りたたみ内外で同じ小さめの見た目にそろえる。 */
 .review-note {
   margin: 0.4rem 0;
