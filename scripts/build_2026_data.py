@@ -14,7 +14,7 @@ from special_lecture_data import normalize_special_lecture_subjects
 
 # このスクリプトの場所を基準にして、実行場所に左右されない入出力先を決める。
 ROOT = Path(__file__).resolve().parents[1]
-DATA_DIR = ROOT / "data"
+DATA_DIR = ROOT / "app" / "data"
 REQUIREMENTS_DIR = DATA_DIR / "requirements"
 SUBJECTS_2025_PATH = DATA_DIR / "subjects" / "youran-2025.json"
 SUBJECTS_2026_PATH = DATA_DIR / "subjects" / "youran-2026.json"

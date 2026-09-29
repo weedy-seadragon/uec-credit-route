@@ -698,29 +698,30 @@
 
 ```
 repo/
-├─ data/                    # 生成されたJSON（サイトに同梱）
-│   ├─ subjects/2026.json
-│   ├─ requirements/2025-day-I-media.json
-│   ├─ requirements/common-day.json     # 総合文化・実践教育の科目リスト（全プログラム共通）
-│   └─ aliases.json
+├─ app/                     # Webアプリ一式（npmの作業ディレクトリ）
+│  ├─ data/                 # 生成されたJSON（サイトに同梱）
+│  │  ├─ subjects/2026.json
+│  │  ├─ requirements/2025-day-I-media.json
+│  │  ├─ requirements/common-day.json   # 総合文化・実践教育の科目リスト（全プログラム共通）
+│  │  └─ aliases.json
+│  └─ src/
+│     ├─ domain/            # 純粋ロジック（UI非依存）
+│     │  ├─ requirements.ts # 充足判定
+│     │  ├─ recommend.ts    # 推奨
+│     │  └─ importers.ts    # 各形式の取り込み
+│     ├─ pages/
+│     ├─ components/
+│     └─ storage/           # localStorage / JSON入出力
 ├─ scripts/                 # データ更新（Python）
 │   ├─ fetch_syllabus.py
 │   ├─ extract_youran.py
 │   ├─ match_names.py
 │   └─ validate.py
-├─ src/
-│   ├─ domain/              # 純粋ロジック（UI非依存）
-│   │   ├─ requirements.ts  # 充足判定
-│   │   ├─ recommend.ts     # 推奨
-│   │   └─ importers.ts     # 各形式の取り込み
-│   ├─ pages/
-│   ├─ components/
-│   └─ storage/             # localStorage / JSON入出力
 ├─ tests/
 └─ .github/workflows/deploy.yml
 ```
 
-`src/domain/` は React に依存させない。ここだけは C++ で書いたものをそのまま移植する対象。
+`app/src/domain/` は React に依存させない。ここだけは C++ で書いたものをそのまま移植する対象。
 
 ---
 

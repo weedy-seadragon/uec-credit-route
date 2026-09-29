@@ -44,10 +44,10 @@
 
 - `scripts/build_2023_data.py`：`update_designds_requirement()`と`copy_subject_master()`の
   COM50Xe振り直し処理を追加し、再生成しても正しい値になるようにした
-- `data/requirements/2023-day-I-designds.json`：`major-req`required 19→20（COM503e追加）、
+- `app/data/requirements/2023-day-I-designds.json`：`major-req`required 19→20（COM503e追加）、
   `major-sel`required 17→16（COM503e→COM504e、COM504e→COM505e）、`major-free`からCOM002e・
   COM003e・LAB501eを除去しCOM505e→COM506eへ変更
-- `data/subjects/youran-2023.json`：COM502e〜506eの名称・区分を修正（COM503eのofferings/
+- `app/data/subjects/youran-2023.json`：COM502e〜506eの名称・区分を修正（COM503eのofferings/
   prerequisitesTextはオペレーティングシステム論の実データとしてCOM504eへ引き継いだ）
 - `scripts/validate_data.py`：`check_known_2023_values`の期待値を19/17→20/16に修正し、
   COM502e〜506eの科目名も回帰検査に追加
@@ -86,7 +86,7 @@
   情報工学工房B・C・GLTPラボワーク除去と、メディア情報学のMTHb02a/MTHb03a→MTHb02b/MTHb03b
   差し替えを反映した
 - `scripts/validate_data.py`に対応する回帰検査を追加
-- `src/data/requirementSets.test.ts`にメディア情報学の差分を検証するテストを追加
+- `app/src/data/requirementSets.test.ts`にメディア情報学の差分を検証するテストを追加
 
 ## Ⅱ類5・Ⅲ類5プログラムと夜間主課程（2026-09-14）
 
@@ -138,7 +138,7 @@ C.5総合文化科目・実践教育科目の人文・社会科学科目に、20
   10プログラムから除去し、`update_evening_requirement()`・`update_evening_subjects()`で
   夜間主のHSS102s〜108sを2023年度時点の科目名・番号へ振り直した
 - `scripts/validate_data.py`に対応する回帰検査を追加
-- `src/data/requirementSets.test.ts`にⅡ類・夜間主の差分を検証するテストを追加
+- `app/src/data/requirementSets.test.ts`にⅡ類・夜間主の差分を検証するテストを追加
 
 ### 副次的に見つかった2024年度データの不具合
 
@@ -147,7 +147,7 @@ C.5総合文化科目・実践教育科目の人文・社会科学科目に、20
 2023年度以前から存在）で別々の科目のはずだが、光工学のELEa02nは学修要覧2024の原本
 付録C（`youran2024.pdf`）の光工学プログラムの科目表には掲載が無い（2025年度の付録Cには
 再掲載される）。科目マスタにELEa02n自体が載っていることは問題ではない（シラバスに基づく
-実在科目であり、`data/subjects/youran-2024.json`にあること自体は妥当）。問題は
+実在科目であり、`app/data/subjects/youran-2024.json`にあること自体は妥当）。問題は
 `2024-day-III-optical.json`（2024年度入学者の要件ファイル）がこれを自由科目として
 参照していること：卒業要件は入学年度の学修要覧原本にマストで従うべきところ、2024年度
 入学者にこの科目を自由科目として認めてよい根拠が原本に無い。`docs/YOURAN_2024_COMPARISON.md`

@@ -1,5 +1,5 @@
 """シラバスWeb公開システムから曜日時限・担当教員・シラバスURLを取得し、
-data/subjects/youran-2025.json の各科目に offerings（docs/SPEC.md §7.1）として追記する。
+app/data/subjects/youran-2025.json の各科目に offerings（docs/SPEC.md §7.1）として追記する。
 
 実行: python scripts/fetch_syllabus.py
 
@@ -18,7 +18,7 @@ SYLLABUS_YEARは学年が進んでも定期的に見直すこと（来年度以�
    昼間コースが31、夜間主課程が32（2026-09-05に発見。学籍番号末尾s/tの科目名で
    実際に確認済み）の2つがあり、両方まわる
 2. 一覧表には科目コード（COM405aのような形式）が載っていないので、まず現在の
-   data/subjects/youran-2025.json に載っている科目名と一致する行だけに絞り込む
+   app/data/subjects/youran-2025.json に載っている科目名と一致する行だけに絞り込む
    （名前が一致しない行の個別ページは開かない＝全1157件ではなく数百件で済む）
 3. 絞り込んだ行だけ、個別シラバスページを1件ずつ開いて実際の科目コードを読み取る
    （1つの講義が複数プログラムで共有されている場合、科目番号欄に複数コードが
@@ -32,7 +32,8 @@ CLAUDE.md本文のルール通り、個別ページの取得は1.2秒間隔を�
 import json, os, re, sys, time, unicodedata, urllib.request
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-SUBJECTS_PATH = os.path.join(ROOT, "data", "subjects", "youran-2025.json")
+DATA_DIR = os.path.join(ROOT, "app", "data")
+SUBJECTS_PATH = os.path.join(DATA_DIR, "subjects", "youran-2025.json")
 
 # 31=昼間コース、32=夜間主課程（先端工学基礎課程）
 FACULTIES = ["31", "32"]

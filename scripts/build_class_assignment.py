@@ -1,17 +1,17 @@
 """複数セクション（クラス）がある科目について、「このクラスがどれか」だけを
-埋めればよい形のCSV（data/timetable/class_assignment.csv）を作る。
+埋めればよい形のCSV（app/data/timetable/class_assignment.csv）を作る。
 
-科目名・曜日時限・担当教員は data/subjects/youran-2025.json の offerings に
+科目名・曜日時限・担当教員は app/data/subjects/youran-2025.json の offerings に
 既にあるので、そこから1行ずつ機械的に埋めて出力する。人間が書き込むのは
 class_id列（受講対象クラス）だけでよい。
 
-data/timetable/class_schedule.csv（時間割PDFを書き起こしたもの。今のところ
+app/data/timetable/class_schedule.csv（時間割PDFを書き起こしたもの。今のところ
 A1=1年前期分のみ）に、同じ科目名・曜日時限・担当教員の行があれば、
 そこからclass_idを自動で埋める（status列が"auto"になる）。
 class_schedule.csvにA2・A3…と追記していくほど、自動で埋まる行が増える。
 
-再実行しても、既存の記入済みデータ（data/timetable/class_assignment_filled.csv があれば
-そちらを優先、無ければ data/timetable/class_assignment.csv）に人が書き込んだclass_id
+再実行しても、既存の記入済みデータ（app/data/timetable/class_assignment_filled.csv があれば
+そちらを優先、無ければ app/data/timetable/class_assignment.csv）に人が書き込んだclass_id
 （空でないもの）は上書きしない（そのまま引き継ぐ）。空欄のままだった行にだけ、
 新しい自動解決結果を入れる。
 
@@ -28,10 +28,11 @@ class_schedule.csvにA2・A3…と追記していくほど、自動で埋まる�
 import csv, json, os, re
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-SUBJECTS_PATH = os.path.join(ROOT, "data", "subjects", "youran-2025.json")
-SCHEDULE_PATH = os.path.join(ROOT, "data", "timetable", "class_schedule.csv")
-OUT_PATH = os.path.join(ROOT, "data", "timetable", "class_assignment.csv")
-FILLED_PATH = os.path.join(ROOT, "data", "timetable", "class_assignment_filled.csv")
+DATA_DIR = os.path.join(ROOT, "app", "data")
+SUBJECTS_PATH = os.path.join(DATA_DIR, "subjects", "youran-2025.json")
+SCHEDULE_PATH = os.path.join(DATA_DIR, "timetable", "class_schedule.csv")
+OUT_PATH = os.path.join(DATA_DIR, "timetable", "class_assignment.csv")
+FILLED_PATH = os.path.join(DATA_DIR, "timetable", "class_assignment_filled.csv")
 
 # 必修の1・2年次Academic English・Technical English。英語系は名前に"English"を含むため
 # 通常は対象外だが、これらの科目だけはクラス別の曜日時限解決の対象にする

@@ -25,13 +25,14 @@ from fetch_syllabus import (  # noqa: E402  （一覧の解析・名前の正規
 )
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+DATA_DIR = os.path.join(ROOT, "app", "data")
 
 
 def load_subject_files() -> dict[str, dict]:
     """年度ごとの科目マスタを、ファイルパス→内容の辞書で読み込む。"""
     files = {}
-    # data/subjects/youran-*.json をすべて対象にする（年度が増えてもそのまま動くように）
-    for path in sorted(glob.glob(os.path.join(ROOT, "data", "subjects", "youran-*.json"))):
+    # app/data/subjects/youran-*.json をすべて対象にする（年度が増えてもそのまま動くように）
+    for path in sorted(glob.glob(os.path.join(DATA_DIR, "subjects", "youran-*.json"))):
         with open(path, encoding="utf-8") as f:
             files[path] = json.load(f)
     return files

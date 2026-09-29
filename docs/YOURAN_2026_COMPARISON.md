@@ -113,9 +113,9 @@
   - 2025年度データを複製し、確認済み差分だけを適用して2026年度データを再生成する。
   - 変更のない科目は既存の2026年度シラバス情報を引き継ぐ。
   - 新設・番号変更科目は、別科目のURLを誤って出さないよう `offerings` を空のままにする。
-- `data/requirements/2026-*.json`
+- `app/data/requirements/2026-*.json`
   - 共通1件、昼間15件、夜間主1件。
-- `data/subjects/youran-2026.json`
+- `app/data/subjects/youran-2026.json`
   - 1,394科目。
 - `scripts/validate_data.py`
   - 2025年度と2026年度を同時に検証するよう拡張。

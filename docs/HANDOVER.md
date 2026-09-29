@@ -41,17 +41,17 @@
 
 ```
 ①「大学のルール」を書いたデータ　→　②「判定するロジック」　→　③「画面に表示する」
-   (data/ フォルダの中の .json)         (src/domain/ フォルダ)        (src/pages/ フォルダ)
+   (app/data/ フォルダの中の .json)     (app/src/domain/ フォルダ)    (app/src/pages/ フォルダ)
 ```
 
-1. **データ（`data/` フォルダ）**
+1. **データ（`app/data/` フォルダ）**
    「Ⅰ類メディア情報学プログラムは卒業に128単位必要で、必修科目はこれとこれ」
    といった大学のルールを、番号や表ではなく、プログラムが読み書きできる形式（JSON）で
    書き起こしたもの。これが唯一の"正しい情報源"で、他のどこにも数字を直接書かない
-2. **ロジック（`src/domain/` フォルダ）**
+2. **ロジック（`app/src/domain/` フォルダ）**
    「このデータと、この学生の取得済み科目を突き合わせたら、あと何が足りないか」を
    計算する部分。画面の見た目とは完全に切り離されている
-3. **画面（`src/pages/` フォルダ）**
+3. **画面（`app/src/pages/` フォルダ）**
    実際にブラウザに表示される画面（プロフィール入力画面・結果表示画面など）
 
 **何かを直したい・変えたいとき、まず「これは①データの間違いか、②計算ロジックの間違いか、
@@ -73,22 +73,25 @@ uec-credit-route/                 ← プロジェクト全体
 │  ├─ HANDOVER.md                 ← このファイル
 │  ├─ RELEASE_CHECKLIST.md         ← 公開前に主要な画面操作を確認する手順
 │  └─ PENDING_YEAR_SEMESTER_CHECKS.md ← 標準年次・学期の確認監査記録
-├─ data/                          ← 大学のルールを書いたデータ（唯一の情報源。上記①）
-│  ├─ requirements/                  卒業要件（プログラムごとに1ファイル、計17ファイル）
-│  ├─ subjects/                      全科目のデータ（科目名・単位数など）
-│  └─ timetable/                     クラス分けが複数ある科目の割り当て表
+├─ app/                           ← Webアプリ一式
+│  ├─ data/                          大学のルールを書いたデータ（唯一の情報源。上記①）
+│  │  ├─ requirements/                  卒業要件（プログラムごとに1ファイル）
+│  │  ├─ subjects/                      全科目のデータ（科目名・単位数など）
+│  │  └─ timetable/                     クラス分けが複数ある科目の割り当て表
+│  ├─ src/                           サイト本体のプログラム（TypeScript + React）
+│  │  ├─ domain/                        判定ロジック（上記②）
+│  │  ├─ data/                          app/data/ のJSONを読み込む橋渡し役
+│  │  ├─ storage/                       ブラウザへの保存・読み込み
+│  │  ├─ pages/                         各画面（上記③）
+│  │  └─ components/                    複数の画面で使う部品
+│  ├─ public/                        公開用の画像など
+│  └─ package.json                  npmコマンドと依存パッケージの定義
 ├─ scripts/                       ← データを作る・更新するための自動処理（Pythonで書かれている）
-├─ src/                           ← サイト本体のプログラム（TypeScript + React）
-│  ├─ domain/                        判定ロジック（上記②）
-│  ├─ data/                          data/ フォルダのJSONを読み込む橋渡し役
-│  ├─ storage/                       ブラウザへの保存・読み込み
-│  ├─ pages/                         各画面（上記③）
-│  └─ components/                    複数の画面で使う部品
 ├─ .github/workflows/deploy.yml   ← サイトを自動で公開する設定（後述）
 └─ PDF/                           ← 大学の学修要覧PDF（著作物のためGitには含めていない）
 ```
 
-### もう少しだけ詳しく：`src/pages/` の中身（画面）
+### もう少しだけ詳しく：`app/src/pages/` の中身（画面）
 
 | 画面（URL） | 何をする画面か |
 |---|---|
@@ -105,12 +108,12 @@ uec-credit-route/                 ← プロジェクト全体
 
 | 困りごと・やりたいこと | まず見る場所 |
 |---|---|
-| ある科目の単位数・必修/選択の区分が違う | `data/requirements/` の該当プログラムのJSON、または `data/subjects/youran-2025.json` |
-| 卒業に必要な合計単位数がおかしい | `data/requirements/` の該当プログラムのJSON（`totalCredits`など） |
-| 科目の曜日・時限やシラバスへのリンクが出ない／間違っている | `data/timetable/class_assignment_filled.csv`（クラス分けの記入表）、または大学のシラバスサイト自体が変わった可能性 → `scripts/fetch_syllabus.py` を再実行してデータを取り直す |
-| 「あと何が足りないか」の判定結果がおかしい（データは合っているのに） | `src/domain/requirements.ts`（充足判定）・`src/domain/recommend.ts`（推奨順） |
-| 画面の見た目・文言を直したい | `src/pages/` の該当ファイル、または `src/components/` |
-| 新しい年度・新しいプログラムのデータを追加したい | `data/requirements/` に新しいJSONを作り、`src/data/requirementSets.ts` に1行追加する（`docs/SPEC.md` §7参照） |
+| ある科目の単位数・必修/選択の区分が違う | `app/data/requirements/` の該当プログラムのJSON、または `app/data/subjects/youran-2025.json` |
+| 卒業に必要な合計単位数がおかしい | `app/data/requirements/` の該当プログラムのJSON（`totalCredits`など） |
+| 科目の曜日・時限やシラバスへのリンクが出ない／間違っている | `app/data/timetable/class_assignment_filled.csv`（クラス分けの記入表）、または大学のシラバスサイト自体が変わった可能性 → `scripts/fetch_syllabus.py` を再実行してデータを取り直す |
+| 「あと何が足りないか」の判定結果がおかしい（データは合っているのに） | `app/src/domain/requirements.ts`（充足判定）・`app/src/domain/recommend.ts`（推奨順） |
+| 画面の見た目・文言を直したい | `app/src/pages/` の該当ファイル、または `app/src/components/` |
+| 新しい年度・新しいプログラムのデータを追加したい | `app/data/requirements/` に新しいJSONを作る（`docs/SPEC.md` §7参照） |
 | サイトの目的や仕様そのものを確認したい | `docs/SPEC.md` |
 | 過去に「なぜこう直したか」の経緯を知りたい | `docs/PROGRESS_LOG.md`（時系列の作業日誌） |
 | 今何が終わっていて何が残っているか知りたい | `docs/PROJECT_STATUS.md` |
@@ -131,15 +134,17 @@ https://weedy-seadragon.github.io/uec-credit-route/
 手元で動かして確認できます（コマンドはターミナル／コマンドプロンプトに入力します）。
 
 ```
+cd app
 npm install         最初の1回だけ：必要な部品をダウンロードする
 npm run dev         手元でサイトを起動する（表示されたURLをブラウザで開く）
 npm test            プログラムが正しく動くかの自動チェックを実行する
 npm run build       本番用に固めてビルドできるか確認する
 ```
 
-データ（`data/` フォルダ）を書き換えたときは、以下も実行して矛盾がないか確認します。
+データ（`app/data/` フォルダ）を書き換えたときは、リポジトリ直下へ戻って以下も実行して矛盾がないか確認します。
 
 ```
+cd ..
 python scripts/validate_data.py
 ```
 

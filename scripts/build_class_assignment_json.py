@@ -1,12 +1,12 @@
-"""data/timetable/class_assignment_filled.csv（class_idが人手で埋まったもの）から、
-アプリが読み込める data/timetable/class_assignment.json を作る。
+"""app/data/timetable/class_assignment_filled.csv（class_idが人手で埋まったもの）から、
+アプリが読み込める app/data/timetable/class_assignment.json を作る。
 
 class_idが空の行（＝まだ解決できていない行）は含めない。
 教員名など、アプリ側の判定に使わない列は落とし、code/term/day/period/classIdsだけにする
 （1つのofferingに複数の受講対象クラスがある場合は class_ids を配列で持つ）。
 
 class_idの文字列の解釈（「クラス3」「メディア情報学プログラム」「Aクラス」「I3クラス」
-「Mエリア」「Mエリア(2クラス)」など）は、TypeScript側（src/domain/classAssignment.ts）で行う。
+「Mエリア」「Mエリア(2クラス)」など）は、TypeScript側（app/src/domain/classAssignment.ts）で行う。
 このスクリプトでは文字列をそのまま右から左に運ぶだけにする。
 
 periodは通常1つの数字だが、「3限・4限で1つの科目」のように連続する複数時限にまたがる
@@ -29,8 +29,9 @@ class_idも複数書くときは通常半角カンマ区切りだが、「情報
 import csv, json, os, re
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
-SRC = os.path.join(ROOT, "data", "timetable", "class_assignment_filled.csv")
-OUT = os.path.join(ROOT, "data", "timetable", "class_assignment.json")
+DATA_DIR = os.path.join(ROOT, "app", "data")
+SRC = os.path.join(DATA_DIR, "timetable", "class_assignment_filled.csv")
+OUT = os.path.join(DATA_DIR, "timetable", "class_assignment.json")
 
 # 「クラス7，8」「クラス9,10」のような、「クラス」1回＋数字を区切り文字でまとめて
 # 書く省略記法を「クラス7,クラス8」のように展開する
@@ -66,7 +67,7 @@ def expand_iarea_shorthand(text: str) -> str:
 # そのまま分割すると「プログラムAの一覧」と「プログラムBの学籍番号偶数」という
 # 別々の（しかも後者は意味の通らない）条件に壊れてしまう。それを避けるため、
 # 既知のプログラム名だけを対象に「＆」区切りへ変換してから渡す
-# （src/domain/classAssignment.ts側で「＆」を含む場合だけ複数プログラムの意味として扱う）
+# （app/src/domain/classAssignment.ts側で「＆」を含む場合だけ複数プログラムの意味として扱う）
 PROGRAM_NAMES = [
     "メディア情報学プログラム", "経営・社会情報学プログラム", "情報数理工学プログラム",
     "コンピュータサイエンスプログラム", "デザイン思考・データサイエンスプログラム",

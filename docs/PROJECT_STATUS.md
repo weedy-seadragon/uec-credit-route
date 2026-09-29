@@ -1,10 +1,12 @@
 # プロジェクトの現在地
 
-最終更新: 2026-09-28  
+最終更新: 2026-09-30
 開発ブランチ: `dev`  
-公開ブランチ: `main`（現在のバージョンは`vite.config.ts`の`SITE_VERSION`、各版の内容はトップ画面のリリースノートを参照）
+公開ブランチ: `main`（現在のバージョンは`app/vite.config.ts`の`SITE_VERSION`、各版の内容はトップ画面のリリースノートを参照）
 
 この文書は、現在の実装状況・運用上の注意・次の確認候補を短時間で把握するための要約です。仕様は`SPEC.md`、作業規則は`../AGENTS.md`、時系列の経緯は`PROGRESS_LOG.md`を参照してください。
+
+Webアプリ本体・設定・静的データは`app/`に集約している。npmコマンドは`app/`で、Pythonのデータ更新・検証コマンドはリポジトリ直下で実行する。
 
 ## 対応している範囲
 
@@ -23,7 +25,7 @@
   - 学籍番号の範囲・偶奇で分かれる科目は、科目名または候補名の末尾に条件を表示して本人に選んでもらう。学籍番号そのものは入力・保存しない
   - 科目ごとの表示／非表示と選んだ授業は、履修記録とは別に localStorage にだけ保存する（JSONバックアップ・卒業判定には影響しない）
 - メイン画面の大見出しは折りたためる。初回は全部開いた状態で、開閉状態は localStorage に保存する
-- 更新時の曜日時限の重複警告は、前学期と春・夏ターム、後学期と秋・冬タームの組み合わせも判定する（`src/domain/offeringTerms.ts`を時間割プレビューと共用）
+- 更新時の曜日時限の重複警告は、前学期と春・夏ターム、後学期と秋・冬タームの組み合わせも判定する（`app/src/domain/offeringTerms.ts`を時間割プレビューと共用）
 
 ## 現在の画面上の扱い
 
@@ -42,8 +44,8 @@
 - 2021〜2026年度すべてでⅠ類・Ⅱ類・Ⅲ類・夜間主を学修要覧原本と画像照合済み（2026-09-15時点）。2021〜2023年度データはCodeXが追加したもので、「前年度・翌年度と同一」という誤った前提を各所に含んでいたため、いずれも照合の過程で実際に差分が見つかり修正した。特に2022年度は、デザイン思考・データサイエンスがまだ無いためⅡ類・Ⅲ類・夜間主のプログラム記号自体が2024年度より1つ若い（セキュリティ情報学はf→e、機械システムはk→j等）という構造レベルの誤りだった（`YOURAN_2022_COMPARISON.md`参照）。2021年度のⅡ類・Ⅲ類・夜間主は2022年度データを土台にしているため多くの誤りを引き継いで自動修正できたが、電子工学・物理工学の科目番号や夜間主の科目入れ替わりなど2021年度固有の差分も追加で見つかっている（`YOURAN_2021_COMPARISON.md`参照）
 - 科目コード集合だけでなく、別表2（卒業所要単位）・別表3（2年次終了時審査）・別表4（卒業研究着手審査基準）の必修単位数・指定科目・必要総単位数も2021・2022年度全課程で機械的に原本照合済み（2026-09-15）。夜間主の卒研着手条件（初年次導入科目の必要単位が2021年度は6、2022年度以降は4）と、卒業審査のcommonCredits条件がsubtotals.commonの年度別修正に追従していなかった不具合（2021年度9課程・2022年度Ⅰ類4プログラムに影響）を発見・修正した（`YOURAN_2021_COMPARISON.md`の⑧⑨参照）。さらに、2021年度は総合コミュニケーション科学の科目番号がUEC301z→UEC101zへ変わっていることに審査条件側が追従しておらず、**2021年度入学者が2年次終了時審査・卒業研究着手審査に恒久的に不合格判定されてしまう重大な不具合**を発見・修正した（`YOURAN_2021_COMPARISON.md`の⑩参照）。2022年度は同じ照合で新規の不具合は見つからなかった
 - 曜日時限・担当教員・シラバスURL・開講学期は、原則として2026年度の公式シラバスを参照する。学修要覧と学期が食い違う科目は`scripts/sync_term_types.py`でシラバス側へ合わせる。開講情報が空の科目は`scripts/backfill_missing_offerings.py`で、シラバスの科目番号欄・同名科目を根拠に補う（大学院連携科目は自由科目のため、開講情報が無くても対応しない）
-- 各セクション（offering）には、シラバス一覧の科目名末尾の（…）表記を`sectionLabel`として持つ（例:「（Aクラス）」「（Ⅰ類）」）。曜日時限が「他」で空の科目（情報領域演習第三・インターンシップ等）は、この表記とプロフィールのA/B/Cクラス・類を突き合わせて受講セクションを決める（`src/domain/classAssignment.ts`の`sectionLabelMatchesProfile`）。`fetch_syllabus.py`が取得時に付けるほか、一覧ページだけから付け直す`scripts/backfill_section_labels.py`がある
-- クラス別の対応表は`data/timetable/class_assignment_filled.csv`から`class_assignment.json`へ変換済みで、未記入の`class_id`はない
+- 各セクション（offering）には、シラバス一覧の科目名末尾の（…）表記を`sectionLabel`として持つ（例:「（Aクラス）」「（Ⅰ類）」）。曜日時限が「他」で空の科目（情報領域演習第三・インターンシップ等）は、この表記とプロフィールのA/B/Cクラス・類を突き合わせて受講セクションを決める（`app/src/domain/classAssignment.ts`の`sectionLabelMatchesProfile`）。`fetch_syllabus.py`が取得時に付けるほか、一覧ページだけから付け直す`scripts/backfill_section_labels.py`がある
+- クラス別の対応表は`app/data/timetable/class_assignment_filled.csv`から`class_assignment.json`へ変換済みで、未記入の`class_id`はない
 - 2026-09-28・29版のA2/A4/A6を再確認し、Ⅰ類A/B/Cクラス、アルゴリズム論第一・データ構造論第一・プログラミング演習、材料力学および演習・機械力学および演習、マシンデザインBの学籍番号条件を反映済み
 
 ## 開発・確認手順
@@ -56,7 +58,7 @@ npm run lint
 npm run build
 ```
 
-`data/`を変更した場合は、さらに`python scripts/validate_data.py`を実行する。データ生成の順序と、`gen_data.py`実行後に`offerings`を再取得する必要がある理由は、`../CODEX.md`を参照する。
+`app/data/`を変更した場合は、さらに`python scripts/validate_data.py`を実行する。データ生成の順序と、`gen_data.py`実行後に`offerings`を再取得する必要がある理由は、`../CODEX.md`を参照する。
 
 ## 次の確認候補
 
@@ -69,11 +71,11 @@ npm run build
      - ELE403hの名前・開講情報の確認：科目名を現行シラバスの「基礎情報通信」へ戻して解決済み（YOURAN_2021_COMPARISON.md⑦）
      - バックアップ読み込み時のプロフィール不一致の検出、時間割データの未対応クラス表記（「留学生」「上級者」等）の扱い：開発者判断で対応しない
      - 読み込みJSONの検証：対応済み。状態・科目番号が不正な記録、科目マスタに無い科目番号、範囲外・整数でない単位数/科目数は
-       「ファイルに書かれていなかった」扱いで読み飛ばし、件数を画面に表示する（src/domain/importers.ts） -->
+       「ファイルに書かれていなかった」扱いで読み飛ばし、件数を画面に表示する（app/src/domain/importers.ts） -->
 - 現在、優先度の高い未修正課題は無い
 
 - 学期別の修得推奨が、実際の履修計画に十分役立つかを利用者の意見とともに確認する
-- WebMCP（AIエージェントからの操作）：`dev`・`main`に反映済み（2026-09-26確認。`get_timetable_preview`はVer.1.2.4で2026-09-28に公開）。メイン画面を開いている間だけ、`get_profile`・`get_requirement_status`・`get_term_recommendations`・`get_timetable_preview`・`search_subjects`（読み取り）と`set_subject_status`（書き込み）の6ツールを登録する。書き込みは画面の「未更新の変更」に入るだけで、利用者が「更新する」を押すまで保存・判定に反映しない。WebMCPはChrome 146以降の試験機能（`chrome://flags`の`#enable-webmcp-for-testing`）でだけ動き、非対応ブラウザでは何もしない。公開サイトで一般に使えるようにするにはオリジントライアル登録が必要で、まだ行っていない。実装は`src/webmcp.ts`（ブラウザAPIへの登録）・`src/domain/agentTools.ts`（返す内容の組み立て・入力検証）・`src/components/AgentToolsBridge.ts`（ツール定義と登録のタイミング）・`MainPage.tsx`の`agentHandlers`（各ツールの処理）
+- WebMCP（AIエージェントからの操作）：`dev`・`main`に反映済み（2026-09-26確認。`get_timetable_preview`はVer.1.2.4で2026-09-28に公開）。メイン画面を開いている間だけ、`get_profile`・`get_requirement_status`・`get_term_recommendations`・`get_timetable_preview`・`search_subjects`（読み取り）と`set_subject_status`（書き込み）の6ツールを登録する。書き込みは画面の「未更新の変更」に入るだけで、利用者が「更新する」を押すまで保存・判定に反映しない。WebMCPはChrome 146以降の試験機能（`chrome://flags`の`#enable-webmcp-for-testing`）でだけ動き、非対応ブラウザでは何もしない。公開サイトで一般に使えるようにするにはオリジントライアル登録が必要で、まだ行っていない。実装は`app/src/webmcp.ts`（ブラウザAPIへの登録）・`app/src/domain/agentTools.ts`（返す内容の組み立て・入力検証）・`app/src/components/AgentToolsBridge.ts`（ツール定義と登録のタイミング）・`MainPage.tsx`の`agentHandlers`（各ツールの処理）
 
 ### 運用上の注意（複数セッション併用時）
 

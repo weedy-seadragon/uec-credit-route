@@ -18,7 +18,7 @@
 - [x] Ver.1.0.0 正式リリース
 - [x] 仕様書 v0.1
 - [x] 昼間コース Ⅰ類5・Ⅱ類5・Ⅲ類5プログラム＋夜間主課程、計16課程分の要件データ
-- [x] 充足判定・推奨・審査判定ロジック（`src/domain/`、単体テスト付き）
+- [x] 充足判定・推奨・審査判定ロジック（`app/src/domain/`、単体テスト付き）
 - [x] UI：プロフィール設定・メイン画面・科目一覧・JSON入出力
 - [x] シラバス連携（曜日時限・担当教員・リンク。クラスごとに複数セクションがある科目もクラス情報から絞り込み）
 - [x] GitHub Pages公開
@@ -27,11 +27,13 @@
 ## 使い方（開発）
 
 ```
+cd app
 npm install
 npm run dev        # 開発サーバー
 npm test           # テスト
 npm run build      # 型チェック＋本番ビルド
-python scripts/validate_data.py   # data/ の整合性チェック
+cd ..
+python scripts/validate_data.py   # app/data/ の整合性チェック
 ```
 
 ディレクトリの詳しい説明は [docs/STRUCTURE.md](docs/STRUCTURE.md) を参照。

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.vite/
+coverage/
+.env
+.DS_Store
+# サイトアイコンの元絵（保管用）。公開用に縮小した public/site-icon.png だけをリポジトリに入れる
+src/assets/icon.png

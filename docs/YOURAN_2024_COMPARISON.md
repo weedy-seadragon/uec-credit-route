@@ -7,7 +7,7 @@
 開発者から「2024年度入学生（機械システムプログラム）で、材料工学・メカトロニクスが学修要覧では
 選択必修科目なのに、サイトでは選択科目として登録されている」という不具合報告を受けた。調査の結果、
 これは2024年度と2025年度の差分ではなく、**2025・2026年度データ自体に以前からあった誤り**と判明した
-（`data/requirements/2025-day-III-mecha.json`等を修正済み。別コミット参照）。
+（`app/data/requirements/2025-day-III-mecha.json`等を修正済み。別コミット参照）。
 
 この調査を機に、「2024年度以前は2025年度と同一要件として扱う」としてきた従来の前提
 （`docs/PROJECT_STATUS.md`の保留事項）を検証するため、`PDF/youran2024-gakuiki-trimmed.pdf`と
@@ -18,8 +18,8 @@
 - 2024年度と2025年度は、**同一ではない**。共通要件と5プログラムに実質的な差分がある。
 - 別表2の卒業所要単位・小計は、デザイン思考・データサイエンスプログラムの必修/選択の配分（後述）を
   除き、昼間15プログラムすべてで2024年度版と2025年度版が同じだった。
-- 2024年度データを新設し（`data/requirements/2024-*.json`・`data/subjects/youran-2024.json`）、
-  `src/data/requirementSets.ts`から2025年度とは独立した年度として参照するようにした。
+- 2024年度データを新設し（`app/data/requirements/2024-*.json`・`app/data/subjects/youran-2024.json`）、
+  `app/src/data/requirementSets.ts`から2025年度とは独立した年度として参照するようにした。
   `getDataEntryYear()`は2023年度以前を2024年度データへまとめる（従来「2024年度以前→2025年度」だった
   ものを「2023年度以前→2024年度」に変更）。
 
@@ -104,11 +104,11 @@
     （2026年度と逆方向に、2025年度→2024年度の差分を巻き戻す）。
   - デザイン思考・データサイエンスプログラムは差分が大きいため、`major-req`・`major-sel`・
     `major-free`の科目番号一覧を2024年度の実際の内容で丸ごと差し替える。
-- `data/requirements/2024-*.json`：共通1件、昼間15件、夜間主1件。
-- `data/subjects/youran-2024.json`：1,390科目。
+- `app/data/requirements/2024-*.json`：共通1件、昼間15件、夜間主1件。
+- `app/data/subjects/youran-2024.json`：1,390科目。
 - `scripts/validate_data.py`：2024年度も検証対象に加え、今回確定した2024年度固有の差分を
   回帰検査する`check_known_2024_differences`を追加した。
-- `src/data/requirementSets.ts`：2024年度のJSONを個別に読み込み、`getDataEntryYear()`が
+- `app/src/data/requirementSets.ts`：2024年度のJSONを個別に読み込み、`getDataEntryYear()`が
   2023年度以前だけを2024年度データへまとめるように変更した（従来は2024年度以前をまとめて
   2025年度データを参照していた）。
 

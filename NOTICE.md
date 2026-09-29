@@ -8,8 +8,8 @@
 
 以下のサイトアイコンに用いられているイラストの著作権は、サイト作成者およびイラスト制作者に帰属します。
 
-- `public/site-icon.png`
-- `public/social-icon.png`
+- `app/public/site-icon.png`
+- `app/public/social-icon.png`
 
 このイラストは、上記のソースコードに関する扱いの対象外です。イラスト単体または他の作品・サービスでの二次使用、転載、再配布、改変はお控えください。
 

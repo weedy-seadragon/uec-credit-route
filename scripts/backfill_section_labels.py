@@ -1,4 +1,4 @@
-"""既存の科目マスタ（data/subjects/youran-*.json）の offerings に、sectionLabel を後から付け足す。
+"""既存の科目マスタ（app/data/subjects/youran-*.json）の offerings に、sectionLabel を後から付け足す。
 
 実行: python scripts/backfill_section_labels.py
 
@@ -19,6 +19,7 @@ from fetch_syllabus import (  # noqa: E402  （同じフォルダのスクリプ
 )
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+DATA_DIR = os.path.join(ROOT, "app", "data")
 
 
 def main():
@@ -37,7 +38,7 @@ def main():
     print(f"クラス表記のある行: {len(labels)}件", file=sys.stderr)
 
     # 年度ごとの科目マスタすべてに、同じ時間割コードのセクションへ表記を書き足す
-    for path in sorted(glob.glob(os.path.join(ROOT, "data", "subjects", "youran-*.json"))):
+    for path in sorted(glob.glob(os.path.join(DATA_DIR, "subjects", "youran-*.json"))):
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
         changed = 0

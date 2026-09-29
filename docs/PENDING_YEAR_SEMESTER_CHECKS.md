@@ -3,14 +3,14 @@
 ## 結果
 
 85件すべてを学修要覧2025のPDF画像で目視確認した。現状の値が正しいものは70件、修正が必要だったものは15件だった。
-修正内容は`data/subjects/youran-2025.json`と、その生成元である`scripts/gen_data.py`へ反映済み。
+修正内容は`app/data/subjects/youran-2025.json`と、その生成元である`scripts/gen_data.py`へ反映済み。
 下の表は、確認作業を始める前の候補・機械抽出値を残した監査記録である。
 
 ## 背景
 
 開発者が「コンピューターネットワーク、データベース論など学年学期が違う」と報告したのをきっかけに、
 `PDF/yoran_2025.pdf`（学修要覧2025、付録C）の毎週授業時間数の表を`pdftotext -layout`で機械的に
-読み取り、`data/subjects/youran-2025.json`の`standardYear`/`standardSemester`と全16課程・全科目を
+読み取り、`app/data/subjects/youran-2025.json`の`standardYear`/`standardSemester`と全16課程・全科目を
 突き合わせるスクリプトを書いた（39番までの「offeringsとstandardSemesterの食い違い」を見る方法では、
 学期の偶奇（前学期/後学期）が偶然一致してしまうケース＝年次だけがズレているケースを検出できなかった。
 今回のコンピュータネットワーク・データベース論はまさにこのパターンだった）。
@@ -42,7 +42,7 @@
 2. ヘッダー行（「一年次 二年次 三年次 四年次」「1 2 3 4 5 6 7 8」）と対象科目の行を、Python/PILで
    同じx座標のまま縦に結合した画像を作ると、どの列に印が付いているか正確に読み取れる
    （詳細な手順は`docs/PDF_READING_NOTES.md`を参照）
-3. 実際の列をCSVの確認欄へ記録し、現状値と異なる15件だけを`data/subjects/youran-2025.json`と
+3. 実際の列をCSVの確認欄へ記録し、現状値と異なる15件だけを`app/data/subjects/youran-2025.json`と
    `scripts/gen_data.py`の両方へ反映した
 
 ## 確認前の候補一覧（プログラム別、85件）

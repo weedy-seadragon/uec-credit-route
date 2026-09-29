@@ -22,29 +22,29 @@
 
 - TypeScript + React + Vite。ルーティングは React Router の HashRouter（GitHub Pages 対応）
 - 状態は React state + localStorage。サーバー・DB・認証は使わない
-- テストは Vitest。`src/domain/` のロジックには必ず単体テストを付ける
+- テストは Vitest。`app/src/domain/` のロジックには必ず単体テストを付ける
 - データ更新スクリプトは Python（`scripts/`）
 - ホスティングは GitHub Pages（GitHub Actions で自動デプロイ）
 
 ## コード構成のルール
 
-- `src/domain/` は**純粋なロジックのみ**。React にも DOM にも依存させない（後で C++ 版と突き合わせられるように）
+- `app/src/domain/` は**純粋なロジックのみ**。React にも DOM にも依存させない（後で C++ 版と突き合わせられるように）
   - `requirements.ts` … 要件充足の判定（SPEC §5 F-3, §7.2「充足計算の順序」）
   - `recommend.ts` … 残り・推奨の算出（SPEC §8）
   - `importers.ts` … JSON 取り込み（SPEC §7.4, §7.5）
-- `data/` の JSON が唯一のデータソース。コード中に科目名や単位数をハードコードしない
-- `data/` を変更したら `python scripts/validate_data.py` が通ることを確認する
+- `app/data/` の JSON が唯一のデータソース。コード中に科目名や単位数をハードコードしない
+- `app/data/` を変更したら `python scripts/validate_data.py` が通ることを確認する
 - 科目の主キーは**末尾記号を含むフルコード**（例 `COM405a`）。類専門の選択科目はプログラムごとに独自採番されており、末尾記号を除くと番号が一致しても別科目になることがあるため。`COM405a`/`COM405e`のように複数プログラムで本当に共有されている科目は、単純に別エントリとして重複して持つ
 
 ## データについて（docs/SPEC.md §3, §7）
 
-- `data/requirements/{年度}-day-common.json` … 総合文化・実践教育科目の要件（昼間コース共通）。各プログラムの`{年度}-day-{類}-{プログラム}.json`が`extends`でこれを参照する
-- `data/subjects/youran-{年度}.json` … 各年度の学修要覧 付録C から起こした科目マスタ。曜日時限・シラバスURL（`offerings`）はシラバスから取得して付ける
+- `app/data/requirements/{年度}-day-common.json` … 総合文化・実践教育科目の要件（昼間コース共通）。各プログラムの`{年度}-day-{類}-{プログラム}.json`が`extends`でこれを参照する
+- `app/data/subjects/youran-{年度}.json` … 各年度の学修要覧 付録C から起こした科目マスタ。曜日時限・シラバスURL（`offerings`）はシラバスから取得して付ける
 - 要件データは入学年度の学修要覧原本と突き合わせて検証済み。**数値を勝手に変えない**。疑問があれば開発者に確認する
 - **`scripts/fetch_syllabus.py`は科目名が科目マスタ（`gen_data.py`のハードコードした表）と完全一致する
   行しか個別ページを取得しない**（全件を舐めるとサーバー負荷が大きいため）。つまり、シラバスに
   実在する科目でも科目マスタに載っていなければ絶対に自動取得されない。「シラバスにはあるのにサイトに
-  出ない」科目を調査するときは、まず`data/subjects/youran-2025.json`（または`gen_data.py`の該当リスト）に
+  出ない」科目を調査するときは、まず`app/data/subjects/youran-2025.json`（または`gen_data.py`の該当リスト）に
   その科目が入っているかを確認する（2026-09-07、論理学(HSS321z)の欠落で発覚。学修要覧2025の付録Cに
   掲載が無い＝2025年度版印刷後に新設された科目である可能性があるので、原本ページも確認した上で追加する）
 - 学修要覧PDF（`PDF/yoran_2025.pdf`、リポジトリには含めない）を読む具体的な手順（poppler/
@@ -69,7 +69,7 @@
 - 開発者に作業用ファイル（レビュー用CSV等）を渡すときは、チャットの添付機能ではなく
   `C:\Users\maita\Downloads\` 直下に直接コピーして「Downloadsフォルダを見てください」と伝える
   （開発者はローカルPC上で作業しており、添付ファイルの開き方に不慣れなため）。本体ファイルを
-  削除・移動するのではなく、常にその時点のコピーを渡し、本体（`data/timetable/class_assignment_filled.csv`等）は
+  削除・移動するのではなく、常にその時点のコピーを渡し、本体（`app/data/timetable/class_assignment_filled.csv`等）は
   そのまま保持する
 - **ブランチ運用（2026-09-06〜、サイト公開に伴い変更）**：`main`へのpushは`.github/workflows/deploy.yml`でGitHub Pagesへの自動デプロイをトリガーする。通常の開発作業は`dev`ブランチで行い、`dev`へのコミット・プッシュは（開発者の指示により）確認なしで進めてよい。`main`へのマージ（＝実際に公開サイトが更新される操作）は、コミット・プッシュとは別の重みを持つ操作なので、マージする前に開発者に確認する
 
@@ -79,7 +79,7 @@
 
 ### 公開状況
 
-- `main`で公開中（2026-09-09に正式版リリース）。現在のバージョンは`vite.config.ts`の`SITE_VERSION`、各版の内容はトップ画面のリリースノート（`src/pages/TopPage.tsx`）を参照
+- `main`で公開中（2026-09-09に正式版リリース）。現在のバージョンは`app/vite.config.ts`の`SITE_VERSION`、各版の内容はトップ画面のリリースノート（`app/src/pages/TopPage.tsx`）を参照
 - 通常の開発は`dev`ブランチで行い、`main`へのマージ（＝公開サイト更新）は都度開発者に確認する
 
 ### データ
@@ -90,18 +90,18 @@
 - **「卒業要件・審査条件」と「科目自体の属性」は従うべき基準が別（2026-09-14確認）**。
   - **卒業要件・審査条件**（必修/選択/自由の区分、ある科目がその年度の要件区分に入るか、卒研着手等に必要な単位数）
     は、入学年度の学修要覧原本にマストで従う。原本の付録Cに載っていない科目は、その入学年度の要件
-    ファイル（`data/requirements/`）が自由科目等として参照してはならない
+    ファイル（`app/data/requirements/`）が自由科目等として参照してはならない
   - **科目自体の属性**（科目名・曜日時限・担当教員・単位数・開講学期）は、原則2026年度の公式シラバス基準に統一する。
     同じ科目番号のまま名前だけ変わった科目（例: 「量子力学」→「量子と情報」PHY502g/h）は、古い年度の
-    データでも改称後の現行名で表示する。科目マスタ（`data/subjects/`）にその科目自体が載っているかどうかは、
+    データでも改称後の現行名で表示する。科目マスタ（`app/data/subjects/`）にその科目自体が載っているかどうかは、
     シラバスに実在するかで判断してよい（原本の付録Cに無い＝データが間違っているとは限らない。新設科目や
     印刷後の改訂の可能性を疑う。2026-09-07の論理学(HSS321z)の例を参照）
   - 年度によって科目名を変えるのは、その科目自体が別の科目に再編された場合（例: A/B/Cに分割される前の
     「情報工学工房」、独立科目の追加で番号がずれる場合）や、現行の科目マスタに存在しない廃止科目（例:
     夜間主の「美術」「経済学」）だけにする。判断に迷ったら`docs/YOURAN_2023_COMPARISON.md`の該当箇所を参照
-- 複数セクション（クラスごとに教員・時限が違う）科目は、`data/timetable/class_assignment_filled.csv`→`class_assignment.json`で、プロフィールのクラス情報と突き合わせて一意に解決する。未記入の`class_id`はない
+- 複数セクション（クラスごとに教員・時限が違う）科目は、`app/data/timetable/class_assignment_filled.csv`→`class_assignment.json`で、プロフィールのクラス情報と突き合わせて一意に解決する。未記入の`class_id`はない
   - 曜日時限が「他」で空の科目（情報領域演習第三・インターンシップ等）や「1クラス・2クラス・3クラス」表記の科目（アルゴリズム論第一）は、offeringの`sectionLabel`（シラバス一覧の科目名末尾の（…）表記）とプロフィールのA/B/Cクラス・類で解決する
-- 学域特別講義は、A＝`UEC001z`（1単位）・B＝`UEC004z`（2単位）の2科目。Bの表示名は「学域特別講義B（著作権、自動車など）」（2026-09-28、開発者指示。定義元は`scripts/special_lecture_data.py`）で、シラバス上の科目名と一致しないため、A/Bの開講情報はスクリプト側で科目名ではなく科目コードで照合する（`fetch_syllabus.py`の`build_special_offerings_by_code`、`backfill_missing_offerings.py`の`apply_special_offerings_by_code`）。offeringsには年度ごとのテーマ（`topic`）が全部入る。旧区分の`UEC002z`・`UEC003z`は保存済み記録の引き継ぎ用に科目マスタへ残し（`legacy`）、`data/subjects/code-migrations.json`の対応表で保存記録を自動で新コードへ移す（移し先に記録があれば移さない）
+- 学域特別講義は、A＝`UEC001z`（1単位）・B＝`UEC004z`（2単位）の2科目。Bの表示名は「学域特別講義B（著作権、自動車など）」（2026-09-28、開発者指示。定義元は`scripts/special_lecture_data.py`）で、シラバス上の科目名と一致しないため、A/Bの開講情報はスクリプト側で科目名ではなく科目コードで照合する（`fetch_syllabus.py`の`build_special_offerings_by_code`、`backfill_missing_offerings.py`の`apply_special_offerings_by_code`）。offeringsには年度ごとのテーマ（`topic`）が全部入る。旧区分の`UEC002z`・`UEC003z`は保存済み記録の引き継ぎ用に科目マスタへ残し（`legacy`）、`app/data/subjects/code-migrations.json`の対応表で保存記録を自動で新コードへ移す（移し先に記録があれば移さない）
 - シラバスの一覧ページ2件だけで更新できる補助スクリプト：`scripts/backfill_section_labels.py`（`sectionLabel`）・`scripts/backfill_special_offerings.py`（学域特別講義のテーマ）。フル実行の`fetch_syllabus.py`も同じ値を付ける
 - データ生成パイプラインの実行順序：`python scripts/gen_data.py`（科目マスタ・2025年度要件JSONを再構築。**offerings・prerequisitesTextを消してしまう**）→`python scripts/fetch_syllabus.py`（シラバスから曜日時限等を再取得）→`python scripts/build_class_assignment.py`→`python scripts/build_class_assignment_json.py`→年度別データを土台の年度から順に再生成（`python scripts/build_2024_data.py`・`python scripts/build_2026_data.py`は2025年度が土台→`python scripts/build_2023_data.py`・`python scripts/build_2022_data.py`は2024年度が土台→`python scripts/build_2021_data.py`は2022年度が土台）→`python scripts/backfill_missing_offerings.py`（2026年度新設科目など、上の手順で offerings が空のまま残る科目に、シラバス個別ページの科目番号欄で確認できたものだけ開講情報を補う）→`python scripts/sync_term_types.py`（学期が学修要覧とシラバスで食い違う科目の termType をシラバス側へ合わせる）→`python scripts/validate_data.py`（整合性チェック）
 
@@ -117,12 +117,12 @@
   - 時間割プレビュー（Ver.1.2.0〜、SPEC F-7）：修得見込の科目を前学期・後学期の週間時間割（月〜金）に並べる。必修は赤、それ以外は科目区分ごとの固定色（13色）。ターム開講・通年・オンデマンド・集中講義・土曜・時限未確定を別枠で扱い、候補が複数ある科目（低学年・再履修・学域特別講義のテーマを含む）はドロップダウンで選ぶ。表示／非表示・選んだ授業はlocalStorageだけに保存し、履修記録・卒業判定には影響しない
   - 「更新する」時の曜日時限の重複警告は、学期とターム（前学期⊃春・夏、後学期⊃秋・冬）の重なりも判定する
   - WebMCP（AIエージェント向けツール、メイン画面を開いている間だけ登録）：読み取り5種（プロフィール・要件の充足状況・学期別の修得推奨・時間割プレビュー・科目検索）と履修状態の変更（未確定の変更に入るだけ）。Chromeの試験機能でのみ動く
-- ドメインロジック（`src/domain/`、すべてReact/DOM非依存の純粋関数＋単体テスト）：`requirements.ts`（充足判定。`commonOverrides`でプログラム固有の必修化にも対応）・`recommend.ts`（推奨スコア、先修科目考慮）・`reviews.ts`（審査条件評価）・`classAssignment.ts`（クラス別セクション解決、シラバスリンクの絞り込みにも使用）・`prerequisites.ts`（先修科目の保守的抽出）・`importers.ts`（JSON入出力、schemaVersion 5）
+- ドメインロジック（`app/src/domain/`、すべてReact/DOM非依存の純粋関数＋単体テスト）：`requirements.ts`（充足判定。`commonOverrides`でプログラム固有の必修化にも対応）・`recommend.ts`（推奨スコア、先修科目考慮）・`reviews.ts`（審査条件評価）・`classAssignment.ts`（クラス別セクション解決、シラバスリンクの絞り込みにも使用）・`prerequisites.ts`（先修科目の保守的抽出）・`importers.ts`（JSON入出力、schemaVersion 5）
   - 時間割・開講期関連：`timetablePreview.ts`（プレビューの配置・欄外分類・色区分）・`offeringTerms.ts`（学期とタームの期間重複）・`scheduleConflicts.ts`（更新時の重複警告）・`onDemand.ts`（時限なし科目の区分と表示文言）・`sortByYearTerm.ts`（学年学期・曜日時限順の並べ替え）
   - その他：`codeMigrations.ts`（旧科目コードの引き継ぎ）・`subjectRecords.ts`（同名科目の記録の重複防止）・`agentTools.ts`（WebMCPが返す内容の組み立て）
-- 表示の好み・プレビュー用の選択（見出しの開閉、時間割の表示／非表示、選んだ授業）は`src/storage/`経由でlocalStorageにだけ保存し、JSONバックアップ（importers.ts）には含めない。キーは入学年度で分けない
+- 表示の好み・プレビュー用の選択（見出しの開閉、時間割の表示／非表示、選んだ授業）は`app/src/storage/`経由でlocalStorageにだけ保存し、JSONバックアップ（importers.ts）には含めない。キーは入学年度で分けない
 - 画面単位でJavaScriptを分割読み込み（`React.lazy`+`Suspense`）し、初回表示を軽量化
-- 要件データ・科目マスタは入学年度ごとに分けて、必要な年度だけ読み込む（`src/data/requirementSets.ts`の`loadEntryYearData`/`requireEntryYearData`）。データを使う画面は描画の最初に`requireEntryYearData(入学年度)`を呼ぶ（未読み込みなら読み込み完了までSuspenseで待つ）。全年度のプログラム一覧だけは`programIndexPlugin.ts`がビルド時に作る`virtual:program-index`から最初から使える。テストでは`beforeAll(() => loadAllEntryYearData())`で全年度を先に読み込む
+- 要件データ・科目マスタは入学年度ごとに分けて、必要な年度だけ読み込む（`app/src/data/requirementSets.ts`の`loadEntryYearData`/`requireEntryYearData`）。データを使う画面は描画の最初に`requireEntryYearData(入学年度)`を呼ぶ（未読み込みなら読み込み完了までSuspenseで待つ）。全年度のプログラム一覧だけは`app/programIndexPlugin.ts`がビルド時に作る`virtual:program-index`から最初から使える。テストでは`beforeAll(() => loadAllEntryYearData())`で全年度を先に読み込む
 
 ### 削除した機能
 

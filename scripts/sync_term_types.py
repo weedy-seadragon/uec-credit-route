@@ -15,6 +15,7 @@
 import glob, json, os, sys
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+DATA_DIR = os.path.join(ROOT, "app", "data")
 
 # シラバスの開講期 → 前学期／後学期
 SEMESTER_BY_TERM = {
@@ -25,7 +26,7 @@ SEMESTER_BY_TERM = {
 
 def main():
     # 年度ごとの科目マスタをすべて対象にする
-    for path in sorted(glob.glob(os.path.join(ROOT, "data", "subjects", "youran-*.json"))):
+    for path in sorted(glob.glob(os.path.join(DATA_DIR, "subjects", "youran-*.json"))):
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
         changed = []

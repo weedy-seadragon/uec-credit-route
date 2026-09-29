@@ -79,15 +79,15 @@
 
 ## 実装したもの
 
-- `data/requirements/2025-day-I-{media,management,mathinfo,cs,designds}.json`・
-  `data/subjects/youran-2025.json`：COM406a・MSS606b・MSSa04bを追加
+- `app/data/requirements/2025-day-I-{media,management,mathinfo,cs,designds}.json`・
+  `app/data/subjects/youran-2025.json`：COM406a・MSS606b・MSSa04bを追加
 - `scripts/build_2024_data.py`：MCEb13i/j/k誤除外ロジックを削除、`update_optical_requirement`
   でELEa02nの要件ファイル参照のみを除去
 - `scripts/build_2022_data.py`：MCEb13・ELEa02mの個別復元処理を見直し（一部は一般則で
   自然に引き継がれるよう簡略化、ELEa02mは2024年度側の修正により個別復元が必要になったため
   再追加）
 - `scripts/build_2023_data.py`：光工学のELEa02n復元処理を追加
-- `data/requirements/2025-day-II-{netinfo,electroinfo}.json`・`data/subjects/youran-2025.json`：
+- `app/data/requirements/2025-day-II-{netinfo,electroinfo}.json`・`app/data/subjects/youran-2025.json`：
   「マルチメディア処理」の科目番号をCOM507g/hからELE506g/hへ修正
 - `scripts/build_2026_data.py`：ELE506g/hの重複追加処理を削除（2025年度から正しい番号を
   引き継ぐため不要になった）

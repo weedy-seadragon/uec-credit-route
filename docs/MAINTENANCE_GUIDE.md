@@ -8,8 +8,8 @@
 
 ## 現在の年度対応方針
 
-- 2026年度入学生: `data/requirements/2026-*.json` と `data/subjects/youran-2026.json` を使う。
-- 2025年度入学生: `data/requirements/2025-*.json` と `data/subjects/youran-2025.json` を使う。
+- 2026年度入学生: `app/data/requirements/2026-*.json` と `app/data/subjects/youran-2026.json` を使う。
+- 2025年度入学生: `app/data/requirements/2025-*.json` と `app/data/subjects/youran-2025.json` を使う。
 - **2024年度以前の入学生**: プロフィールでは「2024年以前」と表示するが、卒業要件・科目データは
   2025年度版を参照する。2024用のJSONを複製して持たない。
 - 曜日時限・担当教員・シラバスURLは、入学年度ではなく、原則として**その年の公式シラバス**を基準にする。
@@ -35,14 +35,13 @@
    - 別表3〜4: 2年次終了時・卒業研究着手・卒業などの審査条件
    - 付録C: 新設・廃止・番号変更・名称変更・単位数・標準年次・学期
    - 昼間15プログラムだけでなく、夜間主コースも確認する
-3. `data/requirements/<年度>-*.json` を前年度版からコピーして年度、`extends`、要件差分を更新する。
-4. `data/subjects/youran-<年度>.json` を作り、付録Cの差分を反映する。
+3. `app/data/requirements/<年度>-*.json` を前年度版からコピーして年度、`extends`、要件差分を更新する。
+4. `app/data/subjects/youran-<年度>.json` を作り、付録Cの差分を反映する。
    - 同じ番号でも年度で別科目になる場合があるため、科目番号を末尾記号まで含めて扱う。
    - 科目名・単位数をTypeScriptへ直接書かない。必ずJSONを更新する。
-5. `src/data/requirementSets.ts` に、新年度の要件JSON・科目マスタをimportし、
-   `commonDocsByYear`、`programDocs`、`subjectMastersByYear`へ追加する。
+5. `app/src/data/requirementSets.ts` の自動読み込み対象に新年度のJSONが含まれることを確認する。
 6. 年度差分の根拠を `docs/YOURAN_<旧年度>_<新年度>_COMPARISON.md` として残す。
-7. 年度切替が正しいことを `src/data/requirementSets.test.ts` に追加してテストする。
+7. 年度切替が正しいことを `app/src/data/requirementSets.test.ts` に追加してテストする。
 
 ## シラバス・曜日時限を更新する手順
 
@@ -51,14 +50,14 @@
 1. `scripts/fetch_syllabus.py` で新年度のシラバス情報を取得する。
    - 大学サイトへのアクセスは1秒以上あけ、設定済みのUser-Agentを変更しない。
    - 全件取得には10〜15分程度かかる。途中で出力が少なくてもすぐ中断しない。
-2. 複数クラスで曜日時限が異なる科目は、`data/timetable/class_assignment_filled.csv` の
+2. 複数クラスで曜日時限が異なる科目は、`app/data/timetable/class_assignment_filled.csv` の
    `class_id` を見直す。
 3. CSVを変更したら、`scripts/build_class_assignment_json.py` で
-   `data/timetable/class_assignment.json` を再生成する。
+   `app/data/timetable/class_assignment.json` を再生成する。
 4. 実際のプロフィールをいくつか選び、曜日時限・シラバスリンクが期待どおり1件に絞れるか確認する。
 
 注意: `scripts/fetch_syllabus.py` は科目マスタと名前が完全一致する科目だけ取得する。
-シラバスにある科目がサイトに出ないときは、最初に `data/subjects/youran-<年度>.json` への登録を確認する。
+シラバスにある科目がサイトに出ないときは、最初に `app/data/subjects/youran-<年度>.json` への登録を確認する。
 
 ## データ生成をやり直す場合
 
@@ -80,9 +79,9 @@ python scripts/validate_data.py
 画面操作を含む詳細な確認手順は、`RELEASE_CHECKLIST.md`を使用する。
 
 - [ ] `python scripts/validate_data.py` が通る
-- [ ] `npm test` が通る
-- [ ] `npm run lint` が通る
-- [ ] `npm run build` が通る
+- [ ] `app/`で`npm test`が通る
+- [ ] `app/`で`npm run lint`が通る
+- [ ] `app/`で`npm run build`が通る
 - [ ] 昼間コースのⅠ類・Ⅱ類・Ⅲ類、夜間主コースでプロフィール設定からメイン画面を表示できる
 - [ ] 新年度・前年入学生・「2024年以前」で、要件・科目一覧・科目詳細の年度が混ざらない
 - [ ] 複数クラス科目で、プロフィールに応じた曜日時限とシラバスリンクになる

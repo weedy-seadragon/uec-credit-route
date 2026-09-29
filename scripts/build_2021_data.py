@@ -48,8 +48,9 @@ from special_lecture_data import normalize_special_lecture_subjects
 
 # プロジェクト内のデータディレクトリと、複製元・出力先をまとめて定義する。
 ROOT = Path(__file__).resolve().parents[1]
-REQUIREMENTS_DIR = ROOT / "data" / "requirements"
-SUBJECTS_DIR = ROOT / "data" / "subjects"
+DATA_DIR = ROOT / "app" / "data"
+REQUIREMENTS_DIR = DATA_DIR / "requirements"
+SUBJECTS_DIR = DATA_DIR / "subjects"
 
 
 def load_json(path: Path) -> dict[str, Any]:

@@ -114,7 +114,7 @@
   - `update_basic_science_subjects()`・`update_second_cluster_subjects()`：科目マスタ側の
     科目番号・名称・単位数・開講情報を2022年度時点の実体へ入れ替え
 - `scripts/validate_data.py`に`check_known_2022_values`を追加
-- `src/data/requirementSets.test.ts`にⅠ類・Ⅱ類の差分を検証するテストを追加
+- `app/src/data/requirementSets.test.ts`にⅠ類・Ⅱ類の差分を検証するテストを追加
 
 ## 副次的に見つかった2024年度データの不具合
 
@@ -142,7 +142,7 @@
 - `scripts/build_2021_data.py`：`update_first_cluster_2021_requirements()`・
   `update_first_cluster_2021_subjects()`で上記の差分を反映
 - `scripts/validate_data.py`に`check_known_2021_values`を追加
-- `src/data/requirementSets.test.ts`に経営・社会情報学の差分を検証するテストを追加
+- `app/src/data/requirementSets.test.ts`に経営・社会情報学の差分を検証するテストを追加
 
 ### 判断を保留したもの：マルチメディア処理の科目番号（セキュリティ情報学・情報通信工学・電子情報学）
 
@@ -212,7 +212,7 @@ C.5総合文化科目・実践教育科目でも、プログラム記号が総�
   2024年度新設科目を是正し、`update_evening_requirements()`・`update_evening_subjects()`で
   夜間主課程の同様の差分を是正した
 - `scripts/validate_data.py`に対応する回帰検査を追加
-- `src/data/requirementSets.test.ts`にⅢ類・夜間主の差分を検証するテストを追加
+- `app/src/data/requirementSets.test.ts`にⅢ類・夜間主の差分を検証するテストを追加
 
 これで2022年度は昼間15プログラム＋夜間主の16課程すべてを画像照合済みとなる。
 

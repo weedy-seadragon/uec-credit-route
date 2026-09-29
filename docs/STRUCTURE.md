@@ -15,52 +15,53 @@ uec-credit-route/
 │  ├─ PROJECT_STATUS.md         現在の実装状況・確認候補
 │  ├─ PROGRESS_LOG.md           過去の作業経緯
 │  └─ PENDING_YEAR_SEMESTER_CHECKS.md  標準年次・学期の確認監査記録
-├─ data/                        卒業要件・科目マスタの静的JSON（アプリが読み込む唯一のデータ源）
-│  ├─ requirements/
-│  │  ├─ 2025-day-common.json       総合文化・実践教育科目の要件（昼間コース全プログラム共通）
-│  │  ├─ 2025-day-{I,II,III}-*.json 昼間コース15プログラムの専門科目要件・審査条件
-│  │  └─ 2025-evening.json          夜間主課程の要件・審査条件
-│  ├─ subjects/
-│     ├─ youran-2025.json           2025年度入学生向け科目マスタ
-│     └─ youran-2026.json           2026年度入学生向け科目マスタ
-│  └─ timetable/                    クラス別の曜日時限を解決するCSV・JSON
+├─ app/                         Webアプリ一式（npmコマンドはこのディレクトリで実行）
+│  ├─ data/                         卒業要件・科目マスタの静的JSON（唯一のデータ源）
+│  │  ├─ requirements/
+│  │  │  ├─ 2025-day-common.json       総合文化・実践教育科目の要件（昼間コース全プログラム共通）
+│  │  │  ├─ 2025-day-{I,II,III}-*.json 昼間コース15プログラムの専門科目要件・審査条件
+│  │  │  └─ 2025-evening.json          夜間主課程の要件・審査条件
+│  │  ├─ subjects/
+│  │  │  ├─ youran-2025.json           2025年度入学生向け科目マスタ
+│  │  │  └─ youran-2026.json           2026年度入学生向け科目マスタ
+│  │  └─ timetable/                    クラス別の曜日時限を解決するCSV・JSON
+│  ├─ src/                          アプリ本体（TypeScript + React + Vite）
+│  │  ├─ domain/                       画面に依存しない純粋なロジック（後述）
+│  │  ├─ data/                         app/data/ 以下のJSONを読み込む層（後述）
+│  │  ├─ storage/                      localStorageへの保存・読み込み（後述）
+│  │  ├─ pages/                        画面ごとのコンポーネント（後述）
+│  │  ├─ components/                   複数の画面で使う小さな部品
+│  │  ├─ App.tsx                       ルーティング定義（どのURLでどの画面を出すか）
+│  │  ├─ main.tsx                      アプリの起動点（Reactをブラウザに描画する）
+│  │  └─ index.css                     全体に効く最小限のスタイル
+│  ├─ public/                       そのままコピーされる静的ファイル（favicon等）
+│  ├─ index.html                   アプリのHTMLの土台（Viteのエントリーポイント）
+│  ├─ vite.config.ts               Viteの設定（GitHub Pages用のbaseパスなど）
+│  ├─ vitest.config.ts             Vitest（テスト実行ツール）の設定
+│  ├─ tsconfig.*.json              TypeScriptの設定（後述）
+│  ├─ .oxlintrc.json               oxlint（コード検査ツール）の設定
+│  └─ package.json                 依存パッケージとnpmスクリプトの定義
 ├─ scripts/                     データ更新スクリプト（Python）
-│  ├─ gen_data.py                   要覧から転記した表データ → data/ 以下のJSONを生成
+│  ├─ gen_data.py                   要覧から転記した表データ → app/data/ 以下のJSONを生成
 │  ├─ fetch_syllabus.py             シラバスから開講情報を取得
 │  ├─ build_class_assignment.py     クラス割り当てCSVを作成・引き継ぎ
 │  ├─ build_class_assignment_json.py CSVをアプリ用JSONへ変換
-│  └─ validate_data.py              data/ が別表2・3・4と矛盾していないか検査
-├─ src/                         アプリ本体（TypeScript + React + Vite）
-│  ├─ domain/                       画面に依存しない純粋なロジック（後述）
-│  ├─ data/                         data/ 以下のJSONを読み込む層（後述）
-│  ├─ storage/                      localStorageへの保存・読み込み（後述）
-│  ├─ pages/                        画面ごとのコンポーネント（後述）
-│  ├─ components/                   複数の画面で使う小さな部品
-│  ├─ App.tsx                       ルーティング定義（どのURLでどの画面を出すか）
-│  ├─ main.tsx                      アプリの起動点（Reactをブラウザに描画する）
-│  └─ index.css                     全体に効く最小限のスタイル
-├─ public/                      そのままコピーされる静的ファイル（favicon等）
+│  └─ validate_data.py              app/data/ が別表2・3・4と矛盾していないか検査
 ├─ .github/workflows/deploy.yml GitHub Pagesへの自動デプロイ設定
-├─ index.html                   アプリのHTMLの土台（Viteのエントリーポイント）
-├─ vite.config.ts               Viteの設定（GitHub Pages用のbaseパスなど）
-├─ vitest.config.ts             Vitest（テスト実行ツール）の設定
-├─ tsconfig.*.json              TypeScriptの設定（後述）
-├─ .oxlintrc.json               oxlint（コード検査ツール）の設定
-├─ package.json                 依存パッケージとnpmスクリプトの定義
 └─ PDF/yoran_2025.pdf           学修要覧2025のPDF（ローカル参照用。著作物のためgit管理しない）
 ```
 
-## `data/` — 唯一のデータ源
+## `app/data/` — 唯一のデータ源
 
-`src/` のコードは科目名・単位数を直接書かず、必ずこの下のJSONを参照する（作業規則は`AGENTS.md`を参照）。
+`app/src/` のコードは科目名・単位数を直接書かず、必ずこの下のJSONを参照する（作業規則は`AGENTS.md`を参照）。
 `requirements/` は「入学年度 × コース × 類 × プログラム」の組み合わせごとに1ファイル。
 `2025-day-common.json`（総合文化・実践教育科目、全プログラム共通）と、プログラム別ファイル
-（専門科目・審査条件）を組み合わせて1つの要件セットになる（`src/data/requirementSets.ts` が合体させる）。
+（専門科目・審査条件）を組み合わせて1つの要件セットになる（`app/src/data/requirementSets.ts` が合体させる）。
 
 `subjects/youran-2025.json` は科目番号（末尾記号を含むフルコード。例 `COM405a`）を主キーにした科目マスタ。
 1科目1エントリで、名寄せはしない（理由は`PROGRESS_LOG.md`を参照）。
 
-## `src/domain/` — 画面に依存しない純粋なロジック
+## `app/src/domain/` — 画面に依存しない純粋なロジック
 
 React にも DOM にも依存しない、入力を渡すと出力が返ってくるだけの関数群。単体テスト
 （同じディレクトリの `*.test.ts`）が必ず付いている。
@@ -74,14 +75,14 @@ React にも DOM にも依存しない、入力を渡すと出力が返ってく
 | `classAssignment.ts` | プロフィールのクラス情報から、複数セクションの曜日時限・シラバスリンクを絞り込む |
 | `prerequisites.ts` | シラバスの先修科目自由記述から、安全に確定できる科目だけを抽出 |
 
-## `src/data/` — 静的データの読み込み層
+## `app/src/data/` — 静的データの読み込み層
 
-`requirementSets.ts` が `data/` 以下のJSONを`import`し、「今どの入学年度・類・プログラムの
+`requirementSets.ts` が `app/data/` 以下のJSONを`import`し、「今どの入学年度・類・プログラムの
 データがあるか」の一覧（`programOptions`）と、指定した組み合わせに対応する要件セットを返す
 関数（`getRequirementSet`）を提供する。新しいプログラムのデータを追加したら、このファイルに
 import文を1行足す。
 
-## `src/storage/` — ブラウザへの保存
+## `app/src/storage/` — ブラウザへの保存
 
 localStorageへの保存はすべてここを通す。
 
@@ -92,7 +93,7 @@ localStorageへの保存はすべてここを通す。
 | `records.ts` | 履修記録（科目ごとの状態）の保存 |
 | `otherCommonCredits.ts` | 科目を介さないその他単位認定の保存 |
 
-## `src/pages/` — 画面
+## `app/src/pages/` — 画面
 
 `App.tsx` のルーティングに対応する。`TopPage.tsx`・`SetupPage.tsx`・`MainPage.tsx`・`CoursesPage.tsx`・
 `CourseDetailPage.tsx`・`AboutPage.tsx`は実装済み。`RoutePage.tsx`のみ、固定URLの要件表ページとして今後内容を拡張するための最小実装であり、`PagePlaceholder`を使っている。`/compare`と`/data`は削除済み。
@@ -105,16 +106,18 @@ TypeScriptの設定を「本番のアプリコード」「テストコード」�
 | ファイル | 対象 |
 |---|---|
 | `tsconfig.json` | 上の3つをまとめる入口（実体はほぼ空） |
-| `tsconfig.app.json` | `src/` 本体（`*.test.ts` を除く）＋ `data/` のJSON |
-| `tsconfig.node.json` | `vite.config.ts` |
-| `tsconfig.vitest.json` | `src/**/*.test.ts` と `vitest.config.ts`（`node:fs` などを使えるようにしている） |
+| `tsconfig.app.json` | `app/src/` 本体（`*.test.ts` を除く）＋ `app/data/` のJSON |
+| `tsconfig.node.json` | `app/vite.config.ts` |
+| `tsconfig.vitest.json` | `app/src/**/*.test.ts` と `app/vitest.config.ts`（`node:fs` などを使えるようにしている） |
 
 ## よく使うコマンド
 
 ```
+cd app
 npm run dev       開発サーバーを起動
 npm run build     型チェック＋本番ビルド
 npm test          テスト実行（vitest run）
 npm run lint      コード検査（oxlint）
-python scripts/validate_data.py   data/ の整合性チェック
+cd ..
+python scripts/validate_data.py   app/data/ の整合性チェック
 ```

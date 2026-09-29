@@ -11,6 +11,7 @@ from fetch_syllabus import (  # noqa: E402  （共通の一覧取得・テーマ
 from special_lecture_data import SPECIAL_SUBJECTS, normalize_special_lecture_subjects  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+DATA_DIR = os.path.join(ROOT, "app", "data")
 
 
 def main():
@@ -26,7 +27,7 @@ def main():
         raise RuntimeError(f"一覧からテーマ行を取得できませんでした: {', '.join(missing)}")
 
     # A/Bのテーマ情報は全年度の正規科目へ、旧コードは記録保持用の名称だけを反映する。
-    for path in sorted(glob.glob(os.path.join(ROOT, "data", "subjects", "youran-*.json"))):
+    for path in sorted(glob.glob(os.path.join(DATA_DIR, "subjects", "youran-*.json"))):
         with open(path, encoding="utf-8") as source:
             data = json.load(source)
         changed = 0

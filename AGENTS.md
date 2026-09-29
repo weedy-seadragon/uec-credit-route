@@ -22,29 +22,29 @@
 
 - TypeScript + React + Vite。ルーティングは React Router の HashRouter（GitHub Pages 対応）
 - 状態は React state + localStorage。サーバー・DB・認証は使わない
-- テストは Vitest。`src/domain/` のロジックには必ず単体テストを付ける
+- テストは Vitest。`app/src/domain/` のロジックには必ず単体テストを付ける
 - データ更新スクリプトは Python（`scripts/`）
 - ホスティングは GitHub Pages（GitHub Actions で自動デプロイ）
 
 ## コード構成のルール
 
-- `src/domain/` は**純粋なロジックのみ**。React にも DOM にも依存させない（後で C++ 版と突き合わせられるように）
+- `app/src/domain/` は**純粋なロジックのみ**。React にも DOM にも依存させない（後で C++ 版と突き合わせられるように）
   - `requirements.ts` … 要件充足の判定（SPEC §5 F-3, §7.2「充足計算の順序」）
   - `recommend.ts` … 残り・推奨の算出（SPEC §8）
   - `importers.ts` … JSON 取り込み（SPEC §7.4, §7.5）
-- `data/` の JSON が唯一のデータソース。コード中に科目名や単位数をハードコードしない
-- `data/` を変更したら `python scripts/validate_data.py` が通ることを確認する
+- `app/data/` の JSON が唯一のデータソース。コード中に科目名や単位数をハードコードしない
+- `app/data/` を変更したら `python scripts/validate_data.py` が通ることを確認する
 - 科目の主キーは**末尾記号を含むフルコード**（例 `COM405a`）。類専門の選択科目はプログラムごとに独自採番されており、末尾記号を除くと番号が一致しても別科目になることがあるため。`COM405a`/`COM405e`のように複数プログラムで本当に共有されている科目は、単純に別エントリとして重複して持つ
 
 ## データについて（docs/SPEC.md §3, §7）
 
-- `data/requirements/{年度}-day-common.json` … 総合文化・実践教育科目の要件（昼間コース共通）。各プログラムの`{年度}-day-{類}-{プログラム}.json`が`extends`でこれを参照する
-- `data/subjects/youran-{年度}.json` … 各年度の学修要覧 付録C から起こした科目マスタ。曜日時限・シラバスURL（`offerings`）はシラバスから取得して付ける
+- `app/data/requirements/{年度}-day-common.json` … 総合文化・実践教育科目の要件（昼間コース共通）。各プログラムの`{年度}-day-{類}-{プログラム}.json`が`extends`でこれを参照する
+- `app/data/subjects/youran-{年度}.json` … 各年度の学修要覧 付録C から起こした科目マスタ。曜日時限・シラバスURL（`offerings`）はシラバスから取得して付ける
 - 要件データは入学年度の学修要覧原本と突き合わせて検証済み。**数値を勝手に変えない**。疑問があれば開発者に確認する
 - **`scripts/fetch_syllabus.py`は科目名が科目マスタ（`gen_data.py`のハードコードした表）と完全一致する
   行しか個別ページを取得しない**（全件を舐めるとサーバー負荷が大きいため）。つまり、シラバスに
   実在する科目でも科目マスタに載っていなければ絶対に自動取得されない。「シラバスにはあるのにサイトに
-  出ない」科目を調査するときは、まず`data/subjects/youran-2025.json`（または`gen_data.py`の該当リスト）に
+  出ない」科目を調査するときは、まず`app/data/subjects/youran-2025.json`（または`gen_data.py`の該当リスト）に
   その科目が入っているかを確認する（2026-09-07、論理学(HSS321z)の欠落で発覚。学修要覧2025の付録Cに
   掲載が無い＝2025年度版印刷後に新設された科目である可能性があるので、原本ページも確認した上で追加する）
 - 学修要覧PDF（`PDF/yoran_2025.pdf`、リポジトリには含めない）を読む具体的な手順（poppler/
@@ -69,7 +69,7 @@
 - 開発者に作業用ファイル（レビュー用CSV等）を渡すときは、チャットの添付機能ではなく
   `C:\Users\maita\Downloads\` 直下に直接コピーして「Downloadsフォルダを見てください」と伝える
   （開発者はローカルPC上で作業しており、添付ファイルの開き方に不慣れなため）。本体ファイルを
-  削除・移動するのではなく、常にその時点のコピーを渡し、本体（`data/timetable/class_assignment_filled.csv`等）は
+  削除・移動するのではなく、常にその時点のコピーを渡し、本体（`app/data/timetable/class_assignment_filled.csv`等）は
   そのまま保持する
 - **ブランチ運用（2026-09-06〜、サイト公開に伴い変更）**：`main`へのpushは`.github/workflows/deploy.yml`でGitHub Pagesへの自動デプロイをトリガーする。通常の開発作業は`dev`ブランチで行い、`dev`へのコミット・プッシュは（開発者の指示により）確認なしで進めてよい。`main`へのマージ（＝実際に公開サイトが更新される操作）は、コミット・プッシュとは別の重みを持つ操作なので、マージする前に開発者に確認する
 

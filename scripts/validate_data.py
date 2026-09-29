@@ -1,4 +1,4 @@
-"""data/ のJSONが学修要覧の別表2・別表3・別表4と矛盾していないかを検査する。
+"""app/data/ のJSONが学修要覧の別表2・別表3・別表4と矛盾していないかを検査する。
 
 実行: python scripts/validate_data.py
 """
@@ -11,8 +11,8 @@ from pathlib import Path
 from typing import Any
 
 
-# このファイルの場所を基準にしてdataディレクトリを参照する。
-DATA_ROOT = Path(__file__).resolve().parents[1] / "data"
+# このファイルの場所を基準にしてapp/dataディレクトリを参照する。
+DATA_ROOT = Path(__file__).resolve().parents[1] / "app" / "data"
 YEARS = (2021, 2022, 2023, 2024, 2025, 2026)
 errors: list[str] = []
 

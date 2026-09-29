@@ -28,7 +28,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA_DIR = ROOT / "data"
+DATA_DIR = ROOT / "app" / "data"
 REQUIREMENTS_DIR = DATA_DIR / "requirements"
 SUBJECTS_2025_PATH = DATA_DIR / "subjects" / "youran-2025.json"
 SUBJECTS_2024_PATH = DATA_DIR / "subjects" / "youran-2024.json"
