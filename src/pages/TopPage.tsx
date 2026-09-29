@@ -123,6 +123,24 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
+        {/* Ver.1.2.6では、更新版時間割に明記された学籍番号条件を、番号自体を保存せず確認できるようにした。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(Ver.1.2.5→Ver.1.2.6)</span>
+            <span className="release-note-date">アップデート日 2026/9/30</span>
+          </p>
+          <h3 className="release-note-category">時間割データの更新</h3>
+          <ul className="release-note-items">
+            <li>2026年度の更新版時間割に合わせ、Ⅰ類のA・B・Cクラス、アルゴリズムとデータ構造およびプログラミング演習、材料力学および演習、機械力学および演習、マシンデザインBの受講区分を更新しました</li>
+          </ul>
+          <h3 className="release-note-category">表示の改善</h3>
+          <ul className="release-note-items">
+            <li>学籍番号の範囲・偶奇で受講する授業が分かれる科目では、科目名や授業の候補に条件を表示します。学籍番号そのものは入力・保存せず、表示された条件を見て受講する授業を選べます</li>
+            <li>プロフィール設定のⅠ類A・B・Cクラス選択肢にも、2026年度時間割の学籍番号下3桁による区分を表示するようにしました</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（17件）">
         {/* Ver.1.2.5では、2年次終了時審査・卒業審査で、何が足りないのかを分かりやすく表示するようにした。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -135,8 +153,6 @@ export default function TopPage() {
             <li>卒業審査の「すべての区分の必要単位を満たす」の下に、必要単位に届いていない区分（共通単位を含む）と、その現在の単位数を一覧で表示するようにしました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（16件）">
         {/* Ver.1.2.4では、WebMCPで時間割プレビューを読めるようにし、学域特別講義Bの科目名にテーマ例を添えた。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
