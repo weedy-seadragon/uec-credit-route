@@ -25,10 +25,14 @@
 
 ## 2. 今の状態（2026年9月時点）
 
-- **正式版 Ver.1.0.0を公開済み**。上記URLで誰でも使える
-- 電気通信大学の昼間コース全部（Ⅰ類5プログラム・Ⅱ類5プログラム・Ⅲ類5プログラム）と
-  夜間主コース、あわせて16通りの課程すべてで、卒業要件のデータが完成している
-- 各科目の曜日・時限・担当教員・シラバスへのリンクも、可能な範囲で自動取得済み
+- **正式版を公開済み**。上記URLで誰でも使える。現在のバージョンは `app/vite.config.ts` の
+  `SITE_VERSION`、各版の内容はサイトのトップ画面のリリースノートで確認できる
+- **2021〜2026年度入学生**の卒業要件データが完成している。昼間コースのⅠ類・Ⅱ類・Ⅲ類の
+  各プログラムと夜間主コースに対応（2021・2022年度は15課程、2023年度以降は16課程）
+- 卒業要件の判定に加えて、2年次終了時・卒業研究着手・卒業の各審査、学期ごとの修得推奨、
+  修得見込の科目を並べる時間割プレビューにも対応している
+- 各科目の曜日・時限・担当教員・シラバスへのリンクも、可能な範囲で自動取得済み。
+  クラスごとに教員や時限が違う科目は、プロフィールのクラス情報から絞り込める
 - 開講情報は2026年度シラバスを基準にしている。科目ごとのクラス分け・開講状況に変更が見つかった場合は、要覧・シラバスを根拠に更新する
 - 開発を今後引き継ぐ・再開する場合、現在の実装状況と確認候補は
   `docs/PROJECT_STATUS.md`にまとめてある
@@ -64,15 +68,18 @@
 ```
 uec-credit-route/                 ← プロジェクト全体
 ├─ README.md                      ← 最初に読むべき概要（GitHub上でも表示される）
-├─ AGENTS.md                      ← 開発ルール
+├─ AGENTS.md / CLAUDE.md          ← AIコーディングエージェント向けの作業ルール
 ├─ CODEX.md                       ← Codex向けの短い作業入口・現状メモ
+├─ NOTICE.md                      ← 著作権・利用上の注意
 ├─ docs/                          ← ドキュメント（説明書）置き場
 │  ├─ SPEC.md                     ← 仕様書。「このサイトは何をするべきか」を全部書いた設計図
 │  ├─ STRUCTURE.md                ← コードの構成をやや技術寄りに説明したもの
+│  ├─ PROJECT_STATUS.md           ← 現在の実装状況と、次の確認候補
 │  ├─ PROGRESS_LOG.md             ← 過去の作業日誌（いつ・何を・なぜ直したか、時系列で全部）
 │  ├─ HANDOVER.md                 ← このファイル
-│  ├─ RELEASE_CHECKLIST.md         ← 公開前に主要な画面操作を確認する手順
-│  └─ PENDING_YEAR_SEMESTER_CHECKS.md ← 標準年次・学期の確認監査記録
+│  ├─ RELEASE_CHECKLIST.md        ← 公開前に主要な画面操作を確認する手順
+│  ├─ PENDING_YEAR_SEMESTER_CHECKS.md ← 標準年次・学期の確認監査記録
+│  └─ YOURAN_*_COMPARISON.md など ← 学修要覧の年度ごとの差分・照合の記録
 ├─ app/                           ← Webアプリ一式
 │  ├─ data/                          大学のルールを書いたデータ（唯一の情報源。上記①）
 │  │  ├─ requirements/                  卒業要件（プログラムごとに1ファイル）
@@ -87,8 +94,10 @@ uec-credit-route/                 ← プロジェクト全体
 │  ├─ public/                        公開用の画像など
 │  └─ package.json                  npmコマンドと依存パッケージの定義
 ├─ scripts/                       ← データを作る・更新するための自動処理（Pythonで書かれている）
+├─ testcases/                     ← 動作確認用のバックアップJSONなど
 ├─ .github/workflows/deploy.yml   ← サイトを自動で公開する設定（後述）
-└─ PDF/                           ← 大学の学修要覧PDF（著作物のためGitには含めていない）
+├─ PDF/                           ← 大学の学修要覧PDF（著作物のためGitには含めていない）
+└─ output/・tmp/                  ← 作業中の一時的な出力（Gitには含めていない）
 ```
 
 ### もう少しだけ詳しく：`app/src/pages/` の中身（画面）
@@ -108,7 +117,7 @@ uec-credit-route/                 ← プロジェクト全体
 
 | 困りごと・やりたいこと | まず見る場所 |
 |---|---|
-| ある科目の単位数・必修/選択の区分が違う | `app/data/requirements/` の該当プログラムのJSON、または `app/data/subjects/youran-2025.json` |
+| ある科目の単位数・必修/選択の区分が違う | `app/data/requirements/` の該当プログラムのJSON、または `app/data/subjects/youran-{年度}.json`（入学年度ごとに1ファイル） |
 | 卒業に必要な合計単位数がおかしい | `app/data/requirements/` の該当プログラムのJSON（`totalCredits`など） |
 | 科目の曜日・時限やシラバスへのリンクが出ない／間違っている | `app/data/timetable/class_assignment_filled.csv`（クラス分けの記入表）、または大学のシラバスサイト自体が変わった可能性 → `scripts/fetch_syllabus.py` を再実行してデータを取り直す |
 | 「あと何が足りないか」の判定結果がおかしい（データは合っているのに） | `app/src/domain/requirements.ts`（充足判定）・`app/src/domain/recommend.ts`（推奨順） |
@@ -138,6 +147,7 @@ cd app
 npm install         最初の1回だけ：必要な部品をダウンロードする
 npm run dev         手元でサイトを起動する（表示されたURLをブラウザで開く）
 npm test            プログラムが正しく動くかの自動チェックを実行する
+npm run lint        コードの書き方に問題がないか静的解析でチェックする
 npm run build       本番用に固めてビルドできるか確認する
 ```
 
@@ -154,7 +164,8 @@ python scripts/validate_data.py
 使っています。ざっくり言うと：
 
 1. 普段の作業は `dev` というブランチ（作業用の版）で行う
-2. `dev` の変更を `main` というブランチに取り込む（マージする）と、
+2. `dev` の変更を `main` というブランチに取り込むには、GitHub で**プルリクエスト（PR）**を作る
+   （`main` へ直接プッシュしない）。内容を確認して PR をマージすると、
    `.github/workflows/deploy.yml` の設定により**自動的に公開サイトが更新される**
 3. そのため、`main` に取り込む操作は「実際に世の中に公開される」重みのある操作。
    何を確認してから行うべきかは `AGENTS.md` の「ブランチ運用」の項目を参照
@@ -167,13 +178,18 @@ python scripts/validate_data.py
 （詳細は `CODEX.md` の「データを変更するとき」）。
 
 ```
-1. python scripts/gen_data.py                    科目マスタ・要件データを作り直す
+1. python scripts/gen_data.py                    科目マスタ・2025年度の要件データを作り直す
 2. python scripts/fetch_syllabus.py              シラバスサイトから曜日時限・リンクを取得
 3. python scripts/build_class_assignment.py      クラス分け記入表のひな形を作る
 4. （人が手作業で）クラス分け記入表に情報を書き込む
 5. python scripts/build_class_assignment_json.py 記入表をプログラムが読める形式に変換
-6. python scripts/validate_data.py               最終チェック
+6. python scripts/build_20XX_data.py             他の年度のデータを、土台の年度から順に作り直す
+7. python scripts/backfill_missing_offerings.py  開講情報が空の科目を補う
+8. python scripts/sync_term_types.py             学期の食い違いをシラバス側に合わせる
+9. python scripts/validate_data.py               最終チェック
 ```
+
+順序と注意点（たとえば `gen_data.py` は開講情報を消してしまう）の詳細は `CODEX.md` を参照してください。
 
 外部の大学サイトにアクセスするスクリプト（`fetch_syllabus.py` など）は、
 相手のサーバーに負担をかけないよう、1回のアクセスごとに1秒以上間隔を空ける決まりになっています。
