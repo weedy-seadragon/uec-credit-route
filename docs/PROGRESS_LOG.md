@@ -22,8 +22,8 @@
 
 ### 参考PDF（開発者が用意したもの。リポジトリには含めない）
 
-- `C:\Users\maita\Downloads\uec-credit-route\tanni_extract_final.pdf`（プロジェクト内、`.gitignore`の`*.pdf`で除外済み）：学修要覧2025の本編。第2章（科目区分・単位算出基準・審査所要単位）、別表2〜5、付録C（**全15プログラム＋夜間主課程のカリキュラム表**）を含む、事実上のフル版。Ⅱ・Ⅲ類・夜間主のデータ化にはこれを使う
-- `C:\Users\maita\Downloads\youran2025-gakuiki.pdf`（プロジェクト外、`Downloads`直下）：おそらく同じ学修要覧の原本。中身は未確認
+- `C:\Users\<ユーザー名>\Downloads\uec-credit-route\tanni_extract_final.pdf`（プロジェクト内、`.gitignore`の`*.pdf`で除外済み）：学修要覧2025の本編。第2章（科目区分・単位算出基準・審査所要単位）、別表2〜5、付録C（**全15プログラム＋夜間主課程のカリキュラム表**）を含む、事実上のフル版。Ⅱ・Ⅲ類・夜間主のデータ化にはこれを使う
+- `C:\Users\<ユーザー名>\Downloads\youran2025-gakuiki.pdf`（プロジェクト外、`Downloads`直下）：おそらく同じ学修要覧の原本。中身は未確認
 
 - **フェーズ2完了（2-2〜2-6）**：
   - 2-2 `src/domain/recommend.ts`：SPEC §8の推奨スコア(w1〜w7)。先修科目・曜日時限はまだシラバスデータが無いので「無ければ条件なし」として扱う設計。単体テスト11件
@@ -54,7 +54,7 @@
 
 - **学域特別講義（UEC001z・UEC002z）を常時共通単位に分類**：これまで`otherSubjects.special`という未使用の別枠に置いていた（`groups`のどの区分にも属さず、アプリからも一切参照されていなかった）が、開発者の指示（2026-09-05）で`commonCreditSources.alwaysCommon`に移した。理由は元々の科目データの`note`の通り「開講年度により扱いが異なり、必修/選択のどの区分にも一意に割り当てられない」ため。`data/requirements/2025-day-common.json`と`scripts/gen_data.py`を修正済み（`otherSubjects`には`japanese`のみ残した）。これで選択科目の「共通単位」の入れ子（前述）にも表示され、状態プルダウンで選択できるようになった
 
-- **Python導入・`gen_data.py`/`validate_data.py`の実行確認が完了（2026-09-05）**：この環境の`python`/`python3`コマンドはこれまでWindows Storeの偽エイリアス（実体が無い）だったため、`winget install Python.Python.3.12`で本物のPython 3.12.10を導入した（`python`という単純なコマンド名は今も偽エイリアスが優先されるため、フルパス`C:\Users\maita\AppData\Local\Programs\Python\Python312\python.exe`で呼び出す必要がある）。その上で`python scripts/gen_data.py && python scripts/validate_data.py`を初めて実際に実行し、以下を確認した：
+- **Python導入・`gen_data.py`/`validate_data.py`の実行確認が完了（2026-09-05）**：この環境の`python`/`python3`コマンドはこれまでWindows Storeの偽エイリアス（実体が無い）だったため、`winget install Python.Python.3.12`で本物のPython 3.12.10を導入した（`python`という単純なコマンド名は今も偽エイリアスが優先されるため、フルパス`C:\Users\<ユーザー名>\AppData\Local\Programs\Python\Python312\python.exe`で呼び出す必要がある）。その上で`python scripts/gen_data.py && python scripts/validate_data.py`を初めて実際に実行し、以下を確認した：
   - **`scripts/gen_data.py`に実際にバグがあった**：Ⅰ類5プログラムの類専門（選択）相互展開処理（付録C注1対応、本ファイル内`cluster_i`のループ）で、`for p in cluster_i: ... del p["_majorSelOwn"]`という1つのループの中で読み取りと削除を同時に行っていたため、2プログラム目以降が前のプログラムの`_majorSelOwn`を参照できず`KeyError`で毎回落ちていた（＝これまで一度も最後まで実行できていなかった）。削除を全プログラム分の合算が終わった後の別ループに分離して修正済み
   - 修正後、Ⅰ類5・Ⅱ類5・Ⅲ類5の計15プログラムの要件JSONは**実行結果と`data/`の内容が完全一致**（`git diff`が空）。これまでNode.jsで手作業移植・照合していた内容が正しかったことが実際のPython実行でも裏付けられた
   - `data/requirements/2025-evening.json`だけ128行の差分が出たが、中身（科目コード・順序）は完全一致で、一部の配列を1行にまとめて書いていた箇所をPythonの標準整形（`json.dump(..., indent=2)`、1要素1行）に合わせただけの整形差分。この差分は反映済み（今後は日本主ファイルもPython出力と一致する）
@@ -138,7 +138,7 @@
 9-11（生涯スポーツ演習等の曜日時限バグ修正・ENG302z修正）は上の進捗ログ参照。
 
 12. **Ⅱ類5・Ⅲ類5・夜間主の審査（2年次終了時審査・卒業研究着手審査・卒業審査）データを追加（2026-09-06、開発者が就寝中に自律実行）**：
-    - **`tanni_extract_final.pdf`が手元から無くなっていた**（削除されたか移動されたと思われる）。代わりに`C:\Users\maita\Downloads\youran2025-gakuiki.pdf`（225ページ、大学全体の学修要覧原本）を使用。情報理工学域の該当章は物理ページ20〜24（別表3=p20、別表3の2=p21、別表4 4.1昼間コース=p23、4.2夜間主コース=p24）。`pdftotext`はこのPDFでも日本語グリフが空白になる（既知の制約）ため、`pdftoppm`で画像化してReadツールで目視確認する方式で読んだ。**このPDFも引き続きリポジトリには含めない**
+    - **`tanni_extract_final.pdf`が手元から無くなっていた**（削除されたか移動されたと思われる）。代わりに`C:\Users\<ユーザー名>\Downloads\youran2025-gakuiki.pdf`（225ページ、大学全体の学修要覧原本）を使用。情報理工学域の該当章は物理ページ20〜24（別表3=p20、別表3の2=p21、別表4 4.1昼間コース=p23、4.2夜間主コース=p24）。`pdftotext`はこのPDFでも日本語グリフが空白になる（既知の制約）ため、`pdftoppm`で画像化してReadツールで目視確認する方式で読んだ。**このPDFも引き続きリポジトリには含めない**
     - **スキーマ拡張**：`src/domain/requirements.ts`の`ReviewCondition`に2つの条件タイプを追加。`subjectsCountMin`（指定した科目のうち何科目合格したかを数える。単位数ではなく科目数で判定。例:「全必修10科目のうち9科目以上」）、`subjectsCreditMin`（指定した科目のうち合格済みの単位数を合計してmin以上か。既存の`groupMin`は単一グループのcontributionしか見れないため、複数グループ（類共通基礎科目＋類専門科目など）にまたがる単位数条件に使う。例:「2年次までの必修9科目21単位のうち16単位以上」）。`ReviewDef`には`caveat`（合否に関わらず常に表示する注記。例:「会議の了承を必要とする」。既存の`onFail.note`は不合格時にしか出ないため別物として追加）も追加。`src/domain/reviews.ts`の`evaluateReviews()`に`subjectCredits`引数を追加（`subjectsCreditMin`の単位数計算に必要なため）。`MainPage.tsx`の`describeCondition`・審査セクション表示を対応させた
     - **別表4の値の照合**：全プログラムで「別表4に書かれている単位数・科目数」と「実際にそのプログラムのJSONに入っている該当科目の単位を手計算した合計」が寸分違わず一致することを確認しながら書き起こした（例: 情報通信工学の類共通基礎科目条件「必修10科目のうち9科目、必修+選択必修21単位」→`cluster-basic-req`(10科目20単位)+`cluster-basic-elecreq`(3科目4単位)の組み合わせで21単位が成立、等）。Ⅲ類5プログラムの「2年次までの類共通基礎科目及び類専門科目の必修科目◯科目◯単位のうち◯単位以上」という区分をまたぐ条件は、`cluster-basic-req`の全科目＋類専門科目のうち号番号が若い（`401`/`402`/`403`等）2〜3科目を具体的な科目コード列挙で表現し、単位合計が別表4の数値と一致することを確認済み
     - **`scripts/gen_data.py`にも反映**：Ⅰ類のときと同じ理由（`gen_data.py`実行で`data/`が上書きされるため）で、追加した`reviews`をJSON側からPythonリテラル（`repr()`で機械変換、手打ちなし）に変換して対応する各プログラムの辞書リテラルに追記した。`python scripts/gen_data.py`を実際に実行し、出力が既存の`data/requirements/*.json`と完全一致（純粋な追加のみのdiff）することを確認済み（`data/subjects/youran-2025.json`はいつも通り`offerings`が消えるため`git checkout`で復元）
@@ -226,7 +226,7 @@
     - **基礎科学実験A1/B1（`PHY101z`/`CHM101z`）**：`class_id`に入っていた「A1-7」のような値（`scripts/build_class_assignment.py`が`class_schedule.csv`との自動突き合わせで生成する「{pdf名}-{class_id}」形式）を、`classIdMatchesProfile`（`src/domain/classAssignment.ts`）がこれまで一切解釈できていなかったことが根本原因。A1・A2（1年前期・後期）はどちらも1年次クラス1〜12と同じ番号のため、「クラスN」と同じ扱いになるよう`/^A[12]-(\d+)$/`のパターンを追加。単体テスト1件追加。他に同じ形式を使っている科目は`PHY101z`/`CHM101z`の2つだけと確認済み（`PHY201z`/`CHM202z`はそもそも`class_id`が全部空欄で該当なし）
     - **Academic Written/Spoken English（1年）（`ENG101z`/`102z`/`201z`/`202z`）**：`class_id`列に、また前回（19番参照）と同じパターンで説明文（例:「1限→1，2，3クラス、2限→4，9，10クラス…」）がそのまま入ってしまっていた。テキストをパースして、時限ごとの正しい`class_id`（例:1限の行なら`クラス1,クラス2,クラス3`）に変換し、説明は`note`列に移した（102行）
     - `python scripts/validate_data.py`・`npx tsc --noEmit`・`npx vitest run`（91件）・`npm run lint`・`npm run build`すべて通過。PlaywrightでⅡ類情報通信工学プログラム・1年次クラス7で、基礎科学実験A1が「月・3限/月・4限」、Academic Written/Spoken English Ⅰ・Ⅱが正しい時限（クラス7が該当する時限）で表示されることを確認済み。基礎科学実験B1/B2の残りの空欄（`class_id`未記入分）は、送付済みの`class_id_worksheet.csv`が埋まっていないだけの想定通りの状態
-    - **チャット添付ファイルの受け渡し方法を変更**：開発者から「添付ファイルの開き方がわからない」と報告があり、この環境がユーザー自身のPC上でローカルに動いていることを踏まえ、以後はチャット添付（`SendUserFile`）ではなく`C:\Users\maita\Downloads\`直下にファイルを直接保存する方式に変更した（エクスプローラーでそのまま開ける）
+    - **チャット添付ファイルの受け渡し方法を変更**：開発者から「添付ファイルの開き方がわからない」と報告があり、この環境がユーザー自身のPC上でローカルに動いていることを踏まえ、以後はチャット添付（`SendUserFile`）ではなく`C:\Users\<ユーザー名>\Downloads\`直下にファイルを直接保存する方式に変更した（エクスプローラーでそのまま開ける）
 
 24. **複素関数論（`fukuso_kansuuron_extract.csv`）の修正分をマージ（2026-09-06、開発者が編集して「複素関数のやつ書いたから反映させて」と依頼）**：
     - 開発者が`Downloads`フォルダの切り出しファイルを編集して返してきた。management（`MTH304b`）の`class_id`が、以前の「Aクラス,Bクラス」「Bクラス,Cクラス」（2年前期A/B/Cクラス方式）から「1クラス、2クラス」「3クラス、4クラス」（数字が先の全角読点区切り）に変更されていた。数字が先の表記は過去（中国語第一/第二等）にも見つかった書き方で、`classIdMatchesProfile`の「クラスN」パターン（`/^クラス(\d+)$/`、Nが後ろ）とは順序が逆で一致しないため、マージ時に「クラス1,クラス2」の順に正規化した（2行）
@@ -288,7 +288,7 @@
     - **申し送り**：2024・2026年度データを追加する気になったら`SHOW_ENTRY_YEAR_INPUT = true`に戻す。ただし着手前に「カリキュラムが本当に年度で違うのか」を確認し、差が無ければ`entryYear`を表示用ラベル程度に留めてデータ自体は使い回す、という選択肢も検討する（32番の作業量への懸念を踏まえた提案）
 
 34. **「このサイトについて」ページ（`/about`）を実装（2026-09-06、開発者から作成者情報・問い合わせ先・作成目的の文面を渡されて依頼、`main`ブランチで直接作業してマージしてよいとのこと）**：
-    - これまで`準備中`のプレースホルダーだった`src/pages/AboutPage.tsx`に、作成者（あず・電気通信大学2年）・不具合や要望の連絡先（Twitter・マシュマロへの外部リンク）・サイトを作った目的（学修要覧が分厚い／何を取れば卒業できるか分からない／審査が不安、という3つの動機）を実装した。外部リンクは`target="_blank" rel="noopener noreferrer"`を付けて開くようにした
+    - これまで`準備中`のプレースホルダーだった`src/pages/AboutPage.tsx`に、作成者（電気通信大学の学生）・不具合や要望の連絡先（Twitter・マシュマロへの外部リンク）・サイトを作った目的（学修要覧が分厚い／何を取れば卒業できるか分からない／審査が不安、という3つの動機）を実装した。外部リンクは`target="_blank" rel="noopener noreferrer"`を付けて開くようにした
     - `npx tsc --noEmit`・`npx vitest run`（96件）・`npm run lint`・`npm run build`すべて通過。Playwrightで表示内容・リンク先（href/target/rel）を確認済み
     - `dev`ブランチで作業し、`main`にマージ済み（開発者からマージの許可あり）
 
