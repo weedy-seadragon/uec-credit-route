@@ -123,6 +123,25 @@ export default function TopPage() {
           {/* 公開後に古い表示が残る場合でも、ブラウザ更新で反映できることを見出しの横で案内する。 */}
           <span className="release-note-refresh-note">※このサイトを更新するとアップデートが反映されます</span>
         </h2>
+        {/* Ver.1.3.0では、時間割プレビューを学年・学期ごとに分け、科目ごとに受ける時期を選べるようにした。 */}
+        <div className="release-note-entry">
+          <p className="release-note-update">
+            <span>・アップデート(Ver.1.2.6→Ver.1.3.0)</span>
+            <span className="release-note-date">アップデート日 2026/10/9</span>
+          </p>
+          <h3 className="release-note-category">機能追加</h3>
+          <ul className="release-note-items">
+            <li>時間割プレビューを「2年後学期」「3年前学期」のように学年・学期ごとに表示するようにしました。最初は現在の学期（日付から判定）を表示し、各時期に何科目あるかも選択肢に表示します</li>
+            <li>修得見込の科目は、標準年次と開講学期から受ける時期を自動で決めます。標準の時期を過ぎた科目（取り残し・再履修など）は、今の学期以降で最初に開講される学期に置きます</li>
+            <li>自動で決まった時期が合わない科目は、「時間割に表示する科目を選ぶ」の「受ける時期」から別の学年・学期へ移せます。この選択はプレビュー専用で、履修記録や卒業判定には影響しません</li>
+          </ul>
+          <h3 className="release-note-category">不具合修正</h3>
+          <ul className="release-note-items">
+            <li>「単位取得状況を更新」を押したときの時限重複の警告が、受ける学年の違う科目どうしでも出ていたのを、同じ学年・学期の科目どうしだけで判定するようにしました</li>
+          </ul>
+        </div>
+        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
+        <ReleaseNoteHistory summary="過去のアップデートを見る（18件）">
         {/* Ver.1.2.6では、更新版時間割に明記された学籍番号条件を、番号自体を保存せず確認できるようにした。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
@@ -139,8 +158,6 @@ export default function TopPage() {
             <li>プロフィール設定のⅠ類A・B・Cクラス選択肢にも、2026年度時間割の学籍番号下3桁による区分を表示するようにしました</li>
           </ul>
         </div>
-        {/* 正式版の過去アップデートは、正式版リリースより上にまとめる。 */}
-        <ReleaseNoteHistory summary="過去のアップデートを見る（17件）">
         {/* Ver.1.2.5では、2年次終了時審査・卒業審査で、何が足りないのかを分かりやすく表示するようにした。 */}
         <div className="release-note-entry">
           <p className="release-note-update">
