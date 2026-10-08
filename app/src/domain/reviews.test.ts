@@ -181,6 +181,70 @@ describe('evaluateReviews（allOf/anyOfの組み合わせ）', () => {
   })
 })
 
+// 合格（見込み）が特例の枝だけによるときに、注意書き用の印が付くかを検証する。
+describe('evaluateReviews（特例だけに頼った合格の判定）', () => {
+  /** 通常の枝（g1・g2の必修）と、特例の枝（合計6単位）を持つ審査 */
+  const review: ReviewDef = {
+    id: 'r',
+    name: 'テスト審査',
+    anyOf: [
+      { allOf: [{ type: 'allPassed', groupId: 'g1' }, { type: 'allPassed', groupId: 'g2' }] },
+      { type: 'totalCredits', min: 6, note: '特例。テスト用' },
+    ],
+  }
+
+  // 選択科目だけで合計6単位に達し、必修は未修得なので、合格は特例頼み。
+  it('特例の枝だけで合格なら、特例の条件を返す', () => {
+    const passed = { S1: 'passed', S2: 'passed', S3: 'passed', S4: 'passed' } as const
+    const result = evaluateReviews([review], evaluate(passed), records(passed), subjectCredits).at(0)
+    expect(result?.satisfied).toBe(true)
+    expect(result?.reliesOnExceptionalRule).toBe(true)
+    expect(result?.exceptionalConditions).toEqual([{ type: 'totalCredits', min: 6, note: '特例。テスト用' }])
+  })
+
+  // 修得見込を含めて特例だけで合格になる場合（△の表示）も、注意書きの対象にする。
+  it('修得見込で特例の枝だけを満たす場合も特例頼み', () => {
+    const entries = { S1: 'passed', S2: 'passed', S3: 'taking', S4: 'taking' } as const
+    const result = evaluateReviews([review], evaluate(entries), records(entries), subjectCredits).at(0)
+    expect(result?.satisfied).toBe(false)
+    expect(result?.projectedSatisfied).toBe(true)
+    expect(result?.reliesOnExceptionalRule).toBe(true)
+  })
+
+  // 通常の枝（必修）を満たしていれば、特例も満たしていても注意書きは要らない。
+  it('通常の枝を満たしていれば特例頼みではない', () => {
+    const passed = { R1: 'passed', R2: 'passed', S1: 'passed', S2: 'passed' } as const
+    const result = evaluateReviews([review], evaluate(passed), records(passed), subjectCredits).at(0)
+    expect(result?.satisfied).toBe(true)
+    expect(result?.reliesOnExceptionalRule).toBe(false)
+    expect(result?.exceptionalConditions).toEqual([])
+  })
+
+  // 今は特例で合格でも、修得見込の必修を修得すれば通常の枝を満たすなら注意書きは要らない。
+  it('修得見込で通常の枝を満たせるなら特例頼みではない', () => {
+    const entries = { R1: 'passed', R2: 'taking', S1: 'passed', S2: 'passed', S3: 'passed', S4: 'passed' } as const
+    const result = evaluateReviews([review], evaluate(entries), records(entries), subjectCredits).at(0)
+    expect(result?.satisfied).toBe(true)
+    expect(result?.reliesOnExceptionalRule).toBe(false)
+  })
+
+  // 不合格なら不足の表示があるので、特例頼みの印は付けない。
+  it('不合格なら特例頼みにしない', () => {
+    const result = evaluateReviews([review], evaluate({}), records(), subjectCredits).at(0)
+    expect(result?.projectedSatisfied).toBe(false)
+    expect(result?.reliesOnExceptionalRule).toBe(false)
+  })
+
+  // 注記が「特例」で始まらない枝は、通常の選択肢として扱う。
+  it('注記が特例でない枝は特例扱いしない', () => {
+    const plain: ReviewDef = { ...review, anyOf: [review.anyOf![0], { type: 'totalCredits', min: 6 }] }
+    const passed = { S1: 'passed', S2: 'passed', S3: 'passed', S4: 'passed' } as const
+    const result = evaluateReviews([plain], evaluate(passed), records(passed), subjectCredits).at(0)
+    expect(result?.satisfied).toBe(true)
+    expect(result?.reliesOnExceptionalRule).toBe(false)
+  })
+})
+
 // 修得予定は現在の合否には含めない一方、すべて修得できた場合の見込み合否には含める。
 describe('evaluateReviews（修得予定を含めた見込み判定）', () => {
   it('現在は不合格でも、修得予定の科目だけで条件を満たせる場合はprojectedSatisfiedをtrueにする', () => {

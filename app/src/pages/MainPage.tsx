@@ -1165,6 +1165,13 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
     return g ? (g.label ?? g.name) : groupId
   }
   // 審査の不足条件（ReviewCondition）を、人が読める文章・補足にして表示する。
+  /** 特例の条件を、注意書きの括弧内に入れる短い言葉にする（例:「合計60単位以上」）。 */
+  function exceptionalConditionLabel(cond: ReviewCondition): string {
+    // 現在の特例はすべて合計単位数の条件。それ以外の形が来たら、データの注記で代用する。
+    if (cond.type === 'totalCredits') return `合計${cond.min}単位以上`
+    return cond.note ?? '特例の条件'
+  }
+
   function describeCondition(cond: ReviewCondition): ReactNode {
     // 条件ごとに、修得予定をすべて修得できた場合に達成できるかを調べる。
     function canBeSatisfiedWithPlans(): boolean {
@@ -2291,6 +2298,21 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
                     : r.projectedSatisfied
                       ? ' △ 修得見込のものをすべて修得したら合格'
                       : ' ✖ 不足あり'}
+                  {/* 合格・合格見込みが特例（合計60単位以上など）だけによるときは、特例が認められない場合もあると注意する。
+                      通常の条件を（修得見込込みで）満たしていれば出さない（2026-10-09、開発者要望） */}
+                  {r.reliesOnExceptionalRule && (
+                    <div className="review-conditions-inline">
+                      <p className="review-note">
+                        {`※ ${r.satisfied ? '通常の条件を満たしていない' : '修得見込のものをすべて修得しても通常の条件は満たさない'}ため、`
+                          + `特例（${r.exceptionalConditions.map(exceptionalConditionLabel).join('・')}）で認められた場合の判定です。`
+                          + '特例は認められる場合があるもので、必ず認められるとは限りません。'}
+                      </p>
+                      {/* データの注記（「特例。ただし卒業研究着手までには…」）もそのまま添える */}
+                      {r.exceptionalConditions.filter((cond) => cond.note).map((cond, i) => (
+                        <p key={i} className="review-note">※ {cond.note}</p>
+                      ))}
+                    </div>
+                  )}
                   {/* 合否に関わらず常に出す注記（例:「会議の了承を必要とする」） */}
                   {r.caveat && <p style={{ fontSize: '0.9em', margin: '0.2em 0 0' }}>※ {r.caveat}</p>}
                   {!r.satisfied && visibleUnsatisfied.length > 0 && (

@@ -52,7 +52,7 @@ describe('summarizeRequirementStatus', () => {
     expect(result.totalCredits).toEqual({ required: 124, earned: 80, projected: 90 })
   })
 
-  it('審査の判定は、合否と見込みの合否だけを返す', () => {
+  it('審査の判定は、合否と見込みの合否と特例頼みかだけを返す', () => {
     // 不足条件の生データ（unsatisfied）はエージェントには不要なので含めない。
     const evaluation: EvaluationResult = {
       groups: [],
@@ -60,9 +60,9 @@ describe('summarizeRequirementStatus', () => {
       totalCredits: { required: 0, contribution: 0, shortfall: 0, satisfied: true, projected: { contribution: 0, shortfall: 0, satisfied: true } },
     }
     const result = summarizeRequirementStatus(evaluation, [
-      { id: 'y2end', name: '2年次終了時審査', when: '2年次終了時', satisfied: false, projectedSatisfied: true, unsatisfied: [], unsatisfiedAlternatives: [] },
+      { id: 'y2end', name: '2年次終了時審査', when: '2年次終了時', satisfied: false, projectedSatisfied: true, unsatisfied: [], unsatisfiedAlternatives: [], reliesOnExceptionalRule: true, exceptionalConditions: [] },
     ])
-    expect(result.reviews).toEqual([{ id: 'y2end', name: '2年次終了時審査', when: '2年次終了時', satisfied: false, projectedSatisfied: true }])
+    expect(result.reviews).toEqual([{ id: 'y2end', name: '2年次終了時審査', when: '2年次終了時', satisfied: false, projectedSatisfied: true, reliesOnExceptionalRule: true }])
   })
 })
 

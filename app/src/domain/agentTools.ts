@@ -31,7 +31,8 @@ export interface AgentRequirementStatus {
   groups: AgentGroupStatus[]
   commonCredits: { required: number; earned: number; projected: number }
   totalCredits: { required: number; earned: number; projected: number }
-  reviews: { id: string; name: string; when?: string; satisfied: boolean; projectedSatisfied: boolean }[]
+  /** reliesOnExceptionalRule は、合格（見込み）が特例（合計60単位以上など）だけによるもので、特例が認められない場合もあることを示す */
+  reviews: { id: string; name: string; when?: string; satisfied: boolean; projectedSatisfied: boolean; reliesOnExceptionalRule: boolean }[]
 }
 
 /**
@@ -73,6 +74,7 @@ export function summarizeRequirementStatus(evaluation: EvaluationResult, reviews
     },
     reviews: reviews.map((r) => ({
       id: r.id, name: r.name, when: r.when, satisfied: r.satisfied, projectedSatisfied: r.projectedSatisfied,
+      reliesOnExceptionalRule: r.reliesOnExceptionalRule,
     })),
   }
 }

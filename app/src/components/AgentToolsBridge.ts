@@ -31,7 +31,7 @@ function buildAgentToolDefinitions(call: <K extends keyof AgentHandlers>(key: K,
     {
       name: 'get_requirement_status',
       description:
-        '卒業要件の区分ごとの修得状況を返す。kind は区分の種類（required=必修, elective=選択, elective-required=選択必修, free=自由, international=留学生向け）。earned は確定した修得単位、projected は修得見込の科目もすべて修得できた場合の単位、shortfall/projectedShortfall は不足単位。reviews は2年次終了時・卒業研究着手・卒業の各審査の判定。画面に未確定の変更がある場合 hasPendingChanges が true になる（判定は確定済みの記録だけで計算している）。',
+        '卒業要件の区分ごとの修得状況を返す。kind は区分の種類（required=必修, elective=選択, elective-required=選択必修, free=自由, international=留学生向け）。earned は確定した修得単位、projected は修得見込の科目もすべて修得できた場合の単位、shortfall/projectedShortfall は不足単位。reviews は2年次終了時・卒業研究着手・卒業の各審査の判定（reliesOnExceptionalRule が true なら、合格・合格見込みは通常の条件ではなく特例（合計60単位以上など）だけによるもので、特例は認められない場合もある）。画面に未確定の変更がある場合 hasPendingChanges が true になる（判定は確定済みの記録だけで計算している）。',
       inputSchema: { type: 'object', properties: {} },
       readOnly: true,
       execute: (input) => call('getRequirementStatus', input),

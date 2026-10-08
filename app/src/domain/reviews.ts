@@ -29,6 +29,14 @@ export interface ReviewStatus {
    * 合格している・anyOf形でない審査では空配列
    */
   unsatisfiedAlternatives: ReviewCondition[][]
+  /**
+   * 合格（または修得見込で合格）でも、それが特例の枝（注記が「特例」で始まる条件。例: 合計60単位以上）
+   * だけによるもので、修得見込をすべて修得しても通常の条件を満たさないときtrue。
+   * 特例は認められない場合もあるため、画面で注意書きを出すのに使う。通常の条件を満たせる見込みならfalse
+   */
+  reliesOnExceptionalRule: boolean
+  /** reliesOnExceptionalRuleがtrueのとき、頼っている特例の条件（表示用）。それ以外は空配列 */
+  exceptionalConditions: ReviewCondition[]
   onFail?: { blockedSubjects?: string[]; note?: string }
   /** 合否に関わらず常に表示する注記（ReviewDef.caveatをそのまま渡すだけ） */
   caveat?: string
@@ -154,6 +162,29 @@ function collectUnsatisfiedAlternatives(nodes: readonly ReviewNode[], ctx: Conte
   return nodes[0].anyOf.map((branch) => collectUnsatisfied(branch, ctx))
 }
 
+/** 審査のanyOfの枝が特例か。データでは特例の条件の注記を「特例。…」で始める約束になっている */
+function isExceptionalBranch(node: ReviewNode): node is ReviewCondition {
+  // 特例は条件1つだけの枝（合計単位数など）なので、葉の条件の注記だけを見る。
+  return !('allOf' in node) && !('anyOf' in node) && (node.note?.startsWith('特例') ?? false)
+}
+
+/**
+ * 審査が合格（または修得見込で合格）でも、特例の枝だけに頼っているなら、その特例の条件を返す。
+ * 通常の枝を修得見込込みで満たせる場合・特例の枝が無い審査・不合格の審査では空配列。
+ */
+function exceptionalConditionsRelied(nodes: readonly ReviewNode[], passes: boolean, projectedCtx: Context): ReviewCondition[] {
+  // 審査のトップが「anyOf 1つだけ」で、合格の見込みがあるときだけ調べる。
+  if (!passes || nodes.length !== 1 || !('anyOf' in nodes[0])) return []
+  const exceptional = nodes[0].anyOf.filter(isExceptionalBranch)
+  const regular = nodes[0].anyOf.filter((branch) => !isExceptionalBranch(branch))
+  // 特例と通常の両方の枝がある審査でなければ、注意書きの対象にしない。
+  if (exceptional.length === 0 || regular.length === 0) return []
+  // 修得見込をすべて修得したと仮定しても通常の枝を満たさないなら、合格は特例頼み。
+  // （見込みは現在の修得済みを含むので、通常の枝を今満たしていれば見込みでも満たす）
+  if (regular.some((branch) => isNodeSatisfied(branch, projectedCtx))) return []
+  return exceptional
+}
+
 function evaluateReviewSatisfied(id: string, ctx: Context): boolean {
   if (ctx.cache.has(id)) return ctx.cache.get(id) as boolean
   if (ctx.visiting.has(id)) return false // 循環参照は起きない想定だが、安全側でfalseにする
@@ -190,6 +221,8 @@ export function evaluateReviews(
     const projectedSatisfied = nodes.every((n) => isNodeSatisfied(n, projectedCtx))
     ctx.cache.set(review.id, satisfied)
     projectedCtx.cache.set(review.id, projectedSatisfied)
+    // 合格・修得見込で合格のどちらでも、特例だけに頼っていれば注意書き用に条件を残す。
+    const exceptionalConditions = exceptionalConditionsRelied(nodes, satisfied || projectedSatisfied, projectedCtx)
     return {
       id: review.id,
       name: review.name,
@@ -198,6 +231,8 @@ export function evaluateReviews(
       projectedSatisfied,
       unsatisfied: satisfied ? [] : nodes.flatMap((n) => collectUnsatisfied(n, ctx)),
       unsatisfiedAlternatives: satisfied ? [] : collectUnsatisfiedAlternatives(nodes, ctx),
+      reliesOnExceptionalRule: exceptionalConditions.length > 0,
+      exceptionalConditions,
       onFail: review.onFail,
       caveat: review.caveat,
     }
