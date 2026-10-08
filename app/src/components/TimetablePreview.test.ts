@@ -278,11 +278,19 @@ describe('TimetablePreview の学年・学期の切り替え', () => {
     // 2年後学期の時点では、1年前学期の科目は次の前学期（3年前学期）に回る。
     expect(html).toContain('<option value="3:前学期">3年前学期（1科目）</option>')
     expect(html).not.toContain('受ける時期')
-    // 現在が3年前学期なら、その画面に自動の時期（3年前学期）と4年前学期の候補が出る。
+    // 現在が3年前学期なら、「3年前学期（自動）」と4年前学期の候補が出て、自動と同じ3年前学期は重ねて出さない。
     const lateHtml = renderPreview([late], { year: 3, half: '前学期' })
     expect(lateHtml).toContain('aria-label="取り残した科目を受ける時期"')
-    expect(lateHtml).toContain('<option value="" selected="">自動（3年前学期）</option>')
+    expect(lateHtml).toContain('<option value="" selected="">3年前学期（自動）</option>')
     expect(lateHtml).toContain('<option value="4:前学期">4年前学期</option>')
+    expect(lateHtml).not.toContain('<option value="3:前学期">')
+  })
+
+  // 自動の時期以外に選べる時期が無い科目（4年前学期の前学期科目など）には、選択欄を出さない。
+  it('自動以外の候補が無ければ受ける時期の選択欄を出さない', () => {
+    const html = renderPreview([{ ...future, standardYear: 4 }], { year: 4, half: '前学期' })
+    expect(html).toContain('aria-label="3年の科目"')
+    expect(html).not.toContain('を受ける時期')
   })
 
   // 保存した受ける時期の上書きがあれば、その時期に科目を移す。

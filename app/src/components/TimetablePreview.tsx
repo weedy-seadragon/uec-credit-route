@@ -345,11 +345,13 @@ export default function TimetablePreview({ courses, entryYear, currentPeriod, ha
                   const defaultRetake = defaultRetakeOptionForTerm(course, term)
                   const sectionValue = hasSavedChoice ? savedCode ?? '' : defaultRetake?.timetableCode ?? ''
                   const canChangeSection = sectionChoices.length > 1 && (hasSavedChoice || Boolean(defaultRetake))
-                  // 受ける時期の候補と、上書きが無いときに自動で決まる時期。
-                  const placementChoices = timetablePlacementChoices(course, currentPeriod, savedCode)
-                  const savedPlacement = placementOverrides[course.code]
-                  const placementValue = placementChoices.some((choice) => timetablePlacementKey(choice) === savedPlacement) ? savedPlacement : ''
+                  // 上書きが無いときに自動で決まる時期と、それ以外に選べる時期（自動と同じ時期は「自動」の行と重複するので除く）。
                   const autoPlacement = resolveTimetablePlacement(course, currentPeriod, undefined, savedCode)
+                  const otherPlacementChoices = timetablePlacementChoices(course, currentPeriod, savedCode)
+                    .filter((choice) => timetablePlacementKey(choice) !== timetablePlacementKey(autoPlacement))
+                  const savedPlacement = placementOverrides[course.code]
+                  // 保存値が自動と同じ時期・選べない時期なら、「自動」の行を選択中として表示する。
+                  const placementValue = otherPlacementChoices.some((choice) => timetablePlacementKey(choice) === savedPlacement) ? savedPlacement : ''
                   return (
                     <li key={course.code}>
                       <fieldset>
@@ -366,13 +368,13 @@ export default function TimetablePreview({ courses, entryYear, currentPeriod, ha
                           <input type="radio" name={`timetable-visible-${course.code}`} checked={hiddenCodes.has(course.code)} onChange={() => changeVisibility(course.code, false)} />
                           非表示
                         </label>
-                        {/* 時期を選べる科目だけ、受ける時期の選択欄を出す（自動の時期を初期値として示す）。 */}
-                        {placementChoices.length > 1 && (
+                        {/* 自動以外の時期を選べる科目だけ、受ける時期の選択欄を出す（自動の時期を初期値として示す）。 */}
+                        {otherPlacementChoices.length > 0 && (
                           <label className="timetable-section-choice">
                             {' '}受ける時期
                             <select aria-label={`${course.name}を受ける時期`} value={placementValue} onChange={(event) => changePlacement(course.code, event.target.value)}>
-                              <option value="">自動（{placementLabel(autoPlacement)}）</option>
-                              {placementChoices.map((choice) => (
+                              <option value="">{placementLabel(autoPlacement)}（自動）</option>
+                              {otherPlacementChoices.map((choice) => (
                                 <option key={timetablePlacementKey(choice)} value={timetablePlacementKey(choice)}>{placementLabel(choice)}</option>
                               ))}
                             </select>
