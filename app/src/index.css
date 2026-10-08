@@ -925,6 +925,23 @@ select {
   background: color-mix(in srgb, #f7bc69 27%, Canvas);
 }
 
+/* セルの中身を縦に並べる枠。縦長セル（2コマ連続など）ではセルの高さいっぱいに広げる。 */
+.timetable-cell-stack {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 2コマ以上つながった授業は、カードを縦長セルの下端まで伸ばして1つの長い授業に見せる。 */
+.timetable-cell-span .timetable-course {
+  flex: 1;
+}
+
+/* 縦長セルの最後のカードは下の余白を取らず、セルの下端までそろえる。 */
+.timetable-cell-span .timetable-course:last-child {
+  margin-bottom: 0;
+}
+
 /* 科目名を1枚のカードにまとめ、セル内に複数科目がある場合も分けて表示する。 */
 .timetable-course {
   --timetable-card-bg: var(--timetable-category-0-bg);

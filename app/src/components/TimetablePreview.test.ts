@@ -101,6 +101,18 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(html).not.toContain('<th scope="col">土</th>')
   })
 
+  // 2コマ連続の実験は、セル2つではなく縦長のセル1つにカードを1枚だけ置く。
+  it('連続する時限の同じ授業を縦長の1セルにまとめる', () => {
+    const html = renderPreview([{ code: 'EXP', name: '実験', termType: '前学期', offeredTerms: ['前学期'], options: [
+      { term: '前学期', slots: [{ day: '水', period: 2 }, { day: '水', period: 3 }] },
+    ] }])
+    expect(html).toContain('<td rowSpan="2" class="timetable-cell-span">')
+    expect((html.match(/aria-label="実験"/g) ?? [])).toHaveLength(1)
+    // 3限の行は水曜のセルが無いぶん、授業のセルは月火木金の4つだけになる。
+    const row3 = html.slice(html.indexOf('<th scope="row">3限</th>'), html.indexOf('<th scope="row">4限</th>'))
+    expect((row3.match(/<td/g) ?? [])).toHaveLength(4)
+  })
+
   // 土曜の6・7限だけなら平日の行は増やさず、科目は1件の一覧に残す。
   it('土曜だけの科目を曜日時限とリンク付きで表の下へ示す', () => {
     const html = renderPreview([{ code: 'SAT101', name: '土曜の授業', termType: '前学期', offeredTerms: ['前学期'], options: [

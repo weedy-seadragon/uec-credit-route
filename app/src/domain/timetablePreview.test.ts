@@ -1,6 +1,6 @@
 // 時間割プレビューが、曜日時限を断定できる科目だけを配置することを確かめる。
 import { describe, expect, it } from 'vitest'
-import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, offeringTermsOverlap, splitUnplacedTimetableCourses, TIMETABLE_CATEGORY_COLOR_COUNT, timetableCategoryColorsForCourses, timetableCategoryForCourse, timetableLegendForSlots } from './timetablePreview'
+import { buildTimetablePreview, buildVisibleTimetablePreview, maxConcurrentOfferingCount, mergedCellSpans, offeringTermsOverlap, splitUnplacedTimetableCourses, TIMETABLE_CATEGORY_COLOR_COUNT, timetableCategoryColorsForCourses, timetableCategoryForCourse, timetableLegendForSlots } from './timetablePreview'
 
 // 学期全体と個別タームの授業が、同じ週に行われるかを検証する。
 describe('開講期間の重複判定', () => {
@@ -513,5 +513,28 @@ describe('buildVisibleTimetablePreview（表示する科目の選別）', () => 
     const hidden = new Set(['A'])
     expect(buildVisibleTimetablePreview(courses, '前学期', hidden).unplaced).toEqual([])
     expect(buildVisibleTimetablePreview(courses, '後学期', hidden).unplaced).toEqual([])
+  })
+})
+
+// 連続する時限の同じ授業を、縦長の1セルにまとめる行数の計算を検証する。
+describe('mergedCellSpans', () => {
+  // 2・3限が同じ実験だけなら、2限から2行ぶんのセルにし、3限のセルは置かない。
+  it('連続する同じ内容のセルをまとめる', () => {
+    expect(mergedCellSpans(['', 'EXP', 'EXP', '', ''])).toEqual([1, 2, 0, 1, 1])
+  })
+
+  // 3コマ連続でも同じように1つにまとめる。
+  it('3コマ以上もまとめる', () => {
+    expect(mergedCellSpans(['EXP', 'EXP', 'EXP', 'A'])).toEqual([3, 0, 0, 1])
+  })
+
+  // 片方の時限にだけ別の科目が重なっていれば内容が違うので、重複が見えるよう分けたままにする。
+  it('内容が違えばまとめない', () => {
+    expect(mergedCellSpans(['EXP', 'EXP|B', 'A'])).toEqual([1, 1, 1])
+  })
+
+  // 空きコマどうしはまとめない（空きの行もそれぞれ表示する）。
+  it('空きコマはまとめない', () => {
+    expect(mergedCellSpans(['', '', ''])).toEqual([1, 1, 1])
   })
 })

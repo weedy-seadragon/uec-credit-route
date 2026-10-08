@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import type { MouseEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { buildTimetablePreview, buildVisibleTimetablePreview, defaultRetakeOptionForTerm, maxConcurrentOfferingCount, previewSemesterOf, splitUnplacedTimetableCourses, TIMETABLE_UNPLACED_REASON_LABELS, timetableCategoryColorsForCourses, timetableLegendForSlots } from '../domain/timetablePreview'
+import { buildTimetablePreview, buildVisibleTimetablePreview, defaultRetakeOptionForTerm, maxConcurrentOfferingCount, mergedCellSpans, previewSemesterOf, splitUnplacedTimetableCourses, TIMETABLE_UNPLACED_REASON_LABELS, timetableCategoryColorsForCourses, timetableLegendForSlots } from '../domain/timetablePreview'
 import type { TimetablePreviewCourse, TimetablePreviewOption, TimetablePreviewSlot } from '../domain/timetablePreview'
 import { loadHiddenTimetableCourses, saveHiddenTimetableCourses } from '../storage/timetableVisibility'
 import { loadTimetableOfferingSelection, saveTimetableOfferingSelection } from '../storage/timetableOfferingSelection'
@@ -162,6 +162,14 @@ export default function TimetablePreview({ courses, entryYear, currentPeriod, ha
   }
   // 7限の授業だけがあっても、6限を飛ばさず1限から順に表示する。
   const periods = Array.from({ length: lastPeriod }, (_, index) => index + 1)
+  // 2コマ連続の実験などは、曜日ごとに同じ内容が続く時限を縦長の1セルにまとめる。
+  const cellSpansByDay = new Map(DAYS.map((day) => [day, mergedCellSpans(periods.map((period) =>
+    // セルの内容を、科目・開講期・テーマの組で比べられる文字列にする（空きコマは空文字）。
+    (slotsByCell.get(`${day}:${period}`) ?? [])
+      .map((slot) => `${slot.code}/${slot.offeringTerm}/${slot.topic ?? ''}`)
+      .sort()
+      .join('|'),
+  ))]))
 
   return (
     <details id="timetable-preview" className="requirement-section timetable-preview-section main-collapsible-section" open={sectionOpen}>
@@ -220,10 +228,17 @@ export default function TimetablePreview({ courses, entryYear, currentPeriod, ha
                       // 同じコマでも春と夏など別期間なら重複扱いにしない。
                       const cellSlots = slotsByCell.get(`${day}:${period}`) ?? []
                       const concurrentCount = maxConcurrentOfferingCount(cellSlots.map((slot) => slot.offeringTerm))
+                      const span = cellSpansByDay.get(day)?.[period - 1] ?? 1
+                      // 上の時限から続く縦長セルに含まれるコマは、セル自体を置かない。
+                      if (span === 0) return null
+                      const className = [concurrentCount > 1 && 'timetable-cell-conflict', span > 1 && 'timetable-cell-span'].filter(Boolean).join(' ')
                       return (
-                        <td key={day} className={concurrentCount > 1 ? 'timetable-cell-conflict' : undefined}>
-                          {concurrentCount > 1 && <span className="timetable-conflict-label">同時限に{concurrentCount}科目</span>}
-                          {cellSlots.map((slot) => <CourseInSlot key={slot.code} slot={slot} entryYear={entryYear} />)}
+                        <td key={day} rowSpan={span > 1 ? span : undefined} className={className || undefined}>
+                          {/* 縦長セルでもカードがセルの高さいっぱいに伸びるよう、中身を縦並びの枠に入れる。 */}
+                          <div className="timetable-cell-stack">
+                            {concurrentCount > 1 && <span className="timetable-conflict-label">同時限に{concurrentCount}科目</span>}
+                            {cellSlots.map((slot) => <CourseInSlot key={slot.code} slot={slot} entryYear={entryYear} />)}
+                          </div>
                         </td>
                       )
                     })}

@@ -213,6 +213,29 @@ export function maxConcurrentOfferingCount(terms: readonly string[]): number {
   return maximum
 }
 
+/**
+ * 1つの曜日の各時限のセル内容（空きコマは空文字）から、連続する同じ内容のセルを縦につなげた行数を返す。
+ * 戻り値はセルごとの行数で、1以上ならそこからその行数ぶんの縦長セルを置き、0なら上のセルに含まれるので置かない。
+ * 例: 2・3限が同じ実験だけなら [1, 2, 0, 1, 1]。片方の時限にだけ別の科目があれば内容が違うのでつなげない。
+ */
+export function mergedCellSpans(cellKeys: readonly string[]): number[] {
+  const spans = cellKeys.map(() => 1)
+  let start = 0
+  // 内容が同じセルが続く区間を探し、区間の先頭に行数をまとめる。
+  for (let index = 1; index <= cellKeys.length; index++) {
+    // 末尾に達したか、内容が変わったら、直前までの区間を確定する。
+    if (index === cellKeys.length || cellKeys[index] !== cellKeys[start] || cellKeys[start] === '') {
+      // 空きコマはつなげず、授業のある区間だけ先頭に行数を集める。
+      if (cellKeys[start] !== '' && index - start > 1) {
+        spans[start] = index - start
+        for (let covered = start + 1; covered < index; covered++) spans[covered] = 0
+      }
+      start = index
+    }
+  }
+  return spans
+}
+
 /** シラバスの開講期を、プレビューの表示学期へ対応付ける。 */
 export function previewSemesterOf(term: string): string {
   // 前学期・後学期や未知の開講期は、名前をそのまま使う。
