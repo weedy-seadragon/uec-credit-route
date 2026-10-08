@@ -23,7 +23,7 @@ function buildAgentToolDefinitions(call: <K extends keyof AgentHandlers>(key: K,
   return [
     {
       name: 'get_profile',
-      description: '電気通信大学 情報理工学域の利用者のプロフィール（入学年度・コース・類・プログラム・学年）を返す。卒業要件は入学年度の学修要覧で決まる。夜間主コースは類・プログラムの区分が無いため cluster と program が null、昼間コースでプログラム未定の場合は program が null になる。',
+      description: '電気通信大学 情報理工学域の利用者のプロフィール（入学年度・コース・類・プログラム・学年）と、今日の日付から判定した現在の学期（currentTerm、4〜9月は前学期、10〜3月は後学期）を返す。卒業要件は入学年度の学修要覧で決まる。夜間主コースは類・プログラムの区分が無いため cluster と program が null、昼間コースでプログラム未定の場合は program が null になる。',
       inputSchema: { type: 'object', properties: {} },
       readOnly: true,
       execute: (input) => call('getProfile', input),
@@ -54,10 +54,11 @@ function buildAgentToolDefinitions(call: <K extends keyof AgentHandlers>(key: K,
     {
       name: 'get_timetable_preview',
       description:
-        '画面の「時間割プレビュー」と同じ内容を、指定した学期（前学期・後学期）について返す。修得見込の科目を曜日時限の表に並べたもので、画面の未確定の変更（まだ「更新する」を押していない変更）も含む。利用者が非表示にした科目は含まず、利用者がドロップダウンで選んだ授業はその時限で slots に入る。slots は表のコマ（category は卒業要件上の区分、required は必修か、partialTerm は春・夏・秋・冬タームのみの開講ならそのターム名）、conflicts は開講期間が重なる科目が同じ曜日時限に2つ以上ある枠。onDemand・intensive は時限の無いオンデマンド・集中講義。needsSelection は曜日時限の候補が複数あり利用者が画面で選ぶ必要がある科目（候補の一覧つき。このツールからは選べない）、undecided は曜日時限そのものが決まっていない科目（理由つき）。',
+        '画面の「時間割プレビュー」と同じ内容を、指定した学年・学期（前学期・後学期）について返す。修得見込の科目は、標準年次と開講学期から受ける時期を自動で決め（標準の時期を過ぎた取り残し・再履修科目は、今の学期以降で最初に開講される学期）、利用者が画面で受ける時期を選んだ科目はその時期に置く。year を省略すると現在の学年。修得見込の科目を曜日時限の表に並べたもので、画面の未確定の変更（まだ「更新する」を押していない変更）も含む。利用者が非表示にした科目は含まず、利用者がドロップダウンで選んだ授業はその時限で slots に入る。slots は表のコマ（category は卒業要件上の区分、required は必修か、partialTerm は春・夏・秋・冬タームのみの開講ならそのターム名）、conflicts は開講期間が重なる科目が同じ曜日時限に2つ以上ある枠。onDemand・intensive は時限の無いオンデマンド・集中講義。needsSelection は曜日時限の候補が複数あり利用者が画面で選ぶ必要がある科目（候補の一覧つき。このツールからは選べない）、undecided は曜日時限そのものが決まっていない科目（理由つき）。',
       inputSchema: {
         type: 'object',
         properties: {
+          year: { type: 'integer', minimum: 1, description: '表示する学年（省略すると現在の学年）' },
           term: { type: 'string', enum: ['前学期', '後学期'], description: '表示する学期' },
         },
         required: ['term'],

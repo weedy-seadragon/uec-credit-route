@@ -6,25 +6,21 @@ import { buildTimetablePreview, buildVisibleTimetablePreview, defaultRetakeOptio
 import type { TimetablePreviewCourse, TimetablePreviewOption, TimetablePreviewSlot } from '../domain/timetablePreview'
 import { loadHiddenTimetableCourses, saveHiddenTimetableCourses } from '../storage/timetableVisibility'
 import { loadTimetableOfferingSelection, saveTimetableOfferingSelection } from '../storage/timetableOfferingSelection'
+import { lastPreviewYear, placementIncludesPeriod, previewPeriodsFrom, resolveTimetablePlacement, timetablePlacementChoices, timetablePlacementKey } from '../domain/timetablePlacement'
+import type { PreviewPeriod, TimetablePlacement } from '../domain/timetablePlacement'
+import { loadTimetablePlacementOverrides, saveTimetablePlacementOverrides } from '../storage/timetablePlacementOverrides'
 
 /** グリッドに表示する平日。土曜などの授業は表の下にまとめる。 */
 const DAYS: readonly string[] = ['月', '火', '水', '木', '金']
-const BASE_TERMS = ['前学期', '後学期'] as const
 const INTENSIVE_LABELS = {
   'summer-intensive': '夏期集中',
   'winter-intensive': '冬期集中',
   intensive: '集中講義',
 } as const
 
-/** 画面に並べる開講期を、基本の前後学期と修得見込科目の実際の開講期から作る。 */
-function availableTerms(courses: readonly TimetablePreviewCourse[]): string[] {
-  const terms = new Set<string>(BASE_TERMS)
-  // 春・夏は前学期、秋・冬は後学期に含め、他の開講期だけ選択肢を増やす。
-  for (const course of courses) {
-    // 1科目に複数の開講期がある場合も、表示学期の選択肢は重複させない。
-    for (const term of course.offeredTerms) terms.add(previewSemesterOf(term))
-  }
-  return [...BASE_TERMS, ...[...terms].filter((term) => term !== '前学期' && term !== '後学期').sort()]
+/** 時期（学年・学期、通年なら学年だけ）を「3年前学期」「2年通年」の形で表示する。 */
+function placementLabel(placement: TimetablePlacement): string {
+  return `${placement.year}年${placement.half ?? '通年'}`
 }
 
 /** 科目名が英字・数字・記号だけなら、英語用の改行規則を使う。 */
@@ -69,18 +65,39 @@ function CourseInSlot({ slot, entryYear }: { slot: TimetablePreviewSlot; entryYe
 }
 
 /** 曜日・時限が確定した科目を表に置き、未確定の科目を表の下へ示す。 */
-export default function TimetablePreview({ courses, entryYear, hasPendingChanges, sectionOpen, onSectionToggle }: {
+export default function TimetablePreview({ courses, entryYear, currentPeriod, hasPendingChanges, sectionOpen, onSectionToggle }: {
   courses: readonly TimetablePreviewCourse[]
   entryYear: number
+  /** プロフィールの学年と、日付から判定した現在の学期。最初に表示する時期になる。 */
+  currentPeriod: PreviewPeriod
   hasPendingChanges: boolean
   sectionOpen: boolean
   onSectionToggle: (event: MouseEvent<HTMLElement>) => void
 }) {
-  const [term, setTerm] = useState('前学期')
+  const [periodKey, setPeriodKey] = useState(() => timetablePlacementKey(currentPeriod))
   const [hiddenCodes, setHiddenCodes] = useState<ReadonlySet<string>>(() => loadHiddenTimetableCourses())
   const [selectedTimetableCodes, setSelectedTimetableCodes] = useState<Readonly<Record<string, string>>>(() => loadTimetableOfferingSelection())
-  const allCoursesResult = buildTimetablePreview(courses, term, selectedTimetableCodes)
-  const result = buildVisibleTimetablePreview(courses, term, hiddenCodes, selectedTimetableCodes)
+  const [placementOverrides, setPlacementOverrides] = useState<Readonly<Record<string, string>>>(() => loadTimetablePlacementOverrides())
+  // 科目ごとに受ける時期（学年・学期）を決める。利用者が選んだ時期があればそれを優先する。
+  const placementByCode = new Map(courses.map((course) => [
+    course.code,
+    resolveTimetablePlacement(course, currentPeriod, placementOverrides[course.code], selectedTimetableCodes[course.code]),
+  ]))
+  // 選べる時期は現在の学期から4年後学期まで（5年目に回る科目があればそこまで）。
+  const previewPeriods = previewPeriodsFrom(currentPeriod, lastPreviewYear([...placementByCode.values()]))
+  const selectedPeriod = previewPeriods.find((candidate) => timetablePlacementKey(candidate) === periodKey) ?? previewPeriods[0]
+  const term = selectedPeriod.half
+  /** 指定した時期に置かれる科目を返す。時期の選択肢に添える科目数にも使う。 */
+  function coursesInPeriod(target: PreviewPeriod): TimetablePreviewCourse[] {
+    // 置き場所はcoursesから作っているので必ず見つかるが、型の都合でundefinedも確認する。
+    return courses.filter((course) => {
+      const placement = placementByCode.get(course.code)
+      return placement !== undefined && placementIncludesPeriod(placement, target)
+    })
+  }
+  const periodCourses = coursesInPeriod(selectedPeriod)
+  const allCoursesResult = buildTimetablePreview(periodCourses, term, selectedTimetableCodes)
+  const result = buildVisibleTimetablePreview(periodCourses, term, hiddenCodes, selectedTimetableCodes)
   const { selectable: selectableCourses, timeless: timelessCourses } = splitUnplacedTimetableCourses(result.unplaced)
   const allCategoryColors = timetableCategoryColorsForCourses(courses)
   const categoryLegend = timetableLegendForSlots(result.slots.filter((slot) => DAYS.includes(slot.day)), allCategoryColors)
@@ -89,16 +106,15 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
   for (const category of allCategoryColors) {
     if (category.colorIndex !== undefined) colorIndexByCategory.set(category.key, category.colorIndex)
   }
-  const terms = availableTerms(courses)
   // 選択した開講期の科目を、非表示中のものも含めて設定欄へ残す。
   const termCourseCodes = new Set([
     ...allCoursesResult.slots.map((slot) => slot.code),
     ...allCoursesResult.onDemand.map((course) => course.code),
     ...allCoursesResult.intensive.map((course) => course.code),
     ...allCoursesResult.unplaced.map((course) => course.code),
-    ...courses.filter((course) => course.sections?.some((section) => section.topic && previewSemesterOf(section.term) === term)).map((course) => course.code),
+    ...periodCourses.filter((course) => course.sections?.some((section) => section.topic && previewSemesterOf(section.term) === term)).map((course) => course.code),
   ])
-  const termCourses = courses.filter((course) => termCourseCodes.has(course.code))
+  const termCourses = periodCourses.filter((course) => termCourseCodes.has(course.code))
 
   /** 表示設定をすぐ画面へ反映し、履修記録とは別に保存する。 */
   function changeVisibility(code: string, visible: boolean): void {
@@ -117,6 +133,15 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
     else delete next[code]
     setSelectedTimetableCodes(next)
     saveTimetableOfferingSelection(next)
+  }
+  /** 科目を受ける時期の選択をすぐ反映し、プレビュー専用の設定として保存する。 */
+  function changePlacement(code: string, placementKey: string): void {
+    const next = { ...placementOverrides }
+    // 空欄（自動）は保存対象から外し、自動で決まる時期に戻す。
+    if (placementKey) next[code] = placementKey
+    else delete next[code]
+    setPlacementOverrides(next)
+    saveTimetablePlacementOverrides(next)
   }
   // 平日の科目をコマごとに、土曜などの科目を科目番号ごとにまとめる。
   const slotsByCell = new Map<string, TimetablePreviewSlot[]>()
@@ -146,9 +171,17 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
         {hasPendingChanges && ' 未更新の変更を保存するには「単位取得状況を更新」を押してください。'}
       </p>
       <label className="timetable-term-label" htmlFor="timetable-preview-term">
-        開講期
-        <select id="timetable-preview-term" value={term} onChange={(event) => setTerm(event.target.value)}>
-          {terms.map((option) => <option key={option} value={option}>{option}</option>)}
+        時期
+        <select id="timetable-preview-term" value={timetablePlacementKey(selectedPeriod)} onChange={(event) => setPeriodKey(event.target.value)}>
+          {/* 現在の学期に印を付け、各時期に置かれた科目数を添える。 */}
+          {previewPeriods.map((option) => {
+            const key = timetablePlacementKey(option)
+            return (
+              <option key={key} value={key}>
+                {placementLabel(option)}{key === timetablePlacementKey(currentPeriod) && '（現在）'}（{coursesInPeriod(option).length}科目）
+              </option>
+            )
+          })}
         </select>
       </label>
       {categoryLegend.length > 0 && (
@@ -175,9 +208,9 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
         <p className="section-guidance">科目の状態を「修得見込」にすると、ここに時間割が表示されます。</p>
       ) : (
         <>
-          <div className="timetable-scroll" role="region" aria-label={`${term}の時間割`} tabIndex={0}>
+          <div className="timetable-scroll" role="region" aria-label={`${placementLabel(selectedPeriod)}の時間割`} tabIndex={0}>
             <table className="timetable-grid">
-              <caption>{term}の週間時間割</caption>
+              <caption>{placementLabel(selectedPeriod)}の週間時間割</caption>
               <thead><tr><th scope="col">時限</th>{DAYS.map((day) => <th key={day} scope="col">{day}</th>)}</tr></thead>
               <tbody>
                 {periods.map((period) => (
@@ -243,7 +276,7 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
             </div>
           )}
           {result.slots.length === 0 && result.unplaced.length === 0 && result.onDemand.length === 0 && result.intensive.length === 0 && (
-            <p className="section-guidance">この開講期に表示中の修得見込科目はありません。</p>
+            <p className="section-guidance">この時期に表示中の修得見込科目はありません。</p>
           )}
           {selectableCourses.length > 0 && (
             <div className="timetable-unplaced">
@@ -312,6 +345,11 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                   const defaultRetake = defaultRetakeOptionForTerm(course, term)
                   const sectionValue = hasSavedChoice ? savedCode ?? '' : defaultRetake?.timetableCode ?? ''
                   const canChangeSection = sectionChoices.length > 1 && (hasSavedChoice || Boolean(defaultRetake))
+                  // 受ける時期の候補と、上書きが無いときに自動で決まる時期。
+                  const placementChoices = timetablePlacementChoices(course, currentPeriod, savedCode)
+                  const savedPlacement = placementOverrides[course.code]
+                  const placementValue = placementChoices.some((choice) => timetablePlacementKey(choice) === savedPlacement) ? savedPlacement : ''
+                  const autoPlacement = resolveTimetablePlacement(course, currentPeriod, undefined, savedCode)
                   return (
                     <li key={course.code}>
                       <fieldset>
@@ -328,6 +366,18 @@ export default function TimetablePreview({ courses, entryYear, hasPendingChanges
                           <input type="radio" name={`timetable-visible-${course.code}`} checked={hiddenCodes.has(course.code)} onChange={() => changeVisibility(course.code, false)} />
                           非表示
                         </label>
+                        {/* 時期を選べる科目だけ、受ける時期の選択欄を出す（自動の時期を初期値として示す）。 */}
+                        {placementChoices.length > 1 && (
+                          <label className="timetable-section-choice">
+                            {' '}受ける時期
+                            <select aria-label={`${course.name}を受ける時期`} value={placementValue} onChange={(event) => changePlacement(course.code, event.target.value)}>
+                              <option value="">自動（{placementLabel(autoPlacement)}）</option>
+                              {placementChoices.map((choice) => (
+                                <option key={timetablePlacementKey(choice)} value={timetablePlacementKey(choice)}>{placementLabel(choice)}</option>
+                              ))}
+                            </select>
+                          </label>
+                        )}
                         {canChangeSection && (
                           <label className="timetable-section-choice">
                             {' '}セクション

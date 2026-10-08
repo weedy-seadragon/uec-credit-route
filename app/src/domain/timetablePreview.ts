@@ -17,6 +17,8 @@ export interface TimetablePreviewCourse {
   name: string
   /** メイン画面と共通の学年・学期表記。表示切替欄だけで使う。 */
   yearTermLabel?: string
+  /** 学修要覧の標準年次。何年の時間割に置くかの自動判定に使う（無ければ現在の学年）。 */
+  standardYear?: number | null
   /** MainPageの卒業要件判定から受け取る科目区分。プレビューでは再分類しない。 */
   category?: TimetablePreviewCategory
   termType: string | null

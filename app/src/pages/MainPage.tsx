@@ -24,8 +24,11 @@ import { CURRENT_SCHEMA_VERSION, mergeRecords, parseOwnFormat } from '../domain/
 import { entryYearLabel, getClassAssignments, requireEntryYearData, getProgramName, getRequirementSet, getRequirementSetWithoutProgram, getSubjectCredits, getSubjectsByCode, getTransferBucketSubjects } from '../data/requirementSets'
 import type { SubjectOffering, TransferBucketItem } from '../data/requirementSets'
 import { displayConditionForOffering, hasDedicatedRetakeClass, isDedicatedRetakeOffering, resolveOfferingsForProfile, resolveSlotsForProfile, resolveTimetablePreviewOfferings } from '../domain/classAssignment'
-import { findUnavoidableScheduleConflicts } from '../domain/scheduleConflicts'
 import type { PlannedCourseSchedule } from '../domain/scheduleConflicts'
+import { coursesForPreviewPeriod, findScheduleConflictsByPlacement, resolveTimetablePlacement } from '../domain/timetablePlacement'
+import type { PreviewPeriod } from '../domain/timetablePlacement'
+import { currentSemesterOf } from '../domain/academicTerm'
+import { loadTimetablePlacementOverrides } from '../storage/timetablePlacementOverrides'
 import { evaluateReviews, findGroupResult } from '../domain/reviews'
 import type { ReviewCondition } from '../domain/requirements'
 import type { Profile } from '../storage/profile'
@@ -557,6 +560,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   const [otherClusterMajorSubjectCountDraft, setOtherClusterMajorSubjectCountDraft] = useState<number>(otherClusterMajorSubjectCountCommitted)
   // 不合格から修得予定へ変えた科目だけを覚え、再履用の曜日時限があれば重複判定に使う。
   const [retakingPlanCodes, setRetakingPlanCodes] = useState<ReadonlySet<string>>(() => loadRetakingPlanCodes())
+  // 時間割プレビューの「現在」の時期。学年はプロフィール、学期は今日の日付から判定する（画面を開いた時点で固定）。
+  const [currentPeriod] = useState<PreviewPeriod>(() => ({ year: profile.grade, half: currentSemesterOf(new Date()) }))
   // 一覧全体の表示範囲とは別に、修得推奨だけで対象の学年・学期を選べるようにする。
   const [recommendationTermKey, setRecommendationTermKey] = useState('all')
   const [termKey, setTermKey] = useState('all')
@@ -879,7 +884,16 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
   // 「更新」ボタンを押したとき：draftの内容をcommittedへ反映し、localStorageにも保存する
   function handleUpdate() {
     const nextRetakingPlanCodes = new Set([...retakingPlanCodes].filter((code) => draft.get(code) === 'taking'))
-    const conflicts = findUnavoidableScheduleConflicts(plannedCourseSchedules(draft, nextRetakingPlanCodes))
+    // 時間割プレビューと同じ置き場所（学年・学期）ごとに比べ、受ける年が違う科目どうしは重複にしない。
+    // 置き場所の上書き・セクション選択は、押した時点の最新の保存値を読む。
+    const placementOverrides = loadTimetablePlacementOverrides()
+    const selectedTimetableCodes = loadTimetableOfferingSelection()
+    const previewCourseByCode = new Map(timetablePreviewCourses.map((course) => [course.code, course]))
+    const conflicts = findScheduleConflictsByPlacement(plannedCourseSchedules(draft, nextRetakingPlanCodes), (code) => {
+      const course = previewCourseByCode.get(code)
+      // プレビュー用の情報が無い科目は置き場所を決めず、置き場所不明のまとまりで比べる。
+      return course && resolveTimetablePlacement(course, currentPeriod, placementOverrides[code], selectedTimetableCodes[code])
+    })
     // 重複が確定した科目名の組を利用者へ示す。候補が1つでも空いている科目はここに含まれない。
     if (conflicts.length > 0) {
       const pairs = conflicts.map(({ firstCode, secondCode }) => `${nameOf(firstCode)}・${nameOf(secondCode)}`)
@@ -1457,6 +1471,8 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       cluster: profile.cluster,
       program: programName,
       grade: profile.grade,
+      // 日付から判定した現在の学期。時間割プレビューの初期表示と同じ。
+      currentTerm: currentPeriod.half,
     }),
     getRequirementStatus: () => ({
       ...summarizeRequirementStatus(evaluation, reviewStatuses),
@@ -1489,7 +1505,12 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       if (term !== '前学期' && term !== '後学期') return { error: 'term は「前学期」か「後学期」で指定してください' }
       // 画面の時間割プレビューと同じく、非表示にした科目と選んだ授業の設定をブラウザから読んで反映する
       // （ツールが呼ばれた時点の最新の設定を使うため、描画時ではなくここで読む）
-      const result = buildVisibleTimetablePreview(sortedTimetablePreviewCourses, term, loadHiddenTimetableCourses(), loadTimetableOfferingSelection())
+      // 学年の指定が無ければ現在の学年。画面と同じく、その学年・学期に置かれた科目だけを並べる。
+      const year = input.year === undefined ? currentPeriod.year : input.year
+      if (typeof year !== 'number' || !Number.isInteger(year) || year < 1) return { error: 'year は1以上の整数（学年）で指定してください' }
+      const selectedTimetableCodes = loadTimetableOfferingSelection()
+      const periodCourses = coursesForPreviewPeriod(sortedTimetablePreviewCourses, { year, half: term }, currentPeriod, loadTimetablePlacementOverrides(), selectedTimetableCodes)
+      const result = buildVisibleTimetablePreview(periodCourses, term, loadHiddenTimetableCourses(), selectedTimetableCodes)
       return summarizeTimetablePreview(result, term)
     },
     searchSubjects: (input) => {
@@ -1631,6 +1652,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       code,
       name: nameOf(code),
       yearTermLabel: yearTermOf(code),
+      standardYear: subject?.standardYear ?? null,
       category: timetableCategoryForCourse(code, requiredCodes, boundaryGroups, timetableCommonCodes),
       termType: subject?.termType ?? null,
       offeredTerms: [...new Set(offerings.map((offering) => offering.term))],
@@ -1938,6 +1960,7 @@ function MainPageContent({ profile }: { profile: LoadedProfile }) {
       <TimetablePreview
         courses={sortedTimetablePreviewCourses}
         entryYear={profile.entryYear}
+        currentPeriod={currentPeriod}
         hasPendingChanges={hasPendingChanges}
         sectionOpen={openMainSectionIds.has('timetable-preview')}
         onSectionToggle={(event) => toggleMainSection('timetable-preview', event)}

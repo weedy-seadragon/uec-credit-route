@@ -5,14 +5,16 @@ import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import TimetablePreview from './TimetablePreview'
 import type { TimetablePreviewCourse } from '../domain/timetablePreview'
+import type { PreviewPeriod } from '../domain/timetablePlacement'
 
-/** 修得見込の科目を渡し、時間割プレビューのHTMLを取得する。 */
-function renderPreview(courses: readonly TimetablePreviewCourse[]): string {
+/** 修得見込の科目を渡し、時間割プレビューのHTMLを取得する。現在の時期は省略すると1年前学期。 */
+function renderPreview(courses: readonly TimetablePreviewCourse[], currentPeriod: PreviewPeriod = { year: 1, half: '前学期' }): string {
   // 科目詳細へのリンクはルーターの中で描画する。
   return renderToStaticMarkup(createElement(MemoryRouter, null,
     createElement(TimetablePreview, {
       courses,
       entryYear: 2025,
+      currentPeriod,
       hasPendingChanges: false,
       sectionOpen: false,
       onSectionToggle: (event) => event.preventDefault(),
@@ -252,3 +254,45 @@ describe('TimetablePreview の表と表外一覧', () => {
     expect(courses.map((course) => course.name)).toEqual(names)
   })
 })
+
+// 修得見込の科目を学年・学期ごとに分けて表示することを検証する。
+describe('TimetablePreview の学年・学期の切り替え', () => {
+  const future = { code: 'FUT', name: '3年の科目', standardYear: 3, termType: '前学期', offeredTerms: ['前学期'], options: [{ term: '前学期', slots: [{ day: '月', period: 1 }] }] }
+  const now = { code: 'NOW', name: '今の科目', standardYear: 2, termType: '後学期', offeredTerms: ['後学期'], options: [{ term: '後学期', slots: [{ day: '火', period: 2 }] }] }
+
+  // 初期表示は現在の時期で、選択肢には現在の印と各時期の科目数が付く。
+  it('現在の時期を初期表示し、時期ごとの科目数を示す', () => {
+    const html = renderPreview([future, now], { year: 2, half: '後学期' })
+    expect(html).toContain('<option value="2:後学期" selected="">2年後学期（現在）（1科目）</option>')
+    expect(html).toContain('<option value="3:前学期">3年前学期（1科目）</option>')
+    expect(html).not.toContain('2:前学期')
+    expect(html).toContain('2年後学期の週間時間割')
+    expect(html).toContain('aria-label="今の科目"')
+    expect(html).not.toContain('aria-label="3年の科目"')
+  })
+
+  // 前学期にしか開講しない科目は、現在以降の前学期を受ける時期として選べる。
+  it('受ける時期の選択欄に自動の時期と開講学期の候補を出す', () => {
+    const late = { ...future, code: 'LATE', name: '取り残した科目', standardYear: 1 }
+    const html = renderPreview([late], { year: 2, half: '後学期' })
+    // 2年後学期の時点では、1年前学期の科目は次の前学期（3年前学期）に回る。
+    expect(html).toContain('<option value="3:前学期">3年前学期（1科目）</option>')
+    expect(html).not.toContain('受ける時期')
+    // 現在が3年前学期なら、その画面に自動の時期（3年前学期）と4年前学期の候補が出る。
+    const lateHtml = renderPreview([late], { year: 3, half: '前学期' })
+    expect(lateHtml).toContain('aria-label="取り残した科目を受ける時期"')
+    expect(lateHtml).toContain('<option value="" selected="">自動（3年前学期）</option>')
+    expect(lateHtml).toContain('<option value="4:前学期">4年前学期</option>')
+  })
+
+  // 保存した受ける時期の上書きがあれば、その時期に科目を移す。
+  it('保存した受ける時期へ科目を移す', () => {
+    vi.stubGlobal('window', { localStorage: {
+      getItem: (key: string) => key.endsWith('timetablePlacementOverrides') ? JSON.stringify({ NOW: '4:後学期' }) : null,
+    } })
+    const html = renderPreview([now], { year: 2, half: '後学期' })
+    expect(html).toContain('2年後学期（現在）（0科目）')
+    expect(html).toContain('4年後学期（1科目）')
+  })
+})
+
